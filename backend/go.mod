@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/pressly/goose v2.7.0+incompatible
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.13.0

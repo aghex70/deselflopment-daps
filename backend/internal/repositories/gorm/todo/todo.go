@@ -51,6 +51,7 @@ func (gr *TodoGormRepository) Create(ctx context.Context, td domain.Todo) error 
 	}
 	return nil
 }
+
 func (gr *TodoGormRepository) Delete(ctx context.Context, id uint) error {
 	td := Todo{ID: int(id)}
 	result := gr.DB.Delete(&td)

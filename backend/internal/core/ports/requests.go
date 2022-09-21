@@ -43,6 +43,9 @@ type ListTodosRequest struct {
 }
 
 type CreateUserRequest struct {
+	Email          string `json:"email" validate:"required,email"`
+	Password       string `json:"password" validate:"required,min=14"`
+	RepeatPassword string `json:"repeat_password" validate:"required,min=14"`
 }
 
 type DeleteUserRequest struct {
