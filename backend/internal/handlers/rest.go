@@ -41,12 +41,12 @@ func ValidateRequest(r *http.Request, payload interface{}) error {
 	return nil
 }
 
-func ThrowError(err error, w http.ResponseWriter) {
+func ThrowError(err error, status int, w http.ResponseWriter) {
 	resp := APIErrorResponse{
 		Message: err.Error(),
 	}
 	data, _ := json.Marshal(resp)
 	fmt.Printf("err %+v", err.Error())
-	w.WriteHeader(http.StatusBadRequest)
+	w.WriteHeader(status)
 	w.Write(data)
 }

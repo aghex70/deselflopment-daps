@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"github.com/aghex70/daps/config"
 	"github.com/aghex70/daps/internal/core/ports"
+	"github.com/aghex70/daps/internal/handlers"
 	"github.com/aghex70/daps/internal/handlers/category"
 	"github.com/aghex70/daps/internal/handlers/todo"
 	"github.com/aghex70/daps/internal/handlers/user"
+	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type RestServer struct {
@@ -20,6 +23,37 @@ type RestServer struct {
 	categoryService ports.CategoryServicer
 	toDoService     ports.TodoServicer
 	userService     ports.UserServicer
+}
+
+var hmacSampleSecret = []byte("random")
+
+func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Header["Authorization"] == nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		authorizationHeader := r.Header["Authorization"][0]
+		headerToken := strings.Split(authorizationHeader, " ")[1]
+		token, err := jwt.Parse(headerToken, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				w.WriteHeader(http.StatusUnauthorized)
+				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			}
+			return hmacSampleSecret, nil
+		})
+
+		if err != nil {
+			handlers.ThrowError(err, http.StatusUnauthorized, w)
+			return
+		}
+		if !token.Valid {
+			handlers.ThrowError(err, http.StatusUnauthorized, w)
+			return
+		}
+		f(w, r)
+	}
 }
 
 func (s *RestServer) StartServer() error {
@@ -35,8 +69,8 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/user", s.userHandler.RemoveUser)
 
 	// Todos
-	http.HandleFunc("/todo", s.toDoHandler.Todo)
-	http.HandleFunc("/todos", s.toDoHandler.ListTodos)
+	http.HandleFunc("/todo", JWTAuthMiddleware(s.toDoHandler.Todo))
+	http.HandleFunc("/todos", JWTAuthMiddleware(s.toDoHandler.ListTodos))
 
 	// Stats
 	//http.HandleFunc("/statistics", s.toDoHandler.ListTodos)

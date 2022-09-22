@@ -37,13 +37,13 @@ func (h TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	payload := ports.CreateTodoRequest{}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
-		handlers.ThrowError(err, w)
+		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
 	err = h.toDoService.Create(nil, payload)
 	if err != nil {
-		handlers.ThrowError(err, w)
+		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 }
@@ -64,13 +64,13 @@ func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
 	payload := ports.ListTodosRequest{TodoId: 5}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
-		handlers.ThrowError(err, w)
+		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
 	todos, err := h.toDoService.List(nil, payload)
 	if err != nil {
-		handlers.ThrowError(err, w)
+		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
