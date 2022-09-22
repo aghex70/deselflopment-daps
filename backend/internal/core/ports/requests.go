@@ -52,6 +52,12 @@ type DeleteUserRequest struct {
 }
 
 type LoginUserRequest struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=14"`
+}
+
+type RefreshTokenRequest struct {
+	AccessToken string `json:"access_token" validate:"required"`
 }
 
 type LogoutUserRequest struct {

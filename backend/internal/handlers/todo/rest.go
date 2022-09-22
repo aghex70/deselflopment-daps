@@ -2,7 +2,6 @@ package todo
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"log"
@@ -75,11 +74,8 @@ func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var response handlers.ListTodosResponse
-	fmt.Println("response", response, "\ntodos", todos)
 	b, err := json.Marshal(handlers.ListTodosResponse{Todos: todos})
 	w.Write(b)
-	//fmt.Fprint(w, string(b))
 }
 
 func NewTodoHandler(ts ports.TodoServicer, logger *log.Logger) TodoHandler {

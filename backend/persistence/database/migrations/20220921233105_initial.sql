@@ -5,8 +5,6 @@ DROP TABLE IF EXISTS daps_users;
 CREATE TABLE daps_users (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(128) NOT NULL,
-    access_token VARCHAR(128) NULL DEFAULT NULL,
-    refresh_token VARCHAR(128) NULL DEFAULT NULL,
     registration_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     password VARCHAR(128) NOT NULL
 );

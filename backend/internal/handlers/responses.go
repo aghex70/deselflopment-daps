@@ -23,5 +23,9 @@ type TodoResponse struct {
 }
 
 type ListTodosResponse struct {
-	Todos []domain.Todo
+	Todos []domain.Todo `json:"todos"`
+}
+
+type TokenResponse struct {
+	AccessToken string `json:"access_token"`
 }

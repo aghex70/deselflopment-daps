@@ -19,8 +19,6 @@ type User struct {
 	ID               int       `gorm:"primaryKey;column:id"`
 	Email            string    `gorm:"column:email"`
 	Password         string    `gorm:"column:password"`
-	AccessToken      string    `gorm:"column:access_token"`
-	RefreshToken     string    `gorm:"column:refresh_token"`
 	RegistrationDate time.Time `gorm:"column:registration_date;autoCreateTime"`
 }
 
@@ -45,8 +43,14 @@ func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) error {
 func (gr *UserGormRepository) Delete(ctx context.Context, id uint) error {
 	panic("foo")
 }
-func (gr *UserGormRepository) GetById(ctx context.Context, id uint) (domain.User, error) {
-	panic("foo")
+func (gr *UserGormRepository) Get(ctx context.Context, id uint) (domain.User, error) {
+	var u User
+	result := gr.DB.Where(&User{ID: int(id)}).First(&u)
+	if result.Error != nil {
+		return domain.User{}, result.Error
+	}
+
+	return u.ToDto(), nil
 }
 
 func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (domain.User, error) {
@@ -61,19 +65,15 @@ func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (dom
 
 func (u User) ToDto() domain.User {
 	return domain.User{
-		ID:           u.ID,
-		Email:        u.Email,
-		AccessToken:  u.AccessToken,
-		RefreshToken: u.RefreshToken,
+		ID:    u.ID,
+		Email: u.Email,
 	}
 }
 
 func fromDto(u domain.User) User {
 	return User{
-		Email:        u.Email,
-		Password:     u.Password,
-		AccessToken:  u.AccessToken,
-		RefreshToken: u.RefreshToken,
+		Email:    u.Email,
+		Password: u.Password,
 	}
 }
 

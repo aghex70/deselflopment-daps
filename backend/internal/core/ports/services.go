@@ -21,8 +21,9 @@ type TodoServicer interface {
 }
 
 type UserServicer interface {
-	Login(ctx context.Context, r LoginUserRequest) error
+	Login(ctx context.Context, r LoginUserRequest) (string, error)
 	Logout(ctx context.Context, r LogoutUserRequest) error
+	RefreshToken(ctx context.Context, r RefreshTokenRequest) (string, error)
 	Register(ctx context.Context, r CreateUserRequest) error
 	Remove(ctx context.Context, r DeleteUserRequest) error
 }

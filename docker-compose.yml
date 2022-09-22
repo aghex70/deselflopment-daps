@@ -5,7 +5,7 @@ services:
     build:
       context: backend
       dockerfile: Dockerfile
-    command: [go, run, ./main.go, serve]
+    command: ["air", "migrate", "&&", "air", "serve"]
     env_file:
       - backend/.env
     ports:

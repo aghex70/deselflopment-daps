@@ -31,6 +31,7 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/login", s.userHandler.Login)
 	http.HandleFunc("/logout", s.userHandler.Logout)
 	http.HandleFunc("/register", s.userHandler.Register)
+	http.HandleFunc("/refresh-token", s.userHandler.RefreshToken)
 	http.HandleFunc("/user", s.userHandler.RemoveUser)
 
 	// Todos
