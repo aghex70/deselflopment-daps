@@ -26,6 +26,7 @@ CREATE TABLE daps_todos (
     active INT NOT NULL DEFAULT 0,
     end_date TIMESTAMP NULL DEFAULT NULL,
     completed INT NOT NULL DEFAULT 0,
+    recurring INT NOT NULL DEFAULT 0,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     description VARCHAR(128),
     duration VARCHAR(128),

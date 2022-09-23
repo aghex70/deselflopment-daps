@@ -13,17 +13,19 @@ const (
 )
 
 type Todo struct {
-	Active       bool
-	EndDate      *time.Time
-	Category     int
-	Completed    bool
-	CreationDate time.Time
-	Description  string
-	Duration     time.Duration
-	Link         string
-	Name         string
-	//Prerequisite *Todo
-	Priority  Priority
-	StartDate *time.Time
-	User      int
+	Active       bool          `json:"active"`
+	Category     int           `json:"category_id"`
+	Completed    bool          `json:"completed"`
+	CreationDate time.Time     `json:"creation_date"`
+	Description  string        `json:"description"`
+	Duration     time.Duration `json:"duration"`
+	EndDate      *time.Time    `json:"end_date"`
+	ID           int           `json:"id"`
+	Link         string        `json:"link"`
+	Name         string        `json:"name"`
+	Prerequisite int           `json:"prerequisite_id"`
+	Priority     Priority      `json:"priority"`
+	Recurring    bool          `json:"recurring"`
+	StartDate    *time.Time    `json:"start_date"`
+	User         int           `json:"user_id"`
 }

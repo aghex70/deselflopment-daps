@@ -2,10 +2,14 @@ package todo
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 type TodoHandler struct {
@@ -14,17 +18,28 @@ type TodoHandler struct {
 }
 
 func (h TodoHandler) Todo(w http.ResponseWriter, r *http.Request) {
+	todoString := "todo/"
+	if !strings.Contains(r.RequestURI, todoString) {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	todoIdString := strings.Split(r.RequestURI, todoString)[1]
+	todoId, err := strconv.Atoi(todoIdString)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 	switch r.Method {
 	case http.MethodDelete:
-		h.DeleteTodo(w, r)
+		h.DeleteTodo(w, r, todoId)
 	case http.MethodGet:
-		h.GetTodo(w, r)
-	case http.MethodPost:
-		h.CreateTodo(w, r)
+		h.GetTodo(w, r, todoId)
 	case http.MethodPut:
-		h.CompleteTodo(w, r)
+		h.UpdateTodo(w, r, todoId)
 	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
 	}
 }
 
@@ -63,23 +78,75 @@ func (h TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request) {
-	panic("foo")
-}
-
-func (h TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request) {
-	panic("foo")
-}
-
-func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
-	payload := ports.ListTodosRequest{TodoId: 5}
+func (h TodoHandler) StartTodo(w http.ResponseWriter, r *http.Request) {
+	payload := ports.StartTodoRequest{}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	todos, err := h.toDoService.List(nil, payload)
+	err = h.toDoService.Start(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+}
+
+func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.DeleteTodoRequest{}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.toDoService.Delete(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+}
+
+func (h TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.GetTodoRequest{TodoId: int64(id)}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	todo, err := h.toDoService.Get(nil, r, payload)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	b, err := json.Marshal(todo)
+	w.Write(b)
+
+}
+
+func (h TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.UpdateTodoRequest{}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.toDoService.Update(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+}
+
+func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
+	todos, err := h.toDoService.List(nil, r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return

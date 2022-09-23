@@ -50,7 +50,7 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 	return ss, nil
 }
 
-func (s UserService) Logout(ctx context.Context, r ports.LogoutUserRequest) error {
+func (s UserService) Logout(ctx context.Context) error {
 	//TODO implement me
 	panic("implement me")
 }
