@@ -2,7 +2,6 @@ package user
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"log"
@@ -15,7 +14,7 @@ type UserHandler struct {
 }
 
 func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
-	err := CheckHttpMethod(http.MethodPost, w, r)
+	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
 	}
@@ -36,7 +35,7 @@ func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
-	err := CheckHttpMethod(http.MethodPost, w, r)
+	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
 	}
@@ -58,7 +57,7 @@ func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	err := CheckHttpMethod(http.MethodPost, w, r)
+	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
 	}
@@ -81,14 +80,14 @@ func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	err := CheckHttpMethod(http.MethodPost, w, r)
+	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
 	}
 }
 
 func (h UserHandler) RemoveUser(w http.ResponseWriter, r *http.Request) {
-	err := CheckHttpMethod(http.MethodDelete, w, r)
+	err := handlers.CheckHttpMethod(http.MethodDelete, w, r)
 	if err != nil {
 		return
 	}
@@ -99,14 +98,6 @@ func (h UserHandler) RemoveUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
-}
-
-func CheckHttpMethod(status string, w http.ResponseWriter, r *http.Request) error {
-	if r.Method != status {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return errors.New("method not allowed")
-	}
-	return nil
 }
 
 func NewUserHandler(us ports.UserServicer, logger *log.Logger) UserHandler {

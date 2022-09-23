@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/go-playground/validator/v10"
 	"net/http"
 )
@@ -37,4 +38,12 @@ func ThrowError(err error, status int, w http.ResponseWriter) {
 	if werr != nil {
 		return
 	}
+}
+
+func CheckHttpMethod(status string, w http.ResponseWriter, r *http.Request) error {
+	if r.Method != status {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return errors.New("method not allowed")
+	}
+	return nil
 }
