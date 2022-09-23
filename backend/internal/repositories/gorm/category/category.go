@@ -14,6 +14,21 @@ type CategoryGormRepository struct {
 	logger *log.Logger
 }
 
+type Category struct {
+	ID                int    `gorm:"primaryKey;column:id"`
+	Name              string `gorm:"column:name"`
+	InternationalName string `gorm:"column:international_name"`
+}
+
+type Tabler interface {
+	TableName() string
+}
+
+// TableName overrides the table name used by User to `profiles`
+func (Category) TableName() string {
+	return "daps_todos"
+}
+
 func (gr *CategoryGormRepository) Delete(ctx context.Context, id uint) error {
 	panic("foo")
 }

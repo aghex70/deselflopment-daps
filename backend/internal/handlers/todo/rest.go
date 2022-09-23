@@ -41,7 +41,7 @@ func (h TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.toDoService.Create(nil, payload)
+	err = h.toDoService.Create(nil, r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -49,7 +49,18 @@ func (h TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request) {
-	panic("foo")
+	payload := ports.CompleteTodoRequest{}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.toDoService.Complete(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
 }
 
 func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request) {

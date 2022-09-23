@@ -17,7 +17,7 @@ type ListCategoriesRequest struct {
 }
 
 type CreateTodoRequest struct {
-	Category     string        `json:"category" validate:"required"`
+	Category     string        `json:"category_id"`
 	Description  string        `json:"description"`
 	Duration     time.Duration `json:"duration" validate:"required"`
 	Link         string        `json:"link"`
@@ -27,19 +27,21 @@ type CreateTodoRequest struct {
 }
 
 type CompleteTodoRequest struct {
-	TodoId uint64 `json:"to_do_id"`
+	TodoId uint64 `json:"todo_id"`
 }
 
 type DeleteTodoRequest struct {
-	TodoId uint64 `json:"to_do_id"`
+	TodoId uint64 `json:"todo_id"`
 }
 
 type GetTodoRequest struct {
-	TodoId uint64 `json:"to_do_id"`
+	TodoId uint64 `json:"todo_id"`
+	UserId uint64 `json:"user_id"`
 }
 
 type ListTodosRequest struct {
-	TodoId uint `json:"inventado"`
+	TodoId uint64 `json:"todo_id"`
+	UserId uint64 `json:"user_id"`
 }
 
 type CreateUserRequest struct {

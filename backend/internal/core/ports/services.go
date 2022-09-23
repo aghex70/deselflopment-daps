@@ -3,6 +3,7 @@ package ports
 import (
 	"context"
 	"github.com/aghex70/daps/internal/core/domain"
+	"net/http"
 )
 
 type CategoryServicer interface {
@@ -13,8 +14,8 @@ type CategoryServicer interface {
 }
 
 type TodoServicer interface {
-	Create(ctx context.Context, r CreateTodoRequest) error
-	Complete(ctx context.Context, r CompleteTodoRequest) error
+	Create(ctx context.Context, r *http.Request, req CreateTodoRequest) error
+	Complete(ctx context.Context, r *http.Request, req CompleteTodoRequest) error
 	Delete(ctx context.Context, r DeleteTodoRequest) error
 	Get(ctx context.Context, r GetTodoRequest) (domain.Todo, error)
 	List(ctx context.Context, r ListTodosRequest) ([]domain.Todo, error)
@@ -23,7 +24,7 @@ type TodoServicer interface {
 type UserServicer interface {
 	Login(ctx context.Context, r LoginUserRequest) (string, error)
 	Logout(ctx context.Context, r LogoutUserRequest) error
-	RefreshToken(ctx context.Context, r RefreshTokenRequest) (string, error)
+	RefreshToken(ctx context.Context, r *http.Request, req RefreshTokenRequest) (string, error)
 	Register(ctx context.Context, r CreateUserRequest) error
-	Remove(ctx context.Context, r DeleteUserRequest) error
+	Remove(ctx context.Context, r *http.Request) error
 }

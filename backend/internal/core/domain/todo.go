@@ -15,7 +15,7 @@ const (
 type Todo struct {
 	Active       bool
 	EndDate      *time.Time
-	Category     Category
+	Category     int
 	Completed    bool
 	CreationDate time.Time
 	Description  string
@@ -25,5 +25,5 @@ type Todo struct {
 	//Prerequisite *Todo
 	Priority  Priority
 	StartDate *time.Time
-	//User         User
+	User      int
 }

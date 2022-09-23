@@ -1,6 +1,7 @@
 package domain
 
 type Category struct {
-	Name string
-	User User
+	ID                int //??? Needed?
+	Name              string
+	InternationalName string
 }

@@ -3,13 +3,14 @@ package user
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
+	"github.com/aghex70/daps/server"
 	"github.com/golang-jwt/jwt/v4"
 	"gorm.io/gorm"
 	"log"
+	"net/http"
 	"time"
 )
 
@@ -72,36 +73,8 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 	return nil
 }
 
-func (s UserService) RefreshToken(ctx context.Context, r ports.RefreshTokenRequest) (string, error) {
-	token, err := jwt.Parse(r.AccessToken, func(token *jwt.Token) (interface{}, error) {
-		// Don't forget to validate the alg is what you expect:
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-
-		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return hmacSampleSecret, nil
-	})
-	if err != nil {
-		return "", err
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok || !token.Valid {
-		return "", err
-	}
-	//} else if errors.Is(err, jwt.ErrTokenMalformed) {
-	//	fmt.Println("That's not even a token")
-	//	return "", err
-	//} else if errors.Is(err, jwt.ErrTokenExpired) || errors.Is(err, jwt.ErrTokenNotValidYet) {
-	//	// Token is either expired or not active yet
-	//	fmt.Println("Timing is everything")
-	//	return "", err
-	//} else {
-	//	fmt.Println("Couldn't handle this token:", err)
-	//	return "", err
-	//}
-	userId := claims["user_id"].(float64)
+func (s UserService) RefreshToken(ctx context.Context, r *http.Request, req ports.RefreshTokenRequest) (string, error) {
+	userId, err := server.RetrieveJWTClaims(r, req)
 	user, err := s.userRepository.Get(ctx, uint(userId))
 	if err != nil {
 		return "", errors.New("invalid token")
@@ -125,8 +98,13 @@ func (s UserService) RefreshToken(ctx context.Context, r ports.RefreshTokenReque
 	return ss, nil
 }
 
-func (s UserService) Remove(ctx context.Context, r ports.DeleteUserRequest) error {
-	panic("foo")
+func (s UserService) Remove(ctx context.Context, r *http.Request) error {
+	userId, err := server.RetrieveJWTClaims(r, nil)
+	err = s.userRepository.Delete(ctx, uint(userId))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s UserService) CheckExistentUser(ctx context.Context, email string) bool {

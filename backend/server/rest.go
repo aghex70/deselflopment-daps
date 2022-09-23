@@ -11,6 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"net/http"
+	"reflect"
 	"strings"
 )
 
@@ -39,7 +40,7 @@ func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 		token, err := jwt.Parse(headerToken, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				w.WriteHeader(http.StatusUnauthorized)
-				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
 			return hmacSampleSecret, nil
 		})
@@ -56,6 +57,35 @@ func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+func RetrieveHeaderJWT(r *http.Request) string {
+	authorizationHeader := r.Header["Authorization"][0]
+	headerToken := strings.Split(authorizationHeader, " ")[1]
+	return headerToken
+}
+
+func RetrieveBodyJWT(payload interface{}) string {
+	value := reflect.ValueOf(payload)
+	bodyToken := value.FieldByName("AccessToken").String()
+	return bodyToken
+}
+
+func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
+	var tokenString string
+	if r.Header["Authorization"] != nil {
+		tokenString = RetrieveHeaderJWT(r)
+	} else {
+		tokenString = RetrieveBodyJWT(payload)
+	}
+
+	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return hmacSampleSecret, nil
+	})
+
+	claims := token.Claims.(jwt.MapClaims)
+	userId := claims["user_id"].(float64)
+	return userId, nil
+}
+
 func (s *RestServer) StartServer() error {
 	// Categories
 	http.HandleFunc("/categories", s.categoryHandler.ListCategories)
@@ -63,17 +93,17 @@ func (s *RestServer) StartServer() error {
 
 	// User
 	http.HandleFunc("/login", s.userHandler.Login)
-	http.HandleFunc("/logout", s.userHandler.Logout)
+	http.HandleFunc("/logout", JWTAuthMiddleware(s.userHandler.Logout))
 	http.HandleFunc("/register", s.userHandler.Register)
-	http.HandleFunc("/refresh-token", s.userHandler.RefreshToken)
-	http.HandleFunc("/user", s.userHandler.RemoveUser)
+	http.HandleFunc("/refresh-token", JWTAuthMiddleware(s.userHandler.RefreshToken))
+	http.HandleFunc("/user", JWTAuthMiddleware(s.userHandler.RemoveUser))
 
 	// Todos
 	http.HandleFunc("/todo", JWTAuthMiddleware(s.toDoHandler.Todo))
 	http.HandleFunc("/todos", JWTAuthMiddleware(s.toDoHandler.ListTodos))
 
 	// Stats
-	//http.HandleFunc("/statistics", s.toDoHandler.ListTodos)
+	http.HandleFunc("/statistics", JWTAuthMiddleware(s.toDoHandler.ListTodos))
 
 	address := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 	fmt.Printf("Starting server on address %s", address)

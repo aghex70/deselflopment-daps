@@ -3,7 +3,6 @@ package todo
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
 	"log"
@@ -17,11 +16,11 @@ type TodoGormRepository struct {
 }
 
 type Todo struct {
-	ID int `gorm:"primaryKey;column:id"`
-	//UserId       int           `gorm:"column:user_id"`
+	ID           int           `gorm:"primaryKey;column:id"`
+	UserId       int           `gorm:"column:user_id"`
 	Active       bool          `gorm:"column:active"`
 	EndDate      *time.Time    `gorm:"column:end_date"`
-	Category     string        `gorm:"column:category"`
+	CategoryId   int           `gorm:"column:category_id"`
 	Completed    bool          `gorm:"column:completed"`
 	CreationDate time.Time     `gorm:"column:creation_date;autoCreateTime"`
 	Description  string        `gorm:"column:description"`
@@ -31,7 +30,6 @@ type Todo struct {
 	//Prerequisite int           `gorm:"column:prerequisite_id"`
 	Priority  int        `gorm:"column:priority"`
 	StartDate *time.Time `gorm:"column:start_date"`
-	//User         int           `gorm:"column:user_id"`
 }
 
 type Tabler interface {
@@ -60,37 +58,31 @@ func (gr *TodoGormRepository) Delete(ctx context.Context, id uint) error {
 	}
 	return nil
 }
-func (gr *TodoGormRepository) Get(ctx context.Context, userId uint) ([]domain.Todo, error) {
+func (gr *TodoGormRepository) List(ctx context.Context, userId uint) ([]domain.Todo, error) {
 	var todos []Todo
 	var todes []domain.Todo
 	result := gr.DB.Find(&todos)
-	fmt.Println("(gr *TodoGormRepository) Get\n todos")
-	fmt.Printf("%v", todos)
-	//result := gr.DB.Where(&Todo{UserId: int(userId)}).Find(&td)
 	if result.Error != nil {
 		return []domain.Todo{}, result.Error
 	}
 
 	for _, t := range todos {
 		todo := t.ToDto()
-		fmt.Printf("todo \n %+v", todo)
 		todes = append(todes, todo)
 	}
-	fmt.Println("todes")
-	fmt.Printf("+%v", todes)
 	return todes, nil
 }
-func (gr *TodoGormRepository) GetById(ctx context.Context, id uint) (Todo, error) {
+func (gr *TodoGormRepository) GetById(ctx context.Context, id uint, userId int) (domain.Todo, error) {
 	var td Todo
-	result := gr.DB.Where(&Todo{ID: int(id)}).First(&td)
+	result := gr.DB.Where(&Todo{ID: int(id), UserId: userId}).First(&td)
 	if result.Error != nil {
-		return Todo{}, result.Error
+		return domain.Todo{}, result.Error
 	}
-	return td, nil
+	return td.ToDto(), nil
 }
-func (gr *TodoGormRepository) GetByNameAndLink(ctx context.Context, name string, link string) (domain.Todo, error) {
+func (gr *TodoGormRepository) GetByNameAndLink(ctx context.Context, name string, link string, userId int) (domain.Todo, error) {
 	var td Todo
-	result := gr.DB.Where(&Todo{Name: name, Link: link}).First(&td)
+	result := gr.DB.Where(&Todo{Name: name, Link: link, UserId: userId}).First(&td)
 	if result.Error != nil {
 		return domain.Todo{}, result.Error
 	}
@@ -107,8 +99,16 @@ func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error 
 	return nil
 }
 
-func (gr *TodoGormRepository) Complete(ctx context.Context, id uint) error {
-	result := gr.DB.Model(&Todo{ID: int(id)}).Update("status", true)
+func (gr *TodoGormRepository) Complete(ctx context.Context, id uint, userId int) error {
+	result := gr.DB.Model(&Todo{ID: int(id), UserId: userId}).Update("completed", true).Update("end_date", time.Now())
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (gr *TodoGormRepository) Enable(ctx context.Context, id uint, userId int) error {
+	result := gr.DB.Model(&Todo{ID: int(id), UserId: userId}).Update("active", true).Update("start_date", time.Now())
 	if result.Error != nil {
 		return result.Error
 	}
@@ -123,9 +123,9 @@ func NewTodoGormRepository(db *gorm.DB) (*TodoGormRepository, error) {
 
 func (td Todo) ToDto() domain.Todo {
 	return domain.Todo{
-		Active:  td.Active,
-		EndDate: td.EndDate,
-		//Category:     td.Category,
+		Active:       td.Active,
+		EndDate:      td.EndDate,
+		Category:     td.CategoryId,
 		Completed:    td.Completed,
 		CreationDate: td.CreationDate,
 		Description:  td.Description,
@@ -135,15 +135,15 @@ func (td Todo) ToDto() domain.Todo {
 		//Prerequisite: td.Prerequisite,
 		//Priority:     td.Priority,
 		StartDate: td.StartDate,
-		//User:      td.User,
+		User:      td.UserId,
 	}
 }
 
 func fromDto(td domain.Todo) Todo {
 	return Todo{
-		Active:  td.Active,
-		EndDate: td.EndDate,
-		//Category:     td.Category,
+		Active:       td.Active,
+		EndDate:      td.EndDate,
+		CategoryId:   td.Category,
 		Completed:    td.Completed,
 		CreationDate: td.CreationDate,
 		Description:  td.Description,
@@ -153,6 +153,6 @@ func fromDto(td domain.Todo) Todo {
 		//Prerequisite: td.Prerequisite,
 		//Priority:     td.Priority,
 		StartDate: td.StartDate,
-		//User:         td.User,
+		UserId:    td.User,
 	}
 }

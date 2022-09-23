@@ -18,6 +18,7 @@ type UserGormRepository struct {
 type User struct {
 	ID               int       `gorm:"primaryKey;column:id"`
 	Email            string    `gorm:"column:email"`
+	IsAdmin          bool      `gorm:"column:is_admin"`
 	Password         string    `gorm:"column:password"`
 	RegistrationDate time.Time `gorm:"column:registration_date;autoCreateTime"`
 }
@@ -41,8 +42,13 @@ func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) error {
 }
 
 func (gr *UserGormRepository) Delete(ctx context.Context, id uint) error {
-	panic("foo")
+	result := gr.DB.Delete(&User{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
+
 func (gr *UserGormRepository) Get(ctx context.Context, id uint) (domain.User, error) {
 	var u User
 	result := gr.DB.Where(&User{ID: int(id)}).First(&u)
