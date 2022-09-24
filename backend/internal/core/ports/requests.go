@@ -50,6 +50,7 @@ type UpdateTodoRequest struct {
 	Name         string        `json:"name" validate:"required"`
 	Prerequisite string        `json:"prerequisite"`
 	Priority     uint32        `json:"priority" validate:"required"`
+	TodoId       int64         `json:"todo_id"`
 }
 
 // CreateUserRequest Users

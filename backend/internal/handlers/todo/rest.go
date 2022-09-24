@@ -63,11 +63,17 @@ func (h TodoHandler) Root(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	if r.Method != http.MethodPut {
-		w.WriteHeader(http.StatusMethodNotAllowed)
+
+	if r.Method == http.MethodPut {
+		h.UpdateTodo(w, r, todoId)
 		return
 	}
-	h.UpdateTodo(w, r, todoId)
+
+	if r.Method == http.MethodGet {
+		h.GetTodo(w, r, todoId)
+		return
+	}
+	w.WriteHeader(http.StatusMethodNotAllowed)
 	return
 }
 
@@ -157,7 +163,7 @@ func (h TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request, id int) {
 }
 
 func (h TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request, id int) {
-	payload := ports.UpdateTodoRequest{}
+	payload := ports.UpdateTodoRequest{TodoId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)

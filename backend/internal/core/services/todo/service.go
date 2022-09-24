@@ -18,8 +18,24 @@ type TodoService struct {
 }
 
 func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.UpdateTodoRequest) error {
-	//TODO implement me
-	panic("implement me")
+	userId, _ := server.RetrieveJWTClaims(r, req)
+
+	ntd := domain.Todo{
+		ID:          int(req.TodoId),
+		Category:    7,
+		User:        int(userId),
+		Description: req.Description,
+		Duration:    req.Duration,
+		Link:        req.Link,
+		Name:        req.Name,
+		Priority:    domain.Priority(req.Priority),
+	}
+
+	err := s.todoRepository.Update(ctx, ntd)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.CreateTodoRequest) error {
@@ -34,10 +50,10 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 		Category:    7,
 		User:        int(userId),
 		Description: req.Description,
-		Duration:    0,
+		Duration:    req.Duration,
 		Link:        req.Link,
 		Name:        req.Name,
-		Priority:    0,
+		Priority:    domain.Priority(req.Priority),
 	}
 
 	if preexistent && !t.Active {
