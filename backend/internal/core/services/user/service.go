@@ -73,8 +73,8 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 	return nil
 }
 
-func (s UserService) RefreshToken(ctx context.Context, r *http.Request, req ports.RefreshTokenRequest) (string, error) {
-	userId, err := server.RetrieveJWTClaims(r, req)
+func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string, error) {
+	userId, err := server.RetrieveJWTClaims(r, nil)
 	user, err := s.userRepository.Get(ctx, uint(userId))
 	if err != nil {
 		return "", errors.New("invalid token")

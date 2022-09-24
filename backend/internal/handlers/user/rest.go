@@ -62,14 +62,7 @@ func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	payload := ports.RefreshTokenRequest{}
-	err = handlers.ValidateRequest(r, &payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	token, err := h.userService.RefreshToken(nil, r, payload)
+	token, err := h.userService.RefreshToken(nil, r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return

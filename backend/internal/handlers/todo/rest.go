@@ -17,30 +17,58 @@ type TodoHandler struct {
 	logger      *log.Logger
 }
 
-func (h TodoHandler) Todo(w http.ResponseWriter, r *http.Request) {
+func (h TodoHandler) Root(w http.ResponseWriter, r *http.Request) {
 	todoString := "todo/"
 	if !strings.Contains(r.RequestURI, todoString) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	todoIdString := strings.Split(r.RequestURI, todoString)[1]
-	todoId, err := strconv.Atoi(todoIdString)
+	path := strings.Split(r.RequestURI, todoString)[1]
+
+	if startString := "/start"; strings.Contains(path, startString) {
+		todoIdString := strings.Split(path, startString)[0]
+		todoId, err := strconv.Atoi(todoIdString)
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+
+		h.StartTodo(w, r, todoId)
+		return
+	}
+
+	if completeString := "/complete"; strings.Contains(path, completeString) {
+		todoIdString := strings.Split(path, completeString)[0]
+		todoId, err := strconv.Atoi(todoIdString)
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+
+		h.CompleteTodo(w, r, todoId)
+		return
+	}
+
+	todoId, err := strconv.Atoi(path)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	switch r.Method {
-	case http.MethodDelete:
-		h.DeleteTodo(w, r, todoId)
-	case http.MethodGet:
-		h.GetTodo(w, r, todoId)
-	case http.MethodPut:
-		h.UpdateTodo(w, r, todoId)
-	default:
+	if r.Method != http.MethodPut {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	h.UpdateTodo(w, r, todoId)
+	return
 }
 
 func (h TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
@@ -63,14 +91,13 @@ func (h TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request) {
-	payload := ports.CompleteTodoRequest{}
+func (h TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.CompleteTodoRequest{TodoId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-
 	err = h.toDoService.Complete(nil, r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
@@ -78,8 +105,8 @@ func (h TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h TodoHandler) StartTodo(w http.ResponseWriter, r *http.Request) {
-	payload := ports.StartTodoRequest{}
+func (h TodoHandler) StartTodo(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.StartTodoRequest{TodoId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
@@ -127,7 +154,6 @@ func (h TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request, id int) {
 	}
 	b, err := json.Marshal(todo)
 	w.Write(b)
-
 }
 
 func (h TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request, id int) {

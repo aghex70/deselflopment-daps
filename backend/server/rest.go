@@ -100,16 +100,14 @@ func (s *RestServer) StartServer() error {
 
 	// Todos
 	http.HandleFunc("/todo", JWTAuthMiddleware(s.toDoHandler.CreateTodo))
-	http.HandleFunc("/todo/complete", JWTAuthMiddleware(s.toDoHandler.CompleteTodo))
-	http.HandleFunc("/todo/start", JWTAuthMiddleware(s.toDoHandler.StartTodo))
 	http.HandleFunc("/todos", JWTAuthMiddleware(s.toDoHandler.ListTodos))
 
 	// Stats
-	http.HandleFunc("/statistics", JWTAuthMiddleware(s.toDoHandler.Todo))
+	//http.HandleFunc("/statistics", JWTAuthMiddleware(s.toDoHandler.Todo))
 
 	// CAREFUL!!!!
 	// Root (not included out of the box damn!)
-	http.HandleFunc("/", JWTAuthMiddleware(s.toDoHandler.Todo))
+	http.HandleFunc("/", JWTAuthMiddleware(s.toDoHandler.Root))
 
 	address := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 	fmt.Printf("Starting server on address %s", address)

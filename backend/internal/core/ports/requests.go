@@ -67,5 +67,4 @@ type LoginUserRequest struct {
 
 // RefreshTokenRequest
 type RefreshTokenRequest struct {
-	AccessToken string `json:"access_token" validate:"required"`
 }
