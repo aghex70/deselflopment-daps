@@ -73,6 +73,11 @@ func (h TodoHandler) Root(w http.ResponseWriter, r *http.Request) {
 		h.GetTodo(w, r, todoId)
 		return
 	}
+
+	if r.Method == http.MethodDelete {
+		h.DeleteTodo(w, r, todoId)
+		return
+	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return
 }
@@ -127,7 +132,7 @@ func (h TodoHandler) StartTodo(w http.ResponseWriter, r *http.Request, id int) {
 }
 
 func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request, id int) {
-	payload := ports.DeleteTodoRequest{}
+	payload := ports.DeleteTodoRequest{TodoId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
@@ -139,6 +144,7 @@ func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request, id int) 
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request, id int) {

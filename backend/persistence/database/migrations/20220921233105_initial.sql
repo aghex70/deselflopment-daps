@@ -14,6 +14,8 @@ CREATE TABLE daps_users (
 
 CREATE TABLE daps_categories (
      id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+     custom INT NOT NULL DEFAULT 0,
+     description VARCHAR(128),
      name VARCHAR(128),
      international_name VARCHAR(128)
 );

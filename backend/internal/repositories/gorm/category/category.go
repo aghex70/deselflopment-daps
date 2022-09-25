@@ -16,6 +16,8 @@ type CategoryGormRepository struct {
 
 type Category struct {
 	ID                int    `gorm:"primaryKey;column:id"`
+	Custom            bool   `gorm:"column:custom"`
+	Description       bool   `gorm:"column:description"`
 	Name              string `gorm:"column:name"`
 	InternationalName string `gorm:"column:international_name"`
 }
