@@ -22,7 +22,7 @@ func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.Upda
 
 	ntd := domain.Todo{
 		ID:          int(req.TodoId),
-		Category:    7,
+		Category:    req.Category,
 		User:        int(userId),
 		Description: req.Description,
 		Duration:    req.Duration,
@@ -47,7 +47,7 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 
 	ntd := domain.Todo{
 		ID:          t.ID,
-		Category:    7,
+		Category:    req.Category,
 		User:        int(userId),
 		Description: req.Description,
 		Duration:    req.Duration,
@@ -105,9 +105,9 @@ func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodo
 	}
 	return td, nil
 }
-func (s TodoService) List(ctx context.Context, r *http.Request) ([]domain.Todo, error) {
+func (s TodoService) List(ctx context.Context, r *http.Request, sorting string, filters string) ([]domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
-	todos, err := s.todoRepository.List(ctx, int(userId))
+	todos, err := s.todoRepository.List(ctx, int(userId), sorting, filters)
 	if err != nil {
 		return []domain.Todo{}, err
 	}

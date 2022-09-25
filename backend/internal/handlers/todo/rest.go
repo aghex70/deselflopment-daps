@@ -184,7 +184,17 @@ func (h TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request, id int) 
 }
 
 func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
-	todos, err := h.toDoService.List(nil, r)
+	queryParams := r.URL.Query()
+
+	sorting := queryParams.Get("sort")
+	filters := ""
+
+	// A NIVEL DE FRONT!!!!?????
+	if r := queryParams.Get("recurring"); r != "" {
+		filters += "recurring=" + r
+	}
+
+	todos, err := h.toDoService.List(nil, r, sorting, filters)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -192,6 +202,15 @@ func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
 
 	b, err := json.Marshal(handlers.ListTodosResponse{Todos: todos})
 	w.Write(b)
+}
+
+func GetQueryParamFilter(field string, r *http.Request) *bool {
+	qp := r.URL.Query()
+	if value := qp.Get(field); value != "" {
+		v, _ := strconv.ParseBool(value)
+		return &v
+	}
+	return nil
 }
 
 func NewTodoHandler(ts ports.TodoServicer, logger *log.Logger) TodoHandler {

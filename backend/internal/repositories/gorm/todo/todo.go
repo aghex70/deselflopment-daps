@@ -28,9 +28,11 @@ type Todo struct {
 	Link         string        `gorm:"column:link"`
 	Name         string        `gorm:"column:name"`
 	//Prerequisite int           `gorm:"column:prerequisite_id"`
-	Priority  int        `gorm:"column:priority"`
-	Recurring bool       `gorm:"column:recurring"`
-	StartDate *time.Time `gorm:"column:start_date"`
+	Priority       int        `gorm:"column:priority"`
+	Recurring      bool       `gorm:"column:recurring"`
+	StartDate      *time.Time `gorm:"column:start_date"`
+	Suggested      bool       `gorm:"column:completed"`
+	SuggestionDate *time.Time `gorm:"column:start_date"`
 }
 
 type Tabler interface {
@@ -59,10 +61,11 @@ func (gr *TodoGormRepository) Delete(ctx context.Context, id int, userId int) er
 	}
 	return nil
 }
-func (gr *TodoGormRepository) List(ctx context.Context, userId int) ([]domain.Todo, error) {
+func (gr *TodoGormRepository) List(ctx context.Context, userId int, sorting string, filters string) ([]domain.Todo, error) {
 	var todos []Todo
 	var todes []domain.Todo
-	result := gr.DB.Where(&Todo{UserId: userId}).Find(&todos)
+	//fields := "id = " + strconv.Itoa(userId)
+	result := gr.DB.Where(&Todo{UserId: userId}).Order(sorting).Find(&todos)
 	if result.Error != nil {
 		return []domain.Todo{}, result.Error
 	}

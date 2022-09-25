@@ -36,7 +36,7 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 		UserID: user.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   r.Email,
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),
 		},
 	}
 
@@ -84,7 +84,7 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 		UserID: user.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   user.Email,
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),
 		},
 	}
 

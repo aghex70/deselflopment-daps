@@ -6,19 +6,18 @@ import (
 )
 
 type TodoResponse struct {
-	Active  bool       `json:"active"`
-	EndDate *time.Time `json:"end_date"`
-	//Category     Category
+	Name         string    `json:"name"`
+	CreationDate time.Time `json:"creation_date"`
+	Priority     string
+	Category     string
 	Completed    bool          `json:"completed"`
-	CreationDate time.Time     `json:"creation_date"`
+	Active       bool          `json:"active"`
+	StartDate    *time.Time    `json:"startDate"`
+	EndDate      *time.Time    `json:"end_date"`
 	Description  string        `json:"description"`
 	Duration     time.Duration `json:"duration"`
 	ID           int           `json:"id"`
 	Link         string        `json:"link"`
-	Name         string        `json:"name"`
-	//Prerequisite *Todo
-	//Priority  Priority
-	StartDate *time.Time `json:"startDate"`
 	//User         User
 }
 

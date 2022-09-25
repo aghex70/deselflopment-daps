@@ -1,7 +1,7 @@
 -- +goose Up
-DROP TABLE IF EXISTS daps_todos;
-DROP TABLE IF EXISTS daps_users;
-DROP TABLE IF EXISTS daps_categories;
+-- DROP TABLE IF EXISTS daps_todos;
+-- DROP TABLE IF EXISTS daps_users;
+-- DROP TABLE IF EXISTS daps_categories;
 
 CREATE TABLE daps_users (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -36,14 +36,16 @@ CREATE TABLE daps_todos (
     name VARCHAR(128),
     priority INT DEFAULT 2,
     start_date TIMESTAMP NULL DEFAULT NULL,
+    suggested INT NOT NULL DEFAULT 0,
+    suggestion_date TIMESTAMP NULL DEFAULT NULL,
     FOREIGN KEY(user_id) REFERENCES daps_users(id),
     FOREIGN KEY(category_id) REFERENCES daps_categories(id)
 --     FOREIGN KEY(prerequisite_id) REFERENCES daps_todos(id)
 );
 
 -- +goose Down
-DROP TABLE IF EXISTS daps_todos;
-DROP TABLE IF EXISTS daps_users;
-DROP TABLE IF EXISTS daps_categories;
+-- DROP TABLE IF EXISTS daps_todos;
+-- DROP TABLE IF EXISTS daps_users;
+-- DROP TABLE IF EXISTS daps_categories;
 -- +goose StatementBegin
 -- +goose StatementEnd

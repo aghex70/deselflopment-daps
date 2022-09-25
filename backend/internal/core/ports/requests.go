@@ -17,7 +17,7 @@ type ListCategoriesRequest struct {
 }
 
 type CreateTodoRequest struct {
-	Category     string        `json:"category_id"`
+	Category     int           `json:"category_id" validate:"required"`
 	Description  string        `json:"description"`
 	Duration     time.Duration `json:"duration" validate:"required"`
 	Link         string        `json:"link"`
@@ -43,7 +43,7 @@ type GetTodoRequest struct {
 }
 
 type UpdateTodoRequest struct {
-	Category     string        `json:"category_id"`
+	Category     int           `json:"category_id"`
 	Description  string        `json:"description"`
 	Duration     time.Duration `json:"duration" validate:"required"`
 	Link         string        `json:"link"`
