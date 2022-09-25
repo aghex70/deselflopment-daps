@@ -1,7 +1,8 @@
 package domain
 
 type Category struct {
-	ID                int //??? Needed?
+	ID                int
+	User              int
 	Description       string
 	Custom            bool
 	Name              string

@@ -5,12 +5,18 @@ import (
 )
 
 type CreateCategoryRequest struct {
+	Description       string `json:"description" validate:"required"`
+	Name              string `json:"name" validate:"required"`
+	InternationalName string `json:"international_name" validate:"required"`
 }
 
 type DeleteCategoryRequest struct {
 }
 
 type GetCategoryRequest struct {
+}
+
+type UpdateCategoryRequest struct {
 }
 
 type ListCategoriesRequest struct {

@@ -16,8 +16,9 @@ type CategoryGormRepository struct {
 
 type Category struct {
 	ID                int    `gorm:"primaryKey;column:id"`
+	UserId            int    `gorm:"column:user_id"`
 	Custom            bool   `gorm:"column:custom"`
-	Description       bool   `gorm:"column:description"`
+	Description       string `gorm:"column:description"`
 	Name              string `gorm:"column:name"`
 	InternationalName string `gorm:"column:international_name"`
 }
@@ -26,26 +27,82 @@ type Tabler interface {
 	TableName() string
 }
 
-// TableName overrides the table name used by User to `profiles`
 func (Category) TableName() string {
-	return "daps_todos"
+	return "daps_categories"
 }
 
 func (gr *CategoryGormRepository) Delete(ctx context.Context, id uint) error {
 	panic("foo")
 }
+
+func (gr *CategoryGormRepository) ListCustom(ctx context.Context, userId int) ([]domain.Category, error) {
+	var cs []Category
+	var cats []domain.Category
+	result := gr.DB.Where(&Category{UserId: userId, Custom: true}).Find(&cs)
+	if result.Error != nil {
+		return []domain.Category{}, result.Error
+	}
+
+	for _, c := range cs {
+		cs := c.ToDto()
+		cats = append(cats, cs)
+	}
+	return cats, nil
+}
+
+func (gr *CategoryGormRepository) GetBaseCategory(ctx context.Context, name string) (domain.Category, error) {
+	var c Category
+	result := gr.DB.Where(&Category{Name: name, Custom: false}).First(&c)
+	if result.Error != nil {
+		return domain.Category{}, result.Error
+	}
+	return c.ToDto(), nil
+}
+
+func (gr *CategoryGormRepository) GetByName(ctx context.Context, userId uint) ([]domain.Category, error) {
+	panic("foo")
+}
+
 func (gr *CategoryGormRepository) Get(ctx context.Context, userId uint) ([]domain.Category, error) {
 	panic("foo")
 }
+
 func (gr *CategoryGormRepository) GetById(ctx context.Context, id uint, userId uint) (domain.Category, error) {
 	panic("foo")
 }
-func (gr *CategoryGormRepository) Save(context.Context, domain.Category) error {
-	panic("foo")
+func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category) error {
+	nc := fromDto(c)
+	result := gr.DB.Create(&nc)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
 
 func NewCategoryGormRepository(db *gorm.DB) (*CategoryGormRepository, error) {
 	return &CategoryGormRepository{
 		DB: db,
 	}, nil
+}
+
+func (c Category) ToDto() domain.Category {
+	return domain.Category{
+		ID:                c.ID,
+		Description:       c.Description,
+		Custom:            c.Custom,
+		Name:              c.Name,
+		InternationalName: c.InternationalName,
+		User:              c.UserId,
+	}
+}
+
+func fromDto(c domain.Category) Category {
+	return Category{
+		ID:                c.ID,
+		Custom:            c.Custom,
+		Description:       c.Description,
+		Name:              c.Name,
+		InternationalName: c.InternationalName,
+		UserId:            c.User,
+	}
 }

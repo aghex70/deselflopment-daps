@@ -5,7 +5,9 @@ import (
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
+	"github.com/aghex70/daps/server"
 	"log"
+	"net/http"
 )
 
 type CategoryService struct {
@@ -13,19 +15,41 @@ type CategoryService struct {
 	categoryRepository *category.CategoryGormRepository
 }
 
-func (s CategoryService) Create(context.Context, ports.CreateCategoryRequest) error {
+func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.UpdateCategoryRequest) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.CreateCategoryRequest) error {
+	userId, _ := server.RetrieveJWTClaims(r, req)
+	err := s.ValidateCreation(ctx, req.Name, int(userId))
+	if err != nil {
+		return err
+	}
+
+	cat := domain.Category{
+		User:              int(userId),
+		Description:       req.Description,
+		Custom:            true,
+		Name:              req.Name,
+		InternationalName: req.InternationalName,
+	}
+	err = s.categoryRepository.Create(ctx, cat)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.DeleteCategoryRequest) error {
 	panic("foo")
 }
 
-func (s CategoryService) Delete(context.Context, ports.DeleteCategoryRequest) error {
+func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.GetCategoryRequest) (domain.Category, error) {
 	panic("foo")
 }
 
-func (s CategoryService) Get(context.Context, ports.GetCategoryRequest) (domain.Category, error) {
-	panic("foo")
-}
-
-func (s CategoryService) List(context.Context, ports.ListCategoriesRequest) ([]domain.Category, error) {
+func (s CategoryService) List(ctx context.Context, r *http.Request, req ports.ListCategoriesRequest) ([]domain.Category, error) {
 	panic("foo")
 }
 

@@ -46,7 +46,6 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 	}
 
 	ntd := domain.Todo{
-		ID:          t.ID,
 		Category:    req.Category,
 		User:        int(userId),
 		Description: req.Description,
