@@ -76,7 +76,7 @@ func (gr *TodoGormRepository) List(ctx context.Context, userId int, sorting stri
 	}
 	return todes, nil
 }
-func (gr *TodoGormRepository) GetById(ctx context.Context, id uint, userId int) (domain.Todo, error) {
+func (gr *TodoGormRepository) GetById(ctx context.Context, id int, userId int) (domain.Todo, error) {
 	var td Todo
 	result := gr.DB.Where(&Todo{ID: int(id), UserId: userId}).First(&td)
 	if result.Error != nil {
@@ -115,7 +115,7 @@ func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error 
 	return nil
 }
 
-func (gr *TodoGormRepository) Complete(ctx context.Context, id uint, userId int) error {
+func (gr *TodoGormRepository) Complete(ctx context.Context, id int, userId int) error {
 	result := gr.DB.Model(&Todo{ID: int(id), UserId: userId}).Update("completed", true).Update("end_date", time.Now())
 	if result.Error != nil {
 		return result.Error
@@ -123,7 +123,7 @@ func (gr *TodoGormRepository) Complete(ctx context.Context, id uint, userId int)
 	return nil
 }
 
-func (gr *TodoGormRepository) Start(ctx context.Context, id uint, userId int) error {
+func (gr *TodoGormRepository) Start(ctx context.Context, id int, userId int) error {
 	result := gr.DB.Model(&Todo{ID: int(id), UserId: userId}).Update("active", true).Update("start_date", time.Now())
 	if result.Error != nil {
 		return result.Error

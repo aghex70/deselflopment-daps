@@ -11,12 +11,18 @@ type CreateCategoryRequest struct {
 }
 
 type DeleteCategoryRequest struct {
+	CategoryId int64 `json:"category_id"`
 }
 
 type GetCategoryRequest struct {
+	CategoryId int64 `json:"category_id"`
 }
 
 type UpdateCategoryRequest struct {
+	CategoryId        int64  `json:"category_id"`
+	Description       string `json:"description" validate:"required"`
+	Name              string `json:"name" validate:"required"`
+	InternationalName string `json:"international_name" validate:"required"`
 }
 
 type ListCategoriesRequest struct {
@@ -29,7 +35,7 @@ type CreateTodoRequest struct {
 	Link         string        `json:"link"`
 	Name         string        `json:"name" validate:"required"`
 	Prerequisite string        `json:"prerequisite"`
-	Priority     uint32        `json:"priority" validate:"required"`
+	Priority     int32         `json:"priority" validate:"required"`
 }
 
 type CompleteTodoRequest struct {
@@ -55,7 +61,7 @@ type UpdateTodoRequest struct {
 	Link         string        `json:"link"`
 	Name         string        `json:"name" validate:"required"`
 	Prerequisite string        `json:"prerequisite"`
-	Priority     uint32        `json:"priority" validate:"required"`
+	Priority     int32         `json:"priority" validate:"required"`
 	TodoId       int64         `json:"todo_id"`
 }
 

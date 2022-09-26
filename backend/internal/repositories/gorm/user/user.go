@@ -41,7 +41,7 @@ func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) error {
 	return nil
 }
 
-func (gr *UserGormRepository) Delete(ctx context.Context, id uint) error {
+func (gr *UserGormRepository) Delete(ctx context.Context, id int) error {
 	result := gr.DB.Delete(&User{}, id)
 	if result.Error != nil {
 		return result.Error
@@ -49,7 +49,7 @@ func (gr *UserGormRepository) Delete(ctx context.Context, id uint) error {
 	return nil
 }
 
-func (gr *UserGormRepository) Get(ctx context.Context, id uint) (domain.User, error) {
+func (gr *UserGormRepository) Get(ctx context.Context, id int) (domain.User, error) {
 	var u User
 	result := gr.DB.Where(&User{ID: int(id)}).First(&u)
 	if result.Error != nil {

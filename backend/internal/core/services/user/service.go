@@ -27,13 +27,13 @@ type MyCustomClaims struct {
 var hmacSampleSecret = []byte("random")
 
 func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (string, error) {
-	user, err := s.userRepository.GetByEmail(ctx, r.Email)
+	u, err := s.userRepository.GetByEmail(ctx, r.Email)
 	if err != nil {
 		return "", err
 	}
 
 	claims := MyCustomClaims{
-		UserID: user.ID,
+		UserID: u.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   r.Email,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),
@@ -75,15 +75,15 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 
 func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string, error) {
 	userId, err := server.RetrieveJWTClaims(r, nil)
-	user, err := s.userRepository.Get(ctx, uint(userId))
+	u, err := s.userRepository.Get(ctx, int(userId))
 	if err != nil {
 		return "", errors.New("invalid token")
 	}
 
 	newClaims := MyCustomClaims{
-		UserID: user.ID,
+		UserID: u.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Subject:   user.Email,
+			Subject:   u.Email,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),
 		},
 	}
@@ -100,7 +100,7 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 
 func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 	userId, err := server.RetrieveJWTClaims(r, nil)
-	err = s.userRepository.Delete(ctx, uint(userId))
+	err = s.userRepository.Delete(ctx, int(userId))
 	if err != nil {
 		return err
 	}

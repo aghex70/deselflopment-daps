@@ -71,7 +71,7 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 }
 func (s TodoService) Complete(ctx context.Context, r *http.Request, req ports.CompleteTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	err := s.todoRepository.Complete(ctx, uint(req.TodoId), int(userId))
+	err := s.todoRepository.Complete(ctx, int(req.TodoId), int(userId))
 	if err != nil {
 		return err
 	}
@@ -80,7 +80,7 @@ func (s TodoService) Complete(ctx context.Context, r *http.Request, req ports.Co
 
 func (s TodoService) Start(ctx context.Context, r *http.Request, req ports.StartTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	err := s.todoRepository.Start(ctx, uint(req.TodoId), int(userId))
+	err := s.todoRepository.Start(ctx, int(req.TodoId), int(userId))
 	if err != nil {
 		return err
 	}
@@ -98,12 +98,13 @@ func (s TodoService) Delete(ctx context.Context, r *http.Request, req ports.Dele
 
 func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodoRequest) (domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	td, err := s.todoRepository.GetById(ctx, uint(req.TodoId), int(userId))
+	td, err := s.todoRepository.GetById(ctx, int(req.TodoId), int(userId))
 	if err != nil {
 		return domain.Todo{}, err
 	}
 	return td, nil
 }
+
 func (s TodoService) List(ctx context.Context, r *http.Request, sorting string, filters string) ([]domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	todos, err := s.todoRepository.List(ctx, int(userId), sorting, filters)

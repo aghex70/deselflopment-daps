@@ -2,7 +2,7 @@ package domain
 
 import "time"
 
-type Priority uint
+type Priority int
 
 const (
 	Lowest Priority = iota
