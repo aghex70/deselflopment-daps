@@ -67,7 +67,7 @@ func (gr *CategoryGormRepository) GetBaseCategory(ctx context.Context, name stri
 func (gr *CategoryGormRepository) List(ctx context.Context, userId int) ([]domain.Category, error) {
 	var cs []Category
 	var cats []domain.Category
-	result := gr.DB.Where(&Category{UserId: &userId, Custom: true}).Or(&Category{UserId: nil}).Find(&cs)
+	result := gr.DB.Where(gr.DB.Where("user_id = ?", &userId).Where("custom = ?", true)).Or("custom = ?", false).Find(&cs)
 	if result.Error != nil {
 		return []domain.Category{}, result.Error
 	}
@@ -123,7 +123,7 @@ func (c Category) ToDto() domain.Category {
 		Custom:            c.Custom,
 		Name:              c.Name,
 		InternationalName: c.InternationalName,
-		User:              *c.UserId,
+		User:              c.UserId,
 	}
 }
 
@@ -134,6 +134,6 @@ func fromDto(c domain.Category) Category {
 		Description:       c.Description,
 		Name:              c.Name,
 		InternationalName: c.InternationalName,
-		UserId:            &c.User,
+		UserId:            c.User,
 	}
 }

@@ -11,7 +11,7 @@ type CategoryServicer interface {
 	Delete(ctx context.Context, r *http.Request, req DeleteCategoryRequest) error
 	Get(ctx context.Context, r *http.Request, req GetCategoryRequest) (domain.Category, error)
 	Update(ctx context.Context, r *http.Request, req UpdateCategoryRequest) error
-	List(ctx context.Context, r *http.Request, req ListCategoriesRequest) ([]domain.Category, error)
+	List(ctx context.Context, r *http.Request) ([]domain.Category, error)
 }
 
 type TodoServicer interface {

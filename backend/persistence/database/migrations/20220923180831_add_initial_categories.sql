@@ -1,11 +1,11 @@
 -- +goose Up
-INSERT INTO `daps_categories` (`name`,`international_name`) VALUES ('recordatorios', 'reminders');
-INSERT INTO `daps_categories` (`name`,`international_name`) VALUES ('tareas', 'tasks');
-INSERT INTO `daps_categories` (`name`,`international_name`) VALUES ('enseñanza', 'teaching');
-INSERT INTO `daps_categories` (`name`,`international_name`) VALUES ('hobbies', 'hobbies');
-INSERT INTO `daps_categories` (`name`,`international_name`) VALUES ('literatura', 'literature');
-INSERT INTO `daps_categories` (`name`,`international_name`) VALUES ('tecnología', 'technology');
-INSERT INTO `daps_categories` (`name`,`international_name`) VALUES ('personal', 'personal');
+INSERT INTO `daps_categories` (`name`,`international_name`, `description`) VALUES ('recordatorios', 'reminders', 'test_description');
+INSERT INTO `daps_categories` (`name`,`international_name`, `description`) VALUES ('tareas', 'tasks', 'test_description');
+INSERT INTO `daps_categories` (`name`,`international_name`, `description`) VALUES ('enseñanza', 'teaching', 'test_description');
+INSERT INTO `daps_categories` (`name`,`international_name`, `description`) VALUES ('hobbies', 'hobbies', 'test_description');
+INSERT INTO `daps_categories` (`name`,`international_name`, `description`) VALUES ('literatura', 'literature', 'test_description');
+INSERT INTO `daps_categories` (`name`,`international_name`, `description`) VALUES ('tecnología', 'technology', 'test_description');
+INSERT INTO `daps_categories` (`name`,`international_name`, `description`) VALUES ('personal', 'personal', 'test_description');
 
 
 -- +goose Down

@@ -18,9 +18,10 @@ type CategoryService struct {
 func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.UpdateCategoryRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 
+	intUserId := int(userId)
 	cat := domain.Category{
 		ID:                int(req.CategoryId),
-		User:              int(userId),
+		User:              &intUserId,
 		Description:       req.Description,
 		Custom:            true,
 		Name:              req.Name,
@@ -40,8 +41,9 @@ func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.
 		return err
 	}
 
+	intUserId := int(userId)
 	cat := domain.Category{
-		User:              int(userId),
+		User:              &intUserId,
 		Description:       req.Description,
 		Custom:            true,
 		Name:              req.Name,
@@ -71,7 +73,7 @@ func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.Get
 	return td, nil
 }
 
-func (s CategoryService) List(ctx context.Context, r *http.Request, req ports.ListCategoriesRequest) ([]domain.Category, error) {
+func (s CategoryService) List(ctx context.Context, r *http.Request) ([]domain.Category, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	todos, err := s.categoryRepository.List(ctx, int(userId))
 	if err != nil {

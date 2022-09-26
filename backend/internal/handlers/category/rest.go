@@ -1,6 +1,7 @@
 package category
 
 import (
+	"encoding/json"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"log"
@@ -50,7 +51,14 @@ func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h CategoryHandler) ListCategories(w http.ResponseWriter, r *http.Request) {
-	panic("foo")
+	categories, err := h.categoryService.List(nil, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(handlers.ListCategoriesResponse{Categories: categories})
+	w.Write(b)
 }
 
 func NewCategoryHandler(cs ports.CategoryServicer, logger *log.Logger) CategoryHandler {
