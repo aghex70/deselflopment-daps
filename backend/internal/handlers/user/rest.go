@@ -13,27 +13,6 @@ type UserHandler struct {
 	logger      *log.Logger
 }
 
-func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
-	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
-	if err != nil {
-		return
-	}
-
-	payload := ports.CreateUserRequest{}
-	err = handlers.ValidateRequest(r, &payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	err = h.userService.Register(nil, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-	w.WriteHeader(http.StatusCreated)
-}
-
 func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
@@ -72,11 +51,25 @@ func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func (h UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
+func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
 	}
+
+	payload := ports.CreateUserRequest{}
+	err = handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.userService.Register(nil, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (h UserHandler) RemoveUser(w http.ResponseWriter, r *http.Request) {

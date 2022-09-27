@@ -7,38 +7,16 @@ import (
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/server"
-	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
 
-type todoService struct {
+type TodoService struct {
 	logger         *log.Logger
 	todoRepository *todo.TodoGormRepository
 }
 
-func (s todoService) Update(ctx context.Context, r *http.Request, req ports.UpdateTodoRequest) error {
-	userId, _ := server.RetrieveJWTClaims(r, req)
-
-	ntd := domain.Todo{
-		ID:          int(req.TodoId),
-		Category:    req.Category,
-		User:        int(userId),
-		Description: req.Description,
-		Duration:    req.Duration,
-		Link:        req.Link,
-		Name:        req.Name,
-		Priority:    domain.Priority(req.Priority),
-	}
-
-	err := s.todoRepository.Update(ctx, ntd)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s todoService) Create(ctx context.Context, r *http.Request, req ports.CreateTodoRequest) error {
+func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.CreateTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	t, preexistent := s.CheckExistentTodo(ctx, req.Name, req.Link, int(userId))
 	if preexistent && t.Active {
@@ -69,7 +47,8 @@ func (s todoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 
 	return nil
 }
-func (s todoService) Complete(ctx context.Context, r *http.Request, req ports.CompleteTodoRequest) error {
+
+func (s TodoService) Complete(ctx context.Context, r *http.Request, req ports.CompleteTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.todoRepository.Complete(ctx, int(req.TodoId), int(userId))
 	if err != nil {
@@ -78,16 +57,7 @@ func (s todoService) Complete(ctx context.Context, r *http.Request, req ports.Co
 	return nil
 }
 
-func (s todoService) Start(ctx context.Context, r *http.Request, req ports.StartTodoRequest) error {
-	userId, _ := server.RetrieveJWTClaims(r, req)
-	err := s.todoRepository.Start(ctx, int(req.TodoId), int(userId))
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s todoService) Delete(ctx context.Context, r *http.Request, req ports.DeleteTodoRequest) error {
+func (s TodoService) Delete(ctx context.Context, r *http.Request, req ports.DeleteTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.todoRepository.Delete(ctx, int(req.TodoId), int(userId))
 	if err != nil {
@@ -96,7 +66,7 @@ func (s todoService) Delete(ctx context.Context, r *http.Request, req ports.Dele
 	return nil
 }
 
-func (s todoService) Get(ctx context.Context, r *http.Request, req ports.GetTodoRequest) (domain.Todo, error) {
+func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodoRequest) (domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	td, err := s.todoRepository.GetById(ctx, int(req.TodoId), int(userId))
 	if err != nil {
@@ -105,7 +75,7 @@ func (s todoService) Get(ctx context.Context, r *http.Request, req ports.GetTodo
 	return td, nil
 }
 
-func (s todoService) List(ctx context.Context, r *http.Request, sorting string, filters string) ([]domain.Todo, error) {
+func (s TodoService) List(ctx context.Context, r *http.Request, sorting string, filters string) ([]domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	todos, err := s.todoRepository.List(ctx, int(userId), sorting, filters)
 	if err != nil {
@@ -114,13 +84,38 @@ func (s todoService) List(ctx context.Context, r *http.Request, sorting string, 
 	return todos, nil
 }
 
-func (s todoService) CheckExistentTodo(ctx context.Context, name string, link string, userId int) (domain.Todo, bool) {
-	t, err := s.todoRepository.GetByNameAndLink(ctx, name, link, userId)
-	return t, !errors.Is(err, gorm.ErrRecordNotFound)
+func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.UpdateTodoRequest) error {
+	userId, _ := server.RetrieveJWTClaims(r, req)
+
+	ntd := domain.Todo{
+		ID:          int(req.TodoId),
+		Category:    req.Category,
+		User:        int(userId),
+		Description: req.Description,
+		Duration:    req.Duration,
+		Link:        req.Link,
+		Name:        req.Name,
+		Priority:    domain.Priority(req.Priority),
+	}
+
+	err := s.todoRepository.Update(ctx, ntd)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func NewtodoService(tr *todo.TodoGormRepository, logger *log.Logger) todoService {
-	return todoService{
+func (s TodoService) Start(ctx context.Context, r *http.Request, req ports.StartTodoRequest) error {
+	userId, _ := server.RetrieveJWTClaims(r, req)
+	err := s.todoRepository.Start(ctx, int(req.TodoId), int(userId))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func NewtodoService(tr *todo.TodoGormRepository, logger *log.Logger) TodoService {
+	return TodoService{
 		logger:         logger,
 		todoRepository: tr,
 	}

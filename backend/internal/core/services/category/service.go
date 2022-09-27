@@ -15,25 +15,6 @@ type CategoryService struct {
 	categoryRepository *category.CategoryGormRepository
 }
 
-func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.UpdateCategoryRequest) error {
-	userId, _ := server.RetrieveJWTClaims(r, req)
-
-	intUserId := int(userId)
-	cat := domain.Category{
-		ID:                int(req.CategoryId),
-		User:              &intUserId,
-		Description:       req.Description,
-		Custom:            true,
-		Name:              req.Name,
-		InternationalName: req.InternationalName,
-	}
-	err := s.categoryRepository.Update(ctx, cat)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.CreateCategoryRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.ValidateCreation(ctx, req.Name, int(userId))
@@ -80,6 +61,24 @@ func (s CategoryService) List(ctx context.Context, r *http.Request) ([]domain.Ca
 		return []domain.Category{}, err
 	}
 	return todos, nil
+}
+
+func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.UpdateCategoryRequest) error {
+	userId, _ := server.RetrieveJWTClaims(r, req)
+	intUserId := int(userId)
+	cat := domain.Category{
+		ID:                int(req.CategoryId),
+		User:              &intUserId,
+		Description:       req.Description,
+		Custom:            true,
+		Name:              req.Name,
+		InternationalName: req.InternationalName,
+	}
+	err := s.categoryRepository.Update(ctx, cat)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func NewCategoryService(cr *category.CategoryGormRepository, logger *log.Logger) CategoryService {

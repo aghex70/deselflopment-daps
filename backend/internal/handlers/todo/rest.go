@@ -110,21 +110,6 @@ func (h TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request, id int
 	}
 }
 
-func (h TodoHandler) StartTodo(w http.ResponseWriter, r *http.Request, id int) {
-	payload := ports.StartTodoRequest{TodoId: int64(id)}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	err = h.toDoService.Start(nil, r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-}
-
 func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request, id int) {
 	payload := ports.DeleteTodoRequest{TodoId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
@@ -162,21 +147,6 @@ func (h TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request, id int) {
 	w.Write(b)
 }
 
-func (h TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request, id int) {
-	payload := ports.UpdateTodoRequest{TodoId: int64(id)}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	err = h.toDoService.Update(nil, r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-}
-
 func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 
@@ -198,13 +168,34 @@ func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func GetQueryParamFilter(field string, r *http.Request) *bool {
-	qp := r.URL.Query()
-	if value := qp.Get(field); value != "" {
-		v, _ := strconv.ParseBool(value)
-		return &v
+func (h TodoHandler) StartTodo(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.StartTodoRequest{TodoId: int64(id)}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
 	}
-	return nil
+
+	err = h.toDoService.Start(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+}
+
+func (h TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.UpdateTodoRequest{TodoId: int64(id)}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.toDoService.Update(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
 }
 
 func NewTodoHandler(ts ports.TodoServicer, logger *log.Logger) TodoHandler {

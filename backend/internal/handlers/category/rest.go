@@ -26,22 +26,16 @@ func (h CategoryHandler) HandleCategory(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if r.Method == http.MethodPut {
-		h.UpdateCategory(w, r, categoryId)
-		return
-	}
-
-	if r.Method == http.MethodGet {
+	switch r.Method {
+	case http.MethodGet:
 		h.GetCategory(w, r, categoryId)
-		return
-	}
-
-	if r.Method == http.MethodDelete {
+	case http.MethodDelete:
 		h.DeleteCategory(w, r, categoryId)
-		return
+	case http.MethodPut:
+		h.UpdateCategory(w, r, categoryId)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
-	w.WriteHeader(http.StatusMethodNotAllowed)
-	return
 }
 
 func (h CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) {
@@ -96,6 +90,17 @@ func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request, id 
 	w.Write(b)
 }
 
+func (h CategoryHandler) ListCategories(w http.ResponseWriter, r *http.Request) {
+	categories, err := h.categoryService.List(nil, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(handlers.ListCategoriesResponse{Categories: categories})
+	w.Write(b)
+}
+
 func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, id int) {
 	payload := ports.UpdateCategoryRequest{CategoryId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
@@ -109,17 +114,6 @@ func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, 
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-}
-
-func (h CategoryHandler) ListCategories(w http.ResponseWriter, r *http.Request) {
-	categories, err := h.categoryService.List(nil, r)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	b, err := json.Marshal(handlers.ListCategoriesResponse{Categories: categories})
-	w.Write(b)
 }
 
 func NewCategoryHandler(cs ports.CategoryServicer, logger *log.Logger) CategoryHandler {

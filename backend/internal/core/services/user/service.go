@@ -8,7 +8,6 @@ import (
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
 	"github.com/aghex70/daps/server"
 	"github.com/golang-jwt/jwt/v4"
-	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"time"
@@ -48,11 +47,6 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 	}
 
 	return ss, nil
-}
-
-func (s UserService) Logout(ctx context.Context) error {
-	//TODO implement me
-	panic("implement me")
 }
 
 func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) error {
@@ -105,11 +99,6 @@ func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 		return err
 	}
 	return nil
-}
-
-func (s UserService) CheckExistentUser(ctx context.Context, email string) bool {
-	_, err := s.userRepository.GetByEmail(ctx, email)
-	return !errors.Is(err, gorm.ErrRecordNotFound)
 }
 
 func NewUserService(ur *user.UserGormRepository, logger *log.Logger) UserService {

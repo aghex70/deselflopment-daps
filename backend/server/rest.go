@@ -95,7 +95,6 @@ func (s *RestServer) StartServer() error {
 
 	// User
 	http.HandleFunc("/login", s.userHandler.Login)
-	http.HandleFunc("/logout", JWTAuthMiddleware(s.userHandler.Logout))
 	http.HandleFunc("/register", s.userHandler.Register)
 	http.HandleFunc("/refresh-token", JWTAuthMiddleware(s.userHandler.RefreshToken))
 	http.HandleFunc("/user", JWTAuthMiddleware(s.userHandler.RemoveUser))
