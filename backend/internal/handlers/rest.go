@@ -7,6 +7,11 @@ import (
 	"net/http"
 )
 
+const (
+	TODO_STRING     string = "todo/"
+	CATEGORY_STRING string = "category/"
+)
+
 type APIErrorResponse struct {
 	Message string `json:"message"`
 }

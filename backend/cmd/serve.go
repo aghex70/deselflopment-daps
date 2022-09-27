@@ -6,6 +6,7 @@ import (
 	todoService "github.com/aghex70/daps/internal/core/services/todo"
 	userService "github.com/aghex70/daps/internal/core/services/user"
 	categoryHandler "github.com/aghex70/daps/internal/handlers/category"
+	"github.com/aghex70/daps/internal/handlers/root"
 	todoHandler "github.com/aghex70/daps/internal/handlers/todo"
 	userHandler "github.com/aghex70/daps/internal/handlers/user"
 	categoryRepository "github.com/aghex70/daps/internal/repositories/gorm/category"
@@ -50,10 +51,12 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			ch := categoryHandler.NewCategoryHandler(cs, &logger2)
 
 			tdr, _ := todoRepository.NewTodoGormRepository(gdb)
-			tds := todoService.NewTodoService(tdr, &logger2)
+			tds := todoService.NewtodoService(tdr, &logger2)
 			tdh := todoHandler.NewTodoHandler(tds, &logger2)
 
-			s := server.NewRestServer(cfg.Server.Rest, ch, tdh, uh, &logger2)
+			rh := root.NewRootHandler(cs, tds, &logger2)
+
+			s := server.NewRestServer(cfg.Server.Rest, ch, tdh, uh, rh, &logger2)
 			err = s.StartServer()
 			if err != nil {
 				log.Fatal("error starting server", err.Error())

@@ -6,6 +6,7 @@ import (
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"github.com/aghex70/daps/internal/handlers/category"
+	"github.com/aghex70/daps/internal/handlers/root"
 	"github.com/aghex70/daps/internal/handlers/todo"
 	"github.com/aghex70/daps/internal/handlers/user"
 	"github.com/golang-jwt/jwt/v4"
@@ -22,8 +23,9 @@ type RestServer struct {
 	toDoHandler     todo.TodoHandler
 	userHandler     user.UserHandler
 	categoryService ports.CategoryServicer
-	toDoService     ports.TodoServicer
+	todoService     ports.TodoServicer
 	userService     ports.UserServicer
+	rootHandler     root.RootHandler
 }
 
 var hmacSampleSecret = []byte("random")
@@ -89,7 +91,7 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
 func (s *RestServer) StartServer() error {
 	// Categories
 	http.HandleFunc("/categories", s.categoryHandler.ListCategories)
-	http.HandleFunc("/category", s.categoryHandler.Category)
+	http.HandleFunc("/category", s.categoryHandler.CreateCategory)
 
 	// User
 	http.HandleFunc("/login", s.userHandler.Login)
@@ -107,7 +109,7 @@ func (s *RestServer) StartServer() error {
 
 	// CAREFUL!!!!
 	// Root (not included out of the box damn!)
-	http.HandleFunc("/", JWTAuthMiddleware(s.toDoHandler.Root))
+	http.HandleFunc("/", JWTAuthMiddleware(s.rootHandler.Root))
 
 	address := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 	fmt.Printf("Starting server on address %s", address)
@@ -120,12 +122,13 @@ func (s *RestServer) StartServer() error {
 	return nil
 }
 
-func NewRestServer(cfg *config.RestConfig, ch category.CategoryHandler, tdh todo.TodoHandler, uh user.UserHandler, logger *log.Logger) *RestServer {
+func NewRestServer(cfg *config.RestConfig, ch category.CategoryHandler, tdh todo.TodoHandler, uh user.UserHandler, rh root.RootHandler, logger *log.Logger) *RestServer {
 	return &RestServer{
 		cfg:             *cfg,
 		logger:          logger,
 		categoryHandler: ch,
 		toDoHandler:     tdh,
 		userHandler:     uh,
+		rootHandler:     rh,
 	}
 }

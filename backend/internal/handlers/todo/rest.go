@@ -17,14 +17,8 @@ type TodoHandler struct {
 	logger      *log.Logger
 }
 
-func (h TodoHandler) Root(w http.ResponseWriter, r *http.Request) {
-	todoString := "todo/"
-	if !strings.Contains(r.RequestURI, todoString) {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	path := strings.Split(r.RequestURI, todoString)[1]
+func (h TodoHandler) HandleTodo(w http.ResponseWriter, r *http.Request) {
+	path := strings.Split(r.RequestURI, handlers.TODO_STRING)[1]
 
 	if startString := "/start"; strings.Contains(path, startString) {
 		todoIdString := strings.Split(path, startString)[0]

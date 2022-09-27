@@ -3,6 +3,7 @@ package category
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
 	"log"
@@ -32,10 +33,14 @@ func (Category) TableName() string {
 }
 
 func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int) error {
-	c := Category{ID: id, UserId: &userId}
-	result := gr.DB.Delete(&c)
+	var c Category
+	result := gr.DB.Where("id = ?", id).Where("user_id = ?", userId).Delete(&c)
 	if result.Error != nil {
 		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("cannot delete category")
 	}
 	return nil
 }
@@ -107,6 +112,11 @@ func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category)
 	if result.Error != nil {
 		return result.Error
 	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("category not updated")
+	}
+
 	return nil
 }
 
