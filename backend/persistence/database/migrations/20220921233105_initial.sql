@@ -30,7 +30,6 @@ CREATE TABLE daps_categories_users_relationships (
 
 CREATE TABLE daps_todos (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
     category_id INT NOT NULL DEFAULT 2,
     active INT NOT NULL DEFAULT 0,
     end_date TIMESTAMP NULL DEFAULT NULL,

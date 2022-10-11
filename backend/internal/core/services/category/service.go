@@ -5,14 +5,16 @@ import (
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
+	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/server"
 	"log"
 	"net/http"
 )
 
 type CategoryService struct {
-	logger             *log.Logger
-	categoryRepository *category.CategoryGormRepository
+	logger                 *log.Logger
+	categoryRepository     *category.CategoryGormRepository
+	relationshipRepository *relationship.RelationshipGormRepository
 }
 
 func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.CreateCategoryRequest) error {
@@ -81,9 +83,10 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 	return nil
 }
 
-func NewCategoryService(cr *category.CategoryGormRepository, logger *log.Logger) CategoryService {
+func NewCategoryService(cr *category.CategoryGormRepository, rr *relationship.RelationshipGormRepository, logger *log.Logger) CategoryService {
 	return CategoryService{
-		logger:             logger,
-		categoryRepository: cr,
+		logger:                 logger,
+		categoryRepository:     cr,
+		relationshipRepository: rr,
 	}
 }

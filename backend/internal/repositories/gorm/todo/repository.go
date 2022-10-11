@@ -159,11 +159,9 @@ func (td Todo) ToDto() domain.Todo {
 		ID:           td.ID,
 		Link:         td.Link,
 		Name:         td.Name,
-		//Prerequisite: td.Prerequisite,
 		//Priority:     td.Priority,
 		Recurring: td.Recurring,
 		StartDate: td.StartDate,
-		User:      td.UserId,
 	}
 }
 
@@ -179,10 +177,8 @@ func fromDto(td domain.Todo) Todo {
 		ID:           td.ID,
 		Link:         td.Link,
 		Name:         td.Name,
-		//Prerequisite: td.Prerequisite,
 		//Priority:     td.Priority,
 		Recurring: td.Recurring,
 		StartDate: td.StartDate,
-		UserId:    td.User,
 	}
 }

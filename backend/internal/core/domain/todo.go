@@ -27,7 +27,6 @@ type Todo struct {
 	Priority     Priority      `json:"priority"`
 	Recurring    bool          `json:"recurring"`
 	StartDate    *time.Time    `json:"start_date"`
-	User         int           `json:"user_id"`
 }
 
 type Summmary struct {
