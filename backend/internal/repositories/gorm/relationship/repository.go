@@ -41,6 +41,14 @@ func (gr *RelationshipGormRepository) CreateRelationships(ctx context.Context, u
 	return nil
 }
 
+func (gr *RelationshipGormRepository) PurgeRelationships(ctx context.Context, userId int) error {
+	result := gr.DB.Delete(&CategoryUserRelationship{}, "user_id = ?", userId)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 func NewRelationshipGormRepository(db *gorm.DB) (*RelationshipGormRepository, error) {
 	return &RelationshipGormRepository{
 		DB: db,

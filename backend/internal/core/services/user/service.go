@@ -101,10 +101,16 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 
 func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 	userId, err := server.RetrieveJWTClaims(r, nil)
+	err = s.relationshipRepository.PurgeRelationships(ctx, int(userId))
+	if err != nil {
+		return err
+	}
+
 	err = s.userRepository.Delete(ctx, int(userId))
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
