@@ -32,8 +32,11 @@ func (CategoryUserRelationship) TableName() string {
 	return "daps_categories_users_relationships"
 }
 
-func (gr *RelationshipGormRepository) CreateRelationships(ctx context.Context, userId int) error {
-	var relationships = []CategoryUserRelationship{{CategoryID: 1, UserID: userId}, {CategoryID: 2, UserID: userId}, {CategoryID: 3, UserID: userId}, {CategoryID: 4, UserID: userId}, {CategoryID: 5, UserID: userId}}
+func (gr *RelationshipGormRepository) CreateRelationships(ctx context.Context, userId int, categoryIds []int) error {
+	var relationships []CategoryUserRelationship
+	for _, categoryId := range categoryIds {
+		relationships = append(relationships, CategoryUserRelationship{CategoryID: categoryId, UserID: userId})
+	}
 	result := gr.DB.Create(&relationships)
 	if result.Error != nil {
 		return result.Error

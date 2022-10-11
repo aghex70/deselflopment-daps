@@ -133,8 +133,8 @@ func (gr *TodoGormRepository) Start(ctx context.Context, id int, userId int) err
 
 func (gr *TodoGormRepository) GetSummary(ctx context.Context, userId int) ([]domain.CategorySummary, error) {
 	var cs []domain.CategorySummary
-	summaryQuery := "SELECT daps_categories.name, SUM(CASE WHEN daps_todos.priority = 5 then 1 else 0 END) as highest_priority_tasks, COUNT(*) as tasks FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id GROUP BY category_id"
-	result := gr.DB.Raw(summaryQuery).Scan(&cs)
+	query := "SELECT daps_categories.name, SUM(CASE WHEN daps_todos.priority = 5 then 1 else 0 END) as highest_priority_tasks, COUNT(*) as tasks FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id GROUP BY category_id"
+	result := gr.DB.Raw(query).Scan(&cs)
 	if result.Error != nil {
 		return cs, result.Error
 	}

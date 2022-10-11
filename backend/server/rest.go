@@ -73,8 +73,8 @@ func RetrieveBodyJWT(payload interface{}) string {
 }
 
 func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
-	fmt.Printf("\npayload %+v", payload)
-	fmt.Printf("\nrequest %+v", r)
+	fmt.Printf("\n\npayload -------------> %+v", payload)
+	fmt.Printf("\n\nrequest -------------> %+v", r)
 	var tokenString string
 	if r.Header["Authorization"] != nil {
 		tokenString = RetrieveHeaderJWT(r)
@@ -87,6 +87,7 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
 	})
 
 	claims := token.Claims.(jwt.MapClaims)
+	fmt.Printf("\n\nCLAIMS -------------------> %+v", claims)
 	userId := claims["user_id"].(float64)
 	return userId, nil
 }

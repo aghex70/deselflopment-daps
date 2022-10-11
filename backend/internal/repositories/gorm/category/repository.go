@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
 	"log"
@@ -17,7 +18,9 @@ type CategoryGormRepository struct {
 
 type Category struct {
 	ID                int    `gorm:"primaryKey;column:id"`
-	UserId            *int   `gorm:"column:user_id"`
+	CategoryId        int    `gorm:"column:category_id"`
+	UserId            int    `gorm:"column:user_id"`
+	Shared            bool   `gorm:"column:shared"`
 	Custom            bool   `gorm:"column:custom"`
 	Description       string `gorm:"column:description"`
 	Name              string `gorm:"column:name"`
@@ -30,6 +33,89 @@ type Tabler interface {
 
 func (Category) TableName() string {
 	return "daps_categories"
+}
+
+func (gr *CategoryGormRepository) GetUserCategory(ctx context.Context, name string, userId int) (domain.Category, error) {
+	var c Category
+	query := fmt.Sprintf("SELECT daps_categories.id FROM daps_categories INNER JOIN daps_categories_users_relationships ON daps_categories.id = daps_categories_users_relationships.category_id WHERE daps_categories_users_relationships.user_id = %d AND daps_categories.name = '%s'", userId, name)
+	fmt.Println(query)
+	result := gr.DB.Raw(query).Scan(&c)
+
+	if result.RowsAffected == 0 {
+		fmt.Println("000000000000000000")
+		return domain.Category{}, errors.New("category not updated")
+	}
+
+	fmt.Println("1111111111111111111")
+	if result.Error != nil {
+		fmt.Println("2222222222222222222222")
+		return domain.Category{}, result.Error
+	}
+	fmt.Println("333333333333333333")
+	return c.ToDto(), nil
+}
+
+func (gr *CategoryGormRepository) GetById(ctx context.Context, id int, userId int) (domain.Category, error) {
+	var c Category
+	query := fmt.Sprintf("SELECT * FROM daps_categories INNER JOIN daps_categories_users_relationships ON daps_categories.id = daps_categories_users_relationships.category_id WHERE daps_categories_users_relationships.user_id = %d AND daps_categories_users_relationships.category_id = %d", userId, id)
+	fmt.Println(query)
+	result := gr.DB.Raw(query).Scan(&c)
+	if result.RowsAffected == 0 {
+		fmt.Println("000000000000000000")
+		return domain.Category{}, gorm.ErrRecordNotFound
+	}
+
+	if result.Error != nil {
+		return domain.Category{}, result.Error
+	}
+	return c.ToDto(), nil
+}
+
+func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category, userId int) error {
+	var nc Category
+	query := fmt.Sprintf("SELECT * FROM daps_categories INNER JOIN daps_categories_users_relationships ON daps_categories.id = daps_categories_users_relationships.category_id WHERE daps_categories_users_relationships.user_id = %d AND daps_categories_users_relationships.category_id = %d", userId, c.ID)
+
+	//tx := db.Table("books").
+	//	Joins("INNER JOIN user_liked_books ulb ON ulb.book_id = books.id").
+	//	Select("books.id, books.name, count(ulb.user_id) as likes_count").
+	//	Group("books.id, books.name").
+	//	Order("likes_count desc").
+	//	Limit(50).
+	//	Find(&books)
+	fmt.Println(query)
+	result := gr.DB.Raw(query).Scan(&nc)
+	if result.RowsAffected == 0 {
+		fmt.Println("000000000000000000")
+		return gorm.ErrRecordNotFound
+	}
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	//nc.Name = c.Name
+	//nc.Description = c.Description
+	//nc.InternationalName = c.InternationalName
+	fmt.Printf("\n\n------------> nc %+v", nc)
+	result = gr.DB.Model(&nc).Where(Category{ID: c.ID}).Updates(map[string]interface{}{
+		"name":               c.Name,
+		"international_name": c.InternationalName,
+		"description":        c.Description,
+	})
+
+	if result.RowsAffected == 0 {
+		fmt.Println("111111111111111111111111111111111")
+		fmt.Println("111111111111111111111111111111111")
+		fmt.Println("111111111111111111111111111111111")
+		fmt.Println("111111111111111111111111111111111")
+		return errors.New("category not updated")
+	}
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
 
 func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int) error {
@@ -48,7 +134,7 @@ func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int
 func (gr *CategoryGormRepository) ListCustom(ctx context.Context, userId int) ([]domain.Category, error) {
 	var cs []Category
 	var cats []domain.Category
-	result := gr.DB.Where(&Category{UserId: &userId, Custom: true}).Find(&cs)
+	result := gr.DB.Where(&Category{Shared: true}).Find(&cs)
 	if result.Error != nil {
 		return []domain.Category{}, result.Error
 	}
@@ -62,7 +148,7 @@ func (gr *CategoryGormRepository) ListCustom(ctx context.Context, userId int) ([
 
 func (gr *CategoryGormRepository) GetBaseCategory(ctx context.Context, name string) (domain.Category, error) {
 	var c Category
-	result := gr.DB.Where(&Category{Name: name, Custom: false}).First(&c)
+	result := gr.DB.Where(&Category{Name: name, Shared: false}).First(&c)
 	if result.Error != nil {
 		return domain.Category{}, result.Error
 	}
@@ -84,40 +170,13 @@ func (gr *CategoryGormRepository) List(ctx context.Context, userId int) ([]domai
 	return cats, nil
 }
 
-func (gr *CategoryGormRepository) GetById(ctx context.Context, id int) (domain.Category, error) {
-	var c Category
-	result := gr.DB.Where(&Category{ID: id}).First(&c)
-	if result.Error != nil {
-		return domain.Category{}, result.Error
-	}
-	return c.ToDto(), nil
-}
-func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category) error {
+func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category) (domain.Category, error) {
 	nc := fromDto(c)
 	result := gr.DB.Create(&nc)
 	if result.Error != nil {
-		return result.Error
+		return domain.Category{}, result.Error
 	}
-	return nil
-}
-
-func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category) error {
-	nc := fromDto(c)
-	result := gr.DB.Model(&nc).Where(Category{ID: nc.ID, Custom: true}).Updates(map[string]interface{}{
-		"name":               nc.Name,
-		"international_name": nc.InternationalName,
-		"description":        nc.Description,
-	})
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	if result.RowsAffected == 0 {
-		return errors.New("category not updated")
-	}
-
-	return nil
+	return nc.ToDto(), nil
 }
 
 func NewCategoryGormRepository(db *gorm.DB) (*CategoryGormRepository, error) {
@@ -130,20 +189,20 @@ func (c Category) ToDto() domain.Category {
 	return domain.Category{
 		ID:                c.ID,
 		Description:       c.Description,
+		Shared:            c.Shared,
 		Custom:            c.Custom,
 		Name:              c.Name,
 		InternationalName: c.InternationalName,
-		User:              c.UserId,
 	}
 }
 
 func fromDto(c domain.Category) Category {
 	return Category{
 		ID:                c.ID,
+		Shared:            c.Shared,
 		Custom:            c.Custom,
 		Description:       c.Description,
 		Name:              c.Name,
 		InternationalName: c.InternationalName,
-		UserId:            c.User,
 	}
 }

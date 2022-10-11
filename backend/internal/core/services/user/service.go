@@ -25,6 +25,7 @@ type MyCustomClaims struct {
 	jwt.RegisteredClaims
 }
 
+var baseCategoriesIds = []int{1, 2, 3, 4, 5}
 var hmacSampleSecret = []byte("random")
 
 func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (string, error) {
@@ -67,7 +68,7 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 		return err
 	}
 
-	err = s.relationshipRepository.CreateRelationships(ctx, nu.ID)
+	err = s.relationshipRepository.CreateRelationships(ctx, nu.ID, baseCategoriesIds)
 	if err != nil {
 		return err
 	}

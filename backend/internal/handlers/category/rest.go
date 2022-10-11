@@ -3,6 +3,7 @@ package category
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"gorm.io/gorm"
@@ -77,8 +78,10 @@ func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request, id 
 		return
 	}
 
-	todo, err := h.categoryService.Get(nil, r, payload)
+	c, err := h.categoryService.Get(nil, r, payload)
+	fmt.Println("111111111111111111111111111111111")
 	if err != nil {
+		fmt.Println("2222222222222222222222222222222")
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			w.WriteHeader(http.StatusNotFound)
 			return
@@ -86,7 +89,7 @@ func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request, id 
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	b, err := json.Marshal(todo)
+	b, err := json.Marshal(c)
 	w.Write(b)
 }
 
