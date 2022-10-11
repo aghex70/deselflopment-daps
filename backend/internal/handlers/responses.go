@@ -15,3 +15,7 @@ type TokenResponse struct {
 type ListCategoriesResponse struct {
 	Categories []domain.Category `json:"categories"`
 }
+
+type SummaryResponse struct {
+	Summary []domain.CategorySummary `json:"summary"`
+}

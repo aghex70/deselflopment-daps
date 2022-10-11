@@ -9,9 +9,10 @@ import (
 	"github.com/aghex70/daps/internal/handlers/root"
 	todoHandler "github.com/aghex70/daps/internal/handlers/todo"
 	userHandler "github.com/aghex70/daps/internal/handlers/user"
-	categoryRepository "github.com/aghex70/daps/internal/repositories/gorm/category"
-	todoRepository "github.com/aghex70/daps/internal/repositories/gorm/todo"
-	userRepository "github.com/aghex70/daps/internal/repositories/gorm/user"
+	"github.com/aghex70/daps/internal/repositories/gorm/category"
+	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
+	"github.com/aghex70/daps/internal/repositories/gorm/todo"
+	"github.com/aghex70/daps/internal/repositories/gorm/user"
 	"github.com/aghex70/daps/persistence/database"
 	"github.com/aghex70/daps/server"
 	"github.com/spf13/cobra"
@@ -42,15 +43,16 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 				log.Fatal("error starting database", err.Error())
 			}
 
-			ur, _ := userRepository.NewUserGormRepository(gdb)
-			us := userService.NewUserService(ur, &logger2)
+			ur, _ := user.NewUserGormRepository(gdb)
+			rr, _ := relationship.NewRelationshipGormRepository(gdb)
+			us := userService.NewUserService(ur, rr, &logger2)
 			uh := userHandler.NewUserHandler(us, &logger2)
 
-			cr, _ := categoryRepository.NewCategoryGormRepository(gdb)
+			cr, _ := category.NewCategoryGormRepository(gdb)
 			cs := categoryService.NewCategoryService(cr, &logger2)
 			ch := categoryHandler.NewCategoryHandler(cs, &logger2)
 
-			tdr, _ := todoRepository.NewTodoGormRepository(gdb)
+			tdr, _ := todo.NewTodoGormRepository(gdb)
 			tds := todoService.NewtodoService(tdr, &logger2)
 			tdh := todoHandler.NewTodoHandler(tds, &logger2)
 

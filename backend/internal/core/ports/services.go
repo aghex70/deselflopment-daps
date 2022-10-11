@@ -22,6 +22,7 @@ type TodoServicer interface {
 	List(ctx context.Context, r *http.Request, sorting string, filters string) ([]domain.Todo, error)
 	Update(ctx context.Context, r *http.Request, req UpdateTodoRequest) error
 	Start(ctx context.Context, r *http.Request, req StartTodoRequest) error
+	Summary(ctx context.Context, r *http.Request) ([]domain.CategorySummary, error)
 }
 
 type UserServicer interface {

@@ -66,12 +66,15 @@ func RetrieveHeaderJWT(r *http.Request) string {
 }
 
 func RetrieveBodyJWT(payload interface{}) string {
+	fmt.Printf("%+v", payload)
 	value := reflect.ValueOf(payload)
 	bodyToken := value.FieldByName("AccessToken").String()
 	return bodyToken
 }
 
 func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
+	fmt.Printf("\npayload %+v", payload)
+	fmt.Printf("\nrequest %+v", r)
 	var tokenString string
 	if r.Header["Authorization"] != nil {
 		tokenString = RetrieveHeaderJWT(r)
@@ -88,6 +91,22 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
 	return userId, nil
 }
 
+func CORS(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//w.Header().Add("Access-Control-Allow-Origin", "https://stackoverflow.com")
+		//w.Header().Add("Access-Control-Allow-Credentials", "true")
+		//w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		//w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		//
+		//if r.Method == "OPTIONS" {
+		//	http.Error(w, "No Content", http.StatusNoContent)
+		//	return
+		//}
+
+		next(w, r)
+	}
+}
+
 func (s *RestServer) StartServer() error {
 	// Categories
 	http.HandleFunc("/categories", s.categoryHandler.ListCategories)
@@ -102,6 +121,7 @@ func (s *RestServer) StartServer() error {
 	// Todos
 	http.HandleFunc("/todo", JWTAuthMiddleware(s.toDoHandler.CreateTodo))
 	http.HandleFunc("/todos", JWTAuthMiddleware(s.toDoHandler.ListTodos))
+	http.HandleFunc("/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
 
 	// Stats
 	//http.HandleFunc("/statistics", JWTAuthMiddleware(s.toDoHandler.Todo))

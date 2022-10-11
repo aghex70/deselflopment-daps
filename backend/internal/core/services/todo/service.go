@@ -114,6 +114,15 @@ func (s TodoService) Start(ctx context.Context, r *http.Request, req ports.Start
 	return nil
 }
 
+func (s TodoService) Summary(ctx context.Context, r *http.Request) ([]domain.CategorySummary, error) {
+	userId, _ := server.RetrieveJWTClaims(r, nil)
+	summary, err := s.todoRepository.GetSummary(ctx, int(userId))
+	if err != nil {
+		return []domain.CategorySummary{}, err
+	}
+	return summary, nil
+}
+
 func NewtodoService(tr *todo.TodoGormRepository, logger *log.Logger) TodoService {
 	return TodoService{
 		logger:         logger,

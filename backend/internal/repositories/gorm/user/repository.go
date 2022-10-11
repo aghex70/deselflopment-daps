@@ -32,13 +32,13 @@ func (User) TableName() string {
 	return "daps_users"
 }
 
-func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) error {
+func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) (domain.User, error) {
 	nu := fromDto(u)
 	result := gr.DB.Create(&nu)
 	if result.Error != nil {
-		return result.Error
+		return domain.User{}, result.Error
 	}
-	return nil
+	return nu.ToDto(), nil
 }
 
 func (gr *UserGormRepository) Delete(ctx context.Context, id int) error {

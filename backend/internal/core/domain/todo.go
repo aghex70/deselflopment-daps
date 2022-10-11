@@ -29,3 +29,13 @@ type Todo struct {
 	StartDate    *time.Time    `json:"start_date"`
 	User         int           `json:"user_id"`
 }
+
+type Summmary struct {
+	Summary []CategorySummary `json:"summary"`
+}
+
+type CategorySummary struct {
+	Name                 string `json:"name"`
+	Tasks                int    `json:"tasks"`
+	HighestPriorityTasks int    `json:"highest_priority_tasks"`
+}

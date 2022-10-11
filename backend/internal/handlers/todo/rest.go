@@ -198,6 +198,22 @@ func (h TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request, id int) 
 	}
 }
 
+func (h TodoHandler) Summary(w http.ResponseWriter, r *http.Request) {
+	//w.Header().Set("Content-Type", "application/json")
+	//bodyBytes, _ := ioutil.ReadAll(r.Body)
+	//bodyString := string(bodyBytes)
+	//fmt.Println(bodyString)
+
+	summary, err := h.toDoService.Summary(nil, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(handlers.SummaryResponse{Summary: summary})
+	w.Write(b)
+}
+
 func NewTodoHandler(ts ports.TodoServicer, logger *log.Logger) TodoHandler {
 	return TodoHandler{
 		toDoService: ts,

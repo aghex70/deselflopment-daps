@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
+	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
 	"github.com/aghex70/daps/server"
 	"github.com/golang-jwt/jwt/v4"
@@ -14,8 +15,9 @@ import (
 )
 
 type UserService struct {
-	logger         *log.Logger
-	userRepository *user.UserGormRepository
+	logger                 *log.Logger
+	userRepository         *user.UserGormRepository
+	relationshipRepository *relationship.RelationshipGormRepository
 }
 
 type MyCustomClaims struct {
@@ -55,12 +57,17 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 		return errors.New("user already registered")
 	}
 
-	nu := domain.User{
+	u := domain.User{
 		Email:    r.Email,
 		Password: r.Password,
 	}
 
-	err := s.userRepository.Create(ctx, nu)
+	nu, err := s.userRepository.Create(ctx, u)
+	if err != nil {
+		return err
+	}
+
+	err = s.relationshipRepository.CreateRelationships(ctx, nu.ID)
 	if err != nil {
 		return err
 	}
@@ -101,9 +108,10 @@ func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 	return nil
 }
 
-func NewUserService(ur *user.UserGormRepository, logger *log.Logger) UserService {
+func NewUserService(ur *user.UserGormRepository, rr *relationship.RelationshipGormRepository, logger *log.Logger) UserService {
 	return UserService{
-		logger:         logger,
-		userRepository: ur,
+		logger:                 logger,
+		userRepository:         ur,
+		relationshipRepository: rr,
 	}
 }
