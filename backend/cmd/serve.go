@@ -44,15 +44,16 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			}
 
 			ur, _ := user.NewUserGormRepository(gdb)
+			cr, _ := category.NewCategoryGormRepository(gdb)
 			rr, _ := relationship.NewRelationshipGormRepository(gdb)
-			us := userService.NewUserService(ur, rr, &logger2)
+			tdr, _ := todo.NewTodoGormRepository(gdb)
+
+			us := userService.NewUserService(ur, cr, &logger2)
 			uh := userHandler.NewUserHandler(us, &logger2)
 
-			cr, _ := category.NewCategoryGormRepository(gdb)
 			cs := categoryService.NewCategoryService(cr, rr, &logger2)
 			ch := categoryHandler.NewCategoryHandler(cs, &logger2)
 
-			tdr, _ := todo.NewTodoGormRepository(gdb)
 			tds := todoService.NewtodoService(tdr, &logger2)
 			tdh := todoHandler.NewTodoHandler(tds, &logger2)
 

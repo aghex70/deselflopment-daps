@@ -7,4 +7,5 @@ type Category struct {
 	Custom            bool   `json:"custom"`
 	Description       string `json:"description"`
 	InternationalName string `json:"international_name"`
+	Users             []User `json:"users"`
 }

@@ -22,10 +22,10 @@ CREATE TABLE daps_categories (
      shared INT NOT NULL DEFAULT 0
 );
 
-CREATE TABLE daps_categories_users_relationships (
-     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-     category_id INT NOT NULL REFERENCES daps_categories(id),
-     user_id INT NOT NULL REFERENCES daps_users(id)
+CREATE TABLE daps_category_users (
+     category_id INT NOT NULL REFERENCES daps_categories(id) ON DELETE CASCADE,
+     user_id INT NOT NULL REFERENCES daps_users(id) ON DELETE CASCADE,
+     PRIMARY KEY (category_id, user_id)
 );
 
 CREATE TABLE daps_todos (

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
-	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
+	"github.com/aghex70/daps/internal/repositories/gorm/category"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
 	"github.com/aghex70/daps/server"
 	"github.com/golang-jwt/jwt/v4"
@@ -15,9 +15,9 @@ import (
 )
 
 type UserService struct {
-	logger                 *log.Logger
-	userRepository         *user.UserGormRepository
-	relationshipRepository *relationship.RelationshipGormRepository
+	logger             *log.Logger
+	userRepository     *user.UserGormRepository
+	categoryRepository *category.CategoryGormRepository
 }
 
 type MyCustomClaims struct {
@@ -27,6 +27,27 @@ type MyCustomClaims struct {
 
 var baseCategoriesIds = []int{1, 2, 3, 4, 5}
 var hmacSampleSecret = []byte("random")
+
+func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) error {
+	preexistent := s.CheckExistentUser(ctx, r.Email)
+	if preexistent {
+		return errors.New("user already registered")
+	}
+
+	categories, err := s.categoryRepository.GetByIds(ctx, baseCategoriesIds)
+	u := domain.User{
+		Email:      r.Email,
+		Password:   r.Password,
+		Categories: categories,
+	}
+
+	_, err = s.userRepository.Create(ctx, u)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (string, error) {
 	u, err := s.userRepository.GetByEmail(ctx, r.Email)
@@ -50,29 +71,6 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 	}
 
 	return ss, nil
-}
-
-func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) error {
-	preexistent := s.CheckExistentUser(ctx, r.Email)
-	if preexistent {
-		return errors.New("user already registered")
-	}
-
-	u := domain.User{
-		Email:    r.Email,
-		Password: r.Password,
-	}
-
-	nu, err := s.userRepository.Create(ctx, u)
-	if err != nil {
-		return err
-	}
-
-	err = s.relationshipRepository.CreateRelationships(ctx, nu.ID, baseCategoriesIds)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string, error) {
@@ -102,7 +100,7 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 
 func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 	userId, err := server.RetrieveJWTClaims(r, nil)
-	err = s.relationshipRepository.PurgeRelationships(ctx, int(userId))
+	//err = s.relationshipRepository.PurgeRelationships(ctx, int(userId))
 	if err != nil {
 		return err
 	}
@@ -115,10 +113,10 @@ func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 	return nil
 }
 
-func NewUserService(ur *user.UserGormRepository, rr *relationship.RelationshipGormRepository, logger *log.Logger) UserService {
+func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormRepository, logger *log.Logger) UserService {
 	return UserService{
-		logger:                 logger,
-		userRepository:         ur,
-		relationshipRepository: rr,
+		logger:             logger,
+		userRepository:     ur,
+		categoryRepository: cr,
 	}
 }

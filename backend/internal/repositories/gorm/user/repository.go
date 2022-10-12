@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/aghex70/daps/internal/core/domain"
+	"github.com/aghex70/daps/internal/repositories/gorm/category"
 	"gorm.io/gorm"
 	"log"
 	"time"
@@ -16,11 +17,12 @@ type UserGormRepository struct {
 }
 
 type User struct {
-	ID               int       `gorm:"primaryKey;column:id"`
-	Email            string    `gorm:"column:email"`
-	IsAdmin          bool      `gorm:"column:is_admin"`
-	Password         string    `gorm:"column:password"`
-	RegistrationDate time.Time `gorm:"column:registration_date;autoCreateTime"`
+	ID               int                 `gorm:"primaryKey;column:id"`
+	Email            string              `gorm:"column:email"`
+	IsAdmin          bool                `gorm:"column:is_admin"`
+	Password         string              `gorm:"column:password"`
+	RegistrationDate time.Time           `gorm:"column:registration_date;autoCreateTime"`
+	Categories       []category.Category `gorm:"many2many:daps_category_users"`
 }
 
 type Tabler interface {
@@ -71,15 +73,17 @@ func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (dom
 
 func (u User) ToDto() domain.User {
 	return domain.User{
-		ID:    u.ID,
-		Email: u.Email,
+		ID:         u.ID,
+		Email:      u.Email,
+		Categories: category.CategoryDBDomain(u.Categories),
 	}
 }
 
 func fromDto(u domain.User) User {
 	return User{
-		Email:    u.Email,
-		Password: u.Password,
+		Email:      u.Email,
+		Password:   u.Password,
+		Categories: category.CategoryDomainDB(u.Categories),
 	}
 }
 

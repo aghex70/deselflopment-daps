@@ -109,15 +109,15 @@ func CORS(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func (s *RestServer) StartServer() error {
+	// User
+	http.HandleFunc("/register", s.userHandler.Register)
+	http.HandleFunc("/login", s.userHandler.Login)
+	http.HandleFunc("/refresh-token", JWTAuthMiddleware(s.userHandler.RefreshToken))
+	http.HandleFunc("/user", JWTAuthMiddleware(s.userHandler.RemoveUser))
+
 	// Categories
 	http.HandleFunc("/categories", s.categoryHandler.ListCategories)
 	http.HandleFunc("/category", s.categoryHandler.CreateCategory)
-
-	// User
-	http.HandleFunc("/login", s.userHandler.Login)
-	http.HandleFunc("/register", s.userHandler.Register)
-	http.HandleFunc("/refresh-token", JWTAuthMiddleware(s.userHandler.RefreshToken))
-	http.HandleFunc("/user", JWTAuthMiddleware(s.userHandler.RemoveUser))
 
 	// Todos
 	http.HandleFunc("/todo", JWTAuthMiddleware(s.toDoHandler.CreateTodo))

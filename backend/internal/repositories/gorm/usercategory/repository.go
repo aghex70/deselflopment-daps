@@ -1,4 +1,4 @@
-package category
+package usercategory
 
 import (
 	"context"
@@ -18,12 +18,13 @@ type CategoryGormRepository struct {
 
 type Category struct {
 	ID                int    `gorm:"primaryKey;column:id"`
+	CategoryId        int    `gorm:"column:category_id"`
+	UserId            int    `gorm:"column:user_id"`
 	Shared            bool   `gorm:"column:shared"`
 	Custom            bool   `gorm:"column:custom"`
 	Description       string `gorm:"column:description"`
 	Name              string `gorm:"column:name"`
 	InternationalName string `gorm:"column:international_name"`
-	//Users             []user.User `gorm:"many2many:daps_category_users"`
 }
 
 type Tabler interface {
@@ -32,21 +33,6 @@ type Tabler interface {
 
 func (Category) TableName() string {
 	return "daps_categories"
-}
-
-func (gr *CategoryGormRepository) GetByIds(ctx context.Context, ids []int) ([]domain.Category, error) {
-	var cs []Category
-	var cats []domain.Category
-	result := gr.DB.Find(&cs, ids)
-	if result.Error != nil {
-		return []domain.Category{}, result.Error
-	}
-
-	for _, c := range cs {
-		cs := c.ToDto()
-		cats = append(cats, cs)
-	}
-	return cats, nil
 }
 
 func (gr *CategoryGormRepository) GetUserCategory(ctx context.Context, name string, userId int) (domain.Category, error) {
@@ -219,22 +205,4 @@ func fromDto(c domain.Category) Category {
 		Name:              c.Name,
 		InternationalName: c.InternationalName,
 	}
-}
-
-func CategoryDomainDB(categories []domain.Category) []Category {
-	var c []Category
-	for _, category := range categories {
-		nc := fromDto(category)
-		c = append(c, nc)
-	}
-	return c
-}
-
-func CategoryDBDomain(categories []Category) []domain.Category {
-	var c []domain.Category
-	for _, category := range categories {
-		nc := category.ToDto()
-		c = append(c, nc)
-	}
-	return c
 }
