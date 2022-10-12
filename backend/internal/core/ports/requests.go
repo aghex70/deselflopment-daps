@@ -25,6 +25,10 @@ type UpdateCategoryRequest struct {
 	InternationalName string `json:"international_name" validate:"required"`
 }
 
+type ShareCategoryRequest struct {
+	CategoryId int64 `json:"category_id"`
+}
+
 type ListCategoriesRequest struct {
 }
 
