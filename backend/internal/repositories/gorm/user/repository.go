@@ -6,6 +6,7 @@ import (
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"log"
 	"time"
 )
@@ -29,7 +30,6 @@ type Tabler interface {
 	TableName() string
 }
 
-// TableName overrides the table name used by User to `profiles`
 func (User) TableName() string {
 	return "daps_users"
 }
@@ -44,7 +44,8 @@ func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) (domain
 }
 
 func (gr *UserGormRepository) Delete(ctx context.Context, id int) error {
-	result := gr.DB.Delete(&User{}, id)
+	u := User{ID: id}
+	result := gr.DB.Select(clause.Associations).Delete(&u)
 	if result.Error != nil {
 		return result.Error
 	}
