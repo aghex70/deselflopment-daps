@@ -86,7 +86,11 @@ func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.Get
 
 func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.DeleteCategoryRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	err := s.categoryRepository.Delete(ctx, int(req.CategoryId), int(userId))
+	err := s.ValidateRemoval(ctx, int(req.CategoryId), int(userId))
+	if err != nil {
+		return err
+	}
+	err = s.categoryRepository.Delete(ctx, int(req.CategoryId), int(userId))
 	if err != nil {
 		return err
 	}
