@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"gorm.io/gorm"
@@ -88,10 +87,9 @@ func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category) 
 	return nil
 }
 
-func (gr *CategoryGormRepository) GetById(ctx context.Context, id int, userId int) (domain.Category, error) {
+func (gr *CategoryGormRepository) GetById(ctx context.Context, id int) (domain.Category, error) {
 	var c relationship.Category
-	query := fmt.Sprintf("SELECT * FROM daps_categories INNER JOIN daps_categories_users_relationships ON daps_categories.id = daps_categories_users_relationships.category_id WHERE daps_categories_users_relationships.user_id = %d AND daps_categories_users_relationships.category_id = %d", userId, id)
-	result := gr.DB.Raw(query).Scan(&c)
+	result := gr.DB.Where(&relationship.Category{ID: id}).First(&c)
 	if result.RowsAffected == 0 {
 		return domain.Category{}, gorm.ErrRecordNotFound
 	}

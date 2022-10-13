@@ -29,3 +29,15 @@ func (s CategoryService) ValidateModification(ctx context.Context, categoryId, u
 	}
 	return nil
 }
+
+func (s CategoryService) ValidateRetrieval(ctx context.Context, categoryId, userId int) error {
+	conditions := fmt.Sprintf("daps_category_users.user_id = %d AND daps_category_users.category_id = %d AND daps_categories.shared = false", userId, categoryId)
+	categoryId, err := s.categoryRepository.UserCategoryExists(ctx, conditions)
+	if err != nil {
+		return err
+	}
+	if categoryId != 0 {
+		return errors.New("cannot update category")
+	}
+	return nil
+}

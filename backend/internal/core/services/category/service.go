@@ -73,7 +73,11 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 
 func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.GetCategoryRequest) (domain.Category, error) {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	td, err := s.categoryRepository.GetById(ctx, int(req.CategoryId), int(userId))
+	err := s.ValidateRetrieval(ctx, int(req.CategoryId), int(userId))
+	if err != nil {
+		return domain.Category{}, err
+	}
+	td, err := s.categoryRepository.GetById(ctx, int(req.CategoryId))
 	if err != nil {
 		return domain.Category{}, err
 	}
