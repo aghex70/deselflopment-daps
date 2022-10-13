@@ -2,7 +2,6 @@ package category
 
 import (
 	"context"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
@@ -24,26 +23,51 @@ func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.
 	if err != nil {
 		return err
 	}
-
+	u := domain.User{ID: int(userId)}
 	cat := domain.Category{
+		OwnerID:           int(userId),
 		Description:       req.Description,
-		Shared:            false,
 		Custom:            true,
 		Name:              req.Name,
 		InternationalName: req.InternationalName,
+		Users:             []domain.User{u},
 	}
-	nc, err := s.categoryRepository.Create(ctx, cat)
+	err = s.categoryRepository.Create(ctx, cat, int(userId))
 	if err != nil {
 		return err
 	}
 
-	categoriesIds := []int{nc.ID}
-	fmt.Println(userId)
-	err = s.relationshipRepository.CreateRelationships(ctx, int(userId), categoriesIds)
+	return nil
+}
+
+func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.UpdateCategoryRequest) error {
+	userId, _ := server.RetrieveJWTClaims(r, req)
+	err := s.ValidateModification(ctx, int(req.CategoryId), int(userId))
 	if err != nil {
 		return err
 	}
 
+	if req.Shared == nil {
+		cat := domain.Category{
+			ID:                int(req.CategoryId),
+			Description:       req.Description,
+			Name:              req.Name,
+			InternationalName: req.InternationalName,
+		}
+		err = s.categoryRepository.Update(ctx, cat)
+		if err != nil {
+			return err
+		}
+	} else {
+		cat := domain.Category{
+			ID:     int(req.CategoryId),
+			Shared: req.Shared,
+		}
+		err = s.categoryRepository.Share(ctx, cat)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -54,22 +78,6 @@ func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.Get
 		return domain.Category{}, err
 	}
 	return td, nil
-}
-
-func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.UpdateCategoryRequest) error {
-	userId, _ := server.RetrieveJWTClaims(r, req)
-	cat := domain.Category{
-		ID:                int(req.CategoryId),
-		Description:       req.Description,
-		Shared:            false,
-		Name:              req.Name,
-		InternationalName: req.InternationalName,
-	}
-	err := s.categoryRepository.Update(ctx, cat, int(userId))
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.DeleteCategoryRequest) error {

@@ -8,10 +8,10 @@ import (
 
 type CategoryServicer interface {
 	Create(ctx context.Context, r *http.Request, req CreateCategoryRequest) error
-	Delete(ctx context.Context, r *http.Request, req DeleteCategoryRequest) error
-	Get(ctx context.Context, r *http.Request, req GetCategoryRequest) (domain.Category, error)
-	List(ctx context.Context, r *http.Request) ([]domain.Category, error)
 	Update(ctx context.Context, r *http.Request, req UpdateCategoryRequest) error
+	Get(ctx context.Context, r *http.Request, req GetCategoryRequest) (domain.Category, error)
+	Delete(ctx context.Context, r *http.Request, req DeleteCategoryRequest) error
+	List(ctx context.Context, r *http.Request) ([]domain.Category, error)
 }
 
 type TodoServicer interface {

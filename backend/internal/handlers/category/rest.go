@@ -3,7 +3,6 @@ package category
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"gorm.io/gorm"
@@ -52,6 +51,22 @@ func (h CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) 
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
+	w.WriteHeader(http.StatusCreated)
+}
+
+func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.UpdateCategoryRequest{CategoryId: int64(id)}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.categoryService.Update(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
 }
 
 func (h CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request, id int) {
@@ -79,9 +94,7 @@ func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request, id 
 	}
 
 	c, err := h.categoryService.Get(nil, r, payload)
-	fmt.Println("111111111111111111111111111111111")
 	if err != nil {
-		fmt.Println("2222222222222222222222222222222")
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			w.WriteHeader(http.StatusNotFound)
 			return
@@ -112,21 +125,6 @@ func (h CategoryHandler) ListCategories(w http.ResponseWriter, r *http.Request) 
 
 	b, err := json.Marshal(handlers.ListCategoriesResponse{Categories: categories})
 	w.Write(b)
-}
-
-func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, id int) {
-	payload := ports.UpdateCategoryRequest{CategoryId: int64(id)}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	err = h.categoryService.Update(nil, r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
 }
 
 func NewCategoryHandler(cs ports.CategoryServicer, logger *log.Logger) CategoryHandler {

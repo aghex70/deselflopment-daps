@@ -28,12 +28,10 @@ func Migrate(db *sql.DB) error {
 		return err
 	}
 
-	fmt.Println("1111111111111111111111111111111111111")
 	if err := goose.Run("up", db, migrationDirectory, "sql"); err != nil {
 		fmt.Printf("%+v", err)
 		return err
 	}
-	fmt.Println("222222222222222222222222222222")
 
 	return nil
 }

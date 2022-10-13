@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
+	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"gorm.io/gorm"
 	"log"
 )
@@ -16,26 +17,12 @@ type CategoryGormRepository struct {
 	logger *log.Logger
 }
 
-type Category struct {
-	ID                int    `gorm:"primaryKey;column:id"`
-	Shared            bool   `gorm:"column:shared"`
-	Custom            bool   `gorm:"column:custom"`
-	Description       string `gorm:"column:description"`
-	Name              string `gorm:"column:name"`
-	InternationalName string `gorm:"column:international_name"`
-	//Users             []user.User `gorm:"many2many:daps_category_users"`
-}
-
 type Tabler interface {
 	TableName() string
 }
 
-func (Category) TableName() string {
-	return "daps_categories"
-}
-
 func (gr *CategoryGormRepository) GetByIds(ctx context.Context, ids []int) ([]domain.Category, error) {
-	var cs []Category
+	var cs []relationship.Category
 	var cats []domain.Category
 	result := gr.DB.Find(&cs, ids)
 	if result.Error != nil {
@@ -49,33 +36,63 @@ func (gr *CategoryGormRepository) GetByIds(ctx context.Context, ids []int) ([]do
 	return cats, nil
 }
 
-func (gr *CategoryGormRepository) GetUserCategory(ctx context.Context, name string, userId int) (domain.Category, error) {
-	var c Category
-	query := fmt.Sprintf("SELECT daps_categories.id FROM daps_categories INNER JOIN daps_categories_users_relationships ON daps_categories.id = daps_categories_users_relationships.category_id WHERE daps_categories_users_relationships.user_id = %d AND daps_categories.name = '%s'", userId, name)
-	fmt.Println(query)
-	result := gr.DB.Raw(query).Scan(&c)
+func (gr *CategoryGormRepository) UserCategoryExists(ctx context.Context, conditions string) (int, error) {
+	type queryResult struct {
+		ID int `json:"id"`
+	}
+	var r queryResult
+	result := gr.DB.Model(&relationship.Category{}).Select("daps_categories.id").Joins("INNER JOIN daps_category_users ON daps_categories.id = daps_category_users.category_id").Where(conditions).Find(&r)
 
 	if result.RowsAffected == 0 {
-		fmt.Println("000000000000000000")
-		return domain.Category{}, errors.New("category not updated")
+		return r.ID, nil
 	}
 
-	fmt.Println("1111111111111111111")
 	if result.Error != nil {
-		fmt.Println("2222222222222222222222")
-		return domain.Category{}, result.Error
+		return r.ID, result.Error
 	}
-	fmt.Println("333333333333333333")
-	return c.ToDto(), nil
+	return r.ID, nil
+}
+
+func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category, userId int) error {
+	nc := relationship.CategoryFromDto(c, userId)
+	result := gr.DB.Create(&nc)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category) error {
+	var nc relationship.Category
+	result := gr.DB.Model(&nc).Where(relationship.Category{ID: c.ID}).Updates(map[string]interface{}{
+		"name":               c.Name,
+		"international_name": c.InternationalName,
+		"description":        c.Description,
+	})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category) error {
+	var nc relationship.Category
+	result := gr.DB.Model(&nc).Where(relationship.Category{ID: c.ID}).Update("shared", c.Shared)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
 
 func (gr *CategoryGormRepository) GetById(ctx context.Context, id int, userId int) (domain.Category, error) {
-	var c Category
+	var c relationship.Category
 	query := fmt.Sprintf("SELECT * FROM daps_categories INNER JOIN daps_categories_users_relationships ON daps_categories.id = daps_categories_users_relationships.category_id WHERE daps_categories_users_relationships.user_id = %d AND daps_categories_users_relationships.category_id = %d", userId, id)
-	fmt.Println(query)
 	result := gr.DB.Raw(query).Scan(&c)
 	if result.RowsAffected == 0 {
-		fmt.Println("000000000000000000")
 		return domain.Category{}, gorm.ErrRecordNotFound
 	}
 
@@ -85,55 +102,8 @@ func (gr *CategoryGormRepository) GetById(ctx context.Context, id int, userId in
 	return c.ToDto(), nil
 }
 
-func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category, userId int) error {
-	var nc Category
-	query := fmt.Sprintf("SELECT * FROM daps_categories INNER JOIN daps_categories_users_relationships ON daps_categories.id = daps_categories_users_relationships.category_id WHERE daps_categories_users_relationships.user_id = %d AND daps_categories_users_relationships.category_id = %d", userId, c.ID)
-
-	//tx := db.Table("books").
-	//	Joins("INNER JOIN user_liked_books ulb ON ulb.book_id = books.id").
-	//	Select("books.id, books.name, count(ulb.user_id) as likes_count").
-	//	Group("books.id, books.name").
-	//	Order("likes_count desc").
-	//	Limit(50).
-	//	Find(&books)
-	fmt.Println(query)
-	result := gr.DB.Raw(query).Scan(&nc)
-	if result.RowsAffected == 0 {
-		fmt.Println("000000000000000000")
-		return gorm.ErrRecordNotFound
-	}
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	//nc.Name = c.Name
-	//nc.Description = c.Description
-	//nc.InternationalName = c.InternationalName
-	fmt.Printf("\n\n------------> nc %+v", nc)
-	result = gr.DB.Model(&nc).Where(Category{ID: c.ID}).Updates(map[string]interface{}{
-		"name":               c.Name,
-		"international_name": c.InternationalName,
-		"description":        c.Description,
-	})
-
-	if result.RowsAffected == 0 {
-		fmt.Println("111111111111111111111111111111111")
-		fmt.Println("111111111111111111111111111111111")
-		fmt.Println("111111111111111111111111111111111")
-		fmt.Println("111111111111111111111111111111111")
-		return errors.New("category not updated")
-	}
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-
 func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int) error {
-	var c Category
+	var c relationship.Category
 	result := gr.DB.Where("id = ?", id).Where("user_id = ?", userId).Delete(&c)
 	if result.Error != nil {
 		return result.Error
@@ -146,9 +116,9 @@ func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int
 }
 
 func (gr *CategoryGormRepository) ListCustom(ctx context.Context, userId int) ([]domain.Category, error) {
-	var cs []Category
+	var cs []relationship.Category
 	var cats []domain.Category
-	result := gr.DB.Where(&Category{Shared: true}).Find(&cs)
+	result := gr.DB.Where(&relationship.Category{Shared: true}).Find(&cs)
 	if result.Error != nil {
 		return []domain.Category{}, result.Error
 	}
@@ -161,8 +131,8 @@ func (gr *CategoryGormRepository) ListCustom(ctx context.Context, userId int) ([
 }
 
 func (gr *CategoryGormRepository) GetBaseCategory(ctx context.Context, name string) (domain.Category, error) {
-	var c Category
-	result := gr.DB.Where(&Category{Name: name, Shared: false}).First(&c)
+	var c relationship.Category
+	result := gr.DB.Where(&relationship.Category{Name: name, Shared: false}).First(&c)
 	if result.Error != nil {
 		return domain.Category{}, result.Error
 	}
@@ -170,7 +140,7 @@ func (gr *CategoryGormRepository) GetBaseCategory(ctx context.Context, name stri
 }
 
 func (gr *CategoryGormRepository) List(ctx context.Context, userId int) ([]domain.Category, error) {
-	var cs []Category
+	var cs []relationship.Category
 	var cats []domain.Category
 	result := gr.DB.Where(gr.DB.Where("user_id = ?", &userId).Where("custom = ?", true)).Or("custom = ?", false).Find(&cs)
 	if result.Error != nil {
@@ -184,57 +154,8 @@ func (gr *CategoryGormRepository) List(ctx context.Context, userId int) ([]domai
 	return cats, nil
 }
 
-func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category) (domain.Category, error) {
-	nc := fromDto(c)
-	result := gr.DB.Create(&nc)
-	if result.Error != nil {
-		return domain.Category{}, result.Error
-	}
-	return nc.ToDto(), nil
-}
-
 func NewCategoryGormRepository(db *gorm.DB) (*CategoryGormRepository, error) {
 	return &CategoryGormRepository{
 		DB: db,
 	}, nil
-}
-
-func (c Category) ToDto() domain.Category {
-	return domain.Category{
-		ID:                c.ID,
-		Description:       c.Description,
-		Shared:            c.Shared,
-		Custom:            c.Custom,
-		Name:              c.Name,
-		InternationalName: c.InternationalName,
-	}
-}
-
-func fromDto(c domain.Category) Category {
-	return Category{
-		ID:                c.ID,
-		Shared:            c.Shared,
-		Custom:            c.Custom,
-		Description:       c.Description,
-		Name:              c.Name,
-		InternationalName: c.InternationalName,
-	}
-}
-
-func CategoryDomainDB(categories []domain.Category) []Category {
-	var c []Category
-	for _, category := range categories {
-		nc := fromDto(category)
-		c = append(c, nc)
-	}
-	return c
-}
-
-func CategoryDBDomain(categories []Category) []domain.Category {
-	var c []domain.Category
-	for _, category := range categories {
-		nc := category.ToDto()
-		c = append(c, nc)
-	}
-	return c
 }

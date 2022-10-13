@@ -1,10 +1,11 @@
 package relationship
 
 import (
-	"context"
 	"database/sql"
+	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 type RelationshipGormRepository struct {
@@ -13,47 +14,98 @@ type RelationshipGormRepository struct {
 	logger *log.Logger
 }
 
-type CategoryUserRelationship struct {
-	ID         int `gorm:"primaryKey;column:id"`
-	CategoryID int `gorm:"column:category_id"`
-	UserID     int `gorm:"column:user_id"`
+type User struct {
+	ID               int        `gorm:"primaryKey;column:id"`
+	Email            string     `gorm:"column:email"`
+	IsAdmin          bool       `gorm:"column:is_admin"`
+	Password         string     `gorm:"column:password"`
+	RegistrationDate time.Time  `gorm:"column:registration_date;autoCreateTime"`
+	Categories       []Category `gorm:"many2many:daps_category_users"`
 }
 
-type CategoryUserRelationship2 struct {
-	CategoryID int
-	UserID     int
+type Category struct {
+	ID                int    `gorm:"primaryKey;column:id"`
+	OwnerID           int    `gorm:"column:owner_id"`
+	Shared            bool   `gorm:"column:shared"`
+	Custom            bool   `gorm:"column:custom"`
+	Description       string `gorm:"column:description"`
+	Name              string `gorm:"column:name"`
+	InternationalName string `gorm:"column:international_name"`
+	Users             []User `gorm:"many2many:daps_category_users"`
 }
 
 type Tabler interface {
 	TableName() string
 }
 
-func (CategoryUserRelationship) TableName() string {
-	return "daps_categories_users_relationships"
+func (Category) TableName() string {
+	return "daps_categories"
 }
 
-func (gr *RelationshipGormRepository) CreateRelationships(ctx context.Context, userId int, categoryIds []int) error {
-	var relationships []CategoryUserRelationship
-	for _, categoryId := range categoryIds {
-		relationships = append(relationships, CategoryUserRelationship{CategoryID: categoryId, UserID: userId})
-	}
-	result := gr.DB.Create(&relationships)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
-}
-
-func (gr *RelationshipGormRepository) PurgeRelationships(ctx context.Context, userId int) error {
-	result := gr.DB.Delete(&CategoryUserRelationship{}, "user_id = ?", userId)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+func (User) TableName() string {
+	return "daps_users"
 }
 
 func NewRelationshipGormRepository(db *gorm.DB) (*RelationshipGormRepository, error) {
 	return &RelationshipGormRepository{
 		DB: db,
 	}, nil
+}
+
+func (c Category) ToDto() domain.Category {
+	return domain.Category{
+		ID:                c.ID,
+		OwnerID:           c.OwnerID,
+		Description:       c.Description,
+		Shared:            &c.Shared,
+		Custom:            c.Custom,
+		Name:              c.Name,
+		InternationalName: c.InternationalName,
+	}
+}
+
+func CategoryFromDto(c domain.Category, userId int) Category {
+	return Category{
+		ID:                c.ID,
+		OwnerID:           c.OwnerID,
+		Custom:            c.Custom,
+		Description:       c.Description,
+		Name:              c.Name,
+		InternationalName: c.InternationalName,
+		Users:             []User{{ID: userId}},
+	}
+}
+
+func (u User) ToDto() domain.User {
+	return domain.User{
+		ID:         u.ID,
+		Email:      u.Email,
+		Categories: CategoryDBDomain(u.Categories),
+	}
+}
+
+func UserFromDto(u domain.User) User {
+	return User{
+		Email:    u.Email,
+		Password: u.Password,
+		//Categories: CategoryDomainDB(u.Categories, 0),
+	}
+}
+
+func CategoryDomainDB(categories []domain.Category, userId int) []Category {
+	var c []Category
+	for _, category := range categories {
+		nc := CategoryFromDto(category, userId)
+		c = append(c, nc)
+	}
+	return c
+}
+
+func CategoryDBDomain(categories []Category) []domain.Category {
+	var c []domain.Category
+	for _, category := range categories {
+		nc := category.ToDto()
+		c = append(c, nc)
+	}
+	return c
 }

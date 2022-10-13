@@ -20,9 +20,10 @@ type GetCategoryRequest struct {
 
 type UpdateCategoryRequest struct {
 	CategoryId        int64  `json:"category_id"`
-	Description       string `json:"description" validate:"required"`
-	Name              string `json:"name" validate:"required"`
-	InternationalName string `json:"international_name" validate:"required"`
+	Description       string `json:"description"`
+	Name              string `json:"name"`
+	InternationalName string `json:"international_name"`
+	Shared            *bool  `json:"shared"`
 }
 
 type ShareCategoryRequest struct {
