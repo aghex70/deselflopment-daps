@@ -48,48 +48,6 @@ func (gr *TodoGormRepository) Create(ctx context.Context, td domain.Todo) error 
 	return nil
 }
 
-func (gr *TodoGormRepository) Delete(ctx context.Context, id int, userId int) error {
-	td := Todo{ID: id}
-	result := gr.DB.Delete(&td)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
-}
-func (gr *TodoGormRepository) List(ctx context.Context, userId int, sorting string, filters string) ([]domain.Todo, error) {
-	var todos []Todo
-	var todes []domain.Todo
-	//fields := "id = " + strconv.Itoa(userId)
-	result := gr.DB.Where(&Todo{}).Order(sorting).Find(&todos)
-	if result.Error != nil {
-		return []domain.Todo{}, result.Error
-	}
-
-	for _, t := range todos {
-		todo := t.ToDto()
-		todes = append(todes, todo)
-	}
-	return todes, nil
-}
-func (gr *TodoGormRepository) GetById(ctx context.Context, id int, userId int) (domain.Todo, error) {
-	var td Todo
-	result := gr.DB.Where(&Todo{ID: int(id)}).First(&td)
-	if result.Error != nil {
-		return domain.Todo{}, result.Error
-	}
-	return td.ToDto(), nil
-}
-
-func (gr *TodoGormRepository) GetByNameAndCategory(ctx context.Context, name string, categoryId int) (domain.Todo, error) {
-	var td Todo
-	result := gr.DB.Where(&Todo{Name: name, CategoryId: categoryId}).First(&td)
-	if result.Error != nil {
-		return domain.Todo{}, result.Error
-	}
-
-	return td.ToDto(), nil
-}
-
 func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error {
 	ntd := fromDto(td)
 	result := gr.DB.Model(&ntd).Where(Todo{ID: ntd.ID}).Updates(map[string]interface{}{
@@ -135,6 +93,50 @@ func (gr *TodoGormRepository) Start(ctx context.Context, id int) error {
 		return result.Error
 	}
 	return nil
+}
+
+func (gr *TodoGormRepository) GetById(ctx context.Context, id int, userId int) (domain.Todo, error) {
+	var td Todo
+	result := gr.DB.Where(&Todo{ID: int(id)}).First(&td)
+	if result.Error != nil {
+		return domain.Todo{}, result.Error
+	}
+	return td.ToDto(), nil
+}
+
+func (gr *TodoGormRepository) List(ctx context.Context, userId int, sorting string, filters string) ([]domain.Todo, error) {
+	var todos []Todo
+	var todes []domain.Todo
+	//fields := "id = " + strconv.Itoa(userId)
+	result := gr.DB.Where(&Todo{}).Order(sorting).Find(&todos)
+	if result.Error != nil {
+		return []domain.Todo{}, result.Error
+	}
+
+	for _, t := range todos {
+		todo := t.ToDto()
+		todes = append(todes, todo)
+	}
+	return todes, nil
+}
+
+func (gr *TodoGormRepository) Delete(ctx context.Context, id int, userId int) error {
+	td := Todo{ID: id}
+	result := gr.DB.Delete(&td)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (gr *TodoGormRepository) GetByNameAndCategory(ctx context.Context, name string, categoryId int) (domain.Todo, error) {
+	var td Todo
+	result := gr.DB.Where(&Todo{Name: name, CategoryId: categoryId}).First(&td)
+	if result.Error != nil {
+		return domain.Todo{}, result.Error
+	}
+
+	return td.ToDto(), nil
 }
 
 func (gr *TodoGormRepository) GetSummary(ctx context.Context, userId int) ([]domain.CategorySummary, error) {
