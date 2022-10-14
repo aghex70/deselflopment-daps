@@ -35,7 +35,7 @@ type CreateTodoRequest struct {
 	Link        string `json:"link"`
 	Name        string `json:"name" validate:"required"`
 	Recurring   bool   `json:"recurring"`
-	Priority    int32  `json:"priority" validate:"required"`
+	Priority    int32  `json:"priority" validate:"required,gte=0,lte=4"`
 }
 
 type CompleteTodoRequest struct {
