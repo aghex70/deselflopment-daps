@@ -98,6 +98,10 @@ func (s TodoService) Start(ctx context.Context, r *http.Request, req ports.Start
 
 func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodoRequest) (domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, req)
+	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+	if err != nil {
+		return domain.Todo{}, err
+	}
 	td, err := s.todoRepository.GetById(ctx, int(req.TodoId), int(userId))
 	if err != nil {
 		return domain.Todo{}, err
