@@ -94,6 +94,7 @@ func (h TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (h TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request, id int) {

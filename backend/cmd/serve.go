@@ -54,7 +54,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			cs := categoryService.NewCategoryService(cr, rr, &logger2)
 			ch := categoryHandler.NewCategoryHandler(cs, &logger2)
 
-			tds := todoService.NewtodoService(tdr, &logger2)
+			tds := todoService.NewtodoService(tdr, rr, &logger2)
 			tdh := todoHandler.NewTodoHandler(tds, &logger2)
 
 			rh := root.NewRootHandler(cs, tds, &logger2)

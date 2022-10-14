@@ -11,3 +11,8 @@ func (s TodoService) CheckExistentTodo(ctx context.Context, name string, categor
 	t, err := s.todoRepository.GetByNameAndCategory(ctx, name, categoryId)
 	return t, !errors.Is(err, gorm.ErrRecordNotFound)
 }
+
+func (s TodoService) CheckCategoryPermissions(ctx context.Context, userId, categoryId int) error {
+	err := s.relationshipRepository.GetUserCategory(ctx, userId, categoryId)
+	return err
+}

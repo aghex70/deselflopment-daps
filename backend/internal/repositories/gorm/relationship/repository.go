@@ -1,7 +1,10 @@
 package relationship
 
 import (
+	"context"
 	"database/sql"
+	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
 	"log"
@@ -44,6 +47,24 @@ func (Category) TableName() string {
 
 func (User) TableName() string {
 	return "daps_users"
+}
+
+func (gr *RelationshipGormRepository) GetUserCategory(ctx context.Context, userId, categoryId int) error {
+	type queryResult struct {
+		Id int
+	}
+	var qr queryResult
+	query := fmt.Sprintf("SELECT daps_categories.id FROM daps_categories INNER JOIN daps_category_users ON daps_categories.id = daps_category_users.category_id INNER JOIN daps_users ON daps_users.id = daps_category_users.user_id WHERE daps_category_users.user_id = %d AND daps_category_users.category_id = %d", userId, categoryId)
+	result := gr.DB.Raw(query).Scan(&qr)
+
+	if result.RowsAffected == 0 {
+		return errors.New("user not linked to category")
+	}
+
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
 
 func NewRelationshipGormRepository(db *gorm.DB) (*RelationshipGormRepository, error) {

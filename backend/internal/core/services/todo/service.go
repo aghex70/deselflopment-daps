@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
+	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/server"
 	"log"
@@ -13,16 +14,20 @@ import (
 )
 
 type TodoService struct {
-	logger         *log.Logger
-	todoRepository *todo.TodoGormRepository
+	logger                 *log.Logger
+	todoRepository         *todo.TodoGormRepository
+	relationshipRepository *relationship.RelationshipGormRepository
 }
 
 func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.CreateTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	fmt.Println(userId)
-	t, preexistent := s.CheckExistentTodo(ctx, req.Name, req.Category)
-	if preexistent && t.Active {
-		return errors.New("already existent and active todo")
+	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+	if err != nil {
+		return err
+	}
+	_, preexistent := s.CheckExistentTodo(ctx, req.Name, req.Category)
+	if preexistent {
+		return errors.New("already existent todo with that info")
 	}
 
 	ntd := domain.Todo{
@@ -34,16 +39,9 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 		Recurring:   req.Recurring,
 	}
 
-	if preexistent && !t.Active {
-		err := s.todoRepository.Update(ctx, ntd)
-		if err != nil {
-			return err
-		}
-	} else {
-		err := s.todoRepository.Create(ctx, ntd)
-		if err != nil {
-			return err
-		}
+	err = s.todoRepository.Create(ctx, ntd)
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -123,9 +121,10 @@ func (s TodoService) Summary(ctx context.Context, r *http.Request) ([]domain.Cat
 	return summary, nil
 }
 
-func NewtodoService(tr *todo.TodoGormRepository, logger *log.Logger) TodoService {
+func NewtodoService(tr *todo.TodoGormRepository, rr *relationship.RelationshipGormRepository, logger *log.Logger) TodoService {
 	return TodoService{
-		logger:         logger,
-		todoRepository: tr,
+		logger:                 logger,
+		todoRepository:         tr,
+		relationshipRepository: rr,
 	}
 }
