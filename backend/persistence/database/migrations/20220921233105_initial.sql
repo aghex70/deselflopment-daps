@@ -39,7 +39,6 @@ CREATE TABLE daps_todos (
     recurring INT NOT NULL DEFAULT 0,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     description VARCHAR(128),
-    duration VARCHAR(128),
     link VARCHAR(128),
     name VARCHAR(128),
     priority INT DEFAULT 2,

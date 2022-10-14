@@ -1,9 +1,5 @@
 package ports
 
-import (
-	"time"
-)
-
 type CreateCategoryRequest struct {
 	Description       string `json:"description" validate:"required"`
 	Name              string `json:"name" validate:"required"`
@@ -34,13 +30,12 @@ type ListCategoriesRequest struct {
 }
 
 type CreateTodoRequest struct {
-	Category     int           `json:"category_id" validate:"required"`
-	Description  string        `json:"description"`
-	Duration     time.Duration `json:"duration" validate:"required"`
-	Link         string        `json:"link"`
-	Name         string        `json:"name" validate:"required"`
-	Prerequisite string        `json:"prerequisite"`
-	Priority     int32         `json:"priority" validate:"required"`
+	Category    int    `json:"category_id" validate:"required"`
+	Description string `json:"description"`
+	Link        string `json:"link"`
+	Name        string `json:"name" validate:"required"`
+	Recurring   bool   `json:"recurring"`
+	Priority    int32  `json:"priority" validate:"required"`
 }
 
 type CompleteTodoRequest struct {
@@ -60,14 +55,13 @@ type GetTodoRequest struct {
 }
 
 type UpdateTodoRequest struct {
-	Category     int           `json:"category_id"`
-	Description  string        `json:"description"`
-	Duration     time.Duration `json:"duration" validate:"required"`
-	Link         string        `json:"link"`
-	Name         string        `json:"name" validate:"required"`
-	Prerequisite string        `json:"prerequisite"`
-	Priority     int32         `json:"priority" validate:"required"`
-	TodoId       int64         `json:"todo_id"`
+	Category    int    `json:"category_id" validate:"required"`
+	Description string `json:"description"`
+	Link        string `json:"link"`
+	Name        string `json:"name" validate:"required"`
+	Recurring   bool   `json:"recurring"`
+	Priority    int32  `json:"priority" validate:"required;min=0;max=4"`
+	TodoId      int64  `json:"todo_id"`
 }
 
 // CreateUserRequest Users

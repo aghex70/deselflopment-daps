@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s TodoService) CheckExistentTodo(ctx context.Context, name string, link string, userId int) (domain.Todo, bool) {
-	t, err := s.todoRepository.GetByNameAndLink(ctx, name, link, userId)
+func (s TodoService) CheckExistentTodo(ctx context.Context, name string, categoryId int) (domain.Todo, bool) {
+	t, err := s.todoRepository.GetByNameAndCategory(ctx, name, categoryId)
 	return t, !errors.Is(err, gorm.ErrRecordNotFound)
 }
