@@ -38,7 +38,6 @@ func (Category) TableName() string {
 func (gr *CategoryGormRepository) GetUserCategory(ctx context.Context, name string, userId int) (domain.Category, error) {
 	var c Category
 	query := fmt.Sprintf("SELECT daps_categories.id FROM daps_categories INNER JOIN daps_categories_users_relationships ON daps_categories.id = daps_categories_users_relationships.category_id WHERE daps_categories_users_relationships.user_id = %d AND daps_categories.name = '%s'", userId, name)
-	fmt.Println(query)
 	result := gr.DB.Raw(query).Scan(&c)
 
 	if result.RowsAffected == 0 {

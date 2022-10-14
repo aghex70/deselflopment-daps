@@ -3,7 +3,6 @@ package todo
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
@@ -49,7 +48,11 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 
 func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.UpdateTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	fmt.Println(userId)
+	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+	if err != nil {
+		return err
+	}
+
 	ntd := domain.Todo{
 		ID:          int(req.TodoId),
 		Category:    req.Category,
@@ -60,7 +63,7 @@ func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.Upda
 		Recurring:   req.Recurring,
 	}
 
-	err := s.todoRepository.Update(ctx, ntd)
+	err = s.todoRepository.Update(ctx, ntd)
 	if err != nil {
 		return err
 	}
@@ -69,7 +72,11 @@ func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.Upda
 
 func (s TodoService) Complete(ctx context.Context, r *http.Request, req ports.CompleteTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	err := s.todoRepository.Complete(ctx, int(req.TodoId), int(userId))
+	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+	if err != nil {
+		return err
+	}
+	err = s.todoRepository.Complete(ctx, int(req.TodoId))
 	if err != nil {
 		return err
 	}
@@ -78,7 +85,11 @@ func (s TodoService) Complete(ctx context.Context, r *http.Request, req ports.Co
 
 func (s TodoService) Start(ctx context.Context, r *http.Request, req ports.StartTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	err := s.todoRepository.Start(ctx, int(req.TodoId), int(userId))
+	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+	if err != nil {
+		return err
+	}
+	err = s.todoRepository.Start(ctx, int(req.TodoId))
 	if err != nil {
 		return err
 	}

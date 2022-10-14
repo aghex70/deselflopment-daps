@@ -92,33 +92,45 @@ func (gr *TodoGormRepository) GetByNameAndCategory(ctx context.Context, name str
 
 func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error {
 	ntd := fromDto(td)
-	result := gr.DB.Model(&ntd).Where(Todo{ID: ntd.ID, Active: false}).Updates(map[string]interface{}{
-		"end_date":      nil,
-		"category_id":   ntd.CategoryId,
-		"completed":     false,
-		"creation_date": time.Now(),
-		"description":   ntd.Description,
-		"link":          ntd.Link,
-		"name":          ntd.Name,
-		"priority":      ntd.Priority,
+	result := gr.DB.Model(&ntd).Where(Todo{ID: ntd.ID}).Updates(map[string]interface{}{
+		"category_id": ntd.CategoryId,
+		"description": ntd.Description,
+		"link":        ntd.Link,
+		"name":        ntd.Name,
+		"priority":    ntd.Priority,
+		"recurring":   ntd.Recurring,
 	})
 
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-func (gr *TodoGormRepository) Complete(ctx context.Context, id int, userId int) error {
-	result := gr.DB.Model(&Todo{ID: int(id)}).Update("completed", true).Update("end_date", time.Now())
+func (gr *TodoGormRepository) Complete(ctx context.Context, id int) error {
+	result := gr.DB.Model(&Todo{ID: id}).Update("completed", true).Update("end_date", time.Now())
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-func (gr *TodoGormRepository) Start(ctx context.Context, id int, userId int) error {
-	result := gr.DB.Model(&Todo{ID: int(id)}).Update("active", true).Update("start_date", time.Now())
+func (gr *TodoGormRepository) Start(ctx context.Context, id int) error {
+	result := gr.DB.Model(&Todo{ID: id}).Update("active", true).Update("start_date", time.Now())
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
 	if result.Error != nil {
 		return result.Error
 	}

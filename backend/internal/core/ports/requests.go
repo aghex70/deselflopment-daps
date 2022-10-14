@@ -39,11 +39,13 @@ type CreateTodoRequest struct {
 }
 
 type CompleteTodoRequest struct {
-	TodoId int64 `json:"todo_id"`
+	Category int   `json:"category_id" validate:"required"`
+	TodoId   int64 `json:"todo_id"`
 }
 
 type StartTodoRequest struct {
-	TodoId int64 `json:"todo_id"`
+	Category int   `json:"category_id" validate:"required"`
+	TodoId   int64 `json:"todo_id"`
 }
 
 type DeleteTodoRequest struct {
@@ -51,16 +53,17 @@ type DeleteTodoRequest struct {
 }
 
 type GetTodoRequest struct {
-	TodoId int64 `json:"todo_id"`
+	Category int   `json:"category_id" validate:"required"`
+	TodoId   int64 `json:"todo_id"`
 }
 
 type UpdateTodoRequest struct {
 	Category    int    `json:"category_id" validate:"required"`
 	Description string `json:"description"`
 	Link        string `json:"link"`
-	Name        string `json:"name" validate:"required"`
+	Name        string `json:"name"`
 	Recurring   bool   `json:"recurring"`
-	Priority    int32  `json:"priority" validate:"required;min=0;max=4"`
+	Priority    int32  `json:"priority" validate:"gte=0,lte=4"`
 	TodoId      int64  `json:"todo_id"`
 }
 
