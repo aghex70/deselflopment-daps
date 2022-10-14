@@ -102,7 +102,7 @@ func (gr *CategoryGormRepository) GetById(ctx context.Context, id int) (domain.C
 
 func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int) error {
 	var c relationship.Category
-	result := gr.DB.Where("id = ?", id).Where("user_id = ?", userId).Delete(&c)
+	result := gr.DB.Where("id = ?", id).Delete(&c)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -110,6 +110,12 @@ func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int
 	if result.RowsAffected == 0 {
 		return errors.New("cannot delete category")
 	}
+
+	result = gr.DB.Raw("DELETE FROM daps_category_users WHERE category_id = ? AND user_id = ?", id, userId).Scan(&c)
+	if result.Error != nil {
+		return result.Error
+	}
+
 	return nil
 }
 

@@ -36,7 +36,7 @@ func (s CategoryService) ValidateRetrieval(ctx context.Context, categoryId, user
 	if err != nil {
 		return err
 	}
-	if catId != 0 {
+	if catId == 0 {
 		return errors.New("cannot retrieve category")
 	}
 	return nil
@@ -49,7 +49,7 @@ func (s CategoryService) ValidateRemoval(ctx context.Context, categoryId, userId
 		return err
 	}
 	if catId == 0 {
-		return errors.New("cannot remove nonexistent category")
+		return errors.New("cannot remove category")
 	}
 	return nil
 }
