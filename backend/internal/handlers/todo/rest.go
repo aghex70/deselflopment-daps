@@ -97,6 +97,21 @@ func (h TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+func (h TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.UpdateTodoRequest{TodoId: int64(id)}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.toDoService.Update(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+}
+
 func (h TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request, id int) {
 	payload := ports.CompleteTodoRequest{TodoId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
@@ -111,20 +126,19 @@ func (h TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request, id int
 	}
 }
 
-func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request, id int) {
-	payload := ports.DeleteTodoRequest{TodoId: int64(id)}
+func (h TodoHandler) StartTodo(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.StartTodoRequest{TodoId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	err = h.toDoService.Delete(nil, r, payload)
+	err = h.toDoService.Start(nil, r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request, id int) {
@@ -177,34 +191,20 @@ func (h TodoHandler) ListRecurringTodos(w http.ResponseWriter, r *http.Request) 
 	w.Write(b)
 }
 
-func (h TodoHandler) StartTodo(w http.ResponseWriter, r *http.Request, id int) {
-	payload := ports.StartTodoRequest{TodoId: int64(id)}
+func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.DeleteTodoRequest{TodoId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	err = h.toDoService.Start(nil, r, payload)
+	err = h.toDoService.Delete(nil, r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-}
-
-func (h TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request, id int) {
-	payload := ports.UpdateTodoRequest{TodoId: int64(id)}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	err = h.toDoService.Update(nil, r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h TodoHandler) Summary(w http.ResponseWriter, r *http.Request) {
