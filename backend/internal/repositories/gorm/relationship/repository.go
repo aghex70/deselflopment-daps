@@ -37,6 +37,11 @@ type Category struct {
 	Users             []User `gorm:"many2many:daps_category_users"`
 }
 
+type UserCategory struct {
+	UserID     int `gorm:"column:user_id"`
+	CategoryID int `gorm:"column:category_id"`
+}
+
 type Tabler interface {
 	TableName() string
 }
@@ -47,6 +52,10 @@ func (Category) TableName() string {
 
 func (User) TableName() string {
 	return "daps_users"
+}
+
+func (UserCategory) TableName() string {
+	return "daps_category_users"
 }
 
 func (gr *RelationshipGormRepository) GetUserCategory(ctx context.Context, userId, categoryId int) error {
@@ -65,6 +74,22 @@ func (gr *RelationshipGormRepository) GetUserCategory(ctx context.Context, userI
 		return result.Error
 	}
 	return nil
+}
+
+func (gr *RelationshipGormRepository) ListUserCategories(ctx context.Context, userId int) ([]int, error) {
+	var uc []UserCategory
+	result := gr.DB.Where(&UserCategory{UserID: userId}).Find(&uc)
+
+	if result.RowsAffected == 0 {
+		return []int{}, errors.New("user not linked to category")
+	}
+
+	if result.Error != nil {
+		return []int{}, result.Error
+	}
+
+	categoryIds := UserCategoryToList(uc)
+	return categoryIds, nil
 }
 
 func NewRelationshipGormRepository(db *gorm.DB) (*RelationshipGormRepository, error) {
@@ -127,6 +152,14 @@ func CategoryDBDomain(categories []Category) []domain.Category {
 	for _, category := range categories {
 		nc := category.ToDto()
 		c = append(c, nc)
+	}
+	return c
+}
+
+func UserCategoryToList(userCategories []UserCategory) []int {
+	var c []int
+	for _, uc := range userCategories {
+		c = append(c, uc.CategoryID)
 	}
 	return c
 }

@@ -104,11 +104,10 @@ func (gr *TodoGormRepository) GetById(ctx context.Context, id int, userId int) (
 	return td.ToDto(), nil
 }
 
-func (gr *TodoGormRepository) List(ctx context.Context, userId int, sorting string, filters string) ([]domain.Todo, error) {
+func (gr *TodoGormRepository) List(ctx context.Context, categoryId int) ([]domain.Todo, error) {
 	var todos []Todo
 	var todes []domain.Todo
-	//fields := "id = " + strconv.Itoa(userId)
-	result := gr.DB.Where(&Todo{}).Order(sorting).Find(&todos)
+	result := gr.DB.Where(&Todo{CategoryId: categoryId}).Find(&todos)
 	if result.Error != nil {
 		return []domain.Todo{}, result.Error
 	}
@@ -120,7 +119,22 @@ func (gr *TodoGormRepository) List(ctx context.Context, userId int, sorting stri
 	return todes, nil
 }
 
-func (gr *TodoGormRepository) Delete(ctx context.Context, id int, userId int) error {
+func (gr *TodoGormRepository) ListRecurring(ctx context.Context, categoryIds []int) ([]domain.Todo, error) {
+	var todos []Todo
+	var todes []domain.Todo
+	result := gr.DB.Where("recurring = ? AND category_id IN ?", true, categoryIds).Find(&todos)
+	if result.Error != nil {
+		return []domain.Todo{}, result.Error
+	}
+
+	for _, t := range todos {
+		todo := t.ToDto()
+		todes = append(todes, todo)
+	}
+	return todes, nil
+}
+
+func (gr *TodoGormRepository) Delete(ctx context.Context, id int) error {
 	td := Todo{ID: id}
 	result := gr.DB.Delete(&td)
 	if result.Error != nil {

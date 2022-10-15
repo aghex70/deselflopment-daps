@@ -109,9 +109,26 @@ func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodo
 	return td, nil
 }
 
-func (s TodoService) List(ctx context.Context, r *http.Request, sorting string, filters string) ([]domain.Todo, error) {
+func (s TodoService) List(ctx context.Context, r *http.Request, req ports.ListTodosRequest) ([]domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
-	todos, err := s.todoRepository.List(ctx, int(userId), sorting, filters)
+	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+	if err != nil {
+		return []domain.Todo{}, err
+	}
+	todos, err := s.todoRepository.List(ctx, req.Category)
+	if err != nil {
+		return []domain.Todo{}, err
+	}
+	return todos, nil
+}
+
+func (s TodoService) ListRecurring(ctx context.Context, r *http.Request) ([]domain.Todo, error) {
+	userId, _ := server.RetrieveJWTClaims(r, nil)
+	categoryIds, err := s.CheckCategoriesPermissions(ctx, int(userId))
+	if err != nil {
+		return []domain.Todo{}, err
+	}
+	todos, err := s.todoRepository.ListRecurring(ctx, categoryIds)
 	if err != nil {
 		return []domain.Todo{}, err
 	}
@@ -120,7 +137,11 @@ func (s TodoService) List(ctx context.Context, r *http.Request, sorting string, 
 
 func (s TodoService) Delete(ctx context.Context, r *http.Request, req ports.DeleteTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	err := s.todoRepository.Delete(ctx, int(req.TodoId), int(userId))
+	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+	if err != nil {
+		return err
+	}
+	err = s.todoRepository.Delete(ctx, int(req.TodoId))
 	if err != nil {
 		return err
 	}

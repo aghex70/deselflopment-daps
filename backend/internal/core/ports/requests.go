@@ -49,7 +49,8 @@ type StartTodoRequest struct {
 }
 
 type DeleteTodoRequest struct {
-	TodoId int64 `json:"todo_id"`
+	Category int   `json:"category_id" validate:"required"`
+	TodoId   int64 `json:"todo_id"`
 }
 
 type GetTodoRequest struct {
@@ -65,6 +66,10 @@ type UpdateTodoRequest struct {
 	Recurring   bool   `json:"recurring"`
 	Priority    int32  `json:"priority" validate:"gte=0,lte=4"`
 	TodoId      int64  `json:"todo_id"`
+}
+
+type ListTodosRequest struct {
+	Category int `json:"category_id" validate:"required"`
 }
 
 // CreateUserRequest Users

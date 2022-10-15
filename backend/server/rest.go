@@ -123,6 +123,7 @@ func (s *RestServer) StartServer() error {
 	// Todos
 	http.HandleFunc("/todo", JWTAuthMiddleware(s.toDoHandler.CreateTodo))
 	http.HandleFunc("/todos", JWTAuthMiddleware(s.toDoHandler.ListTodos))
+	http.HandleFunc("/recurring-todos", JWTAuthMiddleware(s.toDoHandler.ListRecurringTodos))
 	http.HandleFunc("/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
 
 	// Stats

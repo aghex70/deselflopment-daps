@@ -149,17 +149,25 @@ func (h TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request, id int) {
 }
 
 func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
-	queryParams := r.URL.Query()
-
-	sorting := queryParams.Get("sort")
-	filters := ""
-
-	// A NIVEL DE FRONT!!!!?????
-	if r := queryParams.Get("recurring"); r != "" {
-		filters += "recurring=" + r
+	payload := ports.ListTodosRequest{}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
 	}
 
-	todos, err := h.toDoService.List(nil, r, sorting, filters)
+	todos, err := h.toDoService.List(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(handlers.ListTodosResponse{Todos: todos})
+	w.Write(b)
+}
+
+func (h TodoHandler) ListRecurringTodos(w http.ResponseWriter, r *http.Request) {
+	todos, err := h.toDoService.ListRecurring(nil, r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
