@@ -36,6 +36,7 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 
 	categories, err := s.categoryRepository.GetByIds(ctx, baseCategoriesIds)
 	u := domain.User{
+		Name:       r.Name,
 		Email:      r.Email,
 		Password:   r.Password,
 		Categories: categories,

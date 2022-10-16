@@ -63,7 +63,7 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 			ID:     int(req.CategoryId),
 			Shared: req.Shared,
 		}
-		err = s.categoryRepository.Share(ctx, cat)
+		err = s.categoryRepository.Share(ctx, cat, req.Email)
 		if err != nil {
 			return err
 		}

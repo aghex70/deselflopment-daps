@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS daps_users;
 
 CREATE TABLE daps_users (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(128),
     email VARCHAR(128) NOT NULL,
     is_admin INT NOT NULL DEFAULT 0,
     registration_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,

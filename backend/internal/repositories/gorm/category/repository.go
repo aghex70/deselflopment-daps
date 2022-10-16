@@ -76,7 +76,7 @@ func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category)
 	return nil
 }
 
-func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category) error {
+func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category, email string) error {
 	var nc relationship.Category
 	result := gr.DB.Model(&nc).Where(relationship.Category{ID: c.ID}).Update("shared", c.Shared)
 

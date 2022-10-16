@@ -20,13 +20,12 @@ type UpdateCategoryRequest struct {
 	Name              string `json:"name"`
 	InternationalName string `json:"international_name"`
 	Shared            *bool  `json:"shared"`
+	Email             string `json:"email"`
 }
 
 type ShareCategoryRequest struct {
-	CategoryId int64 `json:"category_id"`
-}
-
-type ListCategoriesRequest struct {
+	CategoryId int64  `json:"category_id"`
+	Email      string `json:"email"`
 }
 
 type CreateTodoRequest struct {
@@ -72,19 +71,17 @@ type ListTodosRequest struct {
 	Category int `json:"category_id" validate:"required"`
 }
 
-// CreateUserRequest Users
 type CreateUserRequest struct {
+	Name           string `json:"name" validate:"required"`
 	Email          string `json:"email" validate:"required,email"`
 	Password       string `json:"password" validate:"required,min=14"`
 	RepeatPassword string `json:"repeat_password" validate:"required,min=14"`
 }
 
-// LoginUserRequest
 type LoginUserRequest struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=14"`
 }
 
-// RefreshTokenRequest
 type RefreshTokenRequest struct {
 }
