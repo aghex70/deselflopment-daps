@@ -3,6 +3,7 @@ package todo
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
 	"log"
@@ -160,7 +161,7 @@ func (gr *TodoGormRepository) GetByNameAndCategory(ctx context.Context, name str
 
 func (gr *TodoGormRepository) GetSummary(ctx context.Context, userId int) ([]domain.CategorySummary, error) {
 	var cs []domain.CategorySummary
-	query := "SELECT daps_categories.name, SUM(CASE WHEN daps_todos.priority = 5 then 1 else 0 END) as highest_priority_tasks, COUNT(*) as tasks FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id GROUP BY category_id"
+	query := fmt.Sprintf("SELECT daps_categories.name, SUM(CASE WHEN daps_todos.priority = 4 then 1 else 0 END) as highest_priority_tasks, COUNT(*) as tasks FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE category_id IN (SELECT category_id as lista FROM daps_category_users WHERE user_id = %d) GROUP BY category_id", userId)
 	result := gr.DB.Raw(query).Scan(&cs)
 	if result.Error != nil {
 		return cs, result.Error
