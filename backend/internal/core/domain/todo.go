@@ -32,6 +32,7 @@ type Summmary struct {
 }
 
 type CategorySummary struct {
+	ID                   int    `json:"id"`
 	Name                 string `json:"name"`
 	Tasks                int    `json:"tasks"`
 	HighestPriorityTasks int    `json:"highest_priority_tasks"`
