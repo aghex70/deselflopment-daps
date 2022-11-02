@@ -29,6 +29,11 @@ var baseCategoriesIds = []int{1, 2, 3, 4, 5}
 var hmacSampleSecret = []byte("random")
 
 func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) error {
+	match := s.PasswordsMatch(ctx, r.Password, r.RepeatPassword)
+	if !match {
+		return errors.New("passwords do not match")
+	}
+
 	preexistent := s.CheckExistentUser(ctx, r.Email)
 	if preexistent {
 		return errors.New("user already registered")

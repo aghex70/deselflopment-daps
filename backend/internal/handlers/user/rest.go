@@ -14,6 +14,20 @@ type UserHandler struct {
 }
 
 func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
+	//w.Header().Add("Access-Control-Allow-Origin", "*")
+	////w.Header().Add("Access-Control-Allow-Credentials", "true")
+	//w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	////w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	//w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
@@ -35,6 +49,14 @@ func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	//w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
@@ -57,6 +79,14 @@ func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	//w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
@@ -73,6 +103,9 @@ func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) RemoveUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3000")
+	//w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 	err := handlers.CheckHttpMethod(http.MethodDelete, w, r)
 	if err != nil {
 		return

@@ -165,7 +165,7 @@ func (c Category) ToDto() domain.Category {
 	return domain.Category{
 		ID:                c.ID,
 		Description:       c.Description,
-		Shared:            c.Shared,
+		Shared:            &c.Shared,
 		Custom:            c.Custom,
 		Name:              c.Name,
 		InternationalName: c.InternationalName,
@@ -175,7 +175,7 @@ func (c Category) ToDto() domain.Category {
 func fromDto(c domain.Category) Category {
 	return Category{
 		ID:                c.ID,
-		Shared:            c.Shared,
+		Shared:            *c.Shared,
 		Custom:            c.Custom,
 		Description:       c.Description,
 		Name:              c.Name,

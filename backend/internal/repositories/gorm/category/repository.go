@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"gorm.io/gorm"
@@ -39,26 +40,29 @@ func (gr *CategoryGormRepository) UserCategoryExists(ctx context.Context, condit
 	type queryResult struct {
 		ID int `json:"id"`
 	}
+	fmt.Println("\n conditions -----> ", conditions)
 	var r queryResult
 	result := gr.DB.Model(&relationship.Category{}).Select("daps_categories.id").Joins("INNER JOIN daps_category_users ON daps_categories.id = daps_category_users.category_id").Where(conditions).Find(&r)
 
 	if result.RowsAffected == 0 {
+		fmt.Println("66666666666666666666")
 		return r.ID, nil
 	}
 
 	if result.Error != nil {
+		fmt.Println("8888888888888888888")
 		return r.ID, result.Error
 	}
 	return r.ID, nil
 }
 
-func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category, userId int) error {
+func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category, userId int) (domain.Category, error) {
 	nc := relationship.CategoryFromDto(c, userId)
 	result := gr.DB.Create(&nc)
 	if result.Error != nil {
-		return result.Error
+		return domain.Category{}, result.Error
 	}
-	return nil
+	return nc.ToDto(), nil
 }
 
 func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category) error {
@@ -77,8 +81,31 @@ func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category)
 }
 
 func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category, email string) error {
+	type queryResult struct {
+		Id int
+	}
+	var qr queryResult
 	var nc relationship.Category
-	result := gr.DB.Model(&nc).Where(relationship.Category{ID: c.ID}).Update("shared", c.Shared)
+	query := fmt.Sprintf("SELECT daps_users.id FROM daps_users WHERE daps_users.email = '%s'", email)
+	result := gr.DB.Raw(query).Scan(&qr)
+	fmt.Println("ffffffffffffffffffffffffffffff")
+	if result.RowsAffected == 0 {
+		return errors.New("invalid email")
+	}
+
+	if result.Error != nil {
+		return result.Error
+	}
+	fmt.Println("gggggggggggggggggggggggggggggg")
+
+	query = fmt.Sprintf("INSERT INTO daps_category_users (category_id, user_id) VALUES (%d, %d)", c.ID, qr.Id)
+	result = gr.DB.Raw(query).Scan(&nc)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	fmt.Println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+	result = gr.DB.Model(&nc).Where(relationship.Category{ID: c.ID}).Update("shared", c.Shared)
 
 	if result.Error != nil {
 		return result.Error
@@ -102,7 +129,12 @@ func (gr *CategoryGormRepository) GetById(ctx context.Context, id int) (domain.C
 
 func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int) error {
 	var c relationship.Category
-	result := gr.DB.Where("id = ?", id).Delete(&c)
+	result := gr.DB.Raw("DELETE FROM daps_todos WHERE category_id = ?", id).Scan(&c)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	result = gr.DB.Where("id = ?", id).Delete(&c)
 	if result.Error != nil {
 		return result.Error
 	}

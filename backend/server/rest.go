@@ -32,6 +32,15 @@ var hmacSampleSecret = []byte("random")
 
 func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, PUT, OPTIONS")
+		//w.Header().Add("Access-Control-Allow-Credentials", "true")
+		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
 		if r.Header["Authorization"] == nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
@@ -76,6 +85,7 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
 	fmt.Printf("\n\npayload -------------> %+v", payload)
 	fmt.Printf("\n\nrequest -------------> %+v", r)
 	var tokenString string
+	fmt.Println("\n\nAUTHORIZATION -------------------> ", r.Header["Authorization"])
 	if r.Header["Authorization"] != nil {
 		tokenString = RetrieveHeaderJWT(r)
 	} else {
@@ -94,7 +104,7 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
 
 func CORS(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//w.Header().Add("Access-Control-Allow-Origin", "https://stackoverflow.com")
+		//w.Header().Add("Access-Control-Allow-Origin", "*")
 		//w.Header().Add("Access-Control-Allow-Credentials", "true")
 		//w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		//w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")

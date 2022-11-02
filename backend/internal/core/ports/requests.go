@@ -3,7 +3,7 @@ package ports
 type CreateCategoryRequest struct {
 	Description       string `json:"description" validate:"required"`
 	Name              string `json:"name" validate:"required"`
-	InternationalName string `json:"international_name" validate:"required"`
+	InternationalName string `json:"international_name"`
 }
 
 type DeleteCategoryRequest struct {
@@ -74,8 +74,8 @@ type ListTodosRequest struct {
 type CreateUserRequest struct {
 	Name           string `json:"name" validate:"required"`
 	Email          string `json:"email" validate:"required,email"`
-	Password       string `json:"password" validate:"required,min=14"`
-	RepeatPassword string `json:"repeat_password" validate:"required,min=14"`
+	Password       string `json:"password" validate:"required,min=4"`
+	RepeatPassword string `json:"repeat_password" validate:"required,min=4"`
 }
 
 type LoginUserRequest struct {

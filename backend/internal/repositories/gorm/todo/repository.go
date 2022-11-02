@@ -41,8 +41,11 @@ func (Todo) TableName() string {
 }
 
 func (gr *TodoGormRepository) Create(ctx context.Context, td domain.Todo) error {
+	fmt.Printf("\n\ntd: %+v", td)
 	ntd := fromDto(td)
+	fmt.Printf("\n\nntd: %+v", ntd)
 	result := gr.DB.Create(&ntd)
+	fmt.Printf("\n\nnresult: %+v", result)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -51,6 +54,7 @@ func (gr *TodoGormRepository) Create(ctx context.Context, td domain.Todo) error 
 
 func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error {
 	ntd := fromDto(td)
+	fmt.Printf("\n\nntd: %+v", ntd)
 	result := gr.DB.Model(&ntd).Where(Todo{ID: ntd.ID}).Updates(map[string]interface{}{
 		"category_id": ntd.CategoryId,
 		"description": ntd.Description,
@@ -161,7 +165,8 @@ func (gr *TodoGormRepository) GetByNameAndCategory(ctx context.Context, name str
 
 func (gr *TodoGormRepository) GetSummary(ctx context.Context, userId int) ([]domain.CategorySummary, error) {
 	var cs []domain.CategorySummary
-	query := fmt.Sprintf("SELECT daps_categories.name, SUM(CASE WHEN daps_todos.priority = 4 then 1 else 0 END) as highest_priority_tasks, COUNT(*) as tasks FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE category_id IN (SELECT category_id as lista FROM daps_category_users WHERE user_id = %d) GROUP BY category_id", userId)
+	query := fmt.Sprintf("SELECT daps_categories.id, daps_categories.name, SUM(CASE WHEN daps_todos.priority = 4 then 1 else 0 END) as highest_priority_tasks, COUNT(*) as tasks FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE category_id IN (SELECT category_id as lista FROM daps_category_users WHERE user_id = %d) GROUP BY category_id", userId)
+	fmt.Println(query)
 	result := gr.DB.Raw(query).Scan(&cs)
 	if result.Error != nil {
 		return cs, result.Error

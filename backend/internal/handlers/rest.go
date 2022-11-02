@@ -3,7 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/go-playground/validator/v10"
+	"io"
 	"net/http"
 )
 
@@ -21,12 +23,15 @@ func ValidateRequest(r *http.Request, payload interface{}) error {
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(&payload)
 	if err != nil {
-		return err
+		if err != io.EOF {
+			return err
+		}
 	}
 
 	validate := validator.New()
 	err = validate.Struct(payload)
 	if err != nil {
+		fmt.Println("bbbbbbbbbbbbbbbbbbbbbbbb")
 		return err
 	}
 

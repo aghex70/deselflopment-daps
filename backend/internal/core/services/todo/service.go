@@ -3,6 +3,7 @@ package todo
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
@@ -47,12 +48,14 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 }
 
 func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.UpdateTodoRequest) error {
+	fmt.Println("12312312312313123")
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("342345345345345")
 	ntd := domain.Todo{
 		ID:          int(req.TodoId),
 		Category:    req.Category,
@@ -64,6 +67,7 @@ func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.Upda
 	}
 
 	err = s.todoRepository.Update(ctx, ntd)
+	fmt.Println("6666666666666664564564546")
 	if err != nil {
 		return err
 	}
