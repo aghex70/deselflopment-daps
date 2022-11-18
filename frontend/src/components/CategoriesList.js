@@ -276,10 +276,10 @@ const CategoriesList = () => {
 
       <Modal className='successModal text-center' show={showModalUserAlreadySubscribed} open={showModalUserAlreadySubscribed} centered={true} size='lg'>
         <ModalBody>
-          <h4>User already subscribed to that category!</h4>
+          <h4 style={{margin: "32px"}}>User already subscribed to that category!</h4>
           <ButtonGroup style={{width: "40%"}}>
             <Button
-              variant="success"
+              variant="danger"
               onClick={(e) => toggleUserAlreadySubscribedModal(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >Return</Button>
