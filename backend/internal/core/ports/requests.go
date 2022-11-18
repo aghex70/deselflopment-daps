@@ -23,11 +23,6 @@ type UpdateCategoryRequest struct {
 	Email             string `json:"email"`
 }
 
-type ShareCategoryRequest struct {
-	CategoryId int64  `json:"category_id"`
-	Email      string `json:"email"`
-}
-
 type CreateTodoRequest struct {
 	Category    int    `json:"category_id" validate:"required"`
 	Description string `json:"description"`
