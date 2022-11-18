@@ -1,0 +1,41 @@
+.editIcon {
+    color: orange;
+    cursor: pointer;
+}
+
+.deleteIcon {
+    color: red;
+    cursor: pointer;
+}
+
+.inspectIcon {
+    color: cornflowerblue;
+    cursor: pointer;
+}
+
+.shareIcon {
+    color: forestgreen;
+    cursor: pointer;
+}
+
+.startIcon {
+    color: green;
+    cursor: pointer;
+}
+
+.stopIcon {
+    color: red;
+    cursor: pointer;
+}
+
+.endIcon {
+    color: blue;
+    cursor: pointer;
+}
+
+.createIcon {
+    color: green;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
