@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CategoryService from "../services/category";
-import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
+import {Alert, Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import './CategoriesList.css';
 import BootstrapTable from "react-bootstrap-table-next";
@@ -15,6 +15,7 @@ import DapsHeader from "./Header";
 const CategoriesList = () => {
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showModalUserAlreadySubscribed, setShowModalUserAlreadySubscribed] = useState(false);
   const [showUnshareModal, setUnshareShowModal] = useState(false);
   const [shareId, setShareId] = useState("");
   const [unshareId, setUnshareId] = useState("");
@@ -87,14 +88,12 @@ const CategoriesList = () => {
   const deleteCategory = (id) => {
     CategoryService.deleteCategory(id).then(
       (response) => {
-        console.log(response);
         if (response.status === 204) {
           window.location.reload();
         }
       }
     ).catch(
       (error) => {
-        console.log(error);
         error = new Error("Deletion failed!");
       })
   }
@@ -103,18 +102,20 @@ const CategoriesList = () => {
     setShowModal(!showModal);
   }
 
+  const toggleUserAlreadySubscribedModal = () => {
+    setShowModalUserAlreadySubscribed(!showModalUserAlreadySubscribed);
+  }
+
   const toggleUnshareModal = () => {
     setUnshareShowModal(!showUnshareModal);
   }
 
   const shareCategory = (id) => {
-    console.log("shareId: " + id);
     setShareId(id);
     setShowModal(true);
   }
 
   const unshareCategory = (id) => {
-    console.log("shareId: " + id);
     setUnshareId(id);
     setUnshareShowModal(true);
   }
@@ -122,14 +123,12 @@ const CategoriesList = () => {
   const confirmUnshareCategory = () => {
     CategoryService.unshareCategory(unshareId).then(
       (response) => {
-        console.log(response);
         if (response.status === 200) {
           window.location.reload();
         }
       }
     ).catch(
       (error) => {
-        console.log(error);
         error = new Error("Unsharing failed!");
       })
   }
@@ -137,28 +136,27 @@ const CategoriesList = () => {
   const confirmShareCategory = () => {
     CategoryService.shareCategory(shareId, shareEmail).then(
       (response) => {
-        console.log(response);
         if (response.status === 200) {
           setShowModal(false);
+        } else if (response.status === 400 && response.data.message === "user already subscribed to that category") {
         }
       }
     ).catch(
       (error) => {
-        console.log(error);
-        console.log("AGPAGPAPGAPGPG");
+        if (error.response.data.message === "user already subscribed to that category") {
+          setShowModal(false);
+          setShowModalUserAlreadySubscribed(true);
+        }
         error = new Error("Sharing failed!");
         setShowModal(false);
       })
   }
 
   useEffect(() => {
-    console.log("hola")
     if (!categories || categories.length === 0) {
       CategoryService.getCategories().then(
         (response) => {
-          console.log(response);
           if (response.status === 200 && response.data) {
-            console.log("response.data -----------> " + response.data);
             setCategories(response.data);
             setCategorySpan({
               textAlign: "center",
@@ -166,12 +164,10 @@ const CategoriesList = () => {
             }
             );
           } else {
-            console.log("NO DATA MY FRIEND");
           }
         }
       ).catch(
         (error) => {
-          console.log(error);
           error = new Error("Login failed!");
         })
     }
@@ -228,7 +224,6 @@ const CategoriesList = () => {
       <FontAwesomeIcon className="createIcon" icon={faPlus} />Create a new Category</span>
   }
 
-  console.log("CATEGORIES: " + categories, typeof categories);
   return (
     <Container>
       <DapsHeader />
@@ -275,6 +270,19 @@ const CategoriesList = () => {
             onClick={(e) => toggleModal(e)}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >Cancel</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='successModal text-center' show={showModalUserAlreadySubscribed} open={showModalUserAlreadySubscribed} centered={true} size='lg'>
+        <ModalBody>
+          <h4>User already subscribed to that category!</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+              variant="success"
+              onClick={(e) => toggleUserAlreadySubscribedModal(e)}
+              style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >Return</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
