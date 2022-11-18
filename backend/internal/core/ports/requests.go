@@ -34,10 +34,15 @@ type CreateTodoRequest struct {
 	Link        string `json:"link"`
 	Name        string `json:"name" validate:"required"`
 	Recurring   bool   `json:"recurring"`
-	Priority    int32  `json:"priority" validate:"required,gte=0,lte=4"`
+	Priority    int32  `json:"priority" validate:"required,gte=1,lte=5"`
 }
 
 type CompleteTodoRequest struct {
+	Category int   `json:"category_id" validate:"required"`
+	TodoId   int64 `json:"todo_id"`
+}
+
+type ActivateTodoRequest struct {
 	Category int   `json:"category_id" validate:"required"`
 	TodoId   int64 `json:"todo_id"`
 }
@@ -63,7 +68,7 @@ type UpdateTodoRequest struct {
 	Link        string `json:"link"`
 	Name        string `json:"name"`
 	Recurring   bool   `json:"recurring"`
-	Priority    int32  `json:"priority" validate:"gte=0,lte=4"`
+	Priority    int32  `json:"priority" validate:"required,gte=1,lte=5"`
 	TodoId      int64  `json:"todo_id"`
 }
 
@@ -80,7 +85,7 @@ type CreateUserRequest struct {
 
 type LoginUserRequest struct {
 	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=14"`
+	Password string `json:"password" validate:"required,min=4"`
 }
 
 type RefreshTokenRequest struct {

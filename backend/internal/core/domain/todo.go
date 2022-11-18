@@ -5,7 +5,7 @@ import "time"
 type Priority int
 
 const (
-	Lowest Priority = iota
+	Lowest Priority = iota + 1
 	Low
 	Medium
 	High
@@ -15,6 +15,7 @@ const (
 type Todo struct {
 	Active       bool       `json:"active"`
 	Category     int        `json:"category_id"`
+	CategoryName string     `json:"category_name"`
 	Completed    bool       `json:"completed"`
 	CreationDate time.Time  `json:"creation_date"`
 	Description  string     `json:"description"`
@@ -36,4 +37,5 @@ type CategorySummary struct {
 	Name                 string `json:"name"`
 	Tasks                int    `json:"tasks"`
 	HighestPriorityTasks int    `json:"highest_priority_tasks"`
+	OwnerId              int    `json:"owner_id"`
 }

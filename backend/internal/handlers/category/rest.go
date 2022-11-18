@@ -90,15 +90,15 @@ func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, 
 }
 
 func (h CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request, id int) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
-	//w.Header().Add("Access-Control-Allow-Credentials", "true")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	//w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-
-	if r.Method == "OPTIONS" {
-		http.Error(w, "No Content", http.StatusNoContent)
-		return
-	}
+	//w.Header().Add("Access-Control-Allow-Origin", "*")
+	////w.Header().Add("Access-Control-Allow-Credentials", "true")
+	//w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	////w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	//
+	//if r.Method == "OPTIONS" {
+	//	http.Error(w, "No Content", http.StatusNoContent)
+	//	return
+	//}
 	payload := ports.DeleteCategoryRequest{CategoryId: int64(id)}
 	fmt.Println("cccccccccccccccccccccccccccc11111111111111111111111")
 	err := handlers.ValidateRequest(r, &payload)

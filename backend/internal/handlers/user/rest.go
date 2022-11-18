@@ -69,12 +69,12 @@ func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.userService.Login(nil, payload)
+	token, userId, err := h.userService.Login(nil, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	b, err := json.Marshal(handlers.TokenResponse{AccessToken: token})
+	b, err := json.Marshal(handlers.TokenResponse{AccessToken: token, UserId: userId})
 	w.Write(b)
 }
 

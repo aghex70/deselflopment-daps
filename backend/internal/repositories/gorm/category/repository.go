@@ -114,6 +114,15 @@ func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category, 
 	return nil
 }
 
+func (gr *CategoryGormRepository) Unshare(ctx context.Context, c domain.Category, userId int) error {
+	var cat relationship.Category
+	result := gr.DB.Raw("DELETE FROM daps_category_users WHERE category_id = ? AND user_id = ?", c.ID, userId).Scan(&cat)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 func (gr *CategoryGormRepository) GetById(ctx context.Context, id int) (domain.Category, error) {
 	var c relationship.Category
 	result := gr.DB.Where(&relationship.Category{ID: id}).First(&c)

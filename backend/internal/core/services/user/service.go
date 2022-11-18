@@ -55,10 +55,10 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 	return nil
 }
 
-func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (string, error) {
+func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (string, int, error) {
 	u, err := s.userRepository.GetByEmail(ctx, r.Email)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	claims := MyCustomClaims{
@@ -73,10 +73,10 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	ss, err := token.SignedString(mySigningKey)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	return ss, nil
+	return ss, u.ID, nil
 }
 
 func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string, error) {

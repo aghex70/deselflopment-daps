@@ -20,7 +20,7 @@ func (s CategoryService) ValidateCreation(ctx context.Context, name string, user
 }
 
 func (s CategoryService) ValidateModification(ctx context.Context, categoryId, userId int) error {
-	conditions := fmt.Sprintf("daps_category_users.user_id = %d AND daps_category_users.category_id = %d AND daps_categories.shared = false", userId, categoryId)
+	conditions := fmt.Sprintf("daps_category_users.user_id = %d AND daps_category_users.category_id = %d AND daps_categories.owner_id = %d", userId, categoryId, userId)
 	catId, err := s.categoryRepository.UserCategoryExists(ctx, conditions)
 	if err != nil {
 		return err
@@ -33,6 +33,18 @@ func (s CategoryService) ValidateModification(ctx context.Context, categoryId, u
 
 func (s CategoryService) ValidateShare(ctx context.Context, categoryId, userId int) error {
 	conditions := fmt.Sprintf("daps_category_users.user_id = %d AND daps_category_users.category_id = %d AND daps_categories.owner_id = %d", userId, categoryId, userId)
+	catId, err := s.categoryRepository.UserCategoryExists(ctx, conditions)
+	if err != nil {
+		return err
+	}
+	if catId == 0 {
+		return errors.New("cannot update category")
+	}
+	return nil
+}
+
+func (s CategoryService) ValidateUnshare(ctx context.Context, categoryId, userId int) error {
+	conditions := fmt.Sprintf("daps_category_users.user_id = %d AND daps_category_users.category_id = %d", userId, categoryId)
 	catId, err := s.categoryRepository.UserCategoryExists(ctx, conditions)
 	if err != nil {
 		return err
@@ -58,7 +70,7 @@ func (s CategoryService) ValidateRetrieval(ctx context.Context, categoryId, user
 }
 
 func (s CategoryService) ValidateRemoval(ctx context.Context, categoryId, userId int) error {
-	conditions := fmt.Sprintf("daps_category_users.user_id = %d AND daps_category_users.category_id = %d AND daps_categories.shared = false", userId, categoryId)
+	conditions := fmt.Sprintf("daps_category_users.user_id = %d AND daps_category_users.category_id = %d AND daps_categories.owner_id = %d", userId, categoryId, userId)
 	catId, err := s.categoryRepository.UserCategoryExists(ctx, conditions)
 	if err != nil {
 		return err

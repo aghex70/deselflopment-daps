@@ -42,7 +42,7 @@ CREATE TABLE daps_todos (
     description VARCHAR(128),
     link VARCHAR(128),
     name VARCHAR(128),
-    priority INT DEFAULT 2,
+    priority INT DEFAULT 1,
     start_date TIMESTAMP NULL DEFAULT NULL,
     suggested INT NOT NULL DEFAULT 0,
     suggestion_date TIMESTAMP NULL DEFAULT NULL,

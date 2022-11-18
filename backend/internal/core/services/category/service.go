@@ -80,7 +80,7 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 		if err != nil {
 			return err
 		}
-	} else {
+	} else if *req.Shared == true {
 		err := s.ValidateShare(ctx, int(req.CategoryId), int(userId))
 		if err != nil {
 			return err
@@ -90,6 +90,20 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 			Shared: req.Shared,
 		}
 		err = s.categoryRepository.Share(ctx, cat, req.Email)
+		if err != nil {
+			return err
+		}
+
+	} else if *req.Shared == false {
+		err := s.ValidateUnshare(ctx, int(req.CategoryId), int(userId))
+		if err != nil {
+			return err
+		}
+		cat := domain.Category{
+			ID:     int(req.CategoryId),
+			Shared: req.Shared,
+		}
+		err = s.categoryRepository.Unshare(ctx, cat, int(userId))
 		if err != nil {
 			return err
 		}
@@ -140,6 +154,7 @@ func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.
 	fmt.Println("Trying to deleeeeeeeeeeeeeeeeeeeeeete")
 	err = s.categoryRepository.Delete(ctx, int(req.CategoryId), int(userId))
 	if err != nil {
+		fmt.Println("Error deleting @@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 		return err
 	}
 	return nil

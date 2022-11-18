@@ -54,6 +54,22 @@ func (h TodoHandler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if completeString := "/activate"; strings.Contains(path, completeString) {
+		todoIdString := strings.Split(path, completeString)[0]
+		todoId, err := strconv.Atoi(todoIdString)
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		if r.Method != http.MethodPut {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		// TODO PENDING
+		h.ActivateTodo(w, r, todoId, 0)
+		return
+	}
+
 	queryParams := strings.Split(path, "?")
 	todoId, err := strconv.Atoi(queryParams[0])
 	if err != nil {
@@ -153,6 +169,20 @@ func (h TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request, id, ca
 	}
 }
 
+func (h TodoHandler) ActivateTodo(w http.ResponseWriter, r *http.Request, id, categoryId int) {
+	payload := ports.ActivateTodoRequest{TodoId: int64(id), Category: categoryId}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	err = h.toDoService.Activate(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+}
+
 func (h TodoHandler) StartTodo(w http.ResponseWriter, r *http.Request, id, categoryId int) {
 	payload := ports.StartTodoRequest{TodoId: int64(id), Category: categoryId}
 	err := handlers.ValidateRequest(r, &payload)
@@ -202,9 +232,25 @@ func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
 	//	return
 	//}
 
+	fmt.Println("alberto0")
 	categoryId, err := strconv.Atoi(q.Get("category_id"))
+	fmt.Println("alberto1")
 	payload.Category = categoryId
+	fmt.Println("alberto")
 	todos, err := h.toDoService.List(nil, r, payload)
+	if err != nil {
+		fmt.Println("alberto2")
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(todos)
+	fmt.Println("alberto3")
+	w.Write(b)
+}
+
+func (h TodoHandler) ListRecurringTodos(w http.ResponseWriter, r *http.Request) {
+	todos, err := h.toDoService.ListRecurring(nil, r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -214,8 +260,8 @@ func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func (h TodoHandler) ListRecurringTodos(w http.ResponseWriter, r *http.Request) {
-	todos, err := h.toDoService.ListRecurring(nil, r)
+func (h TodoHandler) ListCompletedTodos(w http.ResponseWriter, r *http.Request) {
+	todos, err := h.toDoService.ListCompleted(nil, r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return

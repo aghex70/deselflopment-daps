@@ -87,6 +87,19 @@ func (s TodoService) Complete(ctx context.Context, r *http.Request, req ports.Co
 	return nil
 }
 
+func (s TodoService) Activate(ctx context.Context, r *http.Request, req ports.ActivateTodoRequest) error {
+	userId, _ := server.RetrieveJWTClaims(r, req)
+	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+	if err != nil {
+		return err
+	}
+	err = s.todoRepository.Activate(ctx, int(req.TodoId))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s TodoService) Start(ctx context.Context, r *http.Request, req ports.StartTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
@@ -116,13 +129,18 @@ func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodo
 func (s TodoService) List(ctx context.Context, r *http.Request, req ports.ListTodosRequest) ([]domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+	fmt.Println("3333333333333333333333333333")
 	if err != nil {
+		fmt.Println("44444444444444444444444444")
 		return []domain.Todo{}, err
 	}
 	todos, err := s.todoRepository.List(ctx, req.Category)
+	fmt.Println("55555555555555555555555555")
 	if err != nil {
+		fmt.Println("6666666666666666666666666666666")
 		return []domain.Todo{}, err
 	}
+	fmt.Println("7777777777777777777777777777777")
 	return todos, nil
 }
 
@@ -133,6 +151,19 @@ func (s TodoService) ListRecurring(ctx context.Context, r *http.Request) ([]doma
 		return []domain.Todo{}, err
 	}
 	todos, err := s.todoRepository.ListRecurring(ctx, categoryIds)
+	if err != nil {
+		return []domain.Todo{}, err
+	}
+	return todos, nil
+}
+
+func (s TodoService) ListCompleted(ctx context.Context, r *http.Request) ([]domain.Todo, error) {
+	userId, _ := server.RetrieveJWTClaims(r, nil)
+	categoryIds, err := s.CheckCategoriesPermissions(ctx, int(userId))
+	if err != nil {
+		return []domain.Todo{}, err
+	}
+	todos, err := s.todoRepository.ListCompleted(ctx, categoryIds)
 	if err != nil {
 		return []domain.Todo{}, err
 	}
