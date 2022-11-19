@@ -163,30 +163,6 @@ func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int
 	return nil
 }
 
-func (gr *CategoryGormRepository) ListCustom(ctx context.Context, userId int) ([]domain.Category, error) {
-	var cs []relationship.Category
-	var cats []domain.Category
-	result := gr.DB.Where(&relationship.Category{Shared: true}).Find(&cs)
-	if result.Error != nil {
-		return []domain.Category{}, result.Error
-	}
-
-	for _, c := range cs {
-		cs := c.ToDto()
-		cats = append(cats, cs)
-	}
-	return cats, nil
-}
-
-func (gr *CategoryGormRepository) GetBaseCategory(ctx context.Context, name string) (domain.Category, error) {
-	var c relationship.Category
-	result := gr.DB.Where(&relationship.Category{Name: name, Shared: false}).First(&c)
-	if result.Error != nil {
-		return domain.Category{}, result.Error
-	}
-	return c.ToDto(), nil
-}
-
 func (gr *CategoryGormRepository) List(ctx context.Context, userId int) ([]domain.Category, error) {
 	var cs []relationship.Category
 	var cats []domain.Category

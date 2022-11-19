@@ -122,15 +122,6 @@ func (gr *CategoryGormRepository) ListCustom(ctx context.Context, userId int) ([
 	return cats, nil
 }
 
-func (gr *CategoryGormRepository) GetBaseCategory(ctx context.Context, name string) (domain.Category, error) {
-	var c Category
-	result := gr.DB.Where(&Category{Name: name, Shared: false}).First(&c)
-	if result.Error != nil {
-		return domain.Category{}, result.Error
-	}
-	return c.ToDto(), nil
-}
-
 func (gr *CategoryGormRepository) List(ctx context.Context, userId int) ([]domain.Category, error) {
 	var cs []Category
 	var cats []domain.Category
