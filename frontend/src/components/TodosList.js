@@ -7,9 +7,10 @@ import {useLocation, useNavigate} from "react-router-dom";
 import './TodosList.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import DapsHeader from "./Header";
-// import createTodo from "./CreateTodo";
+import checkAccess from "../utils/helpers";
 
 const TodosList = () => {
+  checkAccess();
   const [todos, setTodos] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();

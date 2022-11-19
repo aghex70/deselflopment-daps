@@ -6,11 +6,12 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import DapsHeader from "./Header";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import checkAccess from "../utils/helpers";
 
 const RecurringTodosList = () => {
+  checkAccess();
   const [todos, setTodos] = useState([]);
-  const location = useLocation();
   const navigate = useNavigate();
 
   // Color code the todo based on its priority

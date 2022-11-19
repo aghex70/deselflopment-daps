@@ -5,10 +5,12 @@ import './TodosList.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import DapsHeader from "./Header";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTrashRestore, faTrash, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faTrashRestore, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
+import checkAccess from "../utils/helpers";
 
 const CompletedTodosList = () => {
+  checkAccess();
   const [todos, setTodos] = useState([]);
   const navigate = useNavigate();
 

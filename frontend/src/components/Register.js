@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {Button, Container, FloatingLabel, Form} from "react-bootstrap";
 import UserService from "../services/user";
 
-export default function Register() {
+const Register = ()  =>{
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -90,3 +90,5 @@ export default function Register() {
     </Container>
   )
 }
+
+export default Register;

@@ -1,11 +1,16 @@
-import {faClockRotateLeft, faBookOpen, faChartSimple, faThumbsUp, faHome} from "@fortawesome/free-solid-svg-icons";
+import {
+  faClockRotateLeft,
+  faChartSimple,
+  faHome,
+  faPowerOff,
+  faCog, faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
-// import './TodosList.css';
-// import BootstrapTable from 'react-bootstrap-table-next';
-// import createTodo from "./CreateTodo";
+import checkAccess from "../utils/helpers";
 
 const DapsHeader = () => {
+  checkAccess();
 
   const navigateCategories = () => {
     window.location.href = "/categories";
@@ -19,9 +24,13 @@ const DapsHeader = () => {
     window.location.href = "/recurring-todos";
   }
 
+  const logout = () => {
+    window.location.href = "/logout";
+  }
+
       return (
         <Container>
-          <ButtonGroup style={{width: "35%", marginTop: "15px", marginBottom: "15px"}}>
+          <ButtonGroup style={{width: "45%", marginTop: "15px", marginBottom: "15px"}}>
             <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="primary"
                     onClick={() => navigateCategories()}
@@ -34,7 +43,7 @@ const DapsHeader = () => {
                     onClick={() => navigateCompletedTodos()}
                     title="Completed Todos"
             >
-              <FontAwesomeIcon icon={faThumbsUp} />
+              <FontAwesomeIcon icon={faCheck} />
             </Button>
             <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                     variant="secondary"
@@ -44,11 +53,24 @@ const DapsHeader = () => {
 
               <FontAwesomeIcon icon={faClockRotateLeft} />
             </Button>
-            <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                    variant="warning" title="Statistics (coming soon)"
+            <Button disabled={true} style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                    variant="outline-warning" title="Statistics (coming soon)"
             >
 
-              <FontAwesomeIcon style={{color: "white"}} icon={faChartSimple} />
+              <FontAwesomeIcon icon={faChartSimple} />
+            </Button>
+            <Button disabled={true} style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                    variant="outline-info" title="Configuration (coming soon)"
+            >
+
+              <FontAwesomeIcon icon={faCog} />
+            </Button>
+            <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                    variant="danger" title="Logout"
+                    onClick={() => logout()}
+            >
+
+              <FontAwesomeIcon style={{color: "white"}} icon={faPowerOff} />
             </Button>
           </ButtonGroup>
         </Container>

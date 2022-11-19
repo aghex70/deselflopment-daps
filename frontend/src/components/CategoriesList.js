@@ -2,20 +2,26 @@ import React, {useEffect, useState} from 'react';
 import {
   faPencil, faPlus,
   faShareNodes,
-  faTrash
+  faTrash,
+  faEye
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CategoryService from "../services/category";
-import {Alert, Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
+import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import './CategoriesList.css';
 import BootstrapTable from "react-bootstrap-table-next";
 import DapsHeader from "./Header";
+import checkAccess from "../utils/helpers";
 
 const CategoriesList = () => {
+  checkAccess();
+
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showModalUserAlreadySubscribed, setShowModalUserAlreadySubscribed] = useState(false);
+  const [showModalCannotDeleteCategory, setShowModalCannotDeleteCategory] = useState(false);
+  const [showModalCannotEditCategory, setShowModalCannotEditCategory] = useState(false);
   const [showUnshareModal, setUnshareShowModal] = useState(false);
   const [shareId, setShareId] = useState("");
   const [unshareId, setUnshareId] = useState("");
@@ -81,8 +87,9 @@ const CategoriesList = () => {
     navigate("/create-category");
   }
 
-  const getCategory = (id) => {
-    navigate("/category/" + id);
+  const getCategory = (id, action) => {
+    console.log("action", action);
+    navigate("/category/" + id, {state: {action: action}});
   }
 
   const deleteCategory = (id) => {
@@ -94,6 +101,9 @@ const CategoriesList = () => {
       }
     ).catch(
       (error) => {
+        if (error.response.data.message === "cannot remove category") {
+          setShowModalCannotDeleteCategory(true);
+        }
         error = new Error("Deletion failed!");
       })
   }
@@ -104,6 +114,14 @@ const CategoriesList = () => {
 
   const toggleUserAlreadySubscribedModal = () => {
     setShowModalUserAlreadySubscribed(!showModalUserAlreadySubscribed);
+  }
+
+  const toggleCannotDeleteCategoryModal = () => {
+    setShowModalCannotDeleteCategory(!setShowModalCannotDeleteCategory);
+  }
+
+  const toggleCannotEditCategoryModal = () => {
+    setShowModalCannotEditCategory(!setShowModalCannotEditCategory);
   }
 
   const toggleUnshareModal = () => {
@@ -138,7 +156,6 @@ const CategoriesList = () => {
       (response) => {
         if (response.status === 200) {
           setShowModal(false);
-        } else if (response.status === 400 && response.data.message === "user already subscribed to that category") {
         }
       }
     ).catch(
@@ -204,11 +221,20 @@ const CategoriesList = () => {
             </Button>
           )}
 
+          {isOwner(row.owner_id)? (
           <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
                   title="Edit"
-                  variant="outline-primary" onClick={() => getCategory(row.id, row.name)}>
+                  variant="outline-primary" onClick={() => getCategory(row.id, "edit")}>
             <FontAwesomeIcon icon={faPencil} />
           </Button>
+          ) : (
+            <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
+                    title="View"
+                    variant="outline-primary" onClick={() => getCategory(row.id, "view")}>
+              <FontAwesomeIcon icon={faEye} />
+            </Button>
+          )}
+
           <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                   title="Delete"
                   variant="outline-danger" onClick={() => deleteCategory(row.id)}>
@@ -240,13 +266,9 @@ const CategoriesList = () => {
       />
       <Modal className='successModal text-center' show={showModal} open={showModal} centered={true} size='lg'>
         <ModalBody>
-          <div>
-            <div className='container my-4'>
-            </div>
-          </div>
+          <h4 style={{margin: "32px"}}>Share category</h4>
           <Form  onSubmit={(e) => confirmShareCategory(e)}>
             <Form.Group controlId="formCategoryName">
-              <h3 style={{margin: "32px"}}>Share category</h3>
               <FloatingLabel
                 controlId="floatingEmail"
                 label="Email"
@@ -287,13 +309,35 @@ const CategoriesList = () => {
         </ModalBody>
       </Modal>
 
+      <Modal className='successModal text-center' show={showModalCannotDeleteCategory} open={showModalCannotDeleteCategory} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>Only owners can delete a shared category. If you want the category to disappear, unsubscribe from it!</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+              variant="danger"
+              onClick={(e) => toggleCannotDeleteCategoryModal(e)}
+              style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >Return</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='successModal text-center' show={showModalCannotEditCategory} open={showModalCannotEditCategory} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>Only owners can edit a shared category!</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+              variant="danger"
+              onClick={(e) => toggleCannotEditCategoryModal(e)}
+              style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >Return</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
       <Modal className='unshareModal text-center' show={showUnshareModal} open={showUnshareModal} centered={true} size='lg'>
         <ModalBody>
-          <div>
-            Are you sure you want to unsubscribe from this category? This operation cannot be undone.
-            <div className='container my-4'>
-            </div>
-          </div>
+          <h4 style={{margin: "32px"}}>Are you sure you want to unsubscribe from this category? This operation cannot be undone!</h4>
           <ButtonGroup style={{width: "80%"}}>
             <Button
               variant="success"

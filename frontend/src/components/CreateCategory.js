@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import CategoryService from "../services/category";
 import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
 import DapsHeader from "./Header";
+import checkAccess from "../utils/helpers";
 
 const CreateCategory = () => {
+  checkAccess();
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
 

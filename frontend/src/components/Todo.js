@@ -3,8 +3,10 @@ import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstr
 import {useLocation, useNavigate, useParams} from 'react-router-dom'
 import TodoService from "../services/todo";
 import DapsHeader from "./Header";
+import checkAccess from "../utils/helpers";
 
 const Todo = () => {
+    checkAccess();
     const [todoName, setTodoName] = useState("");
     const [todoDescription, setTodoDescription] = useState("");
     const [todoLink, setTodoLink] = useState("");

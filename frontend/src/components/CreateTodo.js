@@ -4,8 +4,10 @@ import {useLocation, useNavigate, useParams} from 'react-router-dom'
 import TodoService from "../services/todo";
 import toBoolean from "validator/es/lib/toBoolean";
 import DapsHeader from "./Header";
+import checkAccess from "../utils/helpers";
 
 const CreateTodo = () => {
+    checkAccess();
     const [todoName, setTodoName] = useState("");
     const [todoDescription, setTodoDescription] = useState("");
     const [todoLink, setTodoLink] = useState("");
