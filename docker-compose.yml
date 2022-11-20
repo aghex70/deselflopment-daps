@@ -40,18 +40,18 @@ services:
     image: redis:alpine
     command: [ redis-server, --port, "10379" ]
 
-#
-#  daps-frontend:
-#    build:
-#      context: frontend
-#      dockerfile: Dockerfile
-#    command: ["npm", "start"]
-#    restart: always
-#    ports:
-#      - "13001:13001"
-#    stdin_open: true
-#    depends_on:
-#      - daps-backend
+
+  daps-frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    command: ["npm", "start"]
+    restart: always
+    ports:
+      - "13001:3000"
+    stdin_open: true
+    volumes:
+      - ./frontend:/daps/frontend
 
 volumes:
   mysql-db123:
