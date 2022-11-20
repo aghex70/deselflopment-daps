@@ -34,7 +34,7 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 		return errors.New("passwords do not match")
 	}
 
-	preexistent := s.CheckExistentUser(ctx, r.Email)
+	preexistent := s.CheckExistentUser(ctx, r.Email, r.Password)
 	if preexistent {
 		return errors.New("user already registered")
 	}
@@ -56,7 +56,7 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 }
 
 func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (string, int, error) {
-	u, err := s.userRepository.GetByEmail(ctx, r.Email)
+	u, err := s.userRepository.GetByEmail(ctx, r.Email, r.Password)
 	if err != nil {
 		return "", 0, err
 	}

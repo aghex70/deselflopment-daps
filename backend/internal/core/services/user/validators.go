@@ -6,8 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s UserService) CheckExistentUser(ctx context.Context, email string) bool {
-	_, err := s.userRepository.GetByEmail(ctx, email)
+func (s UserService) CheckExistentUser(ctx context.Context, email, password string) bool {
+	_, err := s.userRepository.GetByEmail(ctx, email, password)
 	return !errors.Is(err, gorm.ErrRecordNotFound)
 }
 
