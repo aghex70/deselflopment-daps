@@ -113,7 +113,7 @@ const TodosList = () => {
           error = new Error("Login failed!");
         })
     }
-  },[]);
+  },[todos, categoryId]);
 
   function actionsFormatter(cell, row) {
     return (

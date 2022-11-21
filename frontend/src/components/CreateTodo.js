@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
-import {useLocation, useNavigate, useParams} from 'react-router-dom'
+import {useLocation, useNavigate} from 'react-router-dom'
 import TodoService from "../services/todo";
 import toBoolean from "validator/es/lib/toBoolean";
 import DapsHeader from "./Header";
@@ -19,7 +19,6 @@ const CreateTodo = () => {
     const location = useLocation();
     const categoryId = location.state.categoryId;
     const categoryName = location.state.categoryName;
-    const { id } = useParams();
     const navigate = useNavigate();
 
     const disablePrioritySelect = () => {

@@ -188,7 +188,7 @@ const CategoriesList = () => {
         })
     }
 
-  },[]);
+  },[categories]);
 
   function isOwner(rowOwnerId) {
     return rowOwnerId === userId;

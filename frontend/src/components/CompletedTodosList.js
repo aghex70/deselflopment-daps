@@ -119,7 +119,7 @@ const CompletedTodosList = () => {
           error = new Error("Login failed!");
         })
     }
-  },[]);
+  },[todos]);
 
   function indication() {
     return "You better complete some Todos first!!!";

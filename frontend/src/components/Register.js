@@ -7,7 +7,6 @@ const Register = ()  =>{
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-  const [register, setRegister] = useState(false);
 
   const styles = {
     display: 'flex',
@@ -22,10 +21,7 @@ const Register = ()  =>{
     UserService.register(name, email, password, repeatPassword).then(
       (response) => {
         if (response.status === 201) {
-          setRegister(true);
           window.location.href = "/login";
-        } else {
-          setRegister(false);
         }
       }
     ).catch(

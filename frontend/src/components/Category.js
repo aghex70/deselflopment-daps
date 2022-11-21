@@ -54,7 +54,7 @@ const Category = () => {
       }
     )
   }
-  ,[]);
+  ,[id]);
 
   return (
     <Container>

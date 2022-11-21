@@ -72,7 +72,7 @@ const Todo = () => {
           }
         )
       }
-      ,[]);
+      ,[id, categoryId]);
 
     return (
       <Container>

@@ -106,7 +106,7 @@ const RecurringTodosList = () => {
           error = new Error("Login failed!");
         })
     }
-  },[]);
+  },[todos]);
 
   return (
     <Container>
