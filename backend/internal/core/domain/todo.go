@@ -39,3 +39,12 @@ type CategorySummary struct {
 	HighestPriorityTasks int    `json:"highest_priority_tasks"`
 	OwnerId              int    `json:"owner_id"`
 }
+
+type CategoryInfo struct {
+	CategoryName string `json:"category_name"`
+}
+
+type TodoInfo struct {
+	CategoryInfo
+	Todo
+}

@@ -21,7 +21,6 @@ type Todo struct {
 	Active       bool       `gorm:"column:active"`
 	EndDate      *time.Time `gorm:"column:end_date"`
 	CategoryId   int        `gorm:"column:category_id"`
-	CategoryName string     `json:"category_name"`
 	Completed    bool       `gorm:"column:completed"`
 	CreationDate time.Time  `gorm:"column:creation_date;autoCreateTime"`
 	Description  string     `gorm:"column:description"`
@@ -30,6 +29,11 @@ type Todo struct {
 	Priority     int        `gorm:"column:priority"`
 	Recurring    bool       `gorm:"column:recurring"`
 	StartDate    *time.Time `gorm:"column:start_date"`
+}
+
+type TodoInfo struct {
+	CategoryName string `json:"category_name"`
+	Todo
 }
 
 type Tabler interface {
@@ -114,19 +118,17 @@ func (gr *TodoGormRepository) Start(ctx context.Context, id int) error {
 	return nil
 }
 
-func (gr *TodoGormRepository) GetById(ctx context.Context, id int, userId int) (domain.Todo, error) {
-	var td Todo
+func (gr *TodoGormRepository) GetById(ctx context.Context, id int, userId int) (domain.TodoInfo, error) {
+	var ti TodoInfo
 
 	query := fmt.Sprintf("SELECT daps_todos.id, daps_todos.category_id, daps_todos.end_date, daps_todos.creation_date, daps_todos.completed, daps_todos.description, daps_todos.link, daps_todos.name, daps_todos.priority, daps_todos.recurring, daps_todos.start_date, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.id = %d", id)
 	fmt.Println(query)
-	result := gr.DB.Raw(query).Scan(&td)
+	result := gr.DB.Raw(query).Scan(&ti)
 
-	//result := gr.DB.Where(&Todo{ID: int(id)}).Select()First(&td)
-	//result := gr.DB.Where(&Todo{ID: int(id)}).First(&td)
 	if result.Error != nil {
-		return domain.Todo{}, result.Error
+		return domain.TodoInfo{}, result.Error
 	}
-	return td.ToDto(), nil
+	return ti.ToDto(), nil
 }
 
 func (gr *TodoGormRepository) List(ctx context.Context, categoryId int) ([]domain.Todo, error) {
@@ -223,7 +225,6 @@ func (td Todo) ToDto() domain.Todo {
 		Active:       td.Active,
 		EndDate:      td.EndDate,
 		Category:     td.CategoryId,
-		CategoryName: td.CategoryName,
 		Completed:    td.Completed,
 		CreationDate: td.CreationDate,
 		Description:  td.Description,
@@ -241,7 +242,6 @@ func fromDto(td domain.Todo) Todo {
 		Active:       td.Active,
 		EndDate:      td.EndDate,
 		CategoryId:   td.Category,
-		CategoryName: td.CategoryName,
 		Completed:    td.Completed,
 		CreationDate: td.CreationDate,
 		Description:  td.Description,
@@ -251,5 +251,26 @@ func fromDto(td domain.Todo) Todo {
 		Priority:     int(td.Priority),
 		Recurring:    td.Recurring,
 		StartDate:    td.StartDate,
+	}
+}
+
+func (ti TodoInfo) ToDto() domain.TodoInfo {
+	return domain.TodoInfo{
+		Todo: domain.Todo{
+			Active:       ti.Active,
+			EndDate:      ti.EndDate,
+			Category:     ti.CategoryId,
+			CategoryName: ti.CategoryName,
+			Completed:    ti.Completed,
+			CreationDate: ti.CreationDate,
+			Description:  ti.Description,
+			ID:           ti.ID,
+			Link:         ti.Link,
+			Name:         ti.Name,
+			Priority:     domain.Priority(ti.Priority),
+			Recurring:    ti.Recurring,
+			StartDate:    ti.StartDate,
+		},
+		CategoryInfo: domain.CategoryInfo{CategoryName: ti.CategoryName},
 	}
 }

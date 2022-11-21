@@ -19,7 +19,7 @@ type TodoServicer interface {
 	Complete(ctx context.Context, r *http.Request, req CompleteTodoRequest) error
 	Activate(ctx context.Context, r *http.Request, req ActivateTodoRequest) error
 	Delete(ctx context.Context, r *http.Request, req DeleteTodoRequest) error
-	Get(ctx context.Context, r *http.Request, req GetTodoRequest) (domain.Todo, error)
+	Get(ctx context.Context, r *http.Request, req GetTodoRequest) (domain.TodoInfo, error)
 	List(ctx context.Context, r *http.Request, req ListTodosRequest) ([]domain.Todo, error)
 	ListCompleted(ctx context.Context, r *http.Request) ([]domain.Todo, error)
 	ListRecurring(ctx context.Context, r *http.Request) ([]domain.Todo, error)
