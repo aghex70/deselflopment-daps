@@ -120,23 +120,23 @@ func CORS(next http.HandlerFunc) http.HandlerFunc {
 
 func (s *RestServer) StartServer() error {
 	// User
-	http.HandleFunc("/register", s.userHandler.Register)
-	http.HandleFunc("/login", s.userHandler.Login)
-	http.HandleFunc("/refresh-token", JWTAuthMiddleware(s.userHandler.RefreshToken))
-	http.HandleFunc("/user", JWTAuthMiddleware(s.userHandler.RemoveUser))
+	http.HandleFunc("/api/register", s.userHandler.Register)
+	http.HandleFunc("/api/login", s.userHandler.Login)
+	http.HandleFunc("/api/refresh-token", JWTAuthMiddleware(s.userHandler.RefreshToken))
+	http.HandleFunc("/api/user", JWTAuthMiddleware(s.userHandler.RemoveUser))
 	//http.HandleFunc("/recover-password", JWTAuthMiddleware(s.userHandler.RemoveUser))
 
 	// Categories
-	http.HandleFunc("/categories", s.categoryHandler.ListCategories)
-	http.HandleFunc("/category", s.categoryHandler.CreateCategory)
+	http.HandleFunc("/api/categories", s.categoryHandler.ListCategories)
+	http.HandleFunc("/api/category", s.categoryHandler.CreateCategory)
 
 	// Todos
-	http.HandleFunc("/todo", JWTAuthMiddleware(s.toDoHandler.CreateTodo))
-	http.HandleFunc("/todos", JWTAuthMiddleware(s.toDoHandler.ListTodos))
-	http.HandleFunc("/recurring-todos", JWTAuthMiddleware(s.toDoHandler.ListRecurringTodos))
-	http.HandleFunc("/completed-todos", JWTAuthMiddleware(s.toDoHandler.ListCompletedTodos))
-	http.HandleFunc("/suggested-todos", JWTAuthMiddleware(s.toDoHandler.ListCompletedTodos))
-	http.HandleFunc("/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
+	http.HandleFunc("/api/todo", JWTAuthMiddleware(s.toDoHandler.CreateTodo))
+	http.HandleFunc("/api/todos", JWTAuthMiddleware(s.toDoHandler.ListTodos))
+	http.HandleFunc("/api/recurring-todos", JWTAuthMiddleware(s.toDoHandler.ListRecurringTodos))
+	http.HandleFunc("/api/completed-todos", JWTAuthMiddleware(s.toDoHandler.ListCompletedTodos))
+	http.HandleFunc("/api/suggested-todos", JWTAuthMiddleware(s.toDoHandler.ListCompletedTodos))
+	http.HandleFunc("/api/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
 
 	// Stats
 	//http.HandleFunc("/statistics", JWTAuthMiddleware(s.toDoHandler.Todo))

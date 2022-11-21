@@ -1,8 +1,8 @@
 import axios from "axios";
 // import requestHeaders from "../common/Headers";
 
-const CATEGORY_URL = "http://localhost:11001/category";
-const CATEGORIES_URL = "http://localhost:11001/summary";
+const CATEGORY_URL = "http://localhost:11001/api/category";
+const CATEGORIES_URL = "http://localhost:11001/api/summary";
 
 const options = {
   headers: {
