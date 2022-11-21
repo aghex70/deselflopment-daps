@@ -44,7 +44,6 @@ const deleteTodo = (id, categoryId) => {
 }
 
 const updateTodo = (id, payload) => {
-  console.log(id, payload)
   return axios.put(`${TODO_URL}/${id}`,
     payload
   , options);

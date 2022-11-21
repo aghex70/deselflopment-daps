@@ -62,18 +62,14 @@ const CreateTodo = () => {
 
       TodoService.createTodo(data).then(
         (response) => {
-          console.log("data: " + data);
           if (response.status === 201) {
-            console.log("success!!!")
             navigateTodos(categoryId, categoryName);
           } else {
-            console.log("NO success!!!")
             window.location.reload()
           }
         }
       ).catch(
         (error) => {
-          console.log(error);
           error = new Error("Update todo failed!");
         }
       )

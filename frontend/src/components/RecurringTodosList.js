@@ -77,46 +77,32 @@ const RecurringTodosList = () => {
   }
 
   const navigateToTodo = (id, categoryId, categoryName, action) => {
-    console.log("TODOLIST navigatin to TODO id: " + id);
-    console.log("TODOLIST categoryId: " + categoryId);
-    console.log("TODOLIST categoryName: " + categoryName);
-    // console.log("TODOLIST location.state: " + Object.keys(location.state), Object.values(location.state));
     navigate("/todo/" + id, {state: {categoryId: categoryId, action: action}});
   }
 
   const deleteTodo = (id, categoryId) => {
     TodoService.deleteTodo(id, categoryId).then(
       (response) => {
-        console.log(response);
         if (response.status === 204) {
-          console.log("Deleted");
           window.location.reload();
         }
       }
     ).catch(
       (error) => {
-        console.log(error);
         error = new Error("Deletion failed!");
       })
   }
 
   useEffect(() => {
-    console.log("hola")
     if (!todos || todos.length === 0) {
       TodoService.getRecurringTodos().then(
         (response) => {
-          console.log(response);
           if (response.status === 200 && response.data) {
-            console.log("response.data " + response.data);
             setTodos(response.data);
-          } else {
-            console.log("NO DATA MY FRIEND");
           }
-
         }
       ).catch(
         (error) => {
-          console.log(error);
           error = new Error("Login failed!");
         })
     }

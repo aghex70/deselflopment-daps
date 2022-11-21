@@ -50,25 +50,18 @@ const TodosList = () => {
   }
 
   const navigateToTodo = (id, categoryId, categoryName, action) => {
-    console.log("TODOLIST navigatin to TODO id: " + id);
-    console.log("TODOLIST categoryId: " + categoryId);
-    console.log("TODOLIST categoryName: " + categoryName);
-    console.log("TODOLIST location.state: " + Object.keys(location.state), Object.values(location.state));
     navigate("/todo/" + id, {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName, action: action}});
   }
 
   const deleteTodo = (id) => {
     TodoService.deleteTodo(id, categoryId).then(
       (response) => {
-        console.log(response);
         if (response.status === 204) {
-          console.log("Deleted");
           window.location.reload();
         }
       }
     ).catch(
       (error) => {
-        console.log(error);
         error = new Error("Deletion failed!");
       })
   }
@@ -76,14 +69,12 @@ const TodosList = () => {
   const completeTodo = (id) => {
     TodoService.completeTodo(id, categoryId).then(
       (response) => {
-        console.log(response);
         if (response.status === 200) {
           window.location.reload();
         }
       }
     ).catch(
       (error) => {
-        console.log(error);
         error = new Error("Completion failed!");
       })
   }
@@ -91,14 +82,12 @@ const TodosList = () => {
   const startTodo = (id) => {
     TodoService.startTodo(id, categoryId).then(
       (response) => {
-        console.log(response);
         if (response.status === 200) {
           window.location.reload();
         }
       }
     ).catch(
       (error) => {
-        console.log(error);
         error = new Error("Completion failed!");
       })
   }
@@ -108,26 +97,19 @@ const TodosList = () => {
   }
 
   useEffect(() => {
-    console.log("hola")
     if (!todos || todos.length === 0) {
       TodoService.getTodos(categoryId).then(
         (response) => {
-          console.log(response);
           if (response.status === 200 && response.data) {
-            console.log("response.data " + response.data);
             setTodos(response.data);
             setTodoSpan({
               textAlign: "center",
               display: "block",
             })
-          } else {
-            console.log("NO DATA MY FRIEND");
           }
-
         }
       ).catch(
         (error) => {
-          console.log(error);
           error = new Error("Login failed!");
         })
     }

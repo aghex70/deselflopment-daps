@@ -30,7 +30,6 @@ const Login = () => {
       }
     ).catch(
       (error) => {
-        console.log(error);
         error = new Error("Login failed!");
         setMessage(error.message);
       }

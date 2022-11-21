@@ -12,7 +12,6 @@ const Category = () => {
   const { id } = useParams();
   const location = useLocation();
   const enableEdit = location.state.action === "edit";
-  console.log("EDIT: " + enableEdit);
 
   const navigateCategories = () => {
     window.location.href = "/categories";
@@ -29,16 +28,13 @@ const Category = () => {
     CategoryService.updateCategory(id, data).then(
       (response) => {
         if (response.status === 200) {
-          console.log("success!!!")
           window.location.href = "/categories";
         } else {
-          console.log("NO success!!!")
           window.location.reload()
         }
       }
     ).catch(
       (error) => {
-        console.log(error);
         error = new Error("Update category failed!");
       }
     )
@@ -47,18 +43,14 @@ const Category = () => {
   useEffect(() => {
     CategoryService.getCategory(id).then(
       (response) => {
-        console.log(response);
         if (response.status === 200) {
           setCategoryName(response.data.name);
-          console.log(response.data.name);
           setCategoryDescription(response.data.description);
-          console.log(response.data);
         }
       }
     ).catch(
       (error) => {
         // window.location.href = "/categories";
-        console.log(error)
       }
     )
   }

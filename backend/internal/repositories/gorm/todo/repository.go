@@ -46,11 +46,8 @@ func (Todo) TableName() string {
 }
 
 func (gr *TodoGormRepository) Create(ctx context.Context, td domain.Todo) error {
-	fmt.Printf("\n\ntd: %+v", td)
 	ntd := fromDto(td)
-	fmt.Printf("\n\nntd: %+v", ntd)
 	result := gr.DB.Create(&ntd)
-	fmt.Printf("\n\nnresult: %+v", result)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -120,9 +117,7 @@ func (gr *TodoGormRepository) Start(ctx context.Context, id int) error {
 
 func (gr *TodoGormRepository) GetById(ctx context.Context, id int, userId int) (domain.TodoInfo, error) {
 	var ti TodoInfo
-
 	query := fmt.Sprintf("SELECT daps_todos.id, daps_todos.category_id, daps_todos.end_date, daps_todos.creation_date, daps_todos.completed, daps_todos.description, daps_todos.link, daps_todos.name, daps_todos.priority, daps_todos.recurring, daps_todos.start_date, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.id = %d", id)
-	fmt.Println(query)
 	result := gr.DB.Raw(query).Scan(&ti)
 
 	if result.Error != nil {
@@ -134,8 +129,6 @@ func (gr *TodoGormRepository) GetById(ctx context.Context, id int, userId int) (
 func (gr *TodoGormRepository) List(ctx context.Context, categoryId int) ([]domain.Todo, error) {
 	var todos []Todo
 	var todes []domain.Todo
-	fmt.Printf("asdasdasdsdadasd")
-	//result := gr.DB.Where(&Todo{CategoryId: categoryId, Completed: false}).Find(&todos)
 	result := gr.DB.Where("category_id = ? AND completed = ?", categoryId, false).Find(&todos)
 	if result.Error != nil {
 		return []domain.Todo{}, result.Error
@@ -205,9 +198,7 @@ func (gr *TodoGormRepository) GetByNameAndCategory(ctx context.Context, name str
 func (gr *TodoGormRepository) GetSummary(ctx context.Context, userId int) ([]domain.CategorySummary, error) {
 	var cs []domain.CategorySummary
 	query := fmt.Sprintf("SELECT daps_category_users.category_id, daps_categories.id, daps_categories.name, daps_categories.owner_id, SUM(CASE WHEN daps_todos.completed = FALSE AND daps_todos.priority = 4 then 1 else 0 END) as highest_priority_tasks, SUM(CASE WHEN daps_todos.completed = FALSE then 1 else 0 END) as tasks FROM daps_category_users INNER JOIN daps_categories ON daps_categories.id = daps_category_users.category_id LEFT JOIN daps_todos ON daps_todos.category_id = daps_category_users.category_id WHERE user_id = %d GROUP BY category_id", userId)
-	fmt.Println(query)
 	result := gr.DB.Raw(query).Scan(&cs)
-	fmt.Printf("\n\ncs: %+v", cs)
 	if result.Error != nil {
 		return cs, result.Error
 	}

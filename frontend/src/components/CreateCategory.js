@@ -24,16 +24,13 @@ const CreateCategory = () => {
     CategoryService.createCategory(data).then(
       (response) => {
         if (response.status === 201) {
-          console.log("success!!!")
           window.location.href = "/categories";
         } else {
-          console.log("NO success!!!")
           window.location.reload()
         }
       }
     ).catch(
       (error) => {
-        console.log(error);
         error = new Error("Create category failed!");
       }
     )

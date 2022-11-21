@@ -88,7 +88,6 @@ const CategoriesList = () => {
   }
 
   const getCategory = (id, action) => {
-    console.log("action", action);
     navigate("/category/" + id, {state: {action: action}});
   }
 

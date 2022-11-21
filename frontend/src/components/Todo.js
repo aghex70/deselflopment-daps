@@ -4,6 +4,7 @@ import {useLocation, useNavigate, useParams} from 'react-router-dom'
 import TodoService from "../services/todo";
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
+import toBoolean from "validator/es/lib/toBoolean";
 
 const Todo = () => {
     checkAccess();
@@ -21,13 +22,6 @@ const Todo = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
-
-  console.log("************TODO**************");
-  console.log("TODO categoryId: " + categoryId);
-  console.log("TODO categoryName: " + categoryName);
-  console.log("TODO location.state: " + Object.keys(location.state), Object.values(location.state));
-  console.log(enableEdit, location.state.action);
-
     const navigateTodos = () => {
       navigate("/todos", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
     }
@@ -39,27 +33,21 @@ const Todo = () => {
         name: todoName,
         description: todoDescription,
         link: todoLink,
-        priority: todoPriority,
-        recurring: todoRecurring,
+        priority: parseInt(todoPriority),
+        recurring: toBoolean(todoRecurring),
         category_id: todoCategoryId,
       }
 
-      console.log("data -------------------> " + data);
-      console.log("data -------------------> " + data.name);
       TodoService.updateTodo(id, data).then(
         (response) => {
-          console.log("data: " + data);
           if (response.status === 200) {
-            console.log("success!!!")
             navigateTodos(categoryId, categoryName);
           } else {
-            console.log("NO success!!!")
             window.location.reload()
           }
         }
       ).catch(
         (error) => {
-          console.log(error);
           error = new Error("Update todo failed!");
         }
       )
@@ -68,7 +56,6 @@ const Todo = () => {
     useEffect(() => {
         TodoService.getTodo(id, categoryId).then(
           (response) => {
-            console.log(response);
             if (response.status === 200) {
               setTodoName(response.data.name);
               setTodoDescription(response.data.description);
@@ -77,13 +64,11 @@ const Todo = () => {
               setTodoRecurring(response.data.recurring);
               setTodoCategoryId(response.data.category_id);
               setTodoCategoryName(response.data.category_name);
-              console.log(response.data);
             }
           }
         ).catch(
           (error) => {
             // window.location.href = "/categories";
-            console.log(error)
           }
         )
       }
