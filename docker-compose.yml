@@ -8,8 +8,10 @@ services:
     command: ["air", "migrate", "&&", "air", "serve"]
     env_file:
       - backend/.env
-    ports:
-      - "11001:11001"
+#    ports:
+#      - "11001:11001"
+    expose:
+      - 11001
     depends_on:
       db:
         condition: service_healthy
@@ -41,17 +43,40 @@ services:
     command: [ redis-server, --port, "10379" ]
 
 
-  daps-frontend:
+#  daps-frontend:
+#    build:
+#      context: frontend
+#      dockerfile: Dockerfile
+#    command: ["npm", "start"]
+#    restart: always
+#    ports:
+#      - "13001:3000"
+#    stdin_open: true
+#    volumes:
+#      - ./frontend:/daps/frontend
+
+  nginx:
+    restart: unless-stopped
     build:
-      context: frontend
-      dockerfile: Dockerfile
-    command: ["npm", "start"]
-    restart: always
+      context: .
+      dockerfile: ./nginx/Dockerfile
     ports:
-      - "13001:3000"
-    stdin_open: true
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./frontend:/daps/frontend
+      - ./nginx/production:/etc/nginx/conf.d
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    depends_on:
+      - daps-backend
+#  certbot:
+#    image: certbot/certbot
+#    restart: unless-stopped
+#    volumes:
+#      - ./nginx/certbot/conf:/etc/letsencrypt
+#      - ./nginx/certbot/www:/var/www/certbot
+#    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
 
 volumes:
   mysql-db123:
