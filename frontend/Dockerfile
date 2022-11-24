@@ -1,15 +1,10 @@
 # Build React static files
 FROM node:alpine as build
+RUN export NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /daps/frontend/
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm ci --silent
+RUN npm ci --force
 COPY . .
 RUN npm run build
 CMD ["npm", "run", "start"]
-
-
-# Copy React static files and start nginx
-FROM nginx:stable-alpine
-COPY --from=build /daps/frontend/build /usr/share/nginx/html
-CMD ["nginx", "-g", "daemon off;"]
