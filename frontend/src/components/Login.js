@@ -3,6 +3,7 @@ import {Button, Container, FloatingLabel, Form} from "react-bootstrap";
 import UserService from "../services/user";
 
 const Login = () => {
+  document.title = 'deselflopment - daps'
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);

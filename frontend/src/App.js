@@ -3,6 +3,7 @@ import "./App.css";
 import React from "react";
 
 export default function App() {
+  document.title = 'deselflopment - daps';
   // Check if access_token is in local storage. If it is, navigate to the categories page.
   // if (localStorage.getItem("access_token")) {
   //   window.location.href = "/categories";

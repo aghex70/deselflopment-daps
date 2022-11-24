@@ -10,6 +10,7 @@ import {Button, ButtonGroup, Container} from "react-bootstrap";
 import checkAccess from "../utils/helpers";
 
 const DapsHeader = () => {
+  document.title = 'deselflopment - daps'
   checkAccess();
 
   const navigateCategories = () => {
