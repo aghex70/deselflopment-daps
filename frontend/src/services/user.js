@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const REGISTER_URL = "http://localhost:11001/api/register";
-const LOGIN_URL = "http://localhost:11001/api/login";
-const REFRESH_TOKEN_URL = "http://localhost:11001/api/refresh-token";
-const RECOVER_PASSWORD_URL = "http://localhost:11001/api/recover-password";
+const REGISTER_URL = "http://3.75.160.227:11001/api/register";
+const LOGIN_URL = "http://3.75.160.227:11001/api/login";
+const REFRESH_TOKEN_URL = "http://3.75.160.227:11001/api/refresh-token";
+const RECOVER_PASSWORD_URL = "http://3.75.160.227:11001/api/recover-password";
 
 const options = {
   headers: {
