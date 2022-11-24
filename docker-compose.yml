@@ -8,10 +8,10 @@ services:
     command: ["air", "migrate", "&&", "air", "serve"]
     env_file:
       - backend/.env
-    ports:
-      - "80:11001"
-#    expose:
-#      - 11001
+#    ports:
+#      - "11001:80"
+    expose:
+      - 11001
     depends_on:
       db:
         condition: service_healthy

@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const TODO_URL = "http://daps-backend:11001/api/todo";
-const TODOS_URL = "http://daps-backend:11001/api/todos";
-const RECURRING_TODOS_URL = "http://daps-backend:11001/api/recurring-todos";
-const COMPLETED_TODOS_URL = "http://daps-backend:11001/api/completed-todos";
+const TODO_URL = "http://api/api/todo";
+const TODOS_URL = "http://api/api/todos";
+const RECURRING_TODOS_URL = "http://api/api/recurring-todos";
+const COMPLETED_TODOS_URL = "http://api/api/completed-todos";
 
 const options = {
   headers: {

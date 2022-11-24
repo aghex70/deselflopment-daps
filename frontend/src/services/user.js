@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const REGISTER_URL = "http://daps-backend:11001/api/register";
-const LOGIN_URL = "http://daps-backend:11001/api/login";
-const REFRESH_TOKEN_URL = "http://daps-backend:11001/api/refresh-token";
-const RECOVER_PASSWORD_URL = "http://daps-backend:11001/api/recover-password";
+const REGISTER_URL = "http://api/api/register";
+const LOGIN_URL = "http://api/api/login";
+const REFRESH_TOKEN_URL = "http://api/api/refresh-token";
+const RECOVER_PASSWORD_URL = "http://api/api/recover-password";
 
 const options = {
   headers: {

@@ -1,8 +1,8 @@
 import axios from "axios";
 // import requestHeaders from "../common/Headers";
 
-const CATEGORY_URL = "http://daps-backend:11001/api/category";
-const CATEGORIES_URL = "http://daps-backend:11001/api/summary";
+const CATEGORY_URL = "http://api/api/category";
+const CATEGORIES_URL = "http://api/api/summary";
 
 const options = {
   headers: {
