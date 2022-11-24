@@ -9,7 +9,7 @@ const options = {
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'Origin': 'http://localhost:3000',
+    'Origin': 'http://3.75.160.227',
     'Authorization': 'Bearer ' + localStorage.getItem("access_token")
   }
 }
