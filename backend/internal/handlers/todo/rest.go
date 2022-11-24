@@ -306,7 +306,7 @@ func (h TodoHandler) Summary(w http.ResponseWriter, r *http.Request) {
 	//bodyBytes, _ := ioutil.ReadAll(r.Body)
 	//bodyString := string(bodyBytes)
 	//fmt.Println(bodyString)
-	//w.Header().Add("Access-Control-Allow-Origin", "*")
+	//w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
 	//w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 

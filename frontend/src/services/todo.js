@@ -1,15 +1,15 @@
 import axios from "axios";
 
-const TODO_URL = "http://3.75.160.227:11001/api/todo";
-const TODOS_URL = "http://3.75.160.227:11001/api/todos";
-const RECURRING_TODOS_URL = "http://3.75.160.227:11001/api/recurring-todos";
-const COMPLETED_TODOS_URL = "http://3.75.160.227:11001/api/completed-todos";
+const TODO_URL = "http://daps-backend:11001/api/todo";
+const TODOS_URL = "http://daps-backend:11001/api/todos";
+const RECURRING_TODOS_URL = "http://daps-backend:11001/api/recurring-todos";
+const COMPLETED_TODOS_URL = "http://daps-backend:11001/api/completed-todos";
 
 const options = {
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'Origin': 'http://3.75.160.227',
+    'Origin': 'http://deselflopment.com',
     'Authorization': 'Bearer ' + localStorage.getItem("access_token")
   }
 }

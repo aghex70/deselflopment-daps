@@ -1,14 +1,14 @@
 import axios from "axios";
 // import requestHeaders from "../common/Headers";
 
-const CATEGORY_URL = "http://3.75.160.227:11001/api/category";
-const CATEGORIES_URL = "http://3.75.160.227:11001/api/summary";
+const CATEGORY_URL = "http://daps-backend:11001/api/category";
+const CATEGORIES_URL = "http://daps-backend:11001/api/summary";
 
 const options = {
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'Origin': 'http://3.75.160.227',
+    'Origin': 'http://deselflopment.com',
     'Authorization': 'Bearer ' + localStorage.getItem("access_token")
   }
 }
