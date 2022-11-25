@@ -43,3 +43,15 @@ export default function App() {
     </Container>
   );
 }
+
+
+// Write a letter of resignation to your boss explaining that reason of leave is working with timezones
+
+// Path: frontend/src/App.js
+import {Container, Button, ModalBody, ButtonGroup, Modal} from "react-bootstrap";
+import "./App.css";
+import React from "react";
+
+export default function App() {
+
+}
