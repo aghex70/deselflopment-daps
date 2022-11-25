@@ -11,5 +11,5 @@ RUN npm config rm proxy
 RUN npm config rm https-proxy
 RUN npm ci --force
 COPY . .
-RUN npm run build
+RUN #npm run build
 CMD ["npm", "run", "start"]
