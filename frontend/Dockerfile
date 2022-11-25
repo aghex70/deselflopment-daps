@@ -11,7 +11,7 @@ RUN npm  cache clear --force
 RUN npm config rm proxy
 RUN npm config rm https-proxy
 RUN export NODE_OPTIONS=--openssl-legacy-provider
-RUN npm ci --force
+RUN npm install --force
 COPY . .
 # RUN npm run build
 CMD ["npm", "run", "start"]
