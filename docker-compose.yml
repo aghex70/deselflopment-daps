@@ -9,7 +9,7 @@ services:
     env_file:
       - backend/.env
     ports:
-      - "11001:11001"
+      - 11001:80
     depends_on:
       db:
         condition: service_healthy
@@ -48,7 +48,7 @@ services:
     command: ["npm", "start"]
     restart: always
     ports:
-      - "3000:3000"
+      - 3000:80
     stdin_open: true
 #    volumes:
 #      - ./frontend:/daps/frontend

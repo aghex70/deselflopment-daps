@@ -143,7 +143,7 @@ func (s *RestServer) StartServer() error {
 
 	// CAREFUL!!!!
 	// Root (not included out of the box damn!)
-	http.HandleFunc("/", JWTAuthMiddleware(s.rootHandler.Root))
+	http.HandleFunc("/api/", JWTAuthMiddleware(s.rootHandler.Root))
 
 	address := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 	fmt.Printf("Starting server on address %s", address)
