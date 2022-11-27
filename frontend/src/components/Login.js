@@ -70,7 +70,6 @@ const Login = () => {
         >
           Login
         </Button>
-        <p>{message}</p>
       </Form>
     </Container>
   )
