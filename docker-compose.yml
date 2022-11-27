@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  daps-backend:
+  backend:
     build:
       context: backend
       dockerfile: Dockerfile
@@ -9,7 +9,7 @@ services:
     env_file:
       - backend/.env
     ports:
-      - 11001:80
+      - 11001:11001
     depends_on:
       db:
         condition: service_healthy
@@ -40,8 +40,7 @@ services:
     image: redis:alpine
     command: [ redis-server, --port, "10379" ]
 
-
-  daps-frontend:
+  frontend:
     build:
       context: frontend
       dockerfile: Dockerfile
@@ -53,17 +52,18 @@ services:
 #    volumes:
 #      - ./frontend:/daps/frontend
     depends_on:
-      - daps-backend
+      - backend
 
   webserver:
     image: nginx
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - daps-backend
-      - daps-frontend
+      - backend
+      - frontend
     ports:
-      - "80:80"
+      - 80:80
+      - 443:443
 
 volumes:
   mysql-db123:
