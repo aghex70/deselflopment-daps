@@ -1,8 +1,4 @@
 version: '3.9'
-networks:
-  nginx-proxy:
-    external:
-      name: nginx-proxy
 
 services:
   backend:
@@ -13,7 +9,7 @@ services:
     env_file:
       - backend/.env
     ports:
-      - 11001:11001
+      - "11001:11001"
     depends_on:
       db:
         condition: service_healthy
@@ -44,6 +40,7 @@ services:
     image: redis:alpine
     command: [ redis-server, --port, "10379" ]
 
+
   frontend:
     build:
       context: frontend
@@ -51,14 +48,12 @@ services:
     command: ["npm", "start"]
 #    restart: always
     ports:
-      - 3000:80
+      - "3000:3000"
     stdin_open: true
 #    volumes:
 #      - ./frontend:/daps/frontend
     depends_on:
       - backend
-    networks:
-      - nginx-proxy
 
   webserver:
     image: nginx
@@ -68,10 +63,7 @@ services:
       - backend
       - frontend
     ports:
-      - 80:80
-      - 443:443
-    networks:
-      - nginx-proxy
+      - "80:80"
 
 volumes:
   mysql-db123:
