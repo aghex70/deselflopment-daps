@@ -1,8 +1,8 @@
 import axios from "axios";
 // import requestHeaders from "../common/Headers";
 
-const CATEGORY_URL = "http://api/category";
-const CATEGORIES_URL = "http://api/summary";
+const CATEGORY_URL = "http://www.deselflopment.com/api/category";
+const CATEGORIES_URL = "http://www.deselflopment.com/api/summary";
 
 const options = {
   headers: {

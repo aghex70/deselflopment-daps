@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const TODO_URL = "http://api/todo";
-const TODOS_URL = "http://api/todos";
-const RECURRING_TODOS_URL = "http://api/recurring-todos";
-const COMPLETED_TODOS_URL = "http://api/completed-todos";
+const TODO_URL = "http://www.deselflopment.com/api/todo";
+const TODOS_URL = "http://www.deselflopment.com/api/todos";
+const RECURRING_TODOS_URL = "http://www.deselflopment.com/api/recurring-todos";
+const COMPLETED_TODOS_URL = "http://www.deselflopment.com/api/completed-todos";
 
 const options = {
   headers: {
