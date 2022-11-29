@@ -15,7 +15,6 @@ const CreateCategory = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const data = {
       name: categoryName,
       description: categoryDescription,
@@ -26,7 +25,7 @@ const CreateCategory = () => {
         if (response.status === 201) {
           window.location.href = "/categories";
         } else {
-          window.location.reload()
+          window.location.href = "/categories";
         }
       }
     ).catch(
@@ -69,7 +68,7 @@ const CreateCategory = () => {
           <Button
             variant="success"
             type="submit"
-            onClick={() => handleSubmit()}
+            onClick={(e) => handleSubmit(e)}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >Create</Button>
           <Button

@@ -90,7 +90,7 @@ const Category = () => {
           <Button
             variant="success"
             type="submit"
-            onClick={() => handleSubmit()}
+            onClick={(e) => handleSubmit(e)}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >Edit</Button>
           <Button
