@@ -1,7 +1,7 @@
 package ports
 
 type CreateCategoryRequest struct {
-	Description       string `json:"description" validate:"required"`
+	Description       string `json:"description"`
 	Name              string `json:"name" validate:"required"`
 	InternationalName string `json:"international_name"`
 }
