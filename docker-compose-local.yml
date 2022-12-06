@@ -46,7 +46,6 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile-local
-
     env_file:
       - frontend/.dev.env
     command: ["npm", "run", "start:dev"]
