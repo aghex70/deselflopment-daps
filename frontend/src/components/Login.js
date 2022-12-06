@@ -10,13 +10,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
 
-  const styles = {
-    display: 'flex',
-    justifyContent:'center',
-    alignItems:'center',
-    height: '50vh'
-  }
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -42,7 +35,13 @@ const Login = () => {
 
   return (
     // Create a container with a class name "contenedor" and background color red
-    <Container style={styles}>
+    <Container
+        style={{
+          display: 'flex',
+          justifyContent:'center',
+          alignItems:'center',
+          height: '50vh',
+    }}>
       <Form  onSubmit={(e)=>handleSubmit(e)}>
         <h1 style={{ margin: '0px 0px 32px' }} className="text-center">Login</h1>
         <FloatingLabel
@@ -66,7 +65,6 @@ const Login = () => {
         <Button
           variant="success"
           type="submit"
-          onClick={(e) => handleSubmit(e)}
         >
           Login
         </Button>
