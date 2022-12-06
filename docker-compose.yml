@@ -47,7 +47,7 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
-    command: ["npm", "start:prod"]
+    command: ["npm", "run", "start:prod"]
 #    restart: always
     ports:
       - "3000:3000"
