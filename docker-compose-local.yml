@@ -46,11 +46,14 @@ services:
   frontend:
     build:
       context: frontend
-      dockerfile: Dockerfile
-    command: ["npm", "start:prod"]
-#    restart: always
+      dockerfile: Dockerfile-local
+
+    env_file:
+      - frontend/.dev.env
+    command: ["npm", "run", "start:dev"]
+    restart: always
     ports:
-      - "3000:3000"
+      - "3100:3000"
     stdin_open: true
 #    volumes:
 #      - ./frontend:/daps/frontend
