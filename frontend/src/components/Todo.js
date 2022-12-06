@@ -14,7 +14,7 @@ const Todo = () => {
     const [todoPriority, setTodoPriority] = useState("");
     const [todoRecurring, setTodoRecurring] = useState("");
     const [todoCategoryId, setTodoCategoryId] = useState();
-    const [todoCategoryName, setTodoCategoryName] = useState();
+    const [, setTodoCategoryName] = useState();
     const location = useLocation();
     const categoryId = location.state.categoryId;
     const categoryName = location.state.categoryName;
@@ -34,7 +34,7 @@ const Todo = () => {
         description: todoDescription,
         link: todoLink,
         priority: parseInt(todoPriority),
-        recurring: toBoolean(todoRecurring),
+        recurring: typeof(todoRecurring) == "boolean" ? todoRecurring : toBoolean(todoRecurring),
         category_id: todoCategoryId,
       }
 
@@ -133,16 +133,6 @@ const Todo = () => {
               <option value="false">No</option>
               <option value="true">Yes</option>
             </Form.Select>
-          </FloatingLabel>
-
-          <FloatingLabel
-            controlId="floatingCategory"
-            label="Category"
-            value={todoCategoryName}
-            onChange={(e) => setTodoCategoryName(e.target.value)}
-            placeholder={todoCategoryName}
-          >
-            <Form.Control disabled={true} type="name" placeholder="Name" value={todoCategoryName}/>
           </FloatingLabel>
 
           {enableEdit ?

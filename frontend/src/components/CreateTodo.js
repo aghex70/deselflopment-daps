@@ -13,7 +13,6 @@ const CreateTodo = () => {
     const [todoLink, setTodoLink] = useState("");
     const [todoPriority, setTodoPriority] = useState("");
     const [todoRecurring, setTodoRecurring] = useState("");
-    const [todoCategoryId, setTodoCategoryId] = useState();
     const [disablePriority, setDisablePriority] = useState(false);
     const [disableRecurring, setDisableRecurring] = useState(false);
     const location = useLocation();
@@ -21,6 +20,7 @@ const CreateTodo = () => {
     const categoryName = location.state.categoryName;
     const navigate = useNavigate();
 
+    console.log("categoryName: " + categoryName);
     const disablePrioritySelect = () => {
       if (!disablePriority) {
         if (todoPriority in ["1", "2", "3", "4", "5"]) {
@@ -136,17 +136,6 @@ const CreateTodo = () => {
               <option value="true">Yes</option>
             </Form.Select>
           </FloatingLabel>
-
-          <FloatingLabel
-            controlId="floatingCategory"
-            label="Category"
-            value={todoCategoryId}
-            onChange={(e) => setTodoCategoryId(e.target.value)}
-            placeholder={categoryName}
-          >
-            <Form.Control disabled={true} type="name" placeholder="Name" />
-          </FloatingLabel>
-
 
           <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
             <Button

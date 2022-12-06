@@ -7,7 +7,6 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
-  const [message, setMessage] = useState("holaaaaa");
 
   const styles = {
     display: 'flex',
@@ -32,7 +31,6 @@ const Login = () => {
     ).catch(
       (error) => {
         error = new Error("Login failed!");
-        setMessage(error.message);
       }
     )
   }
