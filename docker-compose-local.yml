@@ -36,7 +36,7 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      -  mysql-db123:/var/lib/mysql-daps
+      -  mysql-db123455:/var/lib/mysql-daps123455
 
   redis:
     image: redis:alpine
@@ -71,11 +71,11 @@ services:
     ports:
       - "80:80"
       - "443:443"
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+#  certbot:
+#    image: certbot/certbot
+#    volumes:
+#      - ./data/certbot/conf:/etc/letsencrypt
+#      - ./data/certbot/www:/var/www/certbot
 
 volumes:
-  mysql-db123:
+  mysql-db123455:

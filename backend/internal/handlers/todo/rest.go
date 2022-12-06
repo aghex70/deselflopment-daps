@@ -117,7 +117,6 @@ func (h TodoHandler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("asdadadasd")
 	//w.Header().Set("Content-Type", "application/json")
 	//bodyBytes, _ := ioutil.ReadAll(r.Body)
 	//bodyString := string(bodyBytes)

@@ -21,9 +21,11 @@ type TodoService struct {
 
 func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.CreateTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
-	if err != nil {
-		return err
+	if req.Category != 1 {
+		err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+		if err != nil {
+			return err
+		}
 	}
 	_, preexistent := s.CheckExistentTodo(ctx, req.Name, req.Category)
 	if preexistent {
@@ -39,7 +41,7 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 		Recurring:   req.Recurring,
 	}
 
-	err = s.todoRepository.Create(ctx, ntd)
+	err := s.todoRepository.Create(ctx, ntd)
 	if err != nil {
 		return err
 	}
