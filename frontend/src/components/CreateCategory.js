@@ -15,7 +15,6 @@ const CreateCategory = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const data = {
       name: categoryName,
       description: categoryDescription,
@@ -69,7 +68,7 @@ const CreateCategory = () => {
           <Button
             variant="success"
             type="submit"
-            onClick={() => handleSubmit()}
+            onClick={(e) => handleSubmit(e)}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >Create</Button>
           <Button
