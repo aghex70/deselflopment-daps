@@ -57,7 +57,7 @@ const ReportBug = () => {
               type="submit"
               onClick={(e) => handleSubmit(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Create</Button>
+            >Report</Button>
             <Button
               variant="danger"
               onClick={() => navigateCategories()}
