@@ -47,7 +47,7 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
-    command: npm run build:prod && npm install -g -f serve && serve -s build
+    command: ["npm", "run", "start:prod"]
     env_file:
       - frontend/.prod.env
     ports:
