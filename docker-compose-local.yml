@@ -42,7 +42,6 @@ services:
     image: redis:alpine
     command: [ redis-server, --port, "10379" ]
 
-
   frontend:
     build:
       context: frontend
@@ -55,8 +54,8 @@ services:
     ports:
       - "3100:3000"
     stdin_open: true
-#    volumes:
-#      - ./frontend:/daps/frontend
+    volumes:
+      - ./frontend:/daps/frontend
 #    depends_on:
 #      - backend
 
