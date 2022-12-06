@@ -41,15 +41,6 @@ func (h CategoryHandler) HandleCategory(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-	//w.Header().Add("Access-Control-Allow-Credentials", "true")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	//w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-
-	if r.Method == "OPTIONS" {
-		http.Error(w, "No Content", http.StatusNoContent)
-		return
-	}
 	payload := ports.CreateCategoryRequest{}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -66,15 +57,6 @@ func (h CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, id int) {
-	//w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-	////w.Header().Add("Access-Control-Allow-Credentials", "true")
-	//w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	////w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	//
-	//if r.Method == "OPTIONS" {
-	//	http.Error(w, "No Content", http.StatusNoContent)
-	//	return
-	//}
 	payload := ports.UpdateCategoryRequest{CategoryId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -90,15 +72,6 @@ func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, 
 }
 
 func (h CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request, id int) {
-	//w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-	////w.Header().Add("Access-Control-Allow-Credentials", "true")
-	//w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	////w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	//
-	//if r.Method == "OPTIONS" {
-	//	http.Error(w, "No Content", http.StatusNoContent)
-	//	return
-	//}
 	payload := ports.DeleteCategoryRequest{CategoryId: int64(id)}
 	fmt.Println("cccccccccccccccccccccccccccc11111111111111111111111")
 	err := handlers.ValidateRequest(r, &payload)
@@ -117,24 +90,9 @@ func (h CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request, 
 }
 
 func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request, id int) {
-	//w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-	////w.Header().Add("Access-Control-Allow-Credentials", "true")
-	//w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	////w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	//
-	//if r.Method == "OPTIONS" {
-	//	http.Error(w, "No Content", http.StatusNoContent)
-	//	return
-	//}
-	fmt.Println("@@@@@@@@@@@@@@@@@@@@@@")
-	fmt.Println("11111111111111111111")
-
 	payload := ports.GetCategoryRequest{CategoryId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
-	fmt.Println("22222222222222222222")
 	if err != nil {
-		fmt.Println("33333333333333333333")
-		fmt.Printf("err: %+v", err)
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -153,11 +111,6 @@ func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request, id 
 }
 
 func (h CategoryHandler) ListCategories(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-	//w.Header().Add("Access-Control-Allow-Credentials", "true")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	//w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-
 	if r.Method == "OPTIONS" {
 		http.Error(w, "No Content", http.StatusNoContent)
 		return

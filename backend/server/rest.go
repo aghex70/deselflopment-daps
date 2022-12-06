@@ -12,6 +12,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"net/http"
+	"os"
 	"reflect"
 	"strings"
 )
@@ -32,7 +33,12 @@ var hmacSampleSecret = []byte("random")
 
 func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
+		environment := os.Getenv("ENVIRONMENT")
+		if environment == "local" {
+			w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
+		} else {
+			w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
+		}
 		w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, PUT, OPTIONS")
 		//w.Header().Add("Access-Control-Allow-Credentials", "true")
 		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -104,16 +110,6 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
 
 func CORS(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-		//w.Header().Add("Access-Control-Allow-Credentials", "true")
-		//w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		//w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		//
-		//if r.Method == "OPTIONS" {
-		//	http.Error(w, "No Content", http.StatusNoContent)
-		//	return
-		//}
-
 		next(w, r)
 	}
 }
@@ -127,8 +123,8 @@ func (s *RestServer) StartServer() error {
 	//http.HandleFunc("/recover-password", JWTAuthMiddleware(s.userHandler.RemoveUser))
 
 	// Categories
-	http.HandleFunc("/api/categories", s.categoryHandler.ListCategories)
-	http.HandleFunc("/api/category", s.categoryHandler.CreateCategory)
+	http.HandleFunc("/api/categories", JWTAuthMiddleware(s.categoryHandler.ListCategories))
+	http.HandleFunc("/api/category", JWTAuthMiddleware(s.categoryHandler.CreateCategory))
 
 	// Todos
 	http.HandleFunc("/api/todo", JWTAuthMiddleware(s.toDoHandler.CreateTodo))

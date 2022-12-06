@@ -6,6 +6,7 @@ import (
 	"github.com/aghex70/daps/internal/handlers"
 	"log"
 	"net/http"
+	"os"
 )
 
 type UserHandler struct {
@@ -14,12 +15,12 @@ type UserHandler struct {
 }
 
 func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
-	//w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-	////w.Header().Add("Access-Control-Allow-Credentials", "true")
-	//w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	////w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-
-	w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
+	environment := os.Getenv("ENVIRONMENT")
+	if environment == "local" {
+		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
+	} else {
+		w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
+	}
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -49,7 +50,12 @@ func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
+	environment := os.Getenv("ENVIRONMENT")
+	if environment == "local" {
+		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
+	} else {
+		w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
+	}
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -79,7 +85,12 @@ func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
+	environment := os.Getenv("ENVIRONMENT")
+	if environment == "local" {
+		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
+	} else {
+		w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
+	}
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -103,7 +114,12 @@ func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) RemoveUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "http://3.75.160.227")
+	environment := os.Getenv("ENVIRONMENT")
+	if environment == "local" {
+		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
+	} else {
+		w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
+	}
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 	err := handlers.CheckHttpMethod(http.MethodDelete, w, r)
