@@ -10,7 +10,6 @@ const options = {
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'Origin': 'http://deselflopment.com',
     'Authorization': 'Bearer ' + localStorage.getItem("access_token")
   }
 }
