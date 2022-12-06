@@ -4,7 +4,9 @@ import {
   faChartSimple,
   faHome,
   faPowerOff,
-  faCog, faCheck,
+  faCog,
+  faCheck,
+    faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
@@ -16,6 +18,10 @@ const DapsHeader = () => {
 
   const navigateCategories = () => {
     window.location.href = "/categories";
+  }
+
+  const navigateReportBug = () => {
+    window.location.href = "/report-bug";
   }
 
   const navigateCompletedTodos = () => {
@@ -32,47 +38,55 @@ const DapsHeader = () => {
 
       return (
         <Container>
-          <ButtonGroup style={{width: "45%", marginTop: "15px", marginBottom: "15px"}}>
-            <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
+          <ButtonGroup style={{width: "100%", marginTop: "15px", marginBottom: "15px"}}>
+            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="primary"
                     onClick={() => navigateCategories()}
                     title="Categories"
             >
-              <FontAwesomeIcon icon={faHome} />
+              <FontAwesomeIcon style={{height: "50%"}} icon={faHome} />
             </Button>
-            <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
+            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="success"
                     onClick={() => navigateCompletedTodos()}
                     title="Completed Todos"
             >
-              <FontAwesomeIcon icon={faCheck} />
+              <FontAwesomeIcon style={{height: "50%"}} icon={faCheck} />
             </Button>
-            <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="secondary"
                     onClick={() => navigateRecurringTodos()}
                     title="Recurring Todos"
             >
 
-              <FontAwesomeIcon icon={faClockRotateLeft} />
+              <FontAwesomeIcon style={{height: "50%"}} icon={faClockRotateLeft} />
             </Button>
-            <Button disabled={true} style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            <Button disabled={true} style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="outline-warning" title="Statistics (coming soon)"
             >
 
               <FontAwesomeIcon icon={faChartSimple} />
             </Button>
-            <Button disabled={true} style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                    variant="outline-info" title="Configuration (coming soon)"
+            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
+                    variant="info" title="Report a bug"
+                    onClick={() => navigateReportBug()}
+            >
+
+              <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faEnvelope} />
+            </Button>
+            <Button disabled={true} style={{height: "50px", width: "100%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                    variant="outline-dark" title="Configuration (coming soon)"
             >
 
               <FontAwesomeIcon icon={faCog} />
+
             </Button>
-            <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="danger" title="Logout"
                     onClick={() => logout()}
             >
 
-              <FontAwesomeIcon style={{color: "white"}} icon={faPowerOff} />
+              <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faPowerOff} />
             </Button>
           </ButtonGroup>
         </Container>

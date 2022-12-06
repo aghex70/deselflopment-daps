@@ -15,6 +15,8 @@ import CreateTodo from "./components/CreateTodo";
 import Todo from "./components/Todo";
 import CompletedTodosList from "./components/CompletedTodosList";
 import Logout from "./components/Logout";
+import ReportBug from "./components/ReportBug";
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -27,6 +29,7 @@ root.render(
         <Route path="logout" element={<Logout />} />
         <Route path="register" element={<Register />} />
         <Route path="recover-password" element={<Register />} />
+        <Route path="report-bug" element={<ReportBug />} />
         <Route path="categories" element={<CategoriesList />} />
         <Route path="todos" element={<TodosList />} />
         <Route path="category/:id" element={<Category />} />
