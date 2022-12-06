@@ -1,8 +1,10 @@
 import React, {useState} from 'react'
 import {Button, Container, FloatingLabel, Form} from "react-bootstrap";
 import UserService from "../services/user";
+import {skipLogin} from "../utils/helpers";
 
 const Register = ()  =>{
+  skipLogin();
   document.title = 'deselflopment - daps'
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

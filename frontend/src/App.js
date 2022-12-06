@@ -1,8 +1,10 @@
 import {Container, Button, ModalBody, ButtonGroup, Modal} from "react-bootstrap";
 import "./App.css";
 import React from "react";
+import {skipLogin} from "./utils/helpers";
 
 export default function App() {
+  skipLogin();
   document.title = 'deselflopment - daps';
   // Check if access_token is in local storage. If it is, navigate to the categories page.
   // if (localStorage.getItem("access_token")) {

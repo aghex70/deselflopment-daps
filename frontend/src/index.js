@@ -18,7 +18,6 @@ import Logout from "./components/Logout";
 import ReportBug from "./components/ReportBug";
 
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

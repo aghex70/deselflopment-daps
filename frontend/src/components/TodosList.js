@@ -128,7 +128,7 @@ const TodosList = () => {
       >
 
       <ButtonGroup style={{width: "100%"}}>
-        {row.active === false ? (
+        {row.active === false? (
           <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center", }}
                   title="Start" variant="outline-warning" onClick={() => startTodo(row.id)}>
             <FontAwesomeIcon icon={faPlay} />
