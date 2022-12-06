@@ -1,9 +1,11 @@
 import axios from "axios";
 
-const REGISTER_URL = "http://www.deselflopment.com/api/register";
-const LOGIN_URL = "http://www.deselflopment.com/api/login";
-const REFRESH_TOKEN_URL = "http://www.deselflopment.com/api/refresh-token";
-const RECOVER_PASSWORD_URL = "http://www.deselflopment.com/api/recover-password";
+const DAPS_BASE_URL = process.env.REACT_APP_API_URL
+
+const REGISTER_URL = `${DAPS_BASE_URL}api/register`;
+const LOGIN_URL = `${DAPS_BASE_URL}api/login`;
+const REFRESH_TOKEN_URL = `${DAPS_BASE_URL}api/refresh-token`;
+const RECOVER_PASSWORD_URL = `${DAPS_BASE_URL}api/recover-password`;
 
 const options = {
   headers: {

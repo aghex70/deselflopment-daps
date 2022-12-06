@@ -26,7 +26,7 @@ const CreateCategory = () => {
         if (response.status === 201) {
           window.location.href = "/categories";
         } else {
-          window.location.reload()
+          window.location.href = "/categories";
         }
       }
     ).catch(

@@ -4,4 +4,4 @@ RUN export NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /daps/frontend/
 COPY . .
 RUN npm install --force
-CMD ["npm", "start:prod"]
+CMD ["npm", "run", "start:dev"]

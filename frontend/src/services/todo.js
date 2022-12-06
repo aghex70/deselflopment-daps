@@ -1,9 +1,11 @@
 import axios from "axios";
 
-const TODO_URL = "http://www.deselflopment.com/api/todo";
-const TODOS_URL = "http://www.deselflopment.com/api/todos";
-const RECURRING_TODOS_URL = "http://www.deselflopment.com/api/recurring-todos";
-const COMPLETED_TODOS_URL = "http://www.deselflopment.com/api/completed-todos";
+const DAPS_BASE_URL = process.env.REACT_APP_API_URL
+
+const TODO_URL = `${DAPS_BASE_URL}api/todo`;
+const TODOS_URL = `${DAPS_BASE_URL}api/todos`;
+const RECURRING_TODOS_URL = `${DAPS_BASE_URL}api/recurring-todos`;
+const COMPLETED_TODOS_URL = `${DAPS_BASE_URL}api/completed-todos`;
 
 const options = {
   headers: {

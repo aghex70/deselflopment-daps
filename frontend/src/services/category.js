@@ -1,8 +1,10 @@
 import axios from "axios";
-// import requestHeaders from "../common/Headers";
 
-const CATEGORY_URL = "http://www.deselflopment.com/api/category";
-const CATEGORIES_URL = "http://www.deselflopment.com/api/summary";
+const DAPS_BASE_URL = process.env.REACT_APP_API_URL
+
+const CATEGORY_URL = `${DAPS_BASE_URL}api/category`;
+const CATEGORIES_URL = `${DAPS_BASE_URL}api/summary`;
+
 
 const options = {
   headers: {
