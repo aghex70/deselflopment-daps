@@ -34,7 +34,6 @@ const Register = ()  =>{
     )
   }
 
-
   return (
     <Container style={styles}>
       <Form  onSubmit={(e)=>handleSubmit(e)}>
