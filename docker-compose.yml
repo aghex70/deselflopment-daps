@@ -19,6 +19,7 @@ services:
         condition: service_started
     volumes:
       - ./backend:/daps/backend
+      - ./certbot/conf/:/etc/nginx/ssl/
 
   db:
     image: mysql:latest
