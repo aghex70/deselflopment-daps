@@ -7,6 +7,7 @@ import (
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
+	"github.com/aghex70/daps/pkg"
 	"github.com/aghex70/daps/server"
 	"github.com/golang-jwt/jwt/v4"
 	"log"
@@ -25,9 +26,6 @@ type MyCustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-var baseCategoriesIds = []int{1, 2, 3, 4, 5}
-var hmacSampleSecret = []byte("random")
-
 func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) error {
 	preexistent := s.CheckExistentUser(ctx, r.Email)
 	if preexistent {
@@ -35,7 +33,7 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 	}
 	cipheredPassword := s.EncryptPassword(ctx, r.Password)
 
-	categories, err := s.categoryRepository.GetByIds(ctx, baseCategoriesIds)
+	categories, err := s.categoryRepository.GetByIds(ctx, pkg.BaseCategoriesIds)
 	u := domain.User{
 		Name:       r.Name,
 		Email:      r.Email,
@@ -75,7 +73,7 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 		},
 	}
 
-	mySigningKey := hmacSampleSecret
+	mySigningKey := pkg.HmacSampleSecret
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	ss, err := token.SignedString(mySigningKey)
 	if err != nil {
@@ -100,7 +98,7 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 		},
 	}
 
-	mySigningKey := hmacSampleSecret
+	mySigningKey := pkg.HmacSampleSecret
 	newToken := jwt.NewWithClaims(jwt.SigningMethodHS256, newClaims)
 	ss, err := newToken.SignedString(mySigningKey)
 	if err != nil {

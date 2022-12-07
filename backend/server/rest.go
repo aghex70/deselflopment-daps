@@ -9,6 +9,7 @@ import (
 	"github.com/aghex70/daps/internal/handlers/root"
 	"github.com/aghex70/daps/internal/handlers/todo"
 	"github.com/aghex70/daps/internal/handlers/user"
+	"github.com/aghex70/daps/pkg"
 	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"net/http"
@@ -28,8 +29,6 @@ type RestServer struct {
 	userService     ports.UserServicer
 	rootHandler     root.RootHandler
 }
-
-var hmacSampleSecret = []byte("random")
 
 func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +58,7 @@ func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 				w.WriteHeader(http.StatusUnauthorized)
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
-			return hmacSampleSecret, nil
+			return pkg.HmacSampleSecret, nil
 		})
 
 		if err != nil {
@@ -99,7 +98,7 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
 	}
 
 	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return hmacSampleSecret, nil
+		return pkg.HmacSampleSecret, nil
 	})
 
 	claims := token.Claims.(jwt.MapClaims)
