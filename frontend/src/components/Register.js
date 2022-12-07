@@ -11,9 +11,14 @@ const Register = ()  =>{
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [showModalPasswordsDoNotMatch, setShowModalPasswordsDoNotMatch] = useState(false);
+  const [showModalUserAlreadyExists, setShowModalUserAlreadyExists] = useState(false);
 
   const toggleModalPasswordsDoNotMatch = () => {
     setShowModalPasswordsDoNotMatch(!showModalPasswordsDoNotMatch);
+  }
+
+  const toggleModalUserAlreadyExists = () => {
+    setShowModalUserAlreadyExists(!showModalUserAlreadyExists);
   }
 
   const styles = {
@@ -27,6 +32,7 @@ const Register = ()  =>{
     e.preventDefault();
     if (password !== repeatPassword) {
       setShowModalPasswordsDoNotMatch(true);
+      return;
     }
     const hashedPassword = hashPassword(password);
     UserService.register(name, email, hashedPassword).then(
@@ -37,7 +43,9 @@ const Register = ()  =>{
       }
     ).catch(
       (error) => {
-        // window.location.reload();
+        if (error.response.data.message === "user already registered") {
+          setShowModalUserAlreadyExists(true);
+        }
       }
     )
   }
@@ -100,6 +108,19 @@ const Register = ()  =>{
             <Button
                 variant="danger"
                 onClick={(e) => toggleModalPasswordsDoNotMatch(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >Return</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='successModal text-center' show={showModalUserAlreadyExists} open={showModalUserAlreadyExists} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>User already registered! Please try with a different email</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+                variant="danger"
+                onClick={(e) => toggleModalUserAlreadyExists(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >Return</Button>
           </ButtonGroup>
