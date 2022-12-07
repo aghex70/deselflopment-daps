@@ -28,6 +28,7 @@ services:
       - MYSQL_USER=dapsuser
       - MYSQL_PASSWORD=root
       - MYSQL_TCP_PORT=11306
+      - MYSQL_DEFAULT_AUTH=caching_sha2_password
     ports:
       - "11306:11306"
     healthcheck:
