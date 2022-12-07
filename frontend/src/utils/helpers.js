@@ -1,3 +1,10 @@
+import bcrypt from 'bcryptjs';
+
+// Create a function that ciphers a string using bcryptjs and store it in variable agp
+const hashPassword = (string) => {
+    return bcrypt.hashSync(string, 10);
+}
+
 const checkAccess = () => {
   const token = getUserToken();
   if (!token) {
@@ -15,4 +22,4 @@ const getUserToken = () => {
 }
 
 export default checkAccess;
-export { skipLogin };
+export { hashPassword, skipLogin };

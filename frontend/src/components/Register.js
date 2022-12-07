@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Button, Container, FloatingLabel, Form} from "react-bootstrap";
 import UserService from "../services/user";
-import {skipLogin} from "../utils/helpers";
+import {hashPassword, skipLogin} from "../utils/helpers";
 
 const Register = ()  =>{
   skipLogin();
@@ -20,8 +20,9 @@ const Register = ()  =>{
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    UserService.register(name, email, password, repeatPassword).then(
+    const hashedPassword = hashPassword(password);
+    const hashedRepeatedPassword = hashPassword(repeatPassword);
+    UserService.register(name, email, hashedPassword, hashedRepeatedPassword).then(
       (response) => {
         if (response.status === 201) {
           window.location.href = "/login";

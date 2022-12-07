@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import {Button, Container, FloatingLabel, Form} from "react-bootstrap";
 import UserService from "../services/user";
-import {skipLogin} from "../utils/helpers";
+import {hashPassword, skipLogin} from "../utils/helpers";
+
 
 const Login = () => {
   skipLogin();
@@ -12,8 +13,8 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    UserService.login(email, password).then(
+    const hashedPassword = hashPassword(password);
+    UserService.login(email, hashedPassword).then(
       (response) => {
         if (response.status === 200) {
           localStorage.setItem("access_token", response.data.access_token);
