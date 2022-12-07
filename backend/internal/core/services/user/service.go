@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
@@ -62,10 +61,6 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 	if err != nil {
 		return "", 0, err
 	}
-	fmt.Println()
-	fmt.Println("decryptedPassword", decryptedPassword)
-	fmt.Println("r.Password", r.Password)
-	fmt.Println("u.Password", u.Password)
 
 	match := s.PasswordsMatch(ctx, decryptedPassword, r.Password)
 	if !match {

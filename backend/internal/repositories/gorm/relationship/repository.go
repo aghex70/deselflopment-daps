@@ -19,6 +19,7 @@ type RelationshipGormRepository struct {
 
 type User struct {
 	ID               int        `gorm:"primaryKey;column:id"`
+	Name 		  	 string     `gorm:"column:name"`
 	Email            string     `gorm:"column:email"`
 	IsAdmin          bool       `gorm:"column:is_admin"`
 	Password         string     `gorm:"column:password"`
@@ -125,6 +126,7 @@ func CategoryFromDto(c domain.Category, userId int) Category {
 func (u User) ToDto() domain.User {
 	return domain.User{
 		ID:         u.ID,
+		Name: 		u.Name,
 		Email:      u.Email,
 		Categories: CategoryDBDomain(u.Categories),
 		Password:   u.Password,
@@ -133,6 +135,7 @@ func (u User) ToDto() domain.User {
 
 func UserFromDto(u domain.User) User {
 	return User{
+		Name: 	  u.Name,
 		Email:    u.Email,
 		Password: u.Password,
 		//Categories: CategoryDomainDB(u.Categories, 0),

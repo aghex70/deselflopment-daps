@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Button, Container, FloatingLabel, Form} from "react-bootstrap";
 import UserService from "../services/user";
-import {hashPassword, skipLogin} from "../utils/helpers";
+import {skipLogin} from "../utils/helpers";
 
 
 const Login = () => {
@@ -13,7 +13,6 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const hashedPassword = hashPassword(password);
     UserService.login(email, password).then(
       (response) => {
         if (response.status === 200) {
@@ -43,7 +42,7 @@ const Login = () => {
           alignItems:'center',
           height: '50vh',
     }}>
-      <Form  onSubmit={(e)=>handleSubmit(e)}>
+      <Form onSubmit={(e)=>handleSubmit(e)}>
         <h1 style={{ margin: '0px 0px 32px' }} className="text-center">Login</h1>
         <FloatingLabel
           controlId="floatingEmail"
