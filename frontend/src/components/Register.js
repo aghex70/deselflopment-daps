@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Button, Container, FloatingLabel, Form} from "react-bootstrap";
+import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import UserService from "../services/user";
 import {hashPassword, skipLogin} from "../utils/helpers";
 
@@ -10,6 +10,11 @@ const Register = ()  =>{
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [showModalPasswordsDoNotMatch, setShowModalPasswordsDoNotMatch] = useState(false);
+
+  const toggleModalPasswordsDoNotMatch = () => {
+    setShowModalPasswordsDoNotMatch(!showModalPasswordsDoNotMatch);
+  }
 
   const styles = {
     display: 'flex',
@@ -20,6 +25,9 @@ const Register = ()  =>{
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (password !== repeatPassword) {
+      setShowModalPasswordsDoNotMatch(true);
+    }
     const hashedPassword = hashPassword(password);
     const hashedRepeatedPassword = hashPassword(repeatPassword);
     UserService.register(name, email, hashedPassword, hashedRepeatedPassword).then(
@@ -30,7 +38,7 @@ const Register = ()  =>{
       }
     ).catch(
       (error) => {
-        window.location.reload();
+        // window.location.reload();
       }
     )
   }
@@ -85,6 +93,19 @@ const Register = ()  =>{
         </Button>
 
       </Form>
+
+      <Modal className='successModal text-center' show={showModalPasswordsDoNotMatch} open={showModalPasswordsDoNotMatch} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>Passwords do not match! Please try again</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+                variant="danger"
+                onClick={(e) => toggleModalPasswordsDoNotMatch(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >Return</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
     </Container>
   )
 }
