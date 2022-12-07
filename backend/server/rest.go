@@ -143,18 +143,12 @@ func (s *RestServer) StartServer() error {
 
 	address := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 	fmt.Printf("Starting server on address %s", address)
-	environment := os.Getenv("ENVIRONMENT")
-	if environment == "local" {
-		err := http.ListenAndServe(address, nil)
-		if err != nil {
-			fmt.Printf("Error starting HTTP server %+v", err.Error())
-			return err
-		}
-	} else {
-		err := http.ListenAndServeTLS(address, "/etc/nginx/ssl/live/deselflopment.com/fullchain.pem", "/etc/nginx/ssl/live/deselflopment.com/privkey.pem", nil)
-		fmt.Printf("Error starting HTTPS server %+v", err.Error())
-		return err
+	err := http.ListenAndServe(address, nil)
+	if err != nil {
+	    fmt.Printf("Error starting HTTP server %+v", err.Error())
+	    return err
 	}
+
 	fmt.Println("Server started")
 	return nil
 }
