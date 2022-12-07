@@ -127,6 +127,7 @@ func (u User) ToDto() domain.User {
 		ID:         u.ID,
 		Email:      u.Email,
 		Categories: CategoryDBDomain(u.Categories),
+		Password:   u.Password,
 	}
 }
 

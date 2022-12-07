@@ -15,12 +15,11 @@ const options = {
   }
 }
 
-const register = async (name, email, password, repeat_password) => {
+const register = async (name, email, password) => {
   return await axios.post(REGISTER_URL, {
     name,
     email,
     password,
-    repeat_password,
   });
 }
 

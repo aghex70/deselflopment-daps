@@ -52,9 +52,9 @@ func (gr *UserGormRepository) Get(ctx context.Context, id int) (domain.User, err
 	return u.ToDto(), nil
 }
 
-func (gr *UserGormRepository) GetByEmail(ctx context.Context, email, password string) (domain.User, error) {
+func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (domain.User, error) {
 	var u relationship.User
-	result := gr.DB.Where(&relationship.User{Email: email, Password: password}).First(&u)
+	result := gr.DB.Where(&relationship.User{Email: email}).First(&u)
 	if result.Error != nil {
 		return domain.User{}, result.Error
 	}

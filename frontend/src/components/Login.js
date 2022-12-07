@@ -14,7 +14,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const hashedPassword = hashPassword(password);
-    UserService.login(email, hashedPassword).then(
+    UserService.login(email, password).then(
       (response) => {
         if (response.status === 200) {
           localStorage.setItem("access_token", response.data.access_token);

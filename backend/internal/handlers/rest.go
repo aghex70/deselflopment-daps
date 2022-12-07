@@ -32,6 +32,7 @@ func ValidateRequest(r *http.Request, payload interface{}) error {
 	err = validate.Struct(payload)
 	if err != nil {
 		fmt.Println("bbbbbbbbbbbbbbbbbbbbbbbb")
+		fmt.Println("err: ", err)
 		return err
 	}
 

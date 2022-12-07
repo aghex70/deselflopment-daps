@@ -53,8 +53,8 @@ services:
     ports:
       - "3100:3000"
     stdin_open: true
-    volumes:
-      - ./frontend:/daps/frontend
+#    volumes:
+#      - ./frontend:/daps/frontend
 #    depends_on:
 #      - backend
 

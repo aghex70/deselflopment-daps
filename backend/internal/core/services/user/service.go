@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
@@ -29,21 +30,17 @@ var baseCategoriesIds = []int{1, 2, 3, 4, 5}
 var hmacSampleSecret = []byte("random")
 
 func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) error {
-	match := s.PasswordsMatch(ctx, r.Password, r.RepeatPassword)
-	if !match {
-		return errors.New("passwords do not match")
-	}
-
-	preexistent := s.CheckExistentUser(ctx, r.Email, r.Password)
+	preexistent := s.CheckExistentUser(ctx, r.Email)
 	if preexistent {
 		return errors.New("user already registered")
 	}
+	cipheredPassword := s.EncryptPassword(ctx, r.Password)
 
 	categories, err := s.categoryRepository.GetByIds(ctx, baseCategoriesIds)
 	u := domain.User{
 		Name:       r.Name,
 		Email:      r.Email,
-		Password:   r.Password,
+		Password:   cipheredPassword,
 		Categories: categories,
 	}
 
@@ -56,9 +53,23 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 }
 
 func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (string, int, error) {
-	u, err := s.userRepository.GetByEmail(ctx, r.Email, r.Password)
+	u, err := s.userRepository.GetByEmail(ctx, r.Email)
 	if err != nil {
 		return "", 0, err
+	}
+
+	decryptedPassword, err := s.DecryptPassword(ctx, u.Password)
+	if err != nil {
+		return "", 0, err
+	}
+	fmt.Println()
+	fmt.Println("decryptedPassword", decryptedPassword)
+	fmt.Println("r.Password", r.Password)
+	fmt.Println("u.Password", u.Password)
+
+	match := s.PasswordsMatch(ctx, decryptedPassword, r.Password)
+	if !match {
+		return "", 0, errors.New("invalid credentials")
 	}
 
 	claims := MyCustomClaims{

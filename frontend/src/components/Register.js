@@ -29,8 +29,7 @@ const Register = ()  =>{
       setShowModalPasswordsDoNotMatch(true);
     }
     const hashedPassword = hashPassword(password);
-    const hashedRepeatedPassword = hashPassword(repeatPassword);
-    UserService.register(name, email, hashedPassword, hashedRepeatedPassword).then(
+    UserService.register(name, email, hashedPassword).then(
       (response) => {
         if (response.status === 201) {
           window.location.href = "/login";
