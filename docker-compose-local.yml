@@ -13,8 +13,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_started
+#      redis:
+#        condition: service_started
       frontend:
         condition: service_started
     volumes:
@@ -38,9 +38,9 @@ services:
     volumes:
       -  mysql-db123455:/var/lib/mysql-daps123455
 
-  redis:
-    image: redis:alpine
-    command: [ redis-server, --port, "10379" ]
+#  redis:
+#    image: redis:alpine
+#    command: [ redis-server, --port, "10379" ]
 
   frontend:
     build:
