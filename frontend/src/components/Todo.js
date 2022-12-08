@@ -97,43 +97,44 @@ const Todo = () => {
             <Form.Control type="description" placeholder="Description" value={todoDescription} disabled={!enableEdit}/>
           </FloatingLabel>
 
-          <FloatingLabel
-            controlId="floatingLink"
-            label="Link"
-            value={todoLink}
-            onChange={(e) => setTodoLink(e.target.value)}
-          >
-            <Form.Control type="link" placeholder="Link" value={todoLink} disabled={!enableEdit}/>
-          </FloatingLabel>
 
-          <FloatingLabel controlId="floatingPriority" label="Priority">
-            <Form.Select
+            <FloatingLabel controlId="floatingPriority" label="Priority">
+                <Form.Select
               name="priority"
               value={todoPriority}
               onChange={(e) => setTodoPriority(e.target.value)}
               style={{ margin: '0px 0px 32px' }}
               disabled={!enableEdit}
             >
-              <option style={{color: "grey"}} value="1">Lowest</option>
-              <option style={{color: "blue"}} value="2">Low</option>
-              <option style={{color: "green"}} value="3">Medium</option>
-              <option style={{color: "orange"}} value="4">High</option>
-              <option style={{color: "red"}} value="5">Highest</option>
-            </Form.Select>
-          </FloatingLabel>
+                    <option style={{color: "grey"}} value="1">Lowest</option>
+                    <option style={{color: "blue"}} value="2">Low</option>
+                    <option style={{color: "green"}} value="3">Medium</option>
+                    <option style={{color: "orange"}} value="4">High</option>
+                    <option style={{color: "red"}} value="5">Highest</option>
+                </Form.Select>
+            </FloatingLabel>
 
-          <FloatingLabel controlId="floatingRecurring" label="Recurring">
-            <Form.Select
+            <FloatingLabel controlId="floatingRecurring" label="Recurring">
+                <Form.Select
               name="recurring"
               value={todoRecurring}
               onChange={(e) => setTodoRecurring(e.target.value)}
               style={{ margin: '0px 0px 32px' }}
               disabled={!enableEdit}
             >
-              <option value="false">No</option>
-              <option value="true">Yes</option>
-            </Form.Select>
-          </FloatingLabel>
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </Form.Select>
+            </FloatingLabel>
+
+            <FloatingLabel
+                controlId="floatingLink"
+                label="Link"
+                value={todoLink}
+                onChange={(e) => setTodoLink(e.target.value)}
+            >
+                <Form.Control type="link" placeholder="Link" value={todoLink} disabled={!enableEdit}/>
+            </FloatingLabel>
 
           {enableEdit ?
             (

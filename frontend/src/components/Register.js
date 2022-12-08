@@ -128,12 +128,18 @@ const Register = ()  =>{
       <Modal className='successModal text-center' show={showModalUserAlreadyExists} open={showModalUserAlreadyExists} centered={true} size='lg'>
         <ModalBody>
           <h4 style={{margin: "32px"}}>User already registered! Please try with a different email</h4>
-          <ButtonGroup style={{width: "40%"}}>
+          <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
+            <Button
+                variant="success"
+                type="submit"
+                onClick={(e) => window.location.href = "/login"}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >Login</Button>
             <Button
                 variant="danger"
                 onClick={(e) => toggleModalUserAlreadyExists(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >Cancel</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
