@@ -20,7 +20,6 @@ const CreateTodo = () => {
     const categoryName = location.state.categoryName;
     const navigate = useNavigate();
 
-    console.log("categoryName: " + categoryName);
     const disablePrioritySelect = () => {
       if (!disablePriority) {
         if (todoPriority in ["1", "2", "3", "4", "5"]) {
@@ -38,8 +37,6 @@ const CreateTodo = () => {
       }
     }
     disableRecurringSelect();
-
-
 
     const navigateTodos = () => {
       navigate("/todos", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
