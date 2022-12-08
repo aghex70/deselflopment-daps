@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import CategoryService from "../services/category";
-import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
+import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
 
@@ -8,9 +8,14 @@ const CreateCategory = () => {
   checkAccess();
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
+  const [showModalCategoryAlreadyExists, setShowModalCategoryAlreadyExists] = useState(false);
 
   const navigateCategories = () => {
     window.location.href = "/categories";
+  }
+
+  const toggleModalCategoryAlreadyExists = () => {
+    setShowModalCategoryAlreadyExists(!showModalCategoryAlreadyExists);
   }
 
   const handleSubmit = (e) => {
@@ -24,13 +29,13 @@ const CreateCategory = () => {
       (response) => {
         if (response.status === 201) {
           window.location.href = "/categories";
-        } else {
-          window.location.href = "/categories";
         }
       }
     ).catch(
       (error) => {
-        error = new Error("Create category failed!");
+        if (error.response.data.message === "already existent category with that user and name") {
+            setShowModalCategoryAlreadyExists(true);
+        }
       }
     )
   }
@@ -79,6 +84,18 @@ const CreateCategory = () => {
         </ButtonGroup>
 
       </Form>
+      <Modal className='successModal text-center' show={showModalCategoryAlreadyExists} open={showModalCategoryAlreadyExists} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>Category already exists! Please try with a different name</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+                variant="danger"
+                onClick={(e) => toggleModalCategoryAlreadyExists(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >Return</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
     </Container>
   )
 }
