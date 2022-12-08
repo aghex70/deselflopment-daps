@@ -12,6 +12,7 @@ const Login = () => {
   const [showModalUserDoesNotExist, setShowModalUserDoesNotExist] = useState(false);
   const [showModalPasswordNotLongEnough, setShowModalPasswordNotLongEnough] = useState(false);
   const [showModalEmailNotFilled, setShowModalEmailNotFilled] = useState(false);
+  const [showModalIncorrectPassword, setShowModalIncorrectPassword] = useState(false);
 
   const toggleModalUserDoesNotExist = () => {
     setShowModalUserDoesNotExist(!showModalUserDoesNotExist);
@@ -23,6 +24,10 @@ const Login = () => {
 
   const toggleModalEmailNotFilled = () => {
     setShowModalEmailNotFilled(!showModalEmailNotFilled);
+  }
+
+  const toggleModalIncorrectPassword = () => {
+    setShowModalIncorrectPassword(!showModalIncorrectPassword);
   }
 
   const handleSubmit = (e) => {
@@ -49,8 +54,8 @@ const Login = () => {
       (error) => {
         if (error.response.data.message === "record not found") {
           setShowModalUserDoesNotExist(true);
-        } else {
-          window.location.href = "/login";
+        } else if (error.response.data.message === "invalid credentials") {
+          setShowModalIncorrectPassword(true);
         }
       }
     )
@@ -131,6 +136,19 @@ const Login = () => {
             <Button
                 variant="danger"
                 onClick={(e) => toggleModalPasswordNotLongEnough(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >Return</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='successModal text-center' show={showModalIncorrectPassword} open={showModalIncorrectPassword} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>Incorrect password! Please try again</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+                variant="danger"
+                onClick={(e) => toggleModalIncorrectPassword(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >Return</Button>
           </ButtonGroup>
