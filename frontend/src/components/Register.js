@@ -2,6 +2,14 @@ import React, {useState} from 'react'
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import UserService from "../services/user";
 import {hashPassword, skipLogin} from "../utils/helpers";
+import {
+  CancelButtonText,
+  EmailAddressLabelText, LoginButtonText,
+  NameLabelText,
+  PasswordLabelText, PasswordNotLongEnoughText, PasswordsDoNotMatchText, RegisterButtonText,
+  RegisterHeaderText,
+  RepeatPasswordLabelText, ReturnButtonText, UserAlreadyRegisteredText
+} from "../utils/texts";
 
 const Register = ()  =>{
   skipLogin();
@@ -64,10 +72,10 @@ const Register = ()  =>{
   return (
     <Container style={styles}>
       <Form  onSubmit={(e)=>handleSubmit(e)}>
-        <h1 style={{ margin: '0px 0px 32px' }} className="text-center">Register</h1>
+        <h1 style={{ margin: '0px 0px 32px' }} className="text-center">{RegisterHeaderText}</h1>
         <FloatingLabel
           controlId="floatingName"
-          label="Name"
+          label={NameLabelText}
           value={name}
           onChange={(e) => setName(e.target.value)}
         >
@@ -76,7 +84,7 @@ const Register = ()  =>{
 
         <FloatingLabel
           controlId="floatingEmail"
-          label="Email address"
+          label={EmailAddressLabelText}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         >
@@ -85,7 +93,7 @@ const Register = ()  =>{
 
         <FloatingLabel
           controlId="floatingPassword"
-          label="Password"
+          label={PasswordLabelText}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         >
@@ -94,7 +102,7 @@ const Register = ()  =>{
 
         <FloatingLabel
           controlId="floatingRepeatPassword"
-          label="RepeatPassword"
+          label={RepeatPasswordLabelText}
           value={repeatPassword}
           onChange={(e) => setRepeatPassword(e.target.value)}
         >
@@ -107,52 +115,52 @@ const Register = ()  =>{
           type="submit"
           onClick={(e) => handleSubmit(e)}
         >
-          Register
+          {RegisterButtonText}
         </Button>
 
       </Form>
 
       <Modal className='successModal text-center' show={showModalPasswordsDoNotMatch} open={showModalPasswordsDoNotMatch} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>Passwords do not match! Please try again</h4>
+          <h4 style={{margin: "32px"}}>{PasswordsDoNotMatchText}</h4>
           <ButtonGroup style={{width: "40%"}}>
             <Button
                 variant="danger"
                 onClick={(e) => toggleModalPasswordsDoNotMatch(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >{ReturnButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
 
       <Modal className='successModal text-center' show={showModalUserAlreadyExists} open={showModalUserAlreadyExists} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>User already registered! Please try with a different email</h4>
+          <h4 style={{margin: "32px"}}>{UserAlreadyRegisteredText}</h4>
           <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
             <Button
                 variant="success"
                 type="submit"
                 onClick={(e) => window.location.href = "/login"}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Login</Button>
+            >{LoginButtonText}</Button>
             <Button
                 variant="danger"
                 onClick={(e) => toggleModalUserAlreadyExists(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Cancel</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
 
       <Modal className='successModal text-center' show={showModalPasswordNotLongEnough} open={showModalPasswordNotLongEnough} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>Password must have more than 12 characters!</h4>
+          <h4 style={{margin: "32px"}}>{PasswordNotLongEnoughText}</h4>
           <ButtonGroup style={{width: "40%"}}>
             <Button
                 variant="danger"
                 onClick={(e) => toggleModalPasswordNotLongEnough(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >{ReturnButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

@@ -3,6 +3,7 @@ import { Button, ButtonGroup, Container, Form, FloatingLabel } from "react-boots
 import TodoService from "../services/todo";
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
+import {CancelButtonText, DescriptionLabelText, ReportABugHeaderText, ReportButtonText} from "../utils/texts";
 
 const ReportBug = () => {
     checkAccess();
@@ -32,10 +33,10 @@ const ReportBug = () => {
         <Container>
             <DapsHeader />
             <h1 style={{ margin: "0px 0px 32px" }} className="text-center">
-                Report a bug
+                {ReportABugHeaderText}
             </h1>
             <Form onSubmit={handleSubmit}>
-                <FloatingLabel controlId="floatingDescription" label="Description">
+                <FloatingLabel controlId="floatingDescription" label={DescriptionLabelText}>
                     <Form.Control
                         as="textarea"
                         placeholder="Description"
@@ -59,7 +60,7 @@ const ReportBug = () => {
                             textAlign: "center",
                         }}
                     >
-                        Report
+                        {ReportButtonText}
                     </Button>
                     <Button
                         variant="danger"
@@ -71,7 +72,7 @@ const ReportBug = () => {
                             textAlign: "center",
                         }}
                     >
-                        Cancel
+                        {CancelButtonText}
                     </Button>
                 </ButtonGroup>
             </Form>

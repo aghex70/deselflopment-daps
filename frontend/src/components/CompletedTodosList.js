@@ -8,6 +8,14 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrashRestore, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
 import checkAccess from "../utils/helpers";
+import {
+    CompletedTodosHeaderText,
+    CompletedTodosIndicationText,
+    DeleteIconText,
+    HeaderActionsText,
+    NameLabelText,
+    ReactivateIconText
+} from "../utils/texts";
 
 const CompletedTodosList = () => {
   checkAccess();
@@ -28,13 +36,13 @@ const CompletedTodosList = () => {
   const columns = [
     {
       dataField: 'name',
-      text: 'Name',
+      text: NameLabelText,
       style:{'width' : '70%'},
       formatter: rowTextColor,
     },
     {
-      dataField: 'link',
-      text: 'Actions',
+      dataField: 'actions',
+      text: HeaderActionsText,
       style:{width: '10%', verticalAlign: "middle"},
       formatter: actionsFormatter,
       headerAlign: 'center',
@@ -43,7 +51,6 @@ const CompletedTodosList = () => {
   const navigateToTodo = (id, categoryId, categoryName, action) => {
     navigate("/todo/" + id, {state: {categoryId: categoryId, action: action}});
   }
-
 
   const deleteTodo = (id, categoryId) => {
     TodoService.deleteTodo(id, categoryId).then(
@@ -54,7 +61,6 @@ const CompletedTodosList = () => {
       }
     ).catch(
       (error) => {
-        error = new Error("Deletion failed!");
       })
   }
 
@@ -67,7 +73,6 @@ const CompletedTodosList = () => {
       }
     ).catch(
       (error) => {
-        error = new Error("Activation failed!");
       })
   }
 
@@ -84,14 +89,14 @@ const CompletedTodosList = () => {
       >
         <ButtonGroup style={{width: "100%"}}>
           <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
-                  title="Reactivate"
+                  title={ReactivateIconText}
                   variant="outline-success"
                   onClick={() => activateTodo(row.id, row.category_id)}
           >
             <FontAwesomeIcon icon={faTrashRestore} />
           </Button>
           <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                  title="Delete"
+                  title={DeleteIconText}
                   variant="outline-danger"
                   onClick={() => deleteTodo(row.id, row.category_id)}
           >
@@ -122,13 +127,13 @@ const CompletedTodosList = () => {
   },[todos]);
 
   function indication() {
-    return "You better complete some Todos first!!!";
+    return CompletedTodosIndicationText;
   }
 
   return (
     <Container>
       <DapsHeader />
-      <h1 className="text-center">Completed Todos</h1>
+      <h1 className="text-center">{CompletedTodosHeaderText}</h1>
       <BootstrapTable
         keyField='id'
         data={ todos }

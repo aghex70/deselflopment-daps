@@ -5,6 +5,23 @@ import TodoService from "../services/todo";
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
 import toBoolean from "validator/es/lib/toBoolean";
+import {
+    CancelButtonText,
+    DescriptionLabelText, EditButtonText,
+    EditTodoHeaderText,
+    HighestPriorityText,
+    HighPriorityText,
+    LinkLabelText,
+    LowestPriorityText,
+    LowPriorityText,
+    MediumPriorityText,
+    NameLabelText,
+    NoRecurringText,
+    PriorityLabelText,
+    RecurringLabelText, ReturnButtonText,
+    ViewTodoHeaderText,
+    YesRecurringText
+} from "../utils/texts";
 
 const Todo = () => {
     checkAccess();
@@ -48,7 +65,6 @@ const Todo = () => {
         }
       ).catch(
         (error) => {
-          error = new Error("Update todo failed!");
         }
       )
     }
@@ -68,7 +84,6 @@ const Todo = () => {
           }
         ).catch(
           (error) => {
-            // window.location.href = "/categories";
           }
         )
       }
@@ -77,11 +92,11 @@ const Todo = () => {
     return (
       <Container>
         <DapsHeader />
-        <h1 className="text-center">{enableEdit ? "Edit todo" : "View todo"}</h1>
+        <h1 className="text-center">{enableEdit ? EditTodoHeaderText : ViewTodoHeaderText}</h1>
         <Form onSubmit={(e) => handleSubmit(e)}>
           <FloatingLabel
             controlId="floatingName"
-            label="Name"
+            label={NameLabelText}
             value={todoName}
             onChange={(e) => setTodoName(e.target.value)}
           >
@@ -90,7 +105,7 @@ const Todo = () => {
 
           <FloatingLabel
             controlId="floatingDescription"
-            label="Description"
+            label={DescriptionLabelText}
             value={todoDescription}
             onChange={(e) => setTodoDescription(e.target.value)}
           >
@@ -98,7 +113,7 @@ const Todo = () => {
           </FloatingLabel>
 
 
-            <FloatingLabel controlId="floatingPriority" label="Priority">
+            <FloatingLabel controlId="floatingPriority" label={PriorityLabelText}>
                 <Form.Select
               name="priority"
               value={todoPriority}
@@ -106,15 +121,15 @@ const Todo = () => {
               style={{ margin: '0px 0px 32px' }}
               disabled={!enableEdit}
             >
-                    <option style={{color: "grey"}} value="1">Lowest</option>
-                    <option style={{color: "blue"}} value="2">Low</option>
-                    <option style={{color: "green"}} value="3">Medium</option>
-                    <option style={{color: "orange"}} value="4">High</option>
-                    <option style={{color: "red"}} value="5">Highest</option>
+                    <option style={{color: "grey"}} value="1">{LowestPriorityText}</option>
+                    <option style={{color: "blue"}} value="2">{LowPriorityText}</option>
+                    <option style={{color: "green"}} value="3">{MediumPriorityText}</option>
+                    <option style={{color: "orange"}} value="4">{HighPriorityText}</option>
+                    <option style={{color: "red"}} value="5">{HighestPriorityText}</option>
                 </Form.Select>
             </FloatingLabel>
 
-            <FloatingLabel controlId="floatingRecurring" label="Recurring">
+            <FloatingLabel controlId="floatingRecurring" label={RecurringLabelText}>
                 <Form.Select
               name="recurring"
               value={todoRecurring}
@@ -122,14 +137,14 @@ const Todo = () => {
               style={{ margin: '0px 0px 32px' }}
               disabled={!enableEdit}
             >
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
+                    <option value="false">{NoRecurringText}</option>
+                    <option value="true">{YesRecurringText}</option>
                 </Form.Select>
             </FloatingLabel>
 
             <FloatingLabel
                 controlId="floatingLink"
-                label="Link"
+                label={LinkLabelText}
                 value={todoLink}
                 onChange={(e) => setTodoLink(e.target.value)}
             >
@@ -144,12 +159,12 @@ const Todo = () => {
                 type="submit"
                 onClick={(e) => handleSubmit(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-              >Edit</Button>
+              >{EditButtonText}</Button>
               <Button
                 variant="danger"
                 onClick={() => navigateTodos()}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-              >Cancel</Button>
+              >{CancelButtonText}</Button>
             </ButtonGroup>
             ) : (
               <ButtonGroup style={{width: "20%", marginLeft: "40%"}}>
@@ -157,7 +172,7 @@ const Todo = () => {
                 variant="success"
                 onClick={() => navigateTodos()}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-              >Return</Button>
+              >{ReturnButtonText}</Button>
             </ButtonGroup>
             )
           }

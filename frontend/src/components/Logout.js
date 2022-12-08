@@ -1,12 +1,9 @@
 import React from 'react'
 import {Button, ButtonGroup, Container, Modal, ModalBody} from "react-bootstrap";
+import {LoginButtonText, ThankYouHeaderText} from "../utils/texts";
 
 const Logout = () => {
-  const clearLocalStorage = () => {
-    localStorage.clear();
-  }
-
-  clearLocalStorage();
+  localStorage.removeItem("access_token");
 
   const login = (e) => {
     e.preventDefault();
@@ -18,13 +15,13 @@ const Logout = () => {
       <Modal className='unshareModal text-center' show={true}
              centered={true} size='lg'>
         <ModalBody>
-          <h3 style={{margin: "32px"}}>Thanks for using DAPS!</h3>
+          <h3 style={{margin: "32px"}}>{ThankYouHeaderText}</h3>
           <ButtonGroup style={{width: "80%"}}>
             <Button
               variant="success"
               onClick={(e) => login(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Login</Button>
+            >{LoginButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

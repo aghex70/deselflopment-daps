@@ -8,6 +8,13 @@ import './TodosList.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
+import {
+    CompleteIconText, CreateIconText, DeleteIconText,
+    EditIconText,
+    HeaderActionsText,
+    HeaderNameText,
+    StartIconText
+} from "../utils/texts";
 
 const TodosList = () => {
   checkAccess();
@@ -34,12 +41,12 @@ const TodosList = () => {
   const columns = [
     {
     dataField: 'name',
-    text: 'Name',
+    text: HeaderNameText,
     style:{'width' : '70%'},
     formatter: rowTextColor,
   }, {
-    // dataField: 'link',
-    text: 'Actions',
+    dataField: 'actions',
+    text: HeaderActionsText,
     style:{'width' : '30%'},
     formatter: actionsFormatter,
     headerAlign: 'center',
@@ -75,7 +82,6 @@ const TodosList = () => {
       }
     ).catch(
       (error) => {
-        error = new Error("Completion failed!");
       })
   }
 
@@ -88,7 +94,6 @@ const TodosList = () => {
       }
     ).catch(
       (error) => {
-        error = new Error("Completion failed!");
       })
   }
 
@@ -110,7 +115,6 @@ const TodosList = () => {
         }
       ).catch(
         (error) => {
-          error = new Error("Login failed!");
         })
     }
   },[todos, categoryId]);
@@ -130,24 +134,24 @@ const TodosList = () => {
       <ButtonGroup style={{width: "100%"}}>
         {row.active === false? (
           <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center", }}
-                  title="Start" variant="outline-warning" onClick={() => startTodo(row.id)}>
+                  title={StartIconText} variant="outline-warning" onClick={() => startTodo(row.id)}>
             <FontAwesomeIcon icon={faPlay} />
           </Button>
         ) : (
           <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                  title="Complete" variant="outline-success" onClick={() => completeTodo(row.id)}>
+                  title={CompleteIconText} variant="outline-success" onClick={() => completeTodo(row.id)}>
             <FontAwesomeIcon icon={faCheck} />
           </Button>
         )
         }
 
         <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
-                title="Edit" variant="outline-primary" onClick={() => navigateToTodo(row.id, categoryId, 0,"edit")}>
+                title={EditIconText} variant="outline-primary" onClick={() => navigateToTodo(row.id, categoryId, 0,"edit")}>
           <FontAwesomeIcon icon={faPencil} />
         </Button>
 
         <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                title="Delete" variant="outline-danger" onClick={() => deleteTodo(row.id)}>
+                title={DeleteIconText} variant="outline-danger" onClick={() => deleteTodo(row.id)}>
           <FontAwesomeIcon icon={faTrash} />
         </Button>
       </ButtonGroup>
@@ -157,7 +161,7 @@ const TodosList = () => {
 
   function indication() {
     return <span className="createIcon" onClick={() => createTodo()}>
-      <FontAwesomeIcon className="createIcon" icon={faPlus} />Create a new Todo</span>
+      <FontAwesomeIcon className="createIcon" icon={faPlus} />{CreateIconText}</span>
   }
 
       return (
@@ -165,7 +169,7 @@ const TodosList = () => {
           <DapsHeader />
           <h1 className="text-center">{location.state.categoryName}</h1>
           <span style={todoSpan} className="createIcon" onClick={() => createTodo()}>
-          <FontAwesomeIcon className="createIcon" icon={faPlus} />Create a new Todo</span>
+          <FontAwesomeIcon className="createIcon" icon={faPlus} />{CreateIconText}</span>
           <BootstrapTable
             keyField='id'
             data={ todos }

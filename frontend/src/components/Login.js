@@ -2,6 +2,14 @@ import React, {useState} from 'react'
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import UserService from "../services/user";
 import {skipLogin} from "../utils/helpers";
+import {
+  CancelButtonText,
+  EmailAddressLabelText, EnterEmailText, IncorrectPasswordText,
+  LoginButtonText, LoginHeaderText,
+  PasswordLabelText, PasswordNotLongEnoughText,
+  RegisterButtonText,
+  UserNotFoundText
+} from "../utils/texts";
 
 
 const Login = () => {
@@ -47,6 +55,7 @@ const Login = () => {
         if (response.status === 200) {
           localStorage.setItem("access_token", response.data.access_token);
           localStorage.setItem("user_id", response.data.user_id);
+          localStorage.setItem("language", "es");
           window.location.href = "/categories";
         }
       }
@@ -71,10 +80,10 @@ const Login = () => {
           height: '50vh',
     }}>
       <Form onSubmit={(e)=>handleSubmit(e)}>
-        <h1 style={{ margin: '0px 0px 32px' }} className="text-center">Login</h1>
+        <h1 style={{ margin: '0px 0px 32px' }} className="text-center">{LoginHeaderText}</h1>
         <FloatingLabel
           controlId="floatingEmail"
-          label="Email address"
+          label={EmailAddressLabelText}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         >
@@ -83,7 +92,7 @@ const Login = () => {
 
         <FloatingLabel
           controlId="floatingPassword"
-          label="Password"
+          label={PasswordLabelText}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         >
@@ -94,31 +103,31 @@ const Login = () => {
           variant="success"
           type="submit"
         >
-          Login
+          {LoginButtonText}
         </Button>
       </Form>
       <Modal className='successModal text-center' show={showModalUserDoesNotExist} open={showModalUserDoesNotExist} centered={true} size='lg'>
       <ModalBody>
-        <h4 style={{margin: "32px"}}>User not found! Please try again or register first</h4>
+        <h4 style={{margin: "32px"}}>{UserNotFoundText}</h4>
         <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
           <Button
               variant="success"
               type="submit"
               onClick={(e) => window.location.href = "/register"}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >Register</Button>
+          >{RegisterButtonText}</Button>
           <Button
               variant="danger"
               onClick={(e) => toggleModalUserDoesNotExist(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >Cancel</Button>
+          >{CancelButtonText}</Button>
         </ButtonGroup>
       </ModalBody>
     </Modal>
 
       <Modal className='successModal text-center' show={showModalEmailNotFilled} open={showModalEmailNotFilled} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>Please enter your email</h4>
+          <h4 style={{margin: "32px"}}>{EnterEmailText}</h4>
           <ButtonGroup style={{width: "40%"}}>
             <Button
                 variant="danger"
@@ -131,7 +140,7 @@ const Login = () => {
 
       <Modal className='successModal text-center' show={showModalPasswordNotLongEnough} open={showModalPasswordNotLongEnough} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>Password must have more than 12 characters!</h4>
+          <h4 style={{margin: "32px"}}>{PasswordNotLongEnoughText}</h4>
           <ButtonGroup style={{width: "40%"}}>
             <Button
                 variant="danger"
@@ -144,7 +153,7 @@ const Login = () => {
 
       <Modal className='successModal text-center' show={showModalIncorrectPassword} open={showModalIncorrectPassword} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>Incorrect password! Please try again</h4>
+          <h4 style={{margin: "32px"}}>{IncorrectPasswordText}</h4>
           <ButtonGroup style={{width: "40%"}}>
             <Button
                 variant="danger"

@@ -13,6 +13,26 @@ import './CategoriesList.css';
 import BootstrapTable from "react-bootstrap-table-next";
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
+import {
+  CancelButtonText,
+  CategoriesHeaderText, ConfirmUnshareCategoryText,
+  CreateCategoryIconText,
+  DeleteIconText,
+  EditIconText,
+  HeaderActionsText,
+  HeaderCategoryText,
+  HeaderTasksText,
+  HighPriorityTasksText,
+  OnlyOwnerCanEditCategoryText,
+  OnlyOwnersCanDeleteCategoryText, ReturnButtonText,
+  ShareButtonText,
+  ShareCategoryHeaderText,
+  ShareIconText,
+  TotalNumberOfTasksText,
+  UnSubscribeIconText, UnsuscribeButtonText,
+  UserAlreadySubscribedText,
+  ViewIconText
+} from "../utils/texts";
 
 const CategoriesList = () => {
   checkAccess();
@@ -47,29 +67,29 @@ const CategoriesList = () => {
   const rowTasksFormatter = (cell, row) => {
     return <p
       style={{fontWeight: "bold" , color: "red", cursor: "pointer", margin: "0"}}
-      title="Highest priority tasks"
+      title={HighPriorityTasksText}
       onClick={() => navigateToCategory(row.id, row.name)}>
       {row.highest_priority_tasks}
-      <span title="Total number of tasks" style={{fontWeight: "bold", color: "black"}}>/{row.tasks}</span>
+      <span title={TotalNumberOfTasksText} style={{fontWeight: "bold", color: "black"}}>/{row.tasks}</span>
     </p>;
   }
 
   const columns = [
     {
       dataField: 'tasks',
-      text: 'Tasks',
+      text: HeaderTasksText,
       style:{'width' : '15%', cursor: "pointer", verticalAlign: "middle", justifyContent: "center"},
       formatter: rowTasksFormatter,
     },
     {
       dataField: 'name',
-      text: 'Category',
+      text: HeaderCategoryText,
       style:{'width' : '55%', cursor: "pointer", verticalAlign: "middle"},
       formatter: rowTextColor,
     },
     {
       dataField: 'link',
-      text: 'Actions',
+      text: HeaderActionsText,
       style:{'width' : '30%', verticalAlign: "middle"},
       formatter: actionsFormatter,
       headerAlign: 'center',
@@ -103,7 +123,6 @@ const CategoriesList = () => {
         if (error.response.data.message === "cannot remove category") {
           setShowModalCannotDeleteCategory(true);
         }
-        error = new Error("Deletion failed!");
       })
   }
 
@@ -146,7 +165,6 @@ const CategoriesList = () => {
       }
     ).catch(
       (error) => {
-        error = new Error("Unsharing failed!");
       })
   }
 
@@ -163,7 +181,6 @@ const CategoriesList = () => {
           setShowModal(false);
           setShowModalUserAlreadySubscribed(true);
         }
-        error = new Error("Sharing failed!");
         setShowModal(false);
       })
   }
@@ -184,7 +201,6 @@ const CategoriesList = () => {
         }
       ).catch(
         (error) => {
-          error = new Error("Login failed!");
         })
     }
 
@@ -208,13 +224,13 @@ const CategoriesList = () => {
         <ButtonGroup style={{width: "100%"}}>
           {isOwner(row.owner_id)? (
             <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                    title="Share"
+                    title={ShareIconText}
                     variant="outline-success" onClick={() => shareCategory(row.id)}>
               <FontAwesomeIcon icon={faShareNodes} />
             </Button>
           ) : (
             <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                    title="Unsubscribe"
+                    title={UnSubscribeIconText}
                     variant="outline-dark" onClick={() => unshareCategory(row.id)}>
               <FontAwesomeIcon style={{rotate: "180deg"}} icon={faShareNodes}/>
             </Button>
@@ -222,20 +238,20 @@ const CategoriesList = () => {
 
           {isOwner(row.owner_id)? (
           <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
-                  title="Edit"
+                  title={EditIconText}
                   variant="outline-primary" onClick={() => getCategory(row.id, "edit")}>
             <FontAwesomeIcon icon={faPencil} />
           </Button>
           ) : (
             <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
-                    title="View"
+                    title={ViewIconText}
                     variant="outline-primary" onClick={() => getCategory(row.id, "view")}>
               <FontAwesomeIcon icon={faEye} />
             </Button>
           )}
 
           <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                  title="Delete"
+                  title={DeleteIconText}
                   variant="outline-danger" onClick={() => deleteCategory(row.id)}>
             <FontAwesomeIcon icon={faTrash} />
           </Button>
@@ -246,15 +262,15 @@ const CategoriesList = () => {
 
   function indication() {
     return <span className="createIcon" onClick={() => navigateToCreateCategory()}>
-      <FontAwesomeIcon className="createIcon" icon={faPlus} />Create a new Category</span>
+      <FontAwesomeIcon className="createIcon" icon={faPlus} />{CreateCategoryIconText}</span>
   }
 
   return (
     <Container>
       <DapsHeader />
-      <h1 className="text-center">Categories</h1>
+      <h1 className="text-center">{CategoriesHeaderText}</h1>
       <span style={categorySpan} className="createIcon" onClick={() => navigateToCreateCategory()}>
-      <FontAwesomeIcon className="createIcon" icon={faPlus} />Create a new Category</span>
+      <FontAwesomeIcon className="createIcon" icon={faPlus} />{CreateCategoryIconText}</span>
       <BootstrapTable
         keyField='id'
         data={ categories }
@@ -265,7 +281,7 @@ const CategoriesList = () => {
       />
       <Modal className='successModal text-center' show={showModal} open={showModal} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>Share category</h4>
+          <h4 style={{margin: "32px"}}>{ShareCategoryHeaderText}</h4>
           <Form  onSubmit={(e) => confirmShareCategory(e)}>
             <Form.Group controlId="formCategoryName">
               <FloatingLabel
@@ -285,45 +301,45 @@ const CategoriesList = () => {
             type="submit"
             onClick={(e) => confirmShareCategory(e)}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >Share</Button>
+          >{ShareButtonText}</Button>
           <Button
             variant="danger"
             onClick={(e) => toggleModal(e)}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >Cancel</Button>
+          >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
 
       <Modal className='successModal text-center' show={showModalUserAlreadySubscribed} open={showModalUserAlreadySubscribed} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>User already subscribed to that category!</h4>
+          <h4 style={{margin: "32px"}}>{UserAlreadySubscribedText}</h4>
           <ButtonGroup style={{width: "40%"}}>
             <Button
               variant="danger"
               onClick={(e) => toggleUserAlreadySubscribedModal(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >{ReturnButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
 
       <Modal className='successModal text-center' show={showModalCannotDeleteCategory} open={showModalCannotDeleteCategory} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>Only owners can delete a shared category. If you want the category to disappear, unsubscribe from it!</h4>
+          <h4 style={{margin: "32px"}}>{OnlyOwnersCanDeleteCategoryText}</h4>
           <ButtonGroup style={{width: "40%"}}>
             <Button
               variant="danger"
               onClick={(e) => toggleCannotDeleteCategoryModal(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >{ReturnButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
 
       <Modal className='successModal text-center' show={showModalCannotEditCategory} open={showModalCannotEditCategory} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>Only owners can edit a shared category!</h4>
+          <h4 style={{margin: "32px"}}>{OnlyOwnerCanEditCategoryText}</h4>
           <ButtonGroup style={{width: "40%"}}>
             <Button
               variant="danger"
@@ -336,19 +352,19 @@ const CategoriesList = () => {
 
       <Modal className='unshareModal text-center' show={showUnshareModal} open={showUnshareModal} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>Are you sure you want to unsubscribe from this category? This operation cannot be undone!</h4>
+          <h4 style={{margin: "32px"}}>{ConfirmUnshareCategoryText}</h4>
           <ButtonGroup style={{width: "80%"}}>
             <Button
               variant="success"
               type="submit"
               onClick={(e) => confirmUnshareCategory(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Unsubscribe</Button>
+            >{UnsuscribeButtonText}</Button>
             <Button
               variant="danger"
               onClick={(e) => toggleUnshareModal(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Cancel</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

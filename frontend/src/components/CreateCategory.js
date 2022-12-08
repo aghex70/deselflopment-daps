@@ -3,6 +3,13 @@ import CategoryService from "../services/category";
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
+import {
+  CancelButtonText, CategoryAlreadyExistsText,
+  CreateButtonText,
+  CreateCategoryHeaderText,
+  DescriptionLabelText,
+  NameLabelText, ReturnButtonText
+} from "../utils/texts";
 
 const CreateCategory = () => {
   checkAccess();
@@ -43,11 +50,11 @@ const CreateCategory = () => {
   return (
     <Container>
       <DapsHeader />
-      <h1 style={{ margin: '0px 0px 32px' }} className="text-center">Create category</h1>
+      <h1 style={{ margin: '0px 0px 32px' }} className="text-center">{CreateCategoryHeaderText}</h1>
         <Form onSubmit={(e) => handleSubmit(e)}>
           <FloatingLabel
             controlId="floatingName"
-            label="Name"
+            label={NameLabelText}
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
           >
@@ -59,10 +66,10 @@ const CreateCategory = () => {
           </FloatingLabel>
 
 
-          <FloatingLabel controlId="floatingDescription" label="Description">
+          <FloatingLabel controlId="floatingDescription" label={DescriptionLabelText}>
             <Form.Control
               as="textarea"
-              placeholder="Description"
+              placeholder={DescriptionLabelText}
               style={{ height: '100px', margin: '0px 0px 32px' }}
               type="description"
               value={categoryDescription}
@@ -75,24 +82,24 @@ const CreateCategory = () => {
             type="submit"
             onClick={(e) => handleSubmit(e)}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >Create</Button>
+          >{CreateButtonText}</Button>
           <Button
             variant="danger"
             onClick={() => navigateCategories()}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >Cancel</Button>
+          >{CancelButtonText}</Button>
         </ButtonGroup>
 
       </Form>
       <Modal className='successModal text-center' show={showModalCategoryAlreadyExists} open={showModalCategoryAlreadyExists} centered={true} size='lg'>
         <ModalBody>
-          <h4 style={{margin: "32px"}}>Category already exists! Please try with a different name</h4>
+          <h4 style={{margin: "32px"}}>{CategoryAlreadyExistsText}</h4>
           <ButtonGroup style={{width: "40%"}}>
             <Button
                 variant="danger"
                 onClick={(e) => toggleModalCategoryAlreadyExists(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >{ReturnButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

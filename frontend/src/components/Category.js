@@ -4,6 +4,13 @@ import {useLocation, useParams} from 'react-router-dom'
 import CategoryService from "../services/category";
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
+import {
+  CancelButtonText,
+  DescriptionLabelText, EditButtonText,
+  EditCategoryHeaderText,
+  NameLabelText, ReturnButtonText,
+  ViewCategoryHeaderText
+} from "../utils/texts";
 
 const Category = () => {
   checkAccess();
@@ -59,11 +66,11 @@ const Category = () => {
   return (
     <Container>
       <DapsHeader />
-      <h1 className="text-center">{enableEdit ? "Edit category" : "View category"}</h1>
+      <h1 className="text-center">{enableEdit ? EditCategoryHeaderText : ViewCategoryHeaderText}</h1>
       <Form  onSubmit={(e) => handleSubmit(e)}>
         <FloatingLabel
           controlId="floatingName"
-          label="Name"
+          label={NameLabelText}
         >
           <Form.Control
             type="name"
@@ -73,7 +80,7 @@ const Category = () => {
           />
         </FloatingLabel>
 
-        <FloatingLabel controlId="floatingDescription" label="Description">
+        <FloatingLabel controlId="floatingDescription" label={DescriptionLabelText}>
           <Form.Control
             as="textarea"
             placeholder="Description"
@@ -92,19 +99,19 @@ const Category = () => {
             type="submit"
             onClick={(e) => handleSubmit(e)}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >Edit</Button>
+          >{EditButtonText}</Button>
           <Button
             variant="danger"
             onClick={() => navigateCategories()}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >Cancel</Button>
+          >{CancelButtonText}</Button>
         </ButtonGroup>
           ) : (
             <Button
               variant="success"
               onClick={() => navigateCategories()}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >{ReturnButtonText}</Button>
           )
         }
       </Form>

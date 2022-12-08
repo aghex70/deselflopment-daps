@@ -8,6 +8,13 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
 import checkAccess from "../utils/helpers";
+import {
+    DeleteIconText,
+    EditIconText,
+    HeaderActionsText,
+    HeaderNameText,
+    RecurringTodosHeaderText, RecurringTodosIndicationText
+} from "../utils/texts";
 
 const RecurringTodosList = () => {
   checkAccess();
@@ -40,7 +47,7 @@ const RecurringTodosList = () => {
         <ButtonGroup style={{width: "100%"}}>
           <Button style={{width: "20%", margin: "auto", padding: "0", textAlign: "center"}}
                   variant="outline-primary"
-                  title="Edit"
+                  title={EditIconText}
                   onClick={() => navigateToTodo(row.id, row.category_id, 0, "edit")}
           >
             <FontAwesomeIcon icon={faPencil} />
@@ -48,7 +55,7 @@ const RecurringTodosList = () => {
 
           <Button style={{width: "20%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                   variant="outline-danger"
-                  title="Delete"
+                  title={DeleteIconText}
                   onClick={() => deleteTodo(row.id, row.category_id)}
           >
             <FontAwesomeIcon icon={faTrash} />
@@ -61,12 +68,12 @@ const RecurringTodosList = () => {
   const columns = [
     {
       dataField: 'name',
-      text: 'Name',
+      text: HeaderNameText,
       style:{'width' : '80%'},
       formatter: rowTextColor,
     }, {
-      // dataField: 'link',
-      text: 'Actions',
+      dataField: 'actions',
+      text: HeaderActionsText,
       style:{'width' : '20%'},
       formatter: actionsFormatter,
       headerAlign: 'center',
@@ -89,7 +96,6 @@ const RecurringTodosList = () => {
       }
     ).catch(
       (error) => {
-        error = new Error("Deletion failed!");
       })
   }
 
@@ -103,19 +109,23 @@ const RecurringTodosList = () => {
         }
       ).catch(
         (error) => {
-          error = new Error("Login failed!");
         })
     }
   },[todos]);
 
+    function indication() {
+        return RecurringTodosIndicationText;
+    }
+
   return (
     <Container>
       <DapsHeader />
-      <h1 className="text-center">Recurring Todos</h1>
+      <h1 className="text-center">{RecurringTodosHeaderText}</h1>
       <BootstrapTable
         keyField='id'
         data={ todos }
         columns={ columns }
+        noDataIndication={ indication }
         trStyle={rowTextColor}
         hover={true}
         style={{display: "block", minHeight: "80%", width: "10%", overflow: "auto"}}
