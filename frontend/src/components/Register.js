@@ -12,6 +12,8 @@ const Register = ()  =>{
   const [repeatPassword, setRepeatPassword] = useState("");
   const [showModalPasswordsDoNotMatch, setShowModalPasswordsDoNotMatch] = useState(false);
   const [showModalUserAlreadyExists, setShowModalUserAlreadyExists] = useState(false);
+  const [showModalPasswordNotLongEnough, setShowModalPasswordNotLongEnough] = useState(false);
+
 
   const toggleModalPasswordsDoNotMatch = () => {
     setShowModalPasswordsDoNotMatch(!showModalPasswordsDoNotMatch);
@@ -19,6 +21,10 @@ const Register = ()  =>{
 
   const toggleModalUserAlreadyExists = () => {
     setShowModalUserAlreadyExists(!showModalUserAlreadyExists);
+  }
+
+  const toggleModalPasswordNotLongEnough = () => {
+    setShowModalPasswordNotLongEnough(!showModalPasswordNotLongEnough);
   }
 
   const styles = {
@@ -32,6 +38,11 @@ const Register = ()  =>{
     e.preventDefault();
     if (password !== repeatPassword) {
       setShowModalPasswordsDoNotMatch(true);
+      return;
+    }
+
+    if (password.length < 13) {
+      setShowModalPasswordNotLongEnough(true);
       return;
     }
     const hashedPassword = hashPassword(password);
@@ -121,6 +132,19 @@ const Register = ()  =>{
             <Button
                 variant="danger"
                 onClick={(e) => toggleModalUserAlreadyExists(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >Return</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='successModal text-center' show={showModalPasswordNotLongEnough} open={showModalPasswordNotLongEnough} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>Password must have more than 12 characters!</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+                variant="danger"
+                onClick={(e) => toggleModalPasswordNotLongEnough(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >Return</Button>
           </ButtonGroup>

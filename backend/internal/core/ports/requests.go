@@ -74,12 +74,12 @@ type ListTodosRequest struct {
 type CreateUserRequest struct {
 	Name     string `json:"name"`
 	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=4"`
+	Password string `json:"password" validate:"required,min=13"`
 }
 
 type LoginUserRequest struct {
 	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=4"`
+	Password string `json:"password" validate:"required,min=13"`
 }
 
 type RefreshTokenRequest struct {
