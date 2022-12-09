@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import UserService from "../services/user";
-import {skipLogin, validateEmail} from "../utils/helpers";
+import {skipLogin} from "../utils/helpers";
 import {
   CancelButtonText,
   EmailAddressLabelText, EnterEmailText, IncorrectPasswordText, InvalidEmailText,
