@@ -9,6 +9,7 @@ import (
 	"github.com/aghex70/daps/internal/handlers/root"
 	"github.com/aghex70/daps/internal/handlers/todo"
 	"github.com/aghex70/daps/internal/handlers/user"
+	"github.com/aghex70/daps/internal/handlers/userconfig"
 	"github.com/aghex70/daps/pkg"
 	"github.com/golang-jwt/jwt/v4"
 	"log"
@@ -19,15 +20,16 @@ import (
 )
 
 type RestServer struct {
-	logger          *log.Logger
-	cfg             config.RestConfig
-	categoryHandler category.CategoryHandler
-	toDoHandler     todo.TodoHandler
-	userHandler     user.UserHandler
-	categoryService ports.CategoryServicer
-	todoService     ports.TodoServicer
-	userService     ports.UserServicer
-	rootHandler     root.RootHandler
+	logger            *log.Logger
+	cfg               config.RestConfig
+	categoryHandler   category.CategoryHandler
+	toDoHandler       todo.TodoHandler
+	userHandler       user.UserHandler
+	categoryService   ports.CategoryServicer
+	todoService       ports.TodoServicer
+	userService       ports.UserServicer
+	rootHandler       root.RootHandler
+	userConfigHandler userconfig.UserConfigHandler
 }
 
 func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
@@ -133,7 +135,10 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/suggested-todos", JWTAuthMiddleware(s.toDoHandler.ListCompletedTodos))
 	http.HandleFunc("/api/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
 
-	// Stats
+	// UserConfiguration
+	http.HandleFunc("/api/user-config", JWTAuthMiddleware(s.userConfigHandler.HandleUserConfig))
+
+	//Stats
 	//http.HandleFunc("/statistics", JWTAuthMiddleware(s.toDoHandler.Todo))
 
 	// CAREFUL!!!!
@@ -144,21 +149,22 @@ func (s *RestServer) StartServer() error {
 	fmt.Printf("Starting server on address %s", address)
 	err := http.ListenAndServe(address, nil)
 	if err != nil {
-	    fmt.Printf("Error starting HTTP server %+v", err.Error())
-	    return err
+		fmt.Printf("Error starting HTTP server %+v", err.Error())
+		return err
 	}
 
 	fmt.Println("Server started")
 	return nil
 }
 
-func NewRestServer(cfg *config.RestConfig, ch category.CategoryHandler, tdh todo.TodoHandler, uh user.UserHandler, rh root.RootHandler, logger *log.Logger) *RestServer {
+func NewRestServer(cfg *config.RestConfig, ch category.CategoryHandler, tdh todo.TodoHandler, uh user.UserHandler, rh root.RootHandler, uch userconfig.UserConfigHandler, logger *log.Logger) *RestServer {
 	return &RestServer{
-		cfg:             *cfg,
-		logger:          logger,
-		categoryHandler: ch,
-		toDoHandler:     tdh,
-		userHandler:     uh,
-		rootHandler:     rh,
+		cfg:               *cfg,
+		logger:            logger,
+		categoryHandler:   ch,
+		toDoHandler:       tdh,
+		userHandler:       uh,
+		rootHandler:       rh,
+		userConfigHandler: uch,
 	}
 }

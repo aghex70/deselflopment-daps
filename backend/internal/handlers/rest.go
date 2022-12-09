@@ -10,8 +10,9 @@ import (
 )
 
 const (
-	TODO_STRING     string = "todo/"
-	CATEGORY_STRING string = "category/"
+	TODO_STRING               string = "todo/"
+	CATEGORY_STRING           string = "category/"
+	USER_CONFIGURATION_STRING string = "user-configuration/"
 )
 
 type APIErrorResponse struct {

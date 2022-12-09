@@ -56,7 +56,6 @@ func (gr *TodoGormRepository) Create(ctx context.Context, td domain.Todo) error 
 
 func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error {
 	ntd := fromDto(td)
-	fmt.Printf("\n\nntd: %+v", ntd)
 	result := gr.DB.Model(&ntd).Where(Todo{ID: ntd.ID}).Updates(map[string]interface{}{
 		"category_id": ntd.CategoryId,
 		"description": ntd.Description,

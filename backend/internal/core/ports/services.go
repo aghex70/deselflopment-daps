@@ -34,3 +34,8 @@ type UserServicer interface {
 	RefreshToken(ctx context.Context, r *http.Request) (string, error)
 	Remove(ctx context.Context, r *http.Request) error
 }
+
+type UserConfigServicer interface {
+	Update(ctx context.Context, r *http.Request, req UpdateUserConfigRequest) error
+	Get(ctx context.Context, r *http.Request, req GetUserConfigRequest) (domain.UserConfig, error)
+}

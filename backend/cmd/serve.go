@@ -5,14 +5,17 @@ import (
 	categoryService "github.com/aghex70/daps/internal/core/services/category"
 	todoService "github.com/aghex70/daps/internal/core/services/todo"
 	userService "github.com/aghex70/daps/internal/core/services/user"
+	userConfigService "github.com/aghex70/daps/internal/core/services/userconfig"
 	categoryHandler "github.com/aghex70/daps/internal/handlers/category"
 	"github.com/aghex70/daps/internal/handlers/root"
 	todoHandler "github.com/aghex70/daps/internal/handlers/todo"
 	userHandler "github.com/aghex70/daps/internal/handlers/user"
+	userConfigHandler "github.com/aghex70/daps/internal/handlers/userconfig"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
+	"github.com/aghex70/daps/internal/repositories/gorm/userconfig"
 	"github.com/aghex70/daps/persistence/database"
 	"github.com/aghex70/daps/server"
 	"github.com/spf13/cobra"
@@ -47,6 +50,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			cr, _ := category.NewCategoryGormRepository(gdb)
 			rr, _ := relationship.NewRelationshipGormRepository(gdb)
 			tdr, _ := todo.NewTodoGormRepository(gdb)
+			ucr, _ := userconfig.NewUserConfigGormRepository(gdb)
 
 			us := userService.NewUserService(ur, cr, &logger2)
 			uh := userHandler.NewUserHandler(us, &logger2)
@@ -57,9 +61,12 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			tds := todoService.NewtodoService(tdr, rr, &logger2)
 			tdh := todoHandler.NewTodoHandler(tds, &logger2)
 
+			ucs := userConfigService.NewUserConfigService(ucr, &logger2)
+			uch := userConfigHandler.NewUserConfigHandler(ucs, &logger2)
+
 			rh := root.NewRootHandler(cs, tds, &logger2)
 
-			s := server.NewRestServer(cfg.Server.Rest, ch, tdh, uh, rh, &logger2)
+			s := server.NewRestServer(cfg.Server.Rest, ch, tdh, uh, rh, uch, &logger2)
 			err = s.StartServer()
 			if err != nil {
 				log.Fatal("error starting server", err.Error())
