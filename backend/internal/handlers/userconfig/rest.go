@@ -3,13 +3,12 @@ package userconfig
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 type UserConfigHandler struct {
@@ -18,26 +17,18 @@ type UserConfigHandler struct {
 }
 
 func (h UserConfigHandler) HandleUserConfig(w http.ResponseWriter, r *http.Request) {
-	path := strings.Split(r.RequestURI, handlers.USER_CONFIGURATION_STRING)[1]
-
-	userConfigurationId, err := strconv.Atoi(path)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
 	switch r.Method {
 	case http.MethodGet:
-		h.GetUserConfig(w, r, userConfigurationId)
+		h.GetUserConfig(w, r)
 	case http.MethodPut:
-		h.UpdateUserConfig(w, r, userConfigurationId)
+		h.UpdateUserConfig(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
 
-func (h UserConfigHandler) UpdateUserConfig(w http.ResponseWriter, r *http.Request, id int) {
-	payload := ports.UpdateUserConfigRequest{UserConfigurationId: int64(id)}
+func (h UserConfigHandler) UpdateUserConfig(w http.ResponseWriter, r *http.Request) {
+	payload := ports.UpdateUserConfigRequest{}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
@@ -51,15 +42,8 @@ func (h UserConfigHandler) UpdateUserConfig(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (h UserConfigHandler) GetUserConfig(w http.ResponseWriter, r *http.Request, id int) {
-	payload := ports.GetUserConfigRequest{UserConfigurationId: int64(id)}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	c, err := h.userConfigService.Get(nil, r, payload)
+func (h UserConfigHandler) GetUserConfig(w http.ResponseWriter, r *http.Request) {
+	c, err := h.userConfigService.Get(nil, r)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			w.WriteHeader(http.StatusNotFound)
@@ -68,7 +52,10 @@ func (h UserConfigHandler) GetUserConfig(w http.ResponseWriter, r *http.Request,
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
+	fmt.Println("111111111")
 	b, err := json.Marshal(c)
+	fmt.Println("222222")
+	fmt.Printf("b -----> %s", b)
 	w.Write(b)
 }
 

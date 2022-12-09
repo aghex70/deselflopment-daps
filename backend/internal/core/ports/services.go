@@ -37,5 +37,5 @@ type UserServicer interface {
 
 type UserConfigServicer interface {
 	Update(ctx context.Context, r *http.Request, req UpdateUserConfigRequest) error
-	Get(ctx context.Context, r *http.Request, req GetUserConfigRequest) (domain.UserConfig, error)
+	Get(ctx context.Context, r *http.Request) (domain.Profile, error)
 }

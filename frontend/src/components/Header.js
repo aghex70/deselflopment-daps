@@ -1,19 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   faClockRotateLeft,
   faChartSimple,
   faHome,
   faPowerOff,
-  faCog,
   faCheck,
-    faEnvelope,
+  faEnvelope,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
 import checkAccess from "../utils/helpers";
 import {
   CategoriesIconText,
-  CompletedTodosIconText, ConfigurationIconText, LogoutIconText,
+  CompletedTodosIconText,
+  LogoutIconText,
+  ProfileIconText,
   RecurringTodosIconText,
   ReportABugIconText,
   StatisticsIconText
@@ -22,6 +24,15 @@ import {
 const DapsHeader = () => {
   document.title = 'deselflopment - daps'
   checkAccess();
+
+  const [isHoverProfile, setIsHoverProfile] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHoverProfile(true);
+  };
+  const handleMouseLeave = () => {
+    setIsHoverProfile(false);
+  };
 
   const navigateCategories = () => {
     window.location.href = "/categories";
@@ -37,6 +48,10 @@ const DapsHeader = () => {
 
   const navigateRecurringTodos = () => {
     window.location.href = "/recurring-todos";
+  }
+
+  const navigateProfile = () => {
+    window.location.href = "/profile";
   }
 
   const logout = () => {
@@ -65,7 +80,6 @@ const DapsHeader = () => {
                     onClick={() => navigateRecurringTodos()}
                     title={RecurringTodosIconText}
             >
-
               <FontAwesomeIcon style={{height: "50%"}} icon={faClockRotateLeft} />
             </Button>
             <Button disabled={true} style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
@@ -81,11 +95,23 @@ const DapsHeader = () => {
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faEnvelope} />
             </Button>
-            <Button disabled={true} style={{height: "50px", width: "100%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                    variant="outline-dark" title={ConfigurationIconText}
+            <Button style={{
+              height: "50px",
+              width: "100%",
+              margin: "auto",
+              display: "block",
+              padding: "0",
+              textAlign: "center",
+              backgroundColor: isHoverProfile ? "#eab676": "orange",
+              borderColor: isHoverProfile ? "#eab676": "orange",
+            }}
+                    title={ProfileIconText}
+                    onClick={() => navigateProfile()}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
             >
 
-              <FontAwesomeIcon icon={faCog} />
+              <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faUser} />
 
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}

@@ -86,11 +86,6 @@ type RefreshTokenRequest struct {
 }
 
 type UpdateUserConfigRequest struct {
-	UserConfigurationId int64  `json:"user_config_id"`
-	AutoSuggest         bool   `json:"auto_suggest"`
-	Language            string `json:"language"`
-}
-
-type GetUserConfigRequest struct {
-	UserConfigurationId int64 `json:"user_config_id"`
+	AutoSuggest bool   `json:"auto_suggest"`
+	Language    string `json:"language"`
 }

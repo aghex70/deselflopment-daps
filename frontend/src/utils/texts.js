@@ -28,6 +28,7 @@ const CreateIconText = language === 'en' ? 'Create a new Todo' : 'Crear una nuev
 const CreateCategoryIconText = language === 'en' ? 'Create a new Category' : 'Crear una nueva categoría';
 const CategoriesIconText = language === 'en' ? 'Categories' : 'Categorías';
 const CompletedTodosIconText = language === 'en' ? 'Completed Todos' : 'Tareas completadas';
+const ProfileIconText = language === 'en' ? 'Profile' : 'Perfil';
 
 // Modals
 const UserAlreadySubscribedText = language === 'en' ? 'User already subscribed to that category!' : '¡No se puede suscribir a una categoría ya suscrita!';
@@ -70,6 +71,7 @@ const ReportABugHeaderText = language === 'en' ? 'Report a bug' : 'Reportar un e
 const EditTodoHeaderText = language === 'en' ? 'Edit Todo' : 'Editar tarea';
 const ViewTodoHeaderText = language === 'en' ? 'View Todo' : 'Ver tarea';
 const WelcomeToDapsText = language === 'en' ? 'Welcome to DAPS!' : '¡Bienvenid@ a DAPS!';
+const ProfileHeaderText = language === 'en' ? 'Profile' : 'Perfil';
 
 
 // Forms
@@ -90,6 +92,10 @@ const LinkLabelText = language === 'en' ? 'Link' : 'Enlace';
 const EmailAddressLabelText = language === 'en' ? 'Email address' : 'Correo electrónico';
 const PasswordLabelText = language === 'en' ? 'Password' : 'Contraseña';
 const RepeatPasswordLabelText = language === 'en' ? 'Repeat password' : 'Repita contraseña';
+const LanguageLabelText = language === 'en' ? 'Language' : 'Idioma';
+const EnglishLanguageText = language === 'en' ? 'English' : 'Inglés';
+const SpanishLanguageText = language === 'en' ? 'Spanish' : 'Español';
+const AutoSuggestLabelText = language === 'en' ? 'Auto-suggest' : 'Auto-sugerencia';
 
 export {
     HighPriorityTasksText,
@@ -170,4 +176,10 @@ export {
     RecurringTodosIndicationText,
     WelcomeToDapsText,
     InvalidEmailText,
+    ProfileHeaderText,
+    LanguageLabelText,
+    AutoSuggestLabelText,
+    EnglishLanguageText,
+    SpanishLanguageText,
+    ProfileIconText,
 };

@@ -3,6 +3,7 @@ package userconfig
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
 	"log"
@@ -21,6 +22,11 @@ type UserConfig struct {
 	Language    string `gorm:"column:language"`
 }
 
+type Profile struct {
+	Email string `gorm:"column:email"`
+	UserConfig
+}
+
 type Tabler interface {
 	TableName() string
 }
@@ -29,14 +35,16 @@ func (UserConfig) TableName() string {
 	return "daps_user_configs"
 }
 
-func (gr *UserConfigGormRepository) GetByUserId(ctx context.Context, userId int) (domain.UserConfig, error) {
-	var uc UserConfig
-	result := gr.DB.Where(&UserConfig{UserId: userId}).First(&uc)
-	if result.Error != nil {
-		return domain.UserConfig{}, result.Error
-	}
+func (gr *UserConfigGormRepository) GetByUserId(ctx context.Context, userId int) (domain.Profile, error) {
+	var p Profile
+	query := fmt.Sprintf("SELECT daps_user_configs.auto_suggest, daps_user_configs.language, daps_users.email FROM daps_user_configs JOIN daps_users ON daps_user_configs.user_id = daps_users.id WHERE daps_users.id = %d", userId)
 
-	return uc.ToDto(), nil
+	result := gr.DB.Raw(query).Scan(&p)
+
+	if result.Error != nil {
+		return domain.Profile{}, result.Error
+	}
+	return p.ToDto(), nil
 }
 
 func (gr *UserConfigGormRepository) Update(ctx context.Context, uc domain.UserConfig, userId int) error {
@@ -86,5 +94,17 @@ func fromDto(uc domain.UserConfig) UserConfig {
 		AutoSuggest: uc.AutoSuggest,
 		Language:    uc.Language,
 		UserId:      uc.UserId,
+	}
+}
+
+func (p Profile) ToDto() domain.Profile {
+	return domain.Profile{
+		Email: p.Email,
+		UserConfig: domain.UserConfig{
+			ID:          p.ID,
+			AutoSuggest: p.AutoSuggest,
+			Language:    p.Language,
+			UserId:      p.UserId,
+		},
 	}
 }

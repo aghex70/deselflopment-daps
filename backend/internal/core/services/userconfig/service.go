@@ -2,6 +2,7 @@ package userconfig
 
 import (
 	"context"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	uc "github.com/aghex70/daps/internal/repositories/gorm/userconfig"
@@ -17,25 +18,27 @@ type UserConfigService struct {
 
 func (s UserConfigService) Update(ctx context.Context, r *http.Request, req ports.UpdateUserConfigRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	uc := domain.UserConfig{
+	uConfig := domain.UserConfig{
 		UserId:      int(userId),
 		AutoSuggest: req.AutoSuggest,
 		Language:    req.Language,
 	}
-	err := s.userConfigRepository.Update(ctx, uc, int(userId))
+	err := s.userConfigRepository.Update(ctx, uConfig, int(userId))
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s UserConfigService) Get(ctx context.Context, r *http.Request, req ports.GetUserConfigRequest) (domain.UserConfig, error) {
-	userId, _ := server.RetrieveJWTClaims(r, req)
-	td, err := s.userConfigRepository.GetByUserId(ctx, int(userId))
+func (s UserConfigService) Get(ctx context.Context, r *http.Request) (domain.Profile, error) {
+	userId, _ := server.RetrieveJWTClaims(r, nil)
+	p, err := s.userConfigRepository.GetByUserId(ctx, int(userId))
 	if err != nil {
-		return domain.UserConfig{}, err
+		fmt.Printf("error: %+v", err)
+		return domain.Profile{}, err
 	}
-	return td, nil
+	fmt.Printf("profile: %+v", p)
+	return p, nil
 }
 
 func NewUserConfigService(ucr *uc.UserConfigGormRepository, logger *log.Logger) UserConfigService {

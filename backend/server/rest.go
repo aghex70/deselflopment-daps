@@ -136,7 +136,7 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
 
 	// UserConfiguration
-	http.HandleFunc("/api/user-config", JWTAuthMiddleware(s.userConfigHandler.HandleUserConfig))
+	http.HandleFunc("/api/user-configuration/", JWTAuthMiddleware(s.userConfigHandler.HandleUserConfig))
 
 	//Stats
 	//http.HandleFunc("/statistics", JWTAuthMiddleware(s.toDoHandler.Todo))

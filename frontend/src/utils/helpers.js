@@ -21,6 +21,9 @@ const getUserToken = () => {
   return localStorage.getItem("access_token");
 }
 
+const setLanguage = (language) => {
+  localStorage.setItem("language", language);
+}
 
 export default checkAccess;
-export { hashPassword, skipLogin };
+export { hashPassword, setLanguage, skipLogin };

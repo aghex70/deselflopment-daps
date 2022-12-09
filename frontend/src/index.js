@@ -16,6 +16,7 @@ import Todo from "./components/Todo";
 import CompletedTodosList from "./components/CompletedTodosList";
 import Logout from "./components/Logout";
 import ReportBug from "./components/ReportBug";
+import Profile from "./components/UserConfiguration";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -38,6 +39,7 @@ root.render(
         <Route path="recurring-todos" element={<RecurringTodosList />} />
         <Route path="suggested-todos" element={<RecurringTodosList />} />
         <Route path="completed-todos" element={<CompletedTodosList />} />
+        <Route path="profile" element={<Profile />} />
         <Route path="statistics" element={<CategoriesList />} />
       </Routes>
     </BrowserRouter>

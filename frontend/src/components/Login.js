@@ -60,7 +60,11 @@ const Login = () => {
         if (response.status === 200) {
           localStorage.setItem("access_token", response.data.access_token);
           localStorage.setItem("user_id", response.data.user_id);
-          localStorage.setItem("language", "es");
+          // Check for localStorage language and if not set it to "es"
+          if (!localStorage.getItem("language")) {
+              localStorage.setItem("language", "en");
+          }
+
           window.location.href = "/categories";
         }
       }
