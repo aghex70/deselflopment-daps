@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import UserService from "../services/user";
-import {hashPassword, skipLogin} from "../utils/helpers";
+import {hashPassword, skipLogin, validateEmail} from "../utils/helpers";
 import {
   CancelButtonText,
-  EmailAddressLabelText, LoginButtonText,
+  EmailAddressLabelText, InvalidEmailText, LoginButtonText,
   NameLabelText,
   PasswordLabelText, PasswordNotLongEnoughText, PasswordsDoNotMatchText, RegisterButtonText,
   RegisterHeaderText,
@@ -21,6 +21,7 @@ const Register = ()  =>{
   const [showModalPasswordsDoNotMatch, setShowModalPasswordsDoNotMatch] = useState(false);
   const [showModalUserAlreadyExists, setShowModalUserAlreadyExists] = useState(false);
   const [showModalPasswordNotLongEnough, setShowModalPasswordNotLongEnough] = useState(false);
+  const [showModalInvalidEmail, setShowModalInvalidEmail] = useState(false);
 
 
   const toggleModalPasswordsDoNotMatch = () => {
@@ -33,6 +34,10 @@ const Register = ()  =>{
 
   const toggleModalPasswordNotLongEnough = () => {
     setShowModalPasswordNotLongEnough(!showModalPasswordNotLongEnough);
+  }
+
+  const toggleModalInvalidEmail = () => {
+    setShowModalInvalidEmail(!showModalInvalidEmail);
   }
 
   const styles = {
@@ -53,6 +58,7 @@ const Register = ()  =>{
       setShowModalPasswordNotLongEnough(true);
       return;
     }
+
     const hashedPassword = hashPassword(password);
     UserService.register(name, email, hashedPassword).then(
       (response) => {
@@ -159,6 +165,19 @@ const Register = ()  =>{
             <Button
                 variant="danger"
                 onClick={(e) => toggleModalPasswordNotLongEnough(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{ReturnButtonText}</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='successModal text-center' show={showModalInvalidEmail} open={showModalInvalidEmail} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>{InvalidEmailText}</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+                variant="danger"
+                onClick={(e) => toggleModalInvalidEmail(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{ReturnButtonText}</Button>
           </ButtonGroup>

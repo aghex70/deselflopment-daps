@@ -21,5 +21,6 @@ const getUserToken = () => {
   return localStorage.getItem("access_token");
 }
 
+
 export default checkAccess;
 export { hashPassword, skipLogin };

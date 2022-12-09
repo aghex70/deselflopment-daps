@@ -1,13 +1,13 @@
 import React, {useState} from 'react'
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import UserService from "../services/user";
-import {skipLogin} from "../utils/helpers";
+import {skipLogin, validateEmail} from "../utils/helpers";
 import {
   CancelButtonText,
-  EmailAddressLabelText, EnterEmailText, IncorrectPasswordText,
+  EmailAddressLabelText, EnterEmailText, IncorrectPasswordText, InvalidEmailText,
   LoginButtonText, LoginHeaderText,
   PasswordLabelText, PasswordNotLongEnoughText,
-  RegisterButtonText,
+  RegisterButtonText, ReturnButtonText,
   UserNotFoundText
 } from "../utils/texts";
 
@@ -21,6 +21,7 @@ const Login = () => {
   const [showModalPasswordNotLongEnough, setShowModalPasswordNotLongEnough] = useState(false);
   const [showModalEmailNotFilled, setShowModalEmailNotFilled] = useState(false);
   const [showModalIncorrectPassword, setShowModalIncorrectPassword] = useState(false);
+  const [showModalInvalidEmail, setShowModalInvalidEmail] = useState(false);
 
   const toggleModalUserDoesNotExist = () => {
     setShowModalUserDoesNotExist(!showModalUserDoesNotExist);
@@ -36,6 +37,10 @@ const Login = () => {
 
   const toggleModalIncorrectPassword = () => {
     setShowModalIncorrectPassword(!showModalIncorrectPassword);
+  }
+
+  const toggleModalInvalidEmail = () => {
+    setShowModalInvalidEmail(!showModalInvalidEmail);
   }
 
   const handleSubmit = (e) => {
@@ -65,6 +70,8 @@ const Login = () => {
           setShowModalUserDoesNotExist(true);
         } else if (error.response.data.message === "invalid credentials") {
           setShowModalIncorrectPassword(true);
+        } else if (error.response.data.message.includes("Field validation for 'Email' failed on the 'email' tag")) {
+          setShowModalInvalidEmail(true);
         }
       }
     )
@@ -133,7 +140,7 @@ const Login = () => {
                 variant="danger"
                 onClick={(e) => toggleModalEmailNotFilled(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >{ReturnButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -146,7 +153,7 @@ const Login = () => {
                 variant="danger"
                 onClick={(e) => toggleModalPasswordNotLongEnough(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >{ReturnButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -159,7 +166,20 @@ const Login = () => {
                 variant="danger"
                 onClick={(e) => toggleModalIncorrectPassword(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >{ReturnButtonText}</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='successModal text-center' show={showModalInvalidEmail} open={showModalInvalidEmail} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>{InvalidEmailText}</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+                variant="danger"
+                onClick={(e) => toggleModalInvalidEmail(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{ReturnButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

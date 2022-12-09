@@ -41,6 +41,7 @@ const PasswordNotLongEnoughText = language === 'en' ? 'Password must be at least
 const IncorrectPasswordText = language === 'en' ? 'Incorrect password! Please try again' : '¡Contraseña incorrecta! Por favor, inténtelo de nuevo';
 const PasswordsDoNotMatchText = language === 'en' ? 'Passwords do not match! Please try again' : '¡Las contraseñas no coinciden! Por favor, inténtelo de nuevo';
 const UserAlreadyRegisteredText = language === 'en' ? 'User already registered! Please try with a different username' : '¡Usuario ya registrado! Por favor, inténtelo con un nombre de usuario diferente';
+const InvalidEmailText = language === 'en' ? 'Invalid email address format! Please try again with a valid format' : '¡Formato de dirección de correo electrónico no válido! Por favor, inténtelo de nuevo con un formato válido';
 
 // Buttons
 const CancelButtonText = language === 'en' ? 'Cancel' : 'Cancelar';
@@ -168,4 +169,5 @@ export {
     ViewTodoHeaderText,
     RecurringTodosIndicationText,
     WelcomeToDapsText,
+    InvalidEmailText,
 };

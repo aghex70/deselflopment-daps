@@ -345,7 +345,7 @@ const CategoriesList = () => {
               variant="danger"
               onClick={(e) => toggleCannotEditCategoryModal(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >Return</Button>
+            >{ReturnButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
