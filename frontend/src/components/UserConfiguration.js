@@ -42,6 +42,9 @@ const Profile = () => {
         }
       ).catch(
         (error) => {
+            if (error.response.data.message === "no changes were made") {
+                window.location.href = "/categories";
+            }
         }
       )
     }

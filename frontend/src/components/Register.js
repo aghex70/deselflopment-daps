@@ -63,6 +63,7 @@ const Register = ()  =>{
     UserService.register(name, email, hashedPassword).then(
       (response) => {
         if (response.status === 201) {
+          localStorage.setItem("language", "en");
           window.location.href = "/login";
         }
       }

@@ -7,6 +7,7 @@ import (
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
+	"github.com/aghex70/daps/internal/repositories/gorm/userconfig"
 	"github.com/aghex70/daps/pkg"
 	"github.com/aghex70/daps/server"
 	"github.com/golang-jwt/jwt/v4"
@@ -16,9 +17,10 @@ import (
 )
 
 type UserService struct {
-	logger             *log.Logger
-	userRepository     *user.UserGormRepository
-	categoryRepository *category.CategoryGormRepository
+	logger                      *log.Logger
+	userRepository              *user.UserGormRepository
+	categoryRepository          *category.CategoryGormRepository
+	userConfigurationRepository *userconfig.UserConfigGormRepository
 }
 
 type MyCustomClaims struct {
@@ -41,11 +43,21 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 		Categories: categories,
 	}
 
-	_, err = s.userRepository.Create(ctx, u)
+	nu, err := s.userRepository.Create(ctx, u)
 	if err != nil {
 		return err
 	}
 
+	nuc := domain.UserConfig{
+		UserId:      nu.ID,
+		AutoSuggest: false,
+		Language:    "en",
+	}
+
+	err = s.userConfigurationRepository.Create(ctx, nuc)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -122,10 +134,11 @@ func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 	return nil
 }
 
-func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormRepository, logger *log.Logger) UserService {
+func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormRepository, ucr *userconfig.UserConfigGormRepository, logger *log.Logger) UserService {
 	return UserService{
-		logger:             logger,
-		userRepository:     ur,
-		categoryRepository: cr,
+		logger:                      logger,
+		userRepository:              ur,
+		categoryRepository:          cr,
+		userConfigurationRepository: ucr,
 	}
 }

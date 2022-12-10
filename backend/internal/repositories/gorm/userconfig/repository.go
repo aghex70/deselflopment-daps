@@ -3,6 +3,7 @@ package userconfig
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
@@ -54,8 +55,9 @@ func (gr *UserConfigGormRepository) Update(ctx context.Context, uc domain.UserCo
 		"language":     nuc.Language,
 	})
 
+	// We are always going to find the user config, so if the error is raised, it means that the user tried to update the configuration with the same existing values
 	if result.RowsAffected == 0 {
-		return gorm.ErrRecordNotFound
+		return errors.New("no changes were made")
 	}
 
 	if result.Error != nil {
@@ -64,13 +66,13 @@ func (gr *UserConfigGormRepository) Update(ctx context.Context, uc domain.UserCo
 	return nil
 }
 
-func (gr *UserConfigGormRepository) Create(ctx context.Context, uc domain.UserConfig) (domain.UserConfig, error) {
+func (gr *UserConfigGormRepository) Create(ctx context.Context, uc domain.UserConfig) error {
 	nuc := fromDto(uc)
 	result := gr.DB.Create(&nuc)
 	if result.Error != nil {
-		return domain.UserConfig{}, result.Error
+		return result.Error
 	}
-	return nuc.ToDto(), nil
+	return nil
 }
 
 func NewUserConfigGormRepository(db *gorm.DB) (*UserConfigGormRepository, error) {

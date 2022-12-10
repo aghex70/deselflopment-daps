@@ -52,7 +52,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			tdr, _ := todo.NewTodoGormRepository(gdb)
 			ucr, _ := userconfig.NewUserConfigGormRepository(gdb)
 
-			us := userService.NewUserService(ur, cr, &logger2)
+			us := userService.NewUserService(ur, cr, ucr, &logger2)
 			uh := userHandler.NewUserHandler(us, &logger2)
 
 			cs := categoryService.NewCategoryService(cr, rr, &logger2)
