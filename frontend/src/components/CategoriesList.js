@@ -16,8 +16,8 @@ import checkAccess from "../utils/helpers";
 import {
   CancelButtonText,
   CategoriesHeaderText, ConfirmUnshareCategoryText,
-  CreateCategoryIconText,
-  DeleteIconText,
+  CreateCategoryIconText, DeleteButtonText,
+  DeleteIconText, DeletingCategoryText,
   EditIconText,
   HeaderActionsText,
   HeaderCategoryText,
@@ -43,6 +43,8 @@ const CategoriesList = () => {
   const [showModalCannotDeleteCategory, setShowModalCannotDeleteCategory] = useState(false);
   const [showModalCannotEditCategory, setShowModalCannotEditCategory] = useState(false);
   const [showUnshareModal, setUnshareShowModal] = useState(false);
+  const [showDeleteCategoryModal, setShowDeleteCategoryModal] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
   const [shareId, setShareId] = useState("");
   const [unshareId, setUnshareId] = useState("");
   const [shareEmail, setShareEmail] = useState("");
@@ -111,19 +113,24 @@ const CategoriesList = () => {
     navigate("/category/" + id, {state: {action: action}});
   }
 
-  const deleteCategory = (id) => {
-    CategoryService.deleteCategory(id).then(
-      (response) => {
-        if (response.status === 204) {
-          window.location.reload();
+  const confirmDeleteCategory = () => {
+    CategoryService.deleteCategory(deleteId).then(
+        (response) => {
+          if (response.status === 204) {
+            window.location.reload();
+          }
         }
-      }
     ).catch(
-      (error) => {
-        if (error.response.data.message === "cannot remove category") {
-          setShowModalCannotDeleteCategory(true);
-        }
-      })
+        (error) => {
+          if (error.response.data.message === "cannot remove category") {
+            setShowModalCannotDeleteCategory(true);
+          }
+        })
+  }
+
+  const toggleConfirmDeleteCategoryModal = (id) => {
+    setDeleteId(id);
+    setShowDeleteCategoryModal(!showDeleteCategoryModal);
   }
 
   const toggleModal = () => {
@@ -252,7 +259,7 @@ const CategoriesList = () => {
 
           <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                   title={DeleteIconText}
-                  variant="outline-danger" onClick={() => deleteCategory(row.id)}>
+                  variant="outline-danger" onClick={() => toggleConfirmDeleteCategoryModal(row.id)}>
             <FontAwesomeIcon icon={faTrash} />
           </Button>
         </ButtonGroup>
@@ -364,6 +371,25 @@ const CategoriesList = () => {
               variant="danger"
               onClick={(e) => toggleUnshareModal(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{CancelButtonText}</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='unshareModal text-center' show={showDeleteCategoryModal} open={showDeleteCategoryModal} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>{DeletingCategoryText}</h4>
+          <ButtonGroup style={{width: "80%"}}>
+            <Button
+                variant="success"
+                type="submit"
+                onClick={(e) => confirmDeleteCategory(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{DeleteButtonText}</Button>
+            <Button
+                variant="danger"
+                onClick={(e) => toggleConfirmDeleteCategoryModal(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>

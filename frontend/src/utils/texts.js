@@ -43,6 +43,7 @@ const IncorrectPasswordText = language === 'en' ? 'Incorrect password! Please tr
 const PasswordsDoNotMatchText = language === 'en' ? 'Passwords do not match! Please try again' : '¡Las contraseñas no coinciden! Por favor, inténtelo de nuevo';
 const UserAlreadyRegisteredText = language === 'en' ? 'User already registered! Please try with a different username' : '¡Usuario ya registrado! Por favor, inténtelo con un nombre de usuario diferente';
 const InvalidEmailText = language === 'en' ? 'Invalid email address format! Please try again with a valid format' : '¡Formato de dirección de correo electrónico no válido! Por favor, inténtelo de nuevo con un formato válido';
+const DeletingCategoryText = language === 'en' ? 'Warning! Deleting a category will delete all its Todos. Are you sure you want to delete this category?' : '¡Advertencia! Eliminar una categoría eliminará todas sus tareas. ¿Estás segur@ de que quieres eliminar esta categoría?';
 
 // Buttons
 const CancelButtonText = language === 'en' ? 'Cancel' : 'Cancelar';
@@ -54,6 +55,7 @@ const RegisterButtonText = language === 'en' ? 'Register' : 'Registrarse';
 const ReportButtonText = language === 'en' ? 'Report' : 'Reportar';
 const UnsuscribeButtonText = language === 'en' ? 'Unsubscribe' : 'Darse de baja';
 const EditButtonText = language === 'en' ? 'Edit' : 'Editar';
+const DeleteButtonText = language === 'en' ? 'Delete' : 'Eliminar';
 
 // Headers
 const CategoriesHeaderText = language === 'en' ? 'Categories' : 'Categorías';
@@ -182,4 +184,6 @@ export {
     EnglishLanguageText,
     SpanishLanguageText,
     ProfileIconText,
+    DeletingCategoryText,
+    DeleteButtonText,
 };
