@@ -118,11 +118,12 @@ const CreateTodo = () => {
               value={todoPriority}
               onChange={(e) => setTodoPriority(e.target.value)}
               style={{ margin: '0px 0px 32px' }}
+              defaultValue="3"
             >
                     <option disabled={disablePriority}>{SelectPriorityText}</option>
                     <option style={{color: "grey"}} value="1">{LowestPriorityText}</option>
                     <option style={{color: "blue"}} value="2">{LowPriorityText}</option>
-                    <option style={{color: "green"}} value="3">{MediumPriorityText}</option>
+                    <option style={{color: "green"}} value="3" selected>{MediumPriorityText}</option>
                     <option style={{color: "orange"}} value="4">{HighPriorityText}</option>
                     <option style={{color: "red"}} value="5">{HighestPriorityText}</option>
                 </Form.Select>
@@ -132,10 +133,11 @@ const CreateTodo = () => {
                 <Form.Select
               name="recurring"
               value={todoRecurring}
+              defaultValue="false"
               onChange={(e) => setTodoRecurring(e.target.value)}
                     style={{ margin: '0px 0px 32px' }}>>
                     <option disabled={disableRecurring}>{SelectRecurringText}</option>
-                    <option value="false">{NoRecurringText}</option>
+                    <option value="false" selected>{NoRecurringText}</option>
                     <option value="true">{YesRecurringText}</option>
                 </Form.Select>
             </FloatingLabel>
