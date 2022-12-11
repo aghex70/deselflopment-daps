@@ -32,7 +32,7 @@ const ProfileIconText = language === 'en' ? 'Profile' : 'Perfil';
 
 // Modals
 const UserAlreadySubscribedText = language === 'en' ? 'User already subscribed to that category!' : '¡No se puede suscribir a una categoría ya suscrita!';
-const OnlyOwnersCanDeleteCategoryText = language === 'en' ? 'Only owners can delete a shared category. If you want the category to disappear, unsubscribe from it!' : '¡Solo los propietarios pueden eliminar una categoría compartida. Si quieres que desaparezca, ¡desuscríbete de ella!';
+const OnlyOwnersCanDeleteCategoryText = language === 'en' ? 'Only owners can delete a shared category. If you want the category to disappear, unsubscribe from it!' : '¡Solo los propietarios pueden eliminar una categoría compartida. Si quieres que desaparezca, date de baja de la misma';
 const OnlyOwnerCanEditCategoryText = language === 'en' ? 'Only owners can edit a shared category!' : '¡Solo los propietarios pueden editar una categoría compartida!';
 const ConfirmUnshareCategoryText = language === 'en' ? 'Are you sure you want to unsubscribe from this category?' : '¿Estás seguro de que quieres darte de baja de esta categoría?';
 const CategoryAlreadyExistsText = language === 'en' ? 'Category already exists! Please try with a different name' : '¡La categoría ya existe! Por favor, inténtelo con un nombre diferente';
