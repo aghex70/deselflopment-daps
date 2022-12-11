@@ -44,6 +44,8 @@ const PasswordsDoNotMatchText = language === 'en' ? 'Passwords do not match! Ple
 const UserAlreadyRegisteredText = language === 'en' ? 'User already registered! Please try with a different username' : '¡Usuario ya registrado! Por favor, inténtelo con un nombre de usuario diferente';
 const InvalidEmailText = language === 'en' ? 'Invalid email address format! Please try again with a valid format' : '¡Formato de dirección de correo electrónico no válido! Por favor, inténtelo de nuevo con un formato válido';
 const DeletingCategoryText = language === 'en' ? 'Warning! Deleting a category will delete all its Todos. Are you sure you want to delete this category?' : '¡Advertencia! Eliminar una categoría eliminará todas sus tareas. ¿Estás segur@ de que quieres eliminar esta categoría?';
+const PleaseEnterTodoNameText = language === 'en' ? 'Please enter a Todo name' : 'Por favor, introduzca un nombre para la tarea';
+const PleaseEnterCategoryNameText = language === 'en' ? 'Please enter a category name' : 'Por favor, introduzca un nombre para la categoría';
 
 // Buttons
 const CancelButtonText = language === 'en' ? 'Cancel' : 'Cancelar';
@@ -186,4 +188,6 @@ export {
     ProfileIconText,
     DeletingCategoryText,
     DeleteButtonText,
+    PleaseEnterTodoNameText,
+    PleaseEnterCategoryNameText,
 };

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
+import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import {useLocation, useNavigate} from 'react-router-dom'
 import TodoService from "../services/todo";
 import toBoolean from "validator/es/lib/toBoolean";
@@ -15,9 +15,15 @@ import {
     LowestPriorityText,
     LowPriorityText,
     MediumPriorityText,
-    NameLabelText, NoRecurringText,
-    PriorityLabelText, RecurringLabelText,
-    SelectPriorityText, SelectRecurringText, YesRecurringText
+    NameLabelText,
+    NoRecurringText,
+    PleaseEnterTodoNameText,
+    PriorityLabelText,
+    RecurringLabelText,
+    ReturnButtonText,
+    SelectPriorityText,
+    SelectRecurringText,
+    YesRecurringText
 } from "../utils/texts";
 
 const CreateTodo = () => {
@@ -29,6 +35,7 @@ const CreateTodo = () => {
     const [todoRecurring, setTodoRecurring] = useState("");
     const [disablePriority, setDisablePriority] = useState(false);
     const [disableRecurring, setDisableRecurring] = useState(false);
+    const [showEnterTodoNameModal, setShowEnterTodoNameModal] = useState(false);
     const location = useLocation();
     const categoryId = location.state.categoryId;
     const categoryName = location.state.categoryName;
@@ -56,8 +63,17 @@ const CreateTodo = () => {
       navigate("/todos", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
     }
 
+    const toggleEnterTodoNameModal = () => {
+        setShowEnterTodoNameModal(!showEnterTodoNameModal);
+    }
+
     const handleSubmit = (e) => {
       e.preventDefault();
+
+      if (todoName === "") {
+        toggleEnterTodoNameModal();
+        return;
+      }
 
       const data = {
         name: todoName,
@@ -166,6 +182,20 @@ const CreateTodo = () => {
           </ButtonGroup>
 
         </Form>
+
+          <Modal className='successModal text-center' show={showEnterTodoNameModal} open={showEnterTodoNameModal} centered={true} size='lg'>
+              <ModalBody>
+                  <h4 style={{margin: "32px"}}>{PleaseEnterTodoNameText}</h4>
+                  <ButtonGroup style={{width: "40%"}}>
+                      <Button
+                          variant="danger"
+                          onClick={(e) => toggleEnterTodoNameModal(e)}
+                          style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                      >{ReturnButtonText}</Button>
+                  </ButtonGroup>
+              </ModalBody>
+          </Modal>
+
       </Container>
     )
   }

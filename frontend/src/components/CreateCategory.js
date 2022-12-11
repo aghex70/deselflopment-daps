@@ -8,7 +8,7 @@ import {
   CreateButtonText,
   CreateCategoryHeaderText,
   DescriptionLabelText,
-  NameLabelText, ReturnButtonText
+  NameLabelText, PleaseEnterCategoryNameText, PleaseEnterTodoNameText, ReturnButtonText
 } from "../utils/texts";
 
 const CreateCategory = () => {
@@ -16,6 +16,7 @@ const CreateCategory = () => {
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
   const [showModalCategoryAlreadyExists, setShowModalCategoryAlreadyExists] = useState(false);
+  const [showEnterCategoryModal, setShowEnterCategoryModal] = useState(false);
 
   const navigateCategories = () => {
     window.location.href = "/categories";
@@ -25,8 +26,18 @@ const CreateCategory = () => {
     setShowModalCategoryAlreadyExists(!showModalCategoryAlreadyExists);
   }
 
+  const toggleEnterCategoryModal = () => {
+    setShowEnterCategoryModal(!showEnterCategoryModal);
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (categoryName === "") {
+      toggleEnterCategoryModal();
+      return;
+    }
+
     const data = {
       name: categoryName,
       description: categoryDescription,
@@ -103,6 +114,20 @@ const CreateCategory = () => {
           </ButtonGroup>
         </ModalBody>
       </Modal>
+
+      <Modal className='successModal text-center' show={showEnterCategoryModal} open={showEnterCategoryModal} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>{PleaseEnterCategoryNameText}</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+                variant="danger"
+                onClick={(e) => toggleEnterCategoryModal(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{ReturnButtonText}</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
     </Container>
   )
 }
