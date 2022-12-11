@@ -13,7 +13,8 @@ import {
     EditIconText,
     HeaderActionsText,
     HeaderNameText,
-    RecurringTodosHeaderText, RecurringTodosIndicationText
+    RecurringTodosHeaderText,
+    RecurringTodosIndicationText
 } from "../utils/texts";
 
 const RecurringTodosList = () => {

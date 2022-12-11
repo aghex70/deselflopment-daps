@@ -4,10 +4,16 @@ import UserService from "../services/user";
 import {skipLogin} from "../utils/helpers";
 import {
   CancelButtonText,
-  EmailAddressLabelText, EnterEmailText, IncorrectPasswordText, InvalidEmailText,
-  LoginButtonText, LoginHeaderText,
-  PasswordLabelText, PasswordNotLongEnoughText,
-  RegisterButtonText, ReturnButtonText,
+  EmailAddressLabelText,
+  EnterEmailText,
+  IncorrectPasswordText,
+  InvalidEmailText,
+  LoginButtonText,
+  LoginHeaderText,
+  PasswordLabelText,
+  PasswordNotLongEnoughText,
+  RegisterButtonText,
+  ReturnButtonText,
   UserNotFoundText
 } from "../utils/texts";
 

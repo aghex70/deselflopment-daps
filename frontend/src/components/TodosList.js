@@ -9,7 +9,9 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
 import {
-    CompleteIconText, CreateIconText, DeleteIconText,
+    CompleteIconText,
+    CreateIconText,
+    DeleteIconText,
     EditIconText,
     HeaderActionsText,
     HeaderNameText,

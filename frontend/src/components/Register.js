@@ -4,11 +4,18 @@ import UserService from "../services/user";
 import {hashPassword, skipLogin} from "../utils/helpers";
 import {
   CancelButtonText,
-  EmailAddressLabelText, InvalidEmailText, LoginButtonText,
+  EmailAddressLabelText,
+  InvalidEmailText,
+  LoginButtonText,
   NameLabelText,
-  PasswordLabelText, PasswordNotLongEnoughText, PasswordsDoNotMatchText, RegisterButtonText,
+  PasswordLabelText,
+  PasswordNotLongEnoughText,
+  PasswordsDoNotMatchText,
+  RegisterButtonText,
   RegisterHeaderText,
-  RepeatPasswordLabelText, ReturnButtonText, UserAlreadyRegisteredText
+  RepeatPasswordLabelText,
+  ReturnButtonText,
+  UserAlreadyRegisteredText
 } from "../utils/texts";
 
 const Register = ()  =>{

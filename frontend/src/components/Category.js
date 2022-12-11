@@ -6,9 +6,11 @@ import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
 import {
   CancelButtonText,
-  DescriptionLabelText, EditButtonText,
+  DescriptionLabelText,
+  EditButtonText,
   EditCategoryHeaderText,
-  NameLabelText, ReturnButtonText,
+  NameLabelText,
+  ReturnButtonText,
   ViewCategoryHeaderText
 } from "../utils/texts";
 
