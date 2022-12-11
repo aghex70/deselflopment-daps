@@ -7,7 +7,8 @@ import checkAccess from "../utils/helpers";
 import toBoolean from "validator/es/lib/toBoolean";
 import {
     CancelButtonText,
-    DescriptionLabelText, EditButtonText,
+    DescriptionLabelText,
+    EditButtonText,
     EditTodoHeaderText,
     HighestPriorityText,
     HighPriorityText,
@@ -18,7 +19,8 @@ import {
     NameLabelText,
     NoRecurringText,
     PriorityLabelText,
-    RecurringLabelText, ReturnButtonText,
+    RecurringLabelText,
+    ReturnButtonText,
     ViewTodoHeaderText,
     YesRecurringText
 } from "../utils/texts";

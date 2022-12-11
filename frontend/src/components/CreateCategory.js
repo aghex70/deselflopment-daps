@@ -4,11 +4,14 @@ import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} f
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
 import {
-  CancelButtonText, CategoryAlreadyExistsText,
+  CancelButtonText,
+  CategoryAlreadyExistsText,
   CreateButtonText,
   CreateCategoryHeaderText,
   DescriptionLabelText,
-  NameLabelText, PleaseEnterCategoryNameText, PleaseEnterTodoNameText, ReturnButtonText
+  NameLabelText,
+  PleaseEnterCategoryNameText,
+  ReturnButtonText
 } from "../utils/texts";
 
 const CreateCategory = () => {
