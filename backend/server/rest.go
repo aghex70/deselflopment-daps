@@ -121,6 +121,7 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/login", s.userHandler.Login)
 	http.HandleFunc("/api/refresh-token", JWTAuthMiddleware(s.userHandler.RefreshToken))
 	http.HandleFunc("/api/user", JWTAuthMiddleware(s.userHandler.RemoveUser))
+	http.HandleFunc("/api/user/provision", JWTAuthMiddleware(s.userHandler.ProvisionDemoUser))
 	//http.HandleFunc("/recover-password", JWTAuthMiddleware(s.userHandler.RemoveUser))
 
 	// Categories

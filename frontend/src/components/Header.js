@@ -6,7 +6,7 @@ import {
   faPowerOff,
   faCheck,
   faEnvelope,
-  faUser,
+  faUser, faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
@@ -15,11 +15,12 @@ import {
   CategoriesIconText,
   CompletedTodosIconText,
   LogoutIconText,
-  ProfileIconText,
+  ProfileIconText, ProvisionDemoUserIconText,
   RecurringTodosIconText,
   ReportABugIconText,
   StatisticsIconText
 } from "../utils/texts";
+import UserService from "../services/user";
 
 const DapsHeader = () => {
   document.title = 'deselflopment - daps'
@@ -120,6 +121,14 @@ const DapsHeader = () => {
             >
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faPowerOff} />
+            </Button>
+
+            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
+                    variant="danger" title={ProvisionDemoUserIconText}
+                    onClick={() => UserService.provisionDemoUser("demo@demo.com", "RU")}
+            >
+
+              <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faUserPlus} />
             </Button>
           </ButtonGroup>
         </Container>

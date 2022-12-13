@@ -29,6 +29,7 @@ const CreateCategoryIconText = language === 'en' ? 'Create a new Category' : 'Cr
 const CategoriesIconText = language === 'en' ? 'Categories' : 'Categorías';
 const CompletedTodosIconText = language === 'en' ? 'Completed Todos' : 'Tareas completadas';
 const ProfileIconText = language === 'en' ? 'Profile' : 'Perfil';
+const ProvisionDemoUserIconText = language === 'en' ? 'Provision demo user' : 'Provisionar usuario demo';
 
 // Modals
 const UserAlreadySubscribedText = language === 'en' ? 'User already subscribed to that category!' : '¡No se puede suscribir a una categoría ya suscrita!';
@@ -190,4 +191,5 @@ export {
     DeleteButtonText,
     PleaseEnterTodoNameText,
     PleaseEnterCategoryNameText,
+    ProvisionDemoUserIconText,
 };

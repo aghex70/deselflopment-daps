@@ -33,6 +33,7 @@ type UserServicer interface {
 	Login(ctx context.Context, r LoginUserRequest) (string, int, error)
 	RefreshToken(ctx context.Context, r *http.Request) (string, error)
 	Remove(ctx context.Context, r *http.Request) error
+	ProvisionDemoUser(ctx context.Context, r *http.Request, req ProvisionDemoUserRequest) error
 }
 
 type UserConfigServicer interface {

@@ -62,6 +62,24 @@ func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (dom
 	return u.ToDto(), nil
 }
 
+func (gr *UserGormRepository) ProvisionDemoUser(ctx context.Context, e string) (domain.User, error) {
+	nu := relationship.User{
+		Name:             "Demo user",
+		Email:            e,
+		IsAdmin:          false,
+		Password:         "demopassword123",
+	}
+	result := gr.DB.Omit("Categories").Create(&nu)
+
+	if result.Error != nil {
+		return domain.User{}, result.Error
+	}
+
+	return nu.ToDto(), nil
+
+
+}
+
 func NewUserGormRepository(db *gorm.DB) (*UserGormRepository, error) {
 	return &UserGormRepository{
 		DB: db,

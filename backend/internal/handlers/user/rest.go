@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"log"
@@ -133,6 +134,51 @@ func (h UserHandler) RemoveUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h UserHandler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("@@@@@@@@@@@@@@@@")
+	fmt.Println("@@@@@@@@@@@@@@@@")
+	fmt.Println("@@@@@@@@@@@@@@@@")
+	fmt.Println("@@@@@@@@@@@@@@@@")
+	fmt.Println("@@@@@@@@@@@@@@@@")
+	fmt.Println("@@@@@@@@@@@@@@@@")
+	environment := os.Getenv("ENVIRONMENT")
+	if environment == "local" {
+		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
+	} else {
+		w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
+	}
+	//w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	//w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
+	if err != nil {
+		return
+	}
+
+	payload := ports.ProvisionDemoUserRequest{}
+	err = handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	err = h.userService.ProvisionDemoUser(nil, r, payload)
+	fmt.Println("XXXXXXXXXXXXXX")
+	fmt.Println("XXXXXXXXXXXXXX")
+	fmt.Println("XXXXXXXXXXXXXX")
+	fmt.Println("XXXXXXXXXXXXXX")
+	fmt.Println("XXXXXXXXXXXXXX")
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 func NewUserHandler(us ports.UserServicer, logger *log.Logger) UserHandler {

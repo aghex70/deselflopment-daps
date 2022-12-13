@@ -6,6 +6,7 @@ import (
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
+	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
 	"github.com/aghex70/daps/internal/repositories/gorm/userconfig"
 	"github.com/aghex70/daps/pkg"
@@ -21,6 +22,7 @@ type UserService struct {
 	userRepository              *user.UserGormRepository
 	categoryRepository          *category.CategoryGormRepository
 	userConfigurationRepository *userconfig.UserConfigGormRepository
+	todoRepository 				*todo.TodoGormRepository
 }
 
 type MyCustomClaims struct {
@@ -134,11 +136,134 @@ func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 	return nil
 }
 
-func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormRepository, ucr *userconfig.UserConfigGormRepository, logger *log.Logger) UserService {
+func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req ports.ProvisionDemoUserRequest) error {
+	cipheredPassword := s.EncryptPassword(ctx, pkg.DemoUserPassword)
+	u := domain.User{
+		Name:       pkg.DemoUserName,
+		Email:      req.Email,
+		Password:   cipheredPassword,
+	}
+
+	nu, err := s.userRepository.Create(ctx, u)
+	if err != nil {
+		return err
+	}
+
+	nuc := domain.UserConfig{
+		UserId:      nu.ID,
+		AutoSuggest: false,
+		Language:    "en",
+	}
+
+	err = s.userConfigurationRepository.Create(ctx, nuc)
+	if err != nil {
+		return err
+	}
+
+	demoCategory := domain.Category{
+		OwnerID:           nu.ID,
+		Description:       "Home tasks",
+		Custom:            true,
+		Name:              "Home",
+		Users:             []domain.User{u},
+	}
+
+	c, err := s.categoryRepository.Create(ctx, demoCategory, nu.ID)
+
+	anotherDemoCategory := domain.Category{
+		OwnerID:           nu.ID,
+		Description:       "Work stuff",
+		Custom:            true,
+		Name:              "Work",
+		Users:             []domain.User{u},
+	}
+
+	ac, err := s.categoryRepository.Create(ctx, anotherDemoCategory,  nu.ID)
+
+	var Todos = []domain.Todo{
+		{
+			Category:    c.ID,
+			Description: "Change Anna's diapers",
+			Name:        "Diapers",
+			Priority:    domain.Priority(5),
+			Recurring:   true,
+		},
+		{
+			Category:    c.ID,
+			Name:        "Laundry",
+			Priority:    domain.Priority(3),
+			Recurring:   true,
+		},
+		{
+			Category:    c.ID,
+			Name:        "Iron clothes",
+			Priority:    domain.Priority(1),
+			Recurring:   true,
+		},
+		{
+			Category:    c.ID,
+			Name:        "Repair TV",
+			Description: "Need to purchase an adapter",
+			Priority:    domain.Priority(2),
+			Recurring:   false,
+		},
+		{
+			Category:    c.ID,
+			Name:        "Walk Barky",
+			Priority:    domain.Priority(4),
+			Recurring:   true,
+		},
+		{
+			Category:    c.ID,
+			Name:        "Go to the veterynary",
+			Priority:    domain.Priority(4),
+			Recurring:   false,
+		},
+		{
+			Category:    ac.ID,
+			Name:        "Speak to John",
+			Description: "Start to discuss the new project",
+			Priority:    domain.Priority(3),
+			Recurring:   false,
+		},
+		{
+			Category:    ac.ID,
+			Name:        "Speak to Susan",
+			Description: "Need to determine why the project is delayed",
+			Priority:    domain.Priority(5),
+			Recurring:   false,
+		},
+		{
+			Category:    ac.ID,
+			Name:        "Ask for a raise",
+			Priority:    domain.Priority(3),
+			Recurring:   false,
+		},
+		{
+			Category:    ac.ID,
+			Name:        "Elaborate some graphs",
+			Description: "Need to elaborate some graphs for the presentation",
+			Priority:    domain.Priority(5),
+			Recurring:   false,
+		},
+	}
+
+	for _, t := range Todos {
+		err = s.todoRepository.Create(ctx, t)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormRepository, ucr *userconfig.UserConfigGormRepository, tr *todo.TodoGormRepository, logger *log.Logger) UserService {
 	return UserService{
 		logger:                      logger,
 		userRepository:              ur,
 		categoryRepository:          cr,
 		userConfigurationRepository: ucr,
+		todoRepository: tr,
 	}
 }
