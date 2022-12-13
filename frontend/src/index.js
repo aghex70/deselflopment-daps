@@ -17,6 +17,7 @@ import CompletedTodosList from "./components/CompletedTodosList";
 import Logout from "./components/Logout";
 import ReportBug from "./components/ReportBug";
 import Profile from "./components/UserConfiguration";
+import ProvisionDemoUser from "./components/ProvisionDemoUser";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -40,6 +41,7 @@ root.render(
         <Route path="suggested-todos" element={<RecurringTodosList />} />
         <Route path="completed-todos" element={<CompletedTodosList />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="provision" element={<ProvisionDemoUser />} />
         <Route path="statistics" element={<CategoriesList />} />
       </Routes>
     </BrowserRouter>

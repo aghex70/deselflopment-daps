@@ -6,7 +6,7 @@ const REGISTER_URL = `${DAPS_BASE_URL}api/register`;
 const LOGIN_URL = `${DAPS_BASE_URL}api/login`;
 const REFRESH_TOKEN_URL = `${DAPS_BASE_URL}api/refresh-token`;
 const RECOVER_PASSWORD_URL = `${DAPS_BASE_URL}api/recover-password`;
-const USER_URL = `${DAPS_BASE_URL}api/user`;
+// const USER_URL = `${DAPS_BASE_URL}api/user`;
 const PROVISION_DEMO_USER_URL = `${DAPS_BASE_URL}api/user/provision`;
 
 const options = {

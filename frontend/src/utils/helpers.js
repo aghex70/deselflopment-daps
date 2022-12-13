@@ -12,6 +12,13 @@ const checkAccess = () => {
   }
 }
 
+// const checkSuperUser = () => {
+//   const token = getUserToken();
+//   if (!token) {
+//     window.location.href = "/login";
+//   }
+// }
+
 const skipLogin = () => {
   if (getUserToken()) {
     window.location.href = "/categories";

@@ -180,75 +180,9 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 
 	ac, err := s.categoryRepository.Create(ctx, anotherDemoCategory,  nu.ID)
 
-	var Todos = []domain.Todo{
-		{
-			Category:    c.ID,
-			Description: "Change Anna's diapers",
-			Name:        "Diapers",
-			Priority:    domain.Priority(5),
-			Recurring:   true,
-		},
-		{
-			Category:    c.ID,
-			Name:        "Laundry",
-			Priority:    domain.Priority(3),
-			Recurring:   true,
-		},
-		{
-			Category:    c.ID,
-			Name:        "Iron clothes",
-			Priority:    domain.Priority(1),
-			Recurring:   true,
-		},
-		{
-			Category:    c.ID,
-			Name:        "Repair TV",
-			Description: "Need to purchase an adapter",
-			Priority:    domain.Priority(2),
-			Recurring:   false,
-		},
-		{
-			Category:    c.ID,
-			Name:        "Walk Barky",
-			Priority:    domain.Priority(4),
-			Recurring:   true,
-		},
-		{
-			Category:    c.ID,
-			Name:        "Go to the veterynary",
-			Priority:    domain.Priority(4),
-			Recurring:   false,
-		},
-		{
-			Category:    ac.ID,
-			Name:        "Speak to John",
-			Description: "Start to discuss the new project",
-			Priority:    domain.Priority(3),
-			Recurring:   false,
-		},
-		{
-			Category:    ac.ID,
-			Name:        "Speak to Susan",
-			Description: "Need to determine why the project is delayed",
-			Priority:    domain.Priority(5),
-			Recurring:   false,
-		},
-		{
-			Category:    ac.ID,
-			Name:        "Ask for a raise",
-			Priority:    domain.Priority(3),
-			Recurring:   false,
-		},
-		{
-			Category:    ac.ID,
-			Name:        "Elaborate some graphs",
-			Description: "Need to elaborate some graphs for the presentation",
-			Priority:    domain.Priority(5),
-			Recurring:   false,
-		},
-	}
+	todos := pkg.GenerateDemoTodos(c.ID, ac.ID, req.Language)
 
-	for _, t := range Todos {
+	for _, t := range todos {
 		err = s.todoRepository.Create(ctx, t)
 		if err != nil {
 			return err
