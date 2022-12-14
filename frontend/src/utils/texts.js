@@ -29,6 +29,8 @@ const CreateCategoryIconText = language === 'en' ? 'Create a new Category' : 'Cr
 const CategoriesIconText = language === 'en' ? 'Categories' : 'Categorías';
 const CompletedTodosIconText = language === 'en' ? 'Completed Todos' : 'Tareas completadas';
 const ProfileIconText = language === 'en' ? 'Profile' : 'Perfil';
+const ProvisionDemoUserIconText = language === 'en' ? 'Provision demo user' : 'Provisionar usuario demo';
+const ListOfUsersIconText = language === 'en' ? 'List of users' : 'Lista de usuarios';
 
 // Modals
 const UserAlreadySubscribedText = language === 'en' ? 'User already subscribed to that category!' : '¡No se puede suscribir a una categoría ya suscrita!';
@@ -46,6 +48,8 @@ const InvalidEmailText = language === 'en' ? 'Invalid email address format! Plea
 const DeletingCategoryText = language === 'en' ? 'Warning! Deleting a category will delete all its Todos. Are you sure you want to delete this category?' : '¡Advertencia! Eliminar una categoría eliminará todas sus tareas. ¿Estás segur@ de que quieres eliminar esta categoría?';
 const PleaseEnterTodoNameText = language === 'en' ? 'Please enter a Todo name' : 'Por favor, introduzca un nombre para la tarea';
 const PleaseEnterCategoryNameText = language === 'en' ? 'Please enter a category name' : 'Por favor, introduzca un nombre para la categoría';
+const DemoUserAlreadyProvisionedText = language === 'en' ? 'Demo user already provisioned! Please try with a different email' : '¡Usuario demo ya provisionado! Por favor, inténtelo con un correo electrónico diferente';
+const PleaseEnterAnEmailText = language === 'en' ? 'Please enter an email' : 'Por favor, introduzca un correo electrónico';
 
 // Buttons
 const CancelButtonText = language === 'en' ? 'Cancel' : 'Cancelar';
@@ -190,4 +194,8 @@ export {
     DeleteButtonText,
     PleaseEnterTodoNameText,
     PleaseEnterCategoryNameText,
+    ProvisionDemoUserIconText,
+    DemoUserAlreadyProvisionedText,
+    PleaseEnterAnEmailText,
+    ListOfUsersIconText,
 };

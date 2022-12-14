@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"gorm.io/gorm"
@@ -24,6 +25,7 @@ func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) (domain
 	nu := relationship.UserFromDto(u)
 	result := gr.DB.Omit("Categories").Create(&nu)
 	if result.Error != nil {
+		fmt.Println("result.Error", result.Error)
 		return domain.User{}, result.Error
 	}
 	return nu.ToDto(), nil
@@ -60,6 +62,24 @@ func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (dom
 	}
 
 	return u.ToDto(), nil
+}
+
+func (gr *UserGormRepository) ProvisionDemoUser(ctx context.Context, e string) (domain.User, error) {
+	nu := relationship.User{
+		Name:             "Demo user",
+		Email:            e,
+		IsAdmin:          false,
+		Password:         "demopassword123",
+	}
+	result := gr.DB.Omit("Categories").Create(&nu)
+
+	if result.Error != nil {
+		return domain.User{}, result.Error
+	}
+
+	return nu.ToDto(), nil
+
+
 }
 
 func NewUserGormRepository(db *gorm.DB) (*UserGormRepository, error) {

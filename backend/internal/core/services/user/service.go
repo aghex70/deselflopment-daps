@@ -6,6 +6,7 @@ import (
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
+	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
 	"github.com/aghex70/daps/internal/repositories/gorm/userconfig"
 	"github.com/aghex70/daps/pkg"
@@ -21,6 +22,7 @@ type UserService struct {
 	userRepository              *user.UserGormRepository
 	categoryRepository          *category.CategoryGormRepository
 	userConfigurationRepository *userconfig.UserConfigGormRepository
+	todoRepository              *todo.TodoGormRepository
 }
 
 type MyCustomClaims struct {
@@ -120,6 +122,20 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 	return ss, nil
 }
 
+func (s UserService) CheckAdmin(ctx context.Context, r *http.Request) error {
+	userId, err := server.RetrieveJWTClaims(r, nil)
+	u, err := s.userRepository.Get(ctx, int(userId))
+	if err != nil {
+		return errors.New("invalid token")
+	}
+
+	if !u.IsAdmin {
+		return errors.New("unauthorized")
+	}
+
+	return nil
+}
+
 func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 	userId, err := server.RetrieveJWTClaims(r, nil)
 	if err != nil {
@@ -134,11 +150,73 @@ func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 	return nil
 }
 
-func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormRepository, ucr *userconfig.UserConfigGormRepository, logger *log.Logger) UserService {
+func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req ports.ProvisionDemoUserRequest) error {
+	err := s.CheckAdmin(ctx, r)
+	if err != nil {
+		return err
+	}
+
+	cipheredPassword := s.EncryptPassword(ctx, pkg.DemoUserPassword)
+	u := domain.User{
+		Name:     pkg.DemoUserName,
+		Email:    req.Email,
+		Password: cipheredPassword,
+	}
+
+	nu, err := s.userRepository.Create(ctx, u)
+	if err != nil {
+		return err
+	}
+
+	nuc := domain.UserConfig{
+		UserId:      nu.ID,
+		AutoSuggest: false,
+		Language:    "en",
+	}
+
+	err = s.userConfigurationRepository.Create(ctx, nuc)
+	if err != nil {
+		return err
+	}
+
+	demoCategory := domain.Category{
+		OwnerID:     nu.ID,
+		Description: "Home tasks",
+		Custom:      true,
+		Name:        "Home",
+		Users:       []domain.User{u},
+	}
+
+	c, err := s.categoryRepository.Create(ctx, demoCategory, nu.ID)
+
+	anotherDemoCategory := domain.Category{
+		OwnerID:     nu.ID,
+		Description: "Work stuff",
+		Custom:      true,
+		Name:        "Work",
+		Users:       []domain.User{u},
+	}
+
+	ac, err := s.categoryRepository.Create(ctx, anotherDemoCategory, nu.ID)
+
+	todos := pkg.GenerateDemoTodos(c.ID, ac.ID, req.Language)
+
+	for _, t := range todos {
+		err = s.todoRepository.Create(ctx, t)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormRepository, ucr *userconfig.UserConfigGormRepository, tr *todo.TodoGormRepository, logger *log.Logger) UserService {
 	return UserService{
 		logger:                      logger,
 		userRepository:              ur,
 		categoryRepository:          cr,
 		userConfigurationRepository: ucr,
+		todoRepository:              tr,
 	}
 }

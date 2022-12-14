@@ -89,3 +89,9 @@ type UpdateUserConfigRequest struct {
 	AutoSuggest bool   `json:"auto_suggest"`
 	Language    string `json:"language"`
 }
+
+type ProvisionDemoUserRequest struct {
+	Email    	string `json:"email" validate:"required,email"`
+	Language    string `json:"language"`
+
+}
