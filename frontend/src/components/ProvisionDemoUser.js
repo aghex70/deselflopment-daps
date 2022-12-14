@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
@@ -31,6 +31,21 @@ const ProvisionDemoUser = () => {
         setShowModalEmptyEmail(!showModalEmptyEmail);
     }
 
+    useEffect(() => {
+        UserService.checkAdminAccess().then(
+            (response) => {
+                if (response.status !== 200) {
+                    window.location.href = "/categories";
+                }
+            }
+        ).catch(
+            (error) => {
+                window.location.href = "/categories";
+
+            }
+        )
+    }, []);
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -47,6 +62,9 @@ const ProvisionDemoUser = () => {
             }
         ).catch(
             (error) => {
+                if (error.response.data.message === "unauthorized") {
+                    window.location.href = "/categories";
+                }
                 setShowModalDemoUserAlreadyCreated(true);
             }
         )
@@ -112,7 +130,7 @@ const ProvisionDemoUser = () => {
                     <ButtonGroup style={{width: "40%"}}>
                         <Button
                             variant="danger"
-                            onClick={(e) => toggleModalDemoUserAlreadyCreated(e)}
+                            onClick={(e) => toggleModalEmptyEmail(e)}
                             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                         >{ReturnButtonText}</Button>
                     </ButtonGroup>

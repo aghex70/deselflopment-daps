@@ -9,4 +9,5 @@ type User struct {
 	Password         string     `json:"password"`
 	RegistrationDate time.Time  `json:"registrationDate"`
 	Categories       []Category `json:"categories"`
+	IsAdmin          bool       `json:"is_admin"`
 }

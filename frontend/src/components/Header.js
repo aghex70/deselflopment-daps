@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   faClockRotateLeft,
   faChartSimple,
@@ -22,12 +22,14 @@ import {
   ReportABugIconText,
   StatisticsIconText
 } from "../utils/texts";
+import UserService from "../services/user";
 
 const DapsHeader = () => {
   document.title = 'deselflopment - daps'
   checkAccess();
 
   const [isHoverProfile, setIsHoverProfile] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleMouseEnter = () => {
     setIsHoverProfile(true);
@@ -63,6 +65,20 @@ const DapsHeader = () => {
   const navigateProvisionDemoUser = () => {
     window.location.href = "/provision";
   }
+
+  useEffect(() => {
+    UserService.checkAdminAccess().then(
+        (response) => {
+          if (response.status === 200) {
+            setIsAdmin(true);
+          }
+        }
+    ).catch(
+        (error) => {
+          setIsAdmin(false);
+        }
+    )
+  }, [isAdmin]);
 
       return (
         <Container>
@@ -128,6 +144,8 @@ const DapsHeader = () => {
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faPowerOff} />
             </Button>
           </ButtonGroup>
+
+          {isAdmin && (
           <ButtonGroup style={{width: "100%", marginTop: "15px", marginBottom: "15px"}}>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="danger" title={ProvisionDemoUserIconText}
@@ -144,6 +162,7 @@ const DapsHeader = () => {
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faList} />
             </Button>
           </ButtonGroup>
+          )}
 
         </Container>
       );

@@ -113,6 +113,21 @@ func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+func (h UserHandler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
+	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
+	if err != nil {
+		return
+	}
+
+	err = h.userService.CheckAdmin(nil, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func (h UserHandler) RemoveUser(w http.ResponseWriter, r *http.Request) {
 	environment := os.Getenv("ENVIRONMENT")
 	if environment == "local" {

@@ -22,7 +22,7 @@ type UserService struct {
 	userRepository              *user.UserGormRepository
 	categoryRepository          *category.CategoryGormRepository
 	userConfigurationRepository *userconfig.UserConfigGormRepository
-	todoRepository 				*todo.TodoGormRepository
+	todoRepository              *todo.TodoGormRepository
 }
 
 type MyCustomClaims struct {
@@ -122,6 +122,20 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 	return ss, nil
 }
 
+func (s UserService) CheckAdmin(ctx context.Context, r *http.Request) error {
+	userId, err := server.RetrieveJWTClaims(r, nil)
+	u, err := s.userRepository.Get(ctx, int(userId))
+	if err != nil {
+		return errors.New("invalid token")
+	}
+
+	if !u.IsAdmin {
+		return errors.New("unauthorized")
+	}
+
+	return nil
+}
+
 func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 	userId, err := server.RetrieveJWTClaims(r, nil)
 	if err != nil {
@@ -137,11 +151,16 @@ func (s UserService) Remove(ctx context.Context, r *http.Request) error {
 }
 
 func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req ports.ProvisionDemoUserRequest) error {
+	err := s.CheckAdmin(ctx, r)
+	if err != nil {
+		return err
+	}
+
 	cipheredPassword := s.EncryptPassword(ctx, pkg.DemoUserPassword)
 	u := domain.User{
-		Name:       pkg.DemoUserName,
-		Email:      req.Email,
-		Password:   cipheredPassword,
+		Name:     pkg.DemoUserName,
+		Email:    req.Email,
+		Password: cipheredPassword,
 	}
 
 	nu, err := s.userRepository.Create(ctx, u)
@@ -161,24 +180,24 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 	}
 
 	demoCategory := domain.Category{
-		OwnerID:           nu.ID,
-		Description:       "Home tasks",
-		Custom:            true,
-		Name:              "Home",
-		Users:             []domain.User{u},
+		OwnerID:     nu.ID,
+		Description: "Home tasks",
+		Custom:      true,
+		Name:        "Home",
+		Users:       []domain.User{u},
 	}
 
 	c, err := s.categoryRepository.Create(ctx, demoCategory, nu.ID)
 
 	anotherDemoCategory := domain.Category{
-		OwnerID:           nu.ID,
-		Description:       "Work stuff",
-		Custom:            true,
-		Name:              "Work",
-		Users:             []domain.User{u},
+		OwnerID:     nu.ID,
+		Description: "Work stuff",
+		Custom:      true,
+		Name:        "Work",
+		Users:       []domain.User{u},
 	}
 
-	ac, err := s.categoryRepository.Create(ctx, anotherDemoCategory,  nu.ID)
+	ac, err := s.categoryRepository.Create(ctx, anotherDemoCategory, nu.ID)
 
 	todos := pkg.GenerateDemoTodos(c.ID, ac.ID, req.Language)
 
@@ -198,6 +217,6 @@ func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormReposi
 		userRepository:              ur,
 		categoryRepository:          cr,
 		userConfigurationRepository: ucr,
-		todoRepository: tr,
+		todoRepository:              tr,
 	}
 }
