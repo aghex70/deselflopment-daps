@@ -35,6 +35,7 @@ type UserServicer interface {
 	CheckAdmin(ctx context.Context, r *http.Request) error
 	Remove(ctx context.Context, r *http.Request) error
 	ProvisionDemoUser(ctx context.Context, r *http.Request, req ProvisionDemoUserRequest) error
+	List(ctx context.Context, r *http.Request) ([]domain.User, error)
 }
 
 type UserConfigServicer interface {

@@ -11,7 +11,6 @@ import (
 	"github.com/aghex70/daps/internal/handlers/user"
 	"github.com/aghex70/daps/internal/handlers/userconfig"
 	"github.com/aghex70/daps/pkg"
-	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"net/http"
 	"os"
@@ -121,6 +120,7 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/login", s.userHandler.Login)
 	http.HandleFunc("/api/refresh-token", JWTAuthMiddleware(s.userHandler.RefreshToken))
 	http.HandleFunc("/api/user", JWTAuthMiddleware(s.userHandler.RemoveUser))
+	http.HandleFunc("/api/user", JWTAuthMiddleware(s.userHandler.ListUsers))
 	http.HandleFunc("/api/user/admin", JWTAuthMiddleware(s.userHandler.CheckAdmin))
 	http.HandleFunc("/api/user/provision", JWTAuthMiddleware(s.userHandler.ProvisionDemoUser))
 	//http.HandleFunc("/recover-password", JWTAuthMiddleware(s.userHandler.RemoveUser))

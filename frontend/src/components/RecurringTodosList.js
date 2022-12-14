@@ -80,9 +80,6 @@ const RecurringTodosList = () => {
       headerAlign: 'center',
     }];
 
-  if (!localStorage.getItem("access_token")) {
-    window.location.href = "/login";
-  }
 
   const navigateToTodo = (id, categoryId, categoryName, action) => {
     navigate("/todo/" + id, {state: {categoryId: categoryId, action: action}});

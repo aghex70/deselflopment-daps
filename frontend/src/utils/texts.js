@@ -9,6 +9,8 @@ const HeaderActionsText = language === 'en' ? 'Actions' : 'Acciones';
 const HeaderNameText = language === 'en' ? 'Name' : 'Nombre';
 const CompletedTodosIndicationText = language === 'en' ? 'You better complete some Todos first!!!' : '¡¡¡Debes completar alguna tarea antes!!!';
 const RecurringTodosIndicationText = language === 'en' ? 'You better create some recurring Todos first!!!' : '¡¡¡Debes crear alguna tarea recurrente antes!!!';
+const HeaderUserText = language === 'en' ? 'User' : 'Usuario';
+const HeaderLastLoginText = language === 'en' ? 'Last login' : 'Último acceso';
 
 // Icons
 const ShareIconText = language === 'en' ? 'Share' : 'Compartir';
@@ -80,6 +82,7 @@ const EditTodoHeaderText = language === 'en' ? 'Edit Todo' : 'Editar tarea';
 const ViewTodoHeaderText = language === 'en' ? 'View Todo' : 'Ver tarea';
 const WelcomeToDapsText = language === 'en' ? 'Welcome to DAPS!' : '¡Bienvenid@ a DAPS!';
 const ProfileHeaderText = language === 'en' ? 'Profile' : 'Perfil';
+const UsersHeaderText = language === 'en' ? 'Users' : 'Usuarios';
 
 
 // Forms
@@ -198,4 +201,7 @@ export {
     DemoUserAlreadyProvisionedText,
     PleaseEnterAnEmailText,
     ListOfUsersIconText,
+    UsersHeaderText,
+    HeaderUserText,
+    HeaderLastLoginText,
 };

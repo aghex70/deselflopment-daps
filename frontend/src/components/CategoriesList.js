@@ -102,10 +102,6 @@ const CategoriesList = () => {
       headerAlign: 'center',
     }];
 
-  if (!localStorage.getItem("access_token")) {
-    window.location.href = "/login";
-  }
-
   const navigateToCategory = (categoryId, categoryName) => {
     navigate("/todos", {state: {categoryId: categoryId, categoryName: categoryName}});
   }
@@ -208,7 +204,6 @@ const CategoriesList = () => {
               display: "block",
             }
             );
-          } else {
           }
         }
       ).catch(

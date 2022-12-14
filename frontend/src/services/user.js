@@ -7,6 +7,7 @@ const LOGIN_URL = `${DAPS_BASE_URL}api/login`;
 const REFRESH_TOKEN_URL = `${DAPS_BASE_URL}api/refresh-token`;
 const RECOVER_PASSWORD_URL = `${DAPS_BASE_URL}api/recover-password`;
 // const USER_URL = `${DAPS_BASE_URL}api/user`;
+const USERS_URL = `${DAPS_BASE_URL}api/users`;
 const ADMIN_URL = `${DAPS_BASE_URL}api/user/admin`;
 const PROVISION_DEMO_USER_URL = `${DAPS_BASE_URL}api/user/provision`;
 
@@ -32,6 +33,10 @@ const login = async (email, password) => {
       email,
       password,
     });
+}
+
+const getUsers = async () => {
+    return await axios.get(USERS_URL, options);
 }
 
 const checkAdminAccess = async () => {
@@ -76,6 +81,7 @@ const UserService = {
   logout,
   provisionDemoUser,
   checkAdminAccess,
+  getUsers,
 
 }
 

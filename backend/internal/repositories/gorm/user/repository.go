@@ -78,8 +78,22 @@ func (gr *UserGormRepository) ProvisionDemoUser(ctx context.Context, e string) (
 	}
 
 	return nu.ToDto(), nil
+}
 
+func (gr *UserGormRepository) List(ctx context.Context) ([]domain.User, error) {
+	var dbUsers []relationship.User
+	var users []domain.User
+	result := gr.DB.Find(&dbUsers)
+	if result.Error != nil {
+		return []domain.User{}, result.Error
+	}
 
+	for _, u := range dbUsers {
+		cs := u.ToDto()
+		users = append(users, cs)
+	}
+	return users, nil
+}
 }
 
 func NewUserGormRepository(db *gorm.DB) (*UserGormRepository, error) {

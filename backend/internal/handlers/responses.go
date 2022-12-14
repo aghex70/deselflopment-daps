@@ -12,3 +12,7 @@ type TokenResponse struct {
 type ListCategoriesResponse struct {
 	Categories []domain.Category `json:"categories"`
 }
+
+type ListUsersResponse struct {
+	Users []domain.User `json:"users"`
+}

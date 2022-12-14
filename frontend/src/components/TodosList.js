@@ -54,10 +54,6 @@ const TodosList = () => {
     headerAlign: 'center',
   }];
 
-  if (!localStorage.getItem("access_token")) {
-    window.location.href = "/login";
-  }
-
   const navigateToTodo = (id, categoryId, categoryName, action) => {
     navigate("/todo/" + id, {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName, action: action}});
   }

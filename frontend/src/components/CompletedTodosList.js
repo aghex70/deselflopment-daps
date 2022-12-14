@@ -107,10 +107,6 @@ const CompletedTodosList = () => {
     );
   }
 
-  if (!localStorage.getItem("access_token")) {
-    window.location.href = "/login";
-  }
-
   useEffect(() => {
     if (!todos || todos.length === 0) {
       TodoService.getCompletedTodos().then(

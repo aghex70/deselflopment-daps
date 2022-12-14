@@ -157,12 +157,34 @@ func (h UserHandler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
+
+	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
+	if err != nil {
+		return
+	}
+
 	err = h.userService.ProvisionDemoUser(nil, r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+}
+
+func (h UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
+	err := handlers.CheckHttpMethod(http.MethodGet, w, r)
+	if err != nil {
+		return
+	}
+
+	users, err := h.userService.ListUsers(nil, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(handlers.ListUsersResponse{Users: users})
+	w.Write(b)
 }
 
 func NewUserHandler(us ports.UserServicer, logger *log.Logger) UserHandler {
