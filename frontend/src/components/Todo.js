@@ -105,6 +105,7 @@ const Todo = () => {
             <Form.Control type="name" placeholder="Name" value={todoName} disabled={!enableEdit}/>
           </FloatingLabel>
 
+        {!enableEdit && todoDescription &&
           <FloatingLabel
             controlId="floatingDescription"
             label={DescriptionLabelText}
@@ -113,6 +114,7 @@ const Todo = () => {
           >
             <Form.Control type="description" placeholder="Description" value={todoDescription} disabled={!enableEdit}/>
           </FloatingLabel>
+        }
 
 
             <FloatingLabel controlId="floatingPriority" label={PriorityLabelText}>
@@ -169,7 +171,7 @@ const Todo = () => {
               >{CancelButtonText}</Button>
             </ButtonGroup>
             ) : (
-              <ButtonGroup style={{width: "20%", marginLeft: "40%"}}>
+              <ButtonGroup style={{width: "40%", marginLeft: "30%"}}>
               <Button
                 variant="success"
                 onClick={() => navigateTodos()}
