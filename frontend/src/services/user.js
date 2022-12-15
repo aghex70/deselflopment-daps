@@ -65,9 +65,10 @@ const logout = () => {
   localStorage.removeItem("access_token");
 }
 
-const provisionDemoUser = async (email, language) => {
+const provisionDemoUser = async (email, password, language) => {
   return await axios.post(PROVISION_DEMO_USER_URL, {
     email,
+    password,
     language,
   }, options);
 }

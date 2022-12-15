@@ -2,7 +2,7 @@ package pkg
 
 import "github.com/aghex70/daps/internal/core/domain"
 
-func GenerateDemoTodos(categoryId, anotherCategoryId int, language string) []domain.Todo {
+func GenerateDemoTodos(categoryId, anotherCategoryId, yetAnotherCategoryId int, language string) []domain.Todo {
 	if language == "en" {
 		return []domain.Todo{
 			{
@@ -69,6 +69,46 @@ func GenerateDemoTodos(categoryId, anotherCategoryId int, language string) []dom
 				Description: "Need to elaborate some graphs for tomorrows' presentation",
 				Priority:    domain.Priority(5),
 				Recurring:   false,
+				Active:      true,
+			},
+			{
+				Category:    yetAnotherCategoryId,
+				Name:        "Renew Amazon Prime",
+				Description: "Need to renew Amazon Prime before the end of the month",
+				Priority:    domain.Priority(3),
+				Recurring:   false,
+				Active:      true,
+			},
+			{
+				Category:    yetAnotherCategoryId,
+				Name:        "Cancel Disney+",
+				Description: "Need to cancel Disney+ before the end of the month",
+				Priority:    domain.Priority(5),
+				Recurring:   false,
+				Active:      false,
+			},
+			{
+				Category:    yetAnotherCategoryId,
+				Name:        "Cancel Netflix",
+				Description: "Need to cancel Netflix before the end of the month",
+				Priority:    domain.Priority(5),
+				Recurring:   false,
+				Active:      false,
+			},
+			{
+				Category:  yetAnotherCategoryId,
+				Name:      "Diapers",
+				Priority:  domain.Priority(5),
+				Recurring: false,
+				Active:    false,
+			},
+			{
+				Category:    yetAnotherCategoryId,
+				Name:        "Graphic card",
+				Description: "Buy water cooled graphic card when there is a good deal",
+				Priority:    domain.Priority(1),
+				Recurring:   false,
+				Active:      false,
 			},
 		}
 	}
@@ -138,6 +178,46 @@ func GenerateDemoTodos(categoryId, anotherCategoryId int, language string) []dom
 			Description: "Elaborar gráficos para la presentación de mañana",
 			Priority:    domain.Priority(5),
 			Recurring:   false,
+			Active:      true,
+		},
+		{
+			Category:    yetAnotherCategoryId,
+			Name:        "Renovar Amazon Prime",
+			Description: "Renovar Amazon Prime antes del final del mes",
+			Priority:    domain.Priority(3),
+			Recurring:   false,
+			Active:      true,
+		},
+		{
+			Category:    yetAnotherCategoryId,
+			Name:        "Cancelar Disney+",
+			Description: "Cancelar Disney+ antes del final del mes",
+			Priority:    domain.Priority(5),
+			Recurring:   false,
+			Active:      false,
+		},
+		{
+			Category:    yetAnotherCategoryId,
+			Name:        "Cancelar Netflix",
+			Description: "Cancelar Netflix antes del final del mes",
+			Priority:    domain.Priority(5),
+			Recurring:   false,
+			Active:      false,
+		},
+		{
+			Category:  yetAnotherCategoryId,
+			Name:      "Pañales",
+			Priority:  domain.Priority(5),
+			Recurring: false,
+			Active:    false,
+		},
+		{
+			Category:    yetAnotherCategoryId,
+			Name:        "Tarjeta gráfica",
+			Description: "Comprar tarjeta gráfica con refrigeración líquida cuando haya una buena oferta",
+			Priority:    domain.Priority(1),
+			Recurring:   false,
+			Active:      false,
 		},
 	}
 }

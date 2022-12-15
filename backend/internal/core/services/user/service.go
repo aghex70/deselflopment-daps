@@ -70,6 +70,7 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 	}
 
 	decryptedPassword, err := s.DecryptPassword(ctx, u.Password)
+
 	if err != nil {
 		return "", 0, err
 	}
@@ -156,7 +157,7 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 		return err
 	}
 
-	cipheredPassword := s.EncryptPassword(ctx, pkg.DemoUserPassword)
+	cipheredPassword := s.EncryptPassword(ctx, req.Password)
 	u := domain.User{
 		Name:     pkg.DemoUserName,
 		Email:    req.Email,
@@ -199,7 +200,17 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 
 	ac, err := s.categoryRepository.Create(ctx, anotherDemoCategory, nu.ID)
 
-	todos := pkg.GenerateDemoTodos(c.ID, ac.ID, req.Language)
+	yetAnotherDemoCategory := domain.Category{
+		OwnerID:     nu.ID,
+		Description: "Purchase list",
+		Custom:      true,
+		Name:        "Purchases",
+		Users:       []domain.User{u},
+	}
+
+	yac, err := s.categoryRepository.Create(ctx, yetAnotherDemoCategory, nu.ID)
+
+	todos := pkg.GenerateDemoTodos(c.ID, ac.ID, yac.ID, req.Language)
 
 	for _, t := range todos {
 		err = s.todoRepository.Create(ctx, t)

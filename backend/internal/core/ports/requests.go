@@ -91,7 +91,7 @@ type UpdateUserConfigRequest struct {
 }
 
 type ProvisionDemoUserRequest struct {
-	Email    	string `json:"email" validate:"required,email"`
-	Language    string `json:"language"`
-
+	Email    string `json:"email" validate:"required,email"`
+	Language string `json:"language"`
+	Password string `json:"password" validate:"required,min=13"`
 }

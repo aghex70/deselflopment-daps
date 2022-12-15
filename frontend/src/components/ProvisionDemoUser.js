@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import checkAccess, {hashPassword} from "../utils/helpers";
 import {
     CancelButtonText,
     CreateButtonText,
@@ -54,7 +54,8 @@ const ProvisionDemoUser = () => {
             return;
         }
 
-        UserService.provisionDemoUser(userEmail, userLanguage).then(
+        const hashedPassword = hashPassword(process.env.REACT_APP_DEMO_USER_PASSWORD);
+        UserService.provisionDemoUser(userEmail, hashedPassword, userLanguage).then(
             (response) => {
                 if (response.status === 201) {
                     window.location.href = "/categories";
