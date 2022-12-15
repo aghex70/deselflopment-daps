@@ -6,13 +6,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     DeleteIconText,
     HeaderActionsText,
-    HeaderLastLoginText,
     HeaderUserText,
     UsersHeaderText,
     ViewIconText,
 } from "../utils/texts";
 import UserService from "../services/user";
 import BootstrapTable from "react-bootstrap-table-next";
+import {faEye, faTrash} from "@fortawesome/free-solid-svg-icons";
 
 const UsersList = () => {
     checkAccess();
@@ -20,14 +20,9 @@ const UsersList = () => {
 
     const columns = [
         {
-            dataField: 'last_login',
-            text: HeaderLastLoginText,
-            style:{'width' : '15%', cursor: "pointer", verticalAlign: "middle", justifyContent: "center"},
-        },
-        {
-            dataField: 'name',
+            dataField: 'email',
             text: HeaderUserText,
-            style:{'width' : '55%', cursor: "pointer", verticalAlign: "middle"},
+            style:{'width' : '70%', cursor: "pointer", verticalAlign: "middle"},
         },
         {
             dataField: 'link',
@@ -54,15 +49,16 @@ const UsersList = () => {
         if (!users || users.length === 0) {
             UserService.getUsers().then(
                 (response) => {
-                    if (response.status === 200 && response.data) {
-                        setUsers(response.data);
+                    if (response.status === 200) {
+                        console.log("response.data.users -------------> ", response.data.users);
+                        setUsers(response.data.users);
                     }
                 }
             ).catch(
                 (error) => {
                 })
         }
-    }, []);
+    }, [users]);
 
     function actionsFormatter(cell, row) {
         return (
@@ -95,7 +91,6 @@ const UsersList = () => {
             </div>
         );
     }
-
 
     return (
         <Container>

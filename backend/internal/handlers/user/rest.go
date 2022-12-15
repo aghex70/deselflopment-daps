@@ -158,7 +158,7 @@ func (h UserHandler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
+	err = handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
 	}
@@ -177,7 +177,7 @@ func (h UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, err := h.userService.ListUsers(nil, r)
+	users, err := h.userService.List(nil, r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return

@@ -11,6 +11,7 @@ import (
 	"github.com/aghex70/daps/internal/handlers/user"
 	"github.com/aghex70/daps/internal/handlers/userconfig"
 	"github.com/aghex70/daps/pkg"
+	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"net/http"
 	"os"
@@ -108,19 +109,13 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
 	return userId, nil
 }
 
-func CORS(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		next(w, r)
-	}
-}
-
 func (s *RestServer) StartServer() error {
 	// User
 	http.HandleFunc("/api/register", s.userHandler.Register)
 	http.HandleFunc("/api/login", s.userHandler.Login)
 	http.HandleFunc("/api/refresh-token", JWTAuthMiddleware(s.userHandler.RefreshToken))
 	http.HandleFunc("/api/user", JWTAuthMiddleware(s.userHandler.RemoveUser))
-	http.HandleFunc("/api/user", JWTAuthMiddleware(s.userHandler.ListUsers))
+	http.HandleFunc("/api/users", JWTAuthMiddleware(s.userHandler.ListUsers))
 	http.HandleFunc("/api/user/admin", JWTAuthMiddleware(s.userHandler.CheckAdmin))
 	http.HandleFunc("/api/user/provision", JWTAuthMiddleware(s.userHandler.ProvisionDemoUser))
 	//http.HandleFunc("/recover-password", JWTAuthMiddleware(s.userHandler.RemoveUser))

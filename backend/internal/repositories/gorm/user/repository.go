@@ -66,10 +66,10 @@ func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (dom
 
 func (gr *UserGormRepository) ProvisionDemoUser(ctx context.Context, e string) (domain.User, error) {
 	nu := relationship.User{
-		Name:             "Demo user",
-		Email:            e,
-		IsAdmin:          false,
-		Password:         "demopassword123",
+		Name:     "Demo user",
+		Email:    e,
+		IsAdmin:  false,
+		Password: "demopassword123",
 	}
 	result := gr.DB.Omit("Categories").Create(&nu)
 
@@ -93,7 +93,6 @@ func (gr *UserGormRepository) List(ctx context.Context) ([]domain.User, error) {
 		users = append(users, cs)
 	}
 	return users, nil
-}
 }
 
 func NewUserGormRepository(db *gorm.DB) (*UserGormRepository, error) {

@@ -66,6 +66,10 @@ const DapsHeader = () => {
     window.location.href = "/provision";
   }
 
+  const navigateListOfUsers = () => {
+    window.location.href = "/users";
+  }
+
   useEffect(() => {
     UserService.checkAdminAccess().then(
         (response) => {
@@ -156,7 +160,7 @@ const DapsHeader = () => {
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="danger" title={ListOfUsersIconText}
-                    // onClick={() => navigateProvisionDemoUser()}
+                    onClick={() => navigateListOfUsers()}
             >
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faList} />

@@ -11,6 +11,7 @@ import (
 	"github.com/aghex70/daps/internal/repositories/gorm/userconfig"
 	"github.com/aghex70/daps/pkg"
 	"github.com/aghex70/daps/server"
+	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"net/http"
 	"time"
@@ -213,7 +214,7 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 func (s UserService) List(ctx context.Context, r *http.Request) ([]domain.User, error) {
 	err := s.CheckAdmin(ctx, r)
 	if err != nil {
-		return err
+		return []domain.User{}, err
 	}
 
 	users, err := s.userRepository.List(ctx)
