@@ -50,7 +50,6 @@ const UsersList = () => {
             UserService.getUsers().then(
                 (response) => {
                     if (response.status === 200) {
-                        console.log("response.data.users -------------> ", response.data.users);
                         setUsers(response.data.users);
                     }
                 }

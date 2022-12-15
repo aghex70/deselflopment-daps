@@ -2,7 +2,6 @@ package pkg
 
 import "github.com/aghex70/daps/internal/core/domain"
 
-
 func GenerateDemoTodos(categoryId, anotherCategoryId int, language string) []domain.Todo {
 	if language == "en" {
 		return []domain.Todo{
@@ -140,5 +139,20 @@ func GenerateDemoTodos(categoryId, anotherCategoryId int, language string) []dom
 			Priority:    domain.Priority(5),
 			Recurring:   false,
 		},
+	}
+}
+
+func FilterUsers(users []domain.User) []domain.FilteredUser {
+	filteredUsers := make([]domain.FilteredUser, 0, len(users))
+	for _, user := range users {
+		filteredUsers = append(filteredUsers, FilterUser(user))
+	}
+	return filteredUsers
+}
+
+func FilterUser(user domain.User) domain.FilteredUser {
+	return domain.FilteredUser{
+		ID:    user.ID,
+		Email: user.Email,
 	}
 }

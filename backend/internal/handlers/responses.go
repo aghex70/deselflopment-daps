@@ -14,5 +14,5 @@ type ListCategoriesResponse struct {
 }
 
 type ListUsersResponse struct {
-	Users []domain.User `json:"users"`
+	Users []domain.FilteredUser `json:"users"`
 }

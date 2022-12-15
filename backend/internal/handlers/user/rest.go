@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
+	"github.com/aghex70/daps/pkg"
 	"log"
 	"net/http"
 	"os"
@@ -183,7 +184,8 @@ func (h UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(handlers.ListUsersResponse{Users: users})
+	filteredUsers := pkg.FilterUsers(users)
+	b, err := json.Marshal(handlers.ListUsersResponse{Users: filteredUsers})
 	w.Write(b)
 }
 

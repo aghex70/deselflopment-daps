@@ -11,3 +11,8 @@ type User struct {
 	Categories       []Category `json:"categories"`
 	IsAdmin          bool       `json:"is_admin"`
 }
+
+type FilteredUser struct {
+	ID    int    `json:"id"`
+	Email string `json:"email"`
+}
