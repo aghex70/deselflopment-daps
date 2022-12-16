@@ -1,7 +1,6 @@
 package root
 
 import (
-	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"github.com/aghex70/daps/internal/handlers/category"
@@ -21,7 +20,6 @@ func (h RootHandler) Root(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case strings.Contains(r.RequestURI, handlers.TODO_STRING):
 		th := todo.NewTodoHandler(h.todoService, h.logger)
-		fmt.Println("0000000000000000000000000000")
 		th.HandleTodo(w, r)
 	case strings.Contains(r.RequestURI, handlers.CATEGORY_STRING):
 		ch := category.NewCategoryHandler(h.categoryService, h.logger)

@@ -46,7 +46,7 @@ func (gr *UserGormRepository) Delete(ctx context.Context, id int) error {
 
 func (gr *UserGormRepository) Get(ctx context.Context, id int) (domain.User, error) {
 	var u relationship.User
-	result := gr.DB.Where(&relationship.User{ID: int(id)}).First(&u)
+	result := gr.DB.Where(&relationship.User{ID: id}).First(&u)
 	if result.Error != nil {
 		return domain.User{}, result.Error
 	}

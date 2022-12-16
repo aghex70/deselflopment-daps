@@ -95,3 +95,7 @@ type ProvisionDemoUserRequest struct {
 	Language string `json:"language"`
 	Password string `json:"password" validate:"required,min=13"`
 }
+
+type DeleteUserRequest struct {
+	UserId int64 `json:"user_id"`
+}

@@ -130,14 +130,6 @@ func (h UserHandler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) RemoveUser(w http.ResponseWriter, r *http.Request) {
-	environment := os.Getenv("ENVIRONMENT")
-	if environment == "local" {
-		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
-	} else {
-		w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-	}
-	//w.Header().Add("Access-Control-Allow-Credentials", "true")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 	err := handlers.CheckHttpMethod(http.MethodDelete, w, r)
 	if err != nil {
 		return

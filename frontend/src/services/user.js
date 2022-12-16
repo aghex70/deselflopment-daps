@@ -35,6 +35,10 @@ const login = async (email, password) => {
     });
 }
 
+const deleteUser = async (id) => {
+    return await axios.delete(`${USERS_URL}/${id}`, options);
+}
+
 const getUsers = async () => {
     return await axios.get(USERS_URL, options);
 }
@@ -83,6 +87,7 @@ const UserService = {
   provisionDemoUser,
   checkAdminAccess,
   getUsers,
+  deleteUser,
 
 }
 

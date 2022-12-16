@@ -137,13 +137,13 @@ func (s UserService) CheckAdmin(ctx context.Context, r *http.Request) error {
 	return nil
 }
 
-func (s UserService) Remove(ctx context.Context, r *http.Request) error {
-	userId, err := server.RetrieveJWTClaims(r, nil)
+func (s UserService) Remove(ctx context.Context, r *http.Request, req ports.DeleteUserRequest) error {
+	err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return err
 	}
 
-	err = s.userRepository.Delete(ctx, int(userId))
+	err = s.userRepository.Delete(ctx, int(req.UserId))
 	if err != nil {
 		return err
 	}
