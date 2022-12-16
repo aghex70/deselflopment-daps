@@ -12,6 +12,7 @@ import (
 const (
 	TODO_STRING               string = "todo/"
 	CATEGORY_STRING           string = "category/"
+	USER_STRING               string = "user/"
 	USER_CONFIGURATION_STRING string = "user-configuration/"
 )
 

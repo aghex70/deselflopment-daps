@@ -137,7 +137,7 @@ func (s UserService) CheckAdmin(ctx context.Context, r *http.Request) error {
 	return nil
 }
 
-func (s UserService) Remove(ctx context.Context, r *http.Request, req ports.DeleteUserRequest) error {
+func (s UserService) Delete(ctx context.Context, r *http.Request, req ports.DeleteUserRequest) error {
 	err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return err
@@ -149,6 +149,20 @@ func (s UserService) Remove(ctx context.Context, r *http.Request, req ports.Dele
 	}
 
 	return nil
+}
+
+func (s UserService) Get(ctx context.Context, r *http.Request, req ports.GetUserRequest) (domain.User, error) {
+	err := s.CheckAdmin(ctx, r)
+	if err != nil {
+		return domain.User{}, err
+	}
+
+	u, err := s.userRepository.Get(ctx, int(req.UserId))
+	if err != nil {
+		return domain.User{}, err
+	}
+
+	return u, nil
 }
 
 func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req ports.ProvisionDemoUserRequest) error {

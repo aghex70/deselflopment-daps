@@ -2,17 +2,39 @@ package user
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"github.com/aghex70/daps/pkg"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 )
 
 type UserHandler struct {
 	userService ports.UserServicer
 	logger      *log.Logger
+}
+
+func (h UserHandler) HandleUser(w http.ResponseWriter, r *http.Request) {
+	path := strings.Split(r.RequestURI, handlers.USER_STRING)[1]
+	userId, err := strconv.Atoi(path)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	switch r.Method {
+	case http.MethodGet:
+		h.GetUser(w, r, userId)
+	case http.MethodDelete:
+		h.DeleteUser(w, r, userId)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
 }
 
 func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -129,18 +151,41 @@ func (h UserHandler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h UserHandler) RemoveUser(w http.ResponseWriter, r *http.Request) {
-	err := handlers.CheckHttpMethod(http.MethodDelete, w, r)
+func (h UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.DeleteUserRequest{UserId: int64(id)}
+	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	err = h.userService.Remove(nil, r)
+	err = h.userService.Delete(nil, r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h UserHandler) GetUser(w http.ResponseWriter, r *http.Request, id int) {
+	payload := ports.GetUserRequest{UserId: int64(id)}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	user, err := h.userService.Get(nil, r, payload)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	b, err := json.Marshal(user)
+	w.Write(b)
 }
 
 func (h UserHandler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {

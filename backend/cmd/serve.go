@@ -64,7 +64,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			ucs := userConfigService.NewUserConfigService(ucr, &logger2)
 			uch := userConfigHandler.NewUserConfigHandler(ucs, &logger2)
 
-			rh := root.NewRootHandler(cs, tds, &logger2)
+			rh := root.NewRootHandler(cs, tds, us, &logger2)
 
 			s := server.NewRestServer(cfg.Server.Rest, ch, tdh, uh, rh, uch, &logger2)
 			err = s.StartServer()

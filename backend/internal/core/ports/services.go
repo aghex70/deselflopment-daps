@@ -33,7 +33,8 @@ type UserServicer interface {
 	Login(ctx context.Context, r LoginUserRequest) (string, int, error)
 	RefreshToken(ctx context.Context, r *http.Request) (string, error)
 	CheckAdmin(ctx context.Context, r *http.Request) error
-	Remove(ctx context.Context, r *http.Request, req DeleteUserRequest) error
+	Delete(ctx context.Context, r *http.Request, req DeleteUserRequest) error
+	Get(ctx context.Context, r *http.Request, req GetUserRequest) (domain.User, error)
 	ProvisionDemoUser(ctx context.Context, r *http.Request, req ProvisionDemoUserRequest) error
 	List(ctx context.Context, r *http.Request) ([]domain.User, error)
 }
