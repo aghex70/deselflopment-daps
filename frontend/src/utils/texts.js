@@ -10,7 +10,6 @@ const HeaderNameText = language === 'en' ? 'Name' : 'Nombre';
 const CompletedTodosIndicationText = language === 'en' ? 'You better complete some Todos first!!!' : '¡¡¡Debes completar alguna tarea antes!!!';
 const RecurringTodosIndicationText = language === 'en' ? 'You better create some recurring Todos first!!!' : '¡¡¡Debes crear alguna tarea recurrente antes!!!';
 const HeaderUserText = language === 'en' ? 'User' : 'Usuario';
-const HeaderLastLoginText = language === 'en' ? 'Last login' : 'Último acceso';
 
 // Icons
 const ShareIconText = language === 'en' ? 'Share' : 'Compartir';
@@ -83,6 +82,7 @@ const ViewTodoHeaderText = language === 'en' ? 'View Todo' : 'Ver tarea';
 const WelcomeToDapsText = language === 'en' ? 'Welcome to DAPS!' : '¡Bienvenid@ a DAPS!';
 const ProfileHeaderText = language === 'en' ? 'Profile' : 'Perfil';
 const UsersHeaderText = language === 'en' ? 'Users' : 'Usuarios';
+const ViewUserHeaderText = language === 'en' ? 'View user' : 'Ver usuario';
 
 
 // Forms
@@ -107,6 +107,7 @@ const LanguageLabelText = language === 'en' ? 'Language' : 'Idioma';
 const EnglishLanguageText = language === 'en' ? 'English' : 'Inglés';
 const SpanishLanguageText = language === 'en' ? 'Spanish' : 'Español';
 const AutoSuggestLabelText = language === 'en' ? 'Auto-suggest' : 'Auto-sugerencia';
+const RegistrationDateText = language === 'en' ? 'Registration date' : 'Fecha de registro';
 
 export {
     HighPriorityTasksText,
@@ -203,5 +204,6 @@ export {
     ListOfUsersIconText,
     UsersHeaderText,
     HeaderUserText,
-    HeaderLastLoginText,
+    ViewUserHeaderText,
+    RegistrationDateText,
 };

@@ -125,12 +125,13 @@ func CategoryFromDto(c domain.Category, userId int) Category {
 
 func (u User) ToDto() domain.User {
 	return domain.User{
-		ID:         u.ID,
-		Name:       u.Name,
-		Email:      u.Email,
-		Categories: CategoryDBDomain(u.Categories),
-		Password:   u.Password,
-		IsAdmin:    u.IsAdmin,
+		ID:               u.ID,
+		Name:             u.Name,
+		Email:            u.Email,
+		Categories:       CategoryDBDomain(u.Categories),
+		Password:         u.Password,
+		IsAdmin:          u.IsAdmin,
+		RegistrationDate: u.RegistrationDate,
 	}
 }
 

@@ -6,7 +6,7 @@ const REGISTER_URL = `${DAPS_BASE_URL}api/register`;
 const LOGIN_URL = `${DAPS_BASE_URL}api/login`;
 const REFRESH_TOKEN_URL = `${DAPS_BASE_URL}api/refresh-token`;
 const RECOVER_PASSWORD_URL = `${DAPS_BASE_URL}api/recover-password`;
-// const USER_URL = `${DAPS_BASE_URL}api/user`;
+const USER_URL = `${DAPS_BASE_URL}api/user`;
 const USERS_URL = `${DAPS_BASE_URL}api/users`;
 const ADMIN_URL = `${DAPS_BASE_URL}api/user/admin`;
 const PROVISION_DEMO_USER_URL = `${DAPS_BASE_URL}api/user/provision`;
@@ -36,7 +36,11 @@ const login = async (email, password) => {
 }
 
 const deleteUser = async (id) => {
-    return await axios.delete(`${USERS_URL}/${id}`, options);
+    return await axios.delete(`${USER_URL}/${id}`, options);
+}
+
+const getUser = async (id) => {
+    return await axios.get(`${USER_URL}/${id}`, options);
 }
 
 const getUsers = async () => {
@@ -87,6 +91,7 @@ const UserService = {
   provisionDemoUser,
   checkAdminAccess,
   getUsers,
+  getUser,
   deleteUser,
 
 }

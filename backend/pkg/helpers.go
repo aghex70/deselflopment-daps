@@ -232,7 +232,9 @@ func FilterUsers(users []domain.User) []domain.FilteredUser {
 
 func FilterUser(user domain.User) domain.FilteredUser {
 	return domain.FilteredUser{
-		ID:    user.ID,
-		Email: user.Email,
+		ID:               user.ID,
+		Email:            user.Email,
+		Name:             user.Name,
+		RegistrationDate: user.RegistrationDate,
 	}
 }

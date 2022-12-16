@@ -13,10 +13,29 @@ import {
 import UserService from "../services/user";
 import BootstrapTable from "react-bootstrap-table-next";
 import {faEye, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {useNavigate} from "react-router-dom";
 
 const UsersList = () => {
     checkAccess();
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
+
+    const navigateToUser = (id) => {
+        navigate("/user/" + id);
+    }
+
+    const deleteUser = (id) => {
+        UserService.deleteUser(id).then(
+            (response) => {
+                if (response.status === 204) {
+                    window.location.reload();
+                }
+            }
+        ).catch(
+            (error) => {
+                error = new Error("Deletion failed!");
+            })
+    }
 
     const columns = [
         {
@@ -74,7 +93,7 @@ const UsersList = () => {
                     <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
                             title={ViewIconText}
                             variant="outline-primary"
-                           // onClick={() => getCategory(row.id, "view")}
+                            onClick={() => navigateToUser(row.id)}
                     >
                         <FontAwesomeIcon icon={faEye} />
                     </Button>
@@ -82,7 +101,7 @@ const UsersList = () => {
                     <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                             title={DeleteIconText}
                             variant="outline-danger"
-                           // onClick={() => toggleConfirmDeleteCategoryModal(row.id)}
+                           onClick={() => deleteUser(row.id)}
                     >
                         <FontAwesomeIcon icon={faTrash} />
                     </Button>

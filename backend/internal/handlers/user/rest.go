@@ -184,7 +184,8 @@ func (h UserHandler) GetUser(w http.ResponseWriter, r *http.Request, id int) {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	b, err := json.Marshal(user)
+	filteredUser := pkg.FilterUser(user)
+	b, err := json.Marshal(filteredUser)
 	w.Write(b)
 }
 
