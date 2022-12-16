@@ -58,7 +58,7 @@ const ProvisionDemoUser = () => {
         UserService.provisionDemoUser(userEmail, hashedPassword, userLanguage).then(
             (response) => {
                 if (response.status === 201) {
-                    window.location.href = "/categories";
+                    window.location.href = "/users";
                 }
             }
         ).catch(
