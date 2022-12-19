@@ -24,7 +24,7 @@ import {
   DeletingCategoryText,
   EditIconText,
   HeaderActionsText,
-  HeaderCategoryText,
+  HeaderNameText,
   HeaderTasksText,
   HighPriorityTasksText,
   OnlyOwnerCanEditCategoryText,
@@ -90,7 +90,7 @@ const CategoriesList = () => {
     },
     {
       dataField: 'name',
-      text: HeaderCategoryText,
+      text: HeaderNameText,
       style:{'width' : '55%', cursor: "pointer", verticalAlign: "middle"},
       formatter: rowTextColor,
     },

@@ -3,6 +3,7 @@ import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstr
 import DapsHeader from "./Header";
 import checkAccess from "../utils/helpers";
 import {
+    CancelButtonText,
     DeleteButtonText,
     EmailAddressLabelText,
     NameLabelText,
