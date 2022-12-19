@@ -17,7 +17,7 @@ type TodoGormRepository struct {
 }
 
 type Todo struct {
-	ID           int        `gorm:"primaryKey;column:id"`
+	Id           int        `gorm:"primaryKey;column:id"`
 	Active       bool       `gorm:"column:active"`
 	EndDate      *time.Time `gorm:"column:end_date"`
 	CategoryId   int        `gorm:"column:category_id"`
@@ -56,7 +56,7 @@ func (gr *TodoGormRepository) Create(ctx context.Context, td domain.Todo) error 
 
 func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error {
 	ntd := fromDto(td)
-	result := gr.DB.Model(&ntd).Where(Todo{ID: ntd.ID}).Updates(map[string]interface{}{
+	result := gr.DB.Model(&ntd).Where(Todo{Id: ntd.Id}).Updates(map[string]interface{}{
 		"category_id": ntd.CategoryId,
 		"description": ntd.Description,
 		"link":        ntd.Link,
@@ -76,7 +76,7 @@ func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error 
 }
 
 func (gr *TodoGormRepository) Complete(ctx context.Context, id int) error {
-	result := gr.DB.Model(&Todo{ID: id}).Update("completed", true).Update("end_date", time.Now())
+	result := gr.DB.Model(&Todo{Id: id}).Update("completed", true).Update("end_date", time.Now())
 
 	if result.RowsAffected == 0 {
 		return gorm.ErrRecordNotFound
@@ -89,7 +89,7 @@ func (gr *TodoGormRepository) Complete(ctx context.Context, id int) error {
 }
 
 func (gr *TodoGormRepository) Activate(ctx context.Context, id int) error {
-	result := gr.DB.Model(&Todo{ID: id}).Update("completed", false).Update("end_date", nil)
+	result := gr.DB.Model(&Todo{Id: id}).Update("completed", false).Update("end_date", nil)
 
 	if result.RowsAffected == 0 {
 		return gorm.ErrRecordNotFound
@@ -102,7 +102,7 @@ func (gr *TodoGormRepository) Activate(ctx context.Context, id int) error {
 }
 
 func (gr *TodoGormRepository) Start(ctx context.Context, id int) error {
-	result := gr.DB.Model(&Todo{ID: id}).Update("active", true).Update("start_date", time.Now())
+	result := gr.DB.Model(&Todo{Id: id}).Update("active", true).Update("start_date", time.Now())
 
 	if result.RowsAffected == 0 {
 		return gorm.ErrRecordNotFound
@@ -171,7 +171,7 @@ func (gr *TodoGormRepository) ListCompleted(ctx context.Context, categoryIds []i
 }
 
 func (gr *TodoGormRepository) Delete(ctx context.Context, id int) error {
-	td := Todo{ID: id}
+	td := Todo{Id: id}
 	result := gr.DB.Delete(&td)
 	if result.Error != nil {
 		return result.Error
@@ -218,7 +218,7 @@ func (td Todo) ToDto() domain.Todo {
 		Completed:    td.Completed,
 		CreationDate: td.CreationDate,
 		Description:  td.Description,
-		ID:           td.ID,
+		Id:           td.Id,
 		Link:         td.Link,
 		Name:         td.Name,
 		Priority:     domain.Priority(td.Priority),
@@ -235,7 +235,7 @@ func fromDto(td domain.Todo) Todo {
 		Completed:    td.Completed,
 		CreationDate: td.CreationDate,
 		Description:  td.Description,
-		ID:           td.ID,
+		Id:           td.Id,
 		Link:         td.Link,
 		Name:         td.Name,
 		Priority:     int(td.Priority),
@@ -254,7 +254,7 @@ func (ti TodoInfo) ToDto() domain.TodoInfo {
 			Completed:    ti.Completed,
 			CreationDate: ti.CreationDate,
 			Description:  ti.Description,
-			ID:           ti.ID,
+			Id:           ti.Id,
 			Link:         ti.Link,
 			Name:         ti.Name,
 			Priority:     domain.Priority(ti.Priority),

@@ -1,8 +1,8 @@
 package domain
 
 type Category struct {
-	ID                int    `json:"id"`
-	OwnerID           int    `json:"owner_id"`
+	Id                int    `json:"id"`
+	OwnerId           int    `json:"owner_id"`
 	Name              string `json:"name"`
 	Shared            *bool  `json:"shared"`
 	Custom            bool   `json:"custom"`

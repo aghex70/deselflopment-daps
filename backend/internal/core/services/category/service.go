@@ -27,9 +27,9 @@ func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.
 	if err != nil {
 		return err
 	}
-	u := domain.User{ID: int(userId)}
+	u := domain.User{Id: int(userId)}
 	cat := domain.Category{
-		OwnerID:           int(userId),
+		OwnerId:           int(userId),
 		Description:       req.Description,
 		Custom:            true,
 		Name:              req.Name,
@@ -43,7 +43,7 @@ func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.
 
 	fmt.Println(c)
 	//nntd := domain.Todo{
-	//	Category:    c.ID,
+	//	Category:    c.Id,
 	//	Description: "This is a default todo",
 	//	Name:        "Default todo",
 	//	Link:        "Default URL",
@@ -71,7 +71,7 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 			return err
 		}
 		cat := domain.Category{
-			ID:                int(req.CategoryId),
+			Id:                int(req.CategoryId),
 			Description:       req.Description,
 			Name:              req.Name,
 			InternationalName: req.InternationalName,
@@ -86,7 +86,7 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 			return err
 		}
 		cat := domain.Category{
-			ID:     int(req.CategoryId),
+			Id:     int(req.CategoryId),
 			Shared: req.Shared,
 		}
 		err = s.categoryRepository.Share(ctx, cat, req.Email)
@@ -100,7 +100,7 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 			return err
 		}
 		cat := domain.Category{
-			ID:     int(req.CategoryId),
+			Id:     int(req.CategoryId),
 			Shared: req.Shared,
 		}
 		err = s.categoryRepository.Unshare(ctx, cat, int(userId))

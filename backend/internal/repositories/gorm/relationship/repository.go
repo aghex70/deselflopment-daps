@@ -18,7 +18,7 @@ type RelationshipGormRepository struct {
 }
 
 type User struct {
-	ID               int        `gorm:"primaryKey;column:id"`
+	Id               int        `gorm:"primaryKey;column:id"`
 	Name             string     `gorm:"column:name"`
 	Email            string     `gorm:"column:email"`
 	IsAdmin          bool       `gorm:"column:is_admin"`
@@ -28,8 +28,8 @@ type User struct {
 }
 
 type Category struct {
-	ID                int    `gorm:"primaryKey;column:id"`
-	OwnerID           int    `gorm:"column:owner_id"`
+	Id                int    `gorm:"primaryKey;column:id"`
+	OwnerId           int    `gorm:"column:owner_id"`
 	Shared            bool   `gorm:"column:shared"`
 	Custom            bool   `gorm:"column:custom"`
 	Description       string `gorm:"column:description"`
@@ -39,8 +39,8 @@ type Category struct {
 }
 
 type UserCategory struct {
-	UserID     int `gorm:"column:user_id"`
-	CategoryID int `gorm:"column:category_id"`
+	UserId     int `gorm:"column:user_id"`
+	CategoryId int `gorm:"column:category_id"`
 }
 
 type Tabler interface {
@@ -79,7 +79,7 @@ func (gr *RelationshipGormRepository) GetUserCategory(ctx context.Context, userI
 
 func (gr *RelationshipGormRepository) ListUserCategories(ctx context.Context, userId int) ([]int, error) {
 	var uc []UserCategory
-	result := gr.DB.Where(&UserCategory{UserID: userId}).Find(&uc)
+	result := gr.DB.Where(&UserCategory{UserId: userId}).Find(&uc)
 
 	if result.RowsAffected == 0 {
 		return []int{}, errors.New("user not linked to category")
@@ -101,8 +101,8 @@ func NewRelationshipGormRepository(db *gorm.DB) (*RelationshipGormRepository, er
 
 func (c Category) ToDto() domain.Category {
 	return domain.Category{
-		ID:                c.ID,
-		OwnerID:           c.OwnerID,
+		Id:                c.Id,
+		OwnerId:           c.OwnerId,
 		Description:       c.Description,
 		Shared:            &c.Shared,
 		Custom:            c.Custom,
@@ -113,19 +113,19 @@ func (c Category) ToDto() domain.Category {
 
 func CategoryFromDto(c domain.Category, userId int) Category {
 	return Category{
-		ID:                c.ID,
-		OwnerID:           c.OwnerID,
+		Id:                c.Id,
+		OwnerId:           c.OwnerId,
 		Custom:            c.Custom,
 		Description:       c.Description,
 		Name:              c.Name,
 		InternationalName: c.InternationalName,
-		Users:             []User{{ID: userId}},
+		Users:             []User{{Id: userId}},
 	}
 }
 
 func (u User) ToDto() domain.User {
 	return domain.User{
-		ID:               u.ID,
+		Id:               u.Id,
 		Name:             u.Name,
 		Email:            u.Email,
 		Categories:       CategoryDBDomain(u.Categories),
@@ -166,7 +166,7 @@ func CategoryDBDomain(categories []Category) []domain.Category {
 func UserCategoryToList(userCategories []UserCategory) []int {
 	var c []int
 	for _, uc := range userCategories {
-		c = append(c, uc.CategoryID)
+		c = append(c, uc.CategoryId)
 	}
 	return c
 }

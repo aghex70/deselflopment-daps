@@ -59,7 +59,7 @@ func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.Upda
 
 	fmt.Println("342345345345345")
 	ntd := domain.Todo{
-		ID:          int(req.TodoId),
+		Id:          int(req.TodoId),
 		Category:    req.Category,
 		Description: req.Description,
 		Link:        req.Link,

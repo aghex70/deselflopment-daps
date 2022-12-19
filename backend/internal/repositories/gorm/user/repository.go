@@ -64,7 +64,7 @@ func (gr *UserGormRepository) Delete(ctx context.Context, adminId, id int) error
 		return result.Error
 	}
 
-	u := relationship.User{ID: id}
+	u := relationship.User{Id: id}
 	result = gr.DB.Select(clause.Associations).Delete(&u)
 	if result.Error != nil {
 		return result.Error
@@ -74,7 +74,7 @@ func (gr *UserGormRepository) Delete(ctx context.Context, adminId, id int) error
 
 func (gr *UserGormRepository) Get(ctx context.Context, id int) (domain.User, error) {
 	var u relationship.User
-	result := gr.DB.Where(&relationship.User{ID: id}).First(&u)
+	result := gr.DB.Where(&relationship.User{Id: id}).First(&u)
 	if result.Error != nil {
 		return domain.User{}, result.Error
 	}

@@ -17,7 +17,7 @@ type UserConfigGormRepository struct {
 }
 
 type UserConfig struct {
-	ID          int    `gorm:"primaryKey;column:id"`
+	Id          int    `gorm:"primaryKey;column:id"`
 	UserId      int    `gorm:"column:user_id"`
 	AutoSuggest bool   `gorm:"column:auto_suggest"`
 	Language    string `gorm:"column:language"`
@@ -83,7 +83,7 @@ func NewUserConfigGormRepository(db *gorm.DB) (*UserConfigGormRepository, error)
 
 func (uc UserConfig) ToDto() domain.UserConfig {
 	return domain.UserConfig{
-		ID:          uc.ID,
+		Id:          uc.Id,
 		AutoSuggest: uc.AutoSuggest,
 		Language:    uc.Language,
 		UserId:      uc.UserId,
@@ -92,7 +92,7 @@ func (uc UserConfig) ToDto() domain.UserConfig {
 
 func fromDto(uc domain.UserConfig) UserConfig {
 	return UserConfig{
-		ID:          uc.ID,
+		Id:          uc.Id,
 		AutoSuggest: uc.AutoSuggest,
 		Language:    uc.Language,
 		UserId:      uc.UserId,
@@ -103,7 +103,7 @@ func (p Profile) ToDto() domain.Profile {
 	return domain.Profile{
 		Email: p.Email,
 		UserConfig: domain.UserConfig{
-			ID:          p.ID,
+			Id:          p.Id,
 			AutoSuggest: p.AutoSuggest,
 			Language:    p.Language,
 			UserId:      p.UserId,

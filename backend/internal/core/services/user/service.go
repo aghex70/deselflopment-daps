@@ -26,7 +26,7 @@ type UserService struct {
 }
 
 type MyCustomClaims struct {
-	UserID int `json:"user_id"`
+	UserId int `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
@@ -51,7 +51,7 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 	}
 
 	nuc := domain.UserConfig{
-		UserId:      nu.ID,
+		UserId:      nu.Id,
 		AutoSuggest: false,
 		Language:    "en",
 	}
@@ -81,7 +81,7 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 	}
 
 	claims := MyCustomClaims{
-		UserID: u.ID,
+		UserId: u.Id,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   r.Email,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),
@@ -95,7 +95,7 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 		return "", 0, err
 	}
 
-	return ss, u.ID, nil
+	return ss, u.Id, nil
 }
 
 func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string, error) {
@@ -106,7 +106,7 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 	}
 
 	newClaims := MyCustomClaims{
-		UserID: u.ID,
+		UserId: u.Id,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   u.Email,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),
@@ -184,7 +184,7 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 	}
 
 	nuc := domain.UserConfig{
-		UserId:      nu.ID,
+		UserId:      nu.Id,
 		AutoSuggest: false,
 		Language:    "en",
 	}
@@ -195,36 +195,36 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 	}
 
 	demoCategory := domain.Category{
-		OwnerID:     nu.ID,
+		OwnerId:     nu.Id,
 		Description: "Home tasks",
 		Custom:      true,
 		Name:        "Home",
 		Users:       []domain.User{u},
 	}
 
-	c, err := s.categoryRepository.Create(ctx, demoCategory, nu.ID)
+	c, err := s.categoryRepository.Create(ctx, demoCategory, nu.Id)
 
 	anotherDemoCategory := domain.Category{
-		OwnerID:     nu.ID,
+		OwnerId:     nu.Id,
 		Description: "Work stuff",
 		Custom:      true,
 		Name:        "Work",
 		Users:       []domain.User{u},
 	}
 
-	ac, err := s.categoryRepository.Create(ctx, anotherDemoCategory, nu.ID)
+	ac, err := s.categoryRepository.Create(ctx, anotherDemoCategory, nu.Id)
 
 	yetAnotherDemoCategory := domain.Category{
-		OwnerID:     nu.ID,
+		OwnerId:     nu.Id,
 		Description: "Purchase list",
 		Custom:      true,
 		Name:        "Purchases",
 		Users:       []domain.User{u},
 	}
 
-	yac, err := s.categoryRepository.Create(ctx, yetAnotherDemoCategory, nu.ID)
+	yac, err := s.categoryRepository.Create(ctx, yetAnotherDemoCategory, nu.Id)
 
-	todos := pkg.GenerateDemoTodos(c.ID, ac.ID, yac.ID, req.Language)
+	todos := pkg.GenerateDemoTodos(c.Id, ac.Id, yac.Id, req.Language)
 
 	for _, t := range todos {
 		err = s.todoRepository.Create(ctx, t)

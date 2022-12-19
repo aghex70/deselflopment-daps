@@ -3,7 +3,7 @@ package domain
 import "time"
 
 type User struct {
-	ID               int        `json:"id"`
+	Id               int        `json:"id"`
 	Email            string     `json:"email"`
 	Name             string     `json:"name"`
 	Password         string     `json:"password"`
@@ -13,7 +13,7 @@ type User struct {
 }
 
 type FilteredUser struct {
-	ID               int       `json:"id"`
+	Id               int       `json:"id"`
 	Email            string    `json:"email"`
 	Name             string    `json:"name"`
 	RegistrationDate time.Time `json:"registration_date"`

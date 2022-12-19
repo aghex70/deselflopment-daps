@@ -1,7 +1,7 @@
 package domain
 
 type UserConfig struct {
-	ID          int    `json:"id"`
+	Id          int    `json:"id"`
 	UserId      int    `json:"user_id"`
 	AutoSuggest bool   `json:"auto_suggest"`
 	Language    string `json:"language"`

@@ -17,7 +17,7 @@ type CategoryGormRepository struct {
 }
 
 type Category struct {
-	ID                int    `gorm:"primaryKey;column:id"`
+	Id                int    `gorm:"primaryKey;column:id"`
 	CategoryId        int    `gorm:"column:category_id"`
 	UserId            int    `gorm:"column:user_id"`
 	Shared            bool   `gorm:"column:shared"`
@@ -66,7 +66,7 @@ func (gr *CategoryGormRepository) GetById(ctx context.Context, id int, userId in
 
 func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category, userId int) error {
 	var nc Category
-	query := fmt.Sprintf("SELECT * FROM daps_categories INNER JOIN daps_categories_users_relationships ON daps_categories.id = daps_categories_users_relationships.category_id WHERE daps_categories_users_relationships.user_id = %d AND daps_categories_users_relationships.category_id = %d", userId, c.ID)
+	query := fmt.Sprintf("SELECT * FROM daps_categories INNER JOIN daps_categories_users_relationships ON daps_categories.id = daps_categories_users_relationships.category_id WHERE daps_categories_users_relationships.user_id = %d AND daps_categories_users_relationships.category_id = %d", userId, c.Id)
 
 	result := gr.DB.Raw(query).Scan(&nc)
 	if result.RowsAffected == 0 {
@@ -77,7 +77,7 @@ func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category,
 		return result.Error
 	}
 
-	result = gr.DB.Model(&nc).Where(Category{ID: c.ID}).Updates(map[string]interface{}{
+	result = gr.DB.Model(&nc).Where(Category{Id: c.Id}).Updates(map[string]interface{}{
 		"name":               c.Name,
 		"international_name": c.InternationalName,
 		"description":        c.Description,
@@ -154,7 +154,7 @@ func NewCategoryGormRepository(db *gorm.DB) (*CategoryGormRepository, error) {
 
 func (c Category) ToDto() domain.Category {
 	return domain.Category{
-		ID:                c.ID,
+		Id:                c.Id,
 		Description:       c.Description,
 		Shared:            &c.Shared,
 		Custom:            c.Custom,
@@ -165,7 +165,7 @@ func (c Category) ToDto() domain.Category {
 
 func fromDto(c domain.Category) Category {
 	return Category{
-		ID:                c.ID,
+		Id:                c.Id,
 		Shared:            *c.Shared,
 		Custom:            c.Custom,
 		Description:       c.Description,

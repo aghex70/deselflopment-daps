@@ -39,7 +39,7 @@ func (gr *CategoryGormRepository) GetByIds(ctx context.Context, ids []int) ([]do
 
 func (gr *CategoryGormRepository) UserCategoryExists(ctx context.Context, conditions string) (int, error) {
 	type queryResult struct {
-		ID int `json:"id"`
+		Id int `json:"id"`
 	}
 	fmt.Println("\n conditions -----> ", conditions)
 	var r queryResult
@@ -47,14 +47,14 @@ func (gr *CategoryGormRepository) UserCategoryExists(ctx context.Context, condit
 
 	if result.RowsAffected == 0 {
 		fmt.Println("66666666666666666666")
-		return r.ID, nil
+		return r.Id, nil
 	}
 
 	if result.Error != nil {
 		fmt.Println("8888888888888888888")
-		return r.ID, result.Error
+		return r.Id, result.Error
 	}
-	return r.ID, nil
+	return r.Id, nil
 }
 
 func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category, userId int) (domain.Category, error) {
@@ -68,7 +68,7 @@ func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category,
 
 func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category) error {
 	var nc relationship.Category
-	result := gr.DB.Model(&nc).Where(relationship.Category{ID: c.ID}).Updates(map[string]interface{}{
+	result := gr.DB.Model(&nc).Where(relationship.Category{Id: c.Id}).Updates(map[string]interface{}{
 		"name":               c.Name,
 		"international_name": c.InternationalName,
 		"description":        c.Description,
@@ -97,7 +97,7 @@ func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category, 
 		return result.Error
 	}
 
-	query = fmt.Sprintf("INSERT INTO daps_category_users (category_id, user_id) VALUES (%d, %d)", c.ID, qr.Id)
+	query = fmt.Sprintf("INSERT INTO daps_category_users (category_id, user_id) VALUES (%d, %d)", c.Id, qr.Id)
 	result = gr.DB.Raw(query).Scan(&nc)
 	if result.Error != nil {
 		// 1062 - duplicate entry
@@ -108,7 +108,7 @@ func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category, 
 		return result.Error
 	}
 
-	result = gr.DB.Model(&nc).Where(relationship.Category{ID: c.ID}).Update("shared", c.Shared)
+	result = gr.DB.Model(&nc).Where(relationship.Category{Id: c.Id}).Update("shared", c.Shared)
 
 	if result.Error != nil {
 		return result.Error
@@ -119,7 +119,7 @@ func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category, 
 
 func (gr *CategoryGormRepository) Unshare(ctx context.Context, c domain.Category, userId int) error {
 	var cat relationship.Category
-	result := gr.DB.Raw("DELETE FROM daps_category_users WHERE category_id = ? AND user_id = ?", c.ID, userId).Scan(&cat)
+	result := gr.DB.Raw("DELETE FROM daps_category_users WHERE category_id = ? AND user_id = ?", c.Id, userId).Scan(&cat)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -128,7 +128,7 @@ func (gr *CategoryGormRepository) Unshare(ctx context.Context, c domain.Category
 
 func (gr *CategoryGormRepository) GetById(ctx context.Context, id int) (domain.Category, error) {
 	var c relationship.Category
-	result := gr.DB.Where(&relationship.Category{ID: id}).First(&c)
+	result := gr.DB.Where(&relationship.Category{Id: id}).First(&c)
 	if result.RowsAffected == 0 {
 		return domain.Category{}, gorm.ErrRecordNotFound
 	}
