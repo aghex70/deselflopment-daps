@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
@@ -31,12 +32,39 @@ func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) (domain
 	return nu.ToDto(), nil
 }
 
-func (gr *UserGormRepository) Delete(ctx context.Context, id int) error {
-	u := relationship.User{ID: id}
-	result := gr.DB.Where("owner_id = ?", id).Delete(&relationship.Category{})
+func (gr *UserGormRepository) Delete(ctx context.Context, adminId, id int) error {
+	if adminId == id {
+		return errors.New("admin user cannot be deleted")
+	}
+	type empty struct{}
+	var Empty empty
+	result := gr.DB.Raw("DELETE FROM daps_user_configs WHERE user_id = ?", id).Scan(&Empty)
 	if result.Error != nil {
 		return result.Error
 	}
+
+	var categoriesList []int
+	result = gr.DB.Raw("SELECT id FROM daps_categories WHERE owner_id = ?", id).Scan(&categoriesList)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	result = gr.DB.Raw("DELETE FROM daps_todos WHERE category_id IN ?", categoriesList).Scan(&Empty)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	result = gr.DB.Raw("DELETE FROM daps_category_users WHERE user_id = ?", id).Scan(&Empty)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	result = gr.DB.Raw("DELETE FROM daps_categories WHERE owner_id = ?", id).Scan(&Empty)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	u := relationship.User{ID: id}
 	result = gr.DB.Select(clause.Associations).Delete(&u)
 	if result.Error != nil {
 		return result.Error

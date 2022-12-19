@@ -123,27 +123,27 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 	return ss, nil
 }
 
-func (s UserService) CheckAdmin(ctx context.Context, r *http.Request) error {
+func (s UserService) CheckAdmin(ctx context.Context, r *http.Request) (int, error) {
 	userId, err := server.RetrieveJWTClaims(r, nil)
 	u, err := s.userRepository.Get(ctx, int(userId))
 	if err != nil {
-		return errors.New("invalid token")
+		return 0, errors.New("invalid token")
 	}
 
 	if !u.IsAdmin {
-		return errors.New("unauthorized")
+		return 0, errors.New("unauthorized")
 	}
 
-	return nil
+	return int(userId), nil
 }
 
 func (s UserService) Delete(ctx context.Context, r *http.Request, req ports.DeleteUserRequest) error {
-	err := s.CheckAdmin(ctx, r)
+	adminId, err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return err
 	}
 
-	err = s.userRepository.Delete(ctx, int(req.UserId))
+	err = s.userRepository.Delete(ctx, adminId, int(req.UserId))
 	if err != nil {
 		return err
 	}
@@ -152,7 +152,7 @@ func (s UserService) Delete(ctx context.Context, r *http.Request, req ports.Dele
 }
 
 func (s UserService) Get(ctx context.Context, r *http.Request, req ports.GetUserRequest) (domain.User, error) {
-	err := s.CheckAdmin(ctx, r)
+	_, err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return domain.User{}, err
 	}
@@ -166,7 +166,7 @@ func (s UserService) Get(ctx context.Context, r *http.Request, req ports.GetUser
 }
 
 func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req ports.ProvisionDemoUserRequest) error {
-	err := s.CheckAdmin(ctx, r)
+	_, err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return err
 	}
@@ -237,7 +237,7 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 }
 
 func (s UserService) List(ctx context.Context, r *http.Request) ([]domain.User, error) {
-	err := s.CheckAdmin(ctx, r)
+	_, err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return []domain.User{}, err
 	}

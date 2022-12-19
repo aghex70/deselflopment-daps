@@ -142,7 +142,7 @@ func (h UserHandler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.userService.CheckAdmin(nil, r)
+	_, err = h.userService.CheckAdmin(nil, r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
