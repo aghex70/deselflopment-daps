@@ -13,7 +13,6 @@ import {
   PasswordLabelText,
   PasswordNotLongEnoughText,
   RegisterButtonText,
-  ReturnButtonText,
   UserNotFoundText
 } from "../utils/texts";
 
@@ -150,7 +149,7 @@ const Login = () => {
                 variant="danger"
                 onClick={(e) => toggleModalEmailNotFilled(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -163,7 +162,7 @@ const Login = () => {
                 variant="danger"
                 onClick={(e) => toggleModalPasswordNotLongEnough(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -176,7 +175,7 @@ const Login = () => {
                 variant="danger"
                 onClick={(e) => toggleModalIncorrectPassword(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -189,7 +188,7 @@ const Login = () => {
                 variant="danger"
                 onClick={(e) => toggleModalInvalidEmail(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

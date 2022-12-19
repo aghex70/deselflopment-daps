@@ -7,8 +7,8 @@ const HeaderTasksText = language === 'en' ? 'Tasks' : 'Tareas';
 const HeaderCategoryText = language === 'en' ? 'Category' : 'Categoría';
 const HeaderActionsText = language === 'en' ? 'Actions' : 'Acciones';
 const HeaderNameText = language === 'en' ? 'Name' : 'Nombre';
-const CompletedTodosIndicationText = language === 'en' ? 'You better complete some Todos first!!!' : '¡¡¡Debes completar alguna tarea antes!!!';
-const RecurringTodosIndicationText = language === 'en' ? 'You better create some recurring Todos first!!!' : '¡¡¡Debes crear alguna tarea recurrente antes!!!';
+const CompletedTodosIndicationText = language === 'en' ? 'You better complete some Todos first!' : '¡Debes completar alguna tarea antes!';
+const RecurringTodosIndicationText = language === 'en' ? 'You better create some recurring Todos first!' : '¡Debes crear alguna tarea recurrente antes!';
 const HeaderUserText = language === 'en' ? 'User' : 'Usuario';
 
 // Icons
@@ -21,7 +21,6 @@ const ReactivateIconText = language === 'en' ? 'Reactivate' : 'Reactivar';
 const RecurringTodosIconText = language === 'en' ? 'Recurring Todos' : 'Tareas recurrentes';
 const StatisticsIconText = language === 'en' ? 'Statistics (coming soon)' : 'Estadísticas (próximamente)';
 const ReportABugIconText = language === 'en' ? 'Report a bug' : 'Reportar un error';
-const ConfigurationIconText = language === 'en' ? 'Configuration (coming soon)' : 'Configuración (próximamente)';
 const LogoutIconText = language === 'en' ? 'Logout' : 'Cerrar sesión';
 const StartIconText = language === 'en' ? 'Start' : 'Iniciar';
 const CompleteIconText = language === 'en' ? 'Complete' : 'Completar';
@@ -29,15 +28,15 @@ const CreateIconText = language === 'en' ? 'Create a new Todo' : 'Crear una nuev
 const CreateCategoryIconText = language === 'en' ? 'Create a new Category' : 'Crear una nueva categoría';
 const CategoriesIconText = language === 'en' ? 'Categories' : 'Categorías';
 const CompletedTodosIconText = language === 'en' ? 'Completed Todos' : 'Tareas completadas';
-const ProfileIconText = language === 'en' ? 'Profile' : 'Perfil';
+const ProfileIconText = language === 'en' ? 'Configuration' : 'Configuración';
 const ProvisionDemoUserIconText = language === 'en' ? 'Provision demo user' : 'Provisionar usuario demo';
 const ListOfUsersIconText = language === 'en' ? 'List of users' : 'Lista de usuarios';
 
 // Modals
 const UserAlreadySubscribedText = language === 'en' ? 'User already subscribed to that category!' : '¡No se puede suscribir a una categoría ya suscrita!';
-const OnlyOwnersCanDeleteCategoryText = language === 'en' ? 'Only owners can delete a shared category. If you want the category to disappear, unsubscribe from it!' : '¡Solo los propietarios pueden eliminar una categoría compartida. Si quieres que desaparezca, date de baja de la misma';
+const OnlyOwnersCanDeleteCategoryText = language === 'en' ? 'Only owners can delete a shared category. If you want the category to disappear, unsubscribe from it!' : '¡Solo l@s propietari@s pueden eliminar una categoría compartida. Si quieres que desaparezca, date de baja de la misma';
 const OnlyOwnerCanEditCategoryText = language === 'en' ? 'Only owners can edit a shared category!' : '¡Solo los propietarios pueden editar una categoría compartida!';
-const ConfirmUnshareCategoryText = language === 'en' ? 'Are you sure you want to unsubscribe from this category?' : '¿Estás seguro de que quieres darte de baja de esta categoría?';
+const ConfirmUnshareCategoryText = language === 'en' ? 'Are you sure you want to unsubscribe from this category?' : '¿Estás segur@ de que quieres darte de baja de esta categoría?';
 const CategoryAlreadyExistsText = language === 'en' ? 'Category already exists! Please try with a different name' : '¡La categoría ya existe! Por favor, inténtelo con un nombre diferente';
 const UserNotFoundText = language === 'en' ? 'User not found! Please try with a different username or register first' : '¡Usuario no encontrado! Por favor, inténtelo con un nombre de usuario diferente o regístrese primero';
 const EnterEmailText = language === 'en' ? 'Please enter your email' : 'Por favor, introduzca su correo electrónico';
@@ -124,7 +123,6 @@ export {
     RecurringTodosIconText,
     StatisticsIconText,
     ReportABugIconText,
-    ConfigurationIconText,
     LogoutIconText,
     StartIconText,
     CompleteIconText,

@@ -7,7 +7,6 @@ import {
     EmailAddressLabelText,
     NameLabelText,
     RegistrationDateText,
-    ReturnButtonText,
     ViewUserHeaderText,
 } from "../utils/texts";
 import UserService from "../services/user";
@@ -88,7 +87,7 @@ const User = () => {
                             variant="success"
                             onClick={() => navigateUsers()}
                             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                        >{ReturnButtonText}</Button>
+                        >{CancelButtonText}</Button>
                         <Button
                             variant="danger"
                             onClick={() => navigateUsers()}

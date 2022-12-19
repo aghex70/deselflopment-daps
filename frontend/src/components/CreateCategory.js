@@ -11,7 +11,6 @@ import {
   DescriptionLabelText,
   NameLabelText,
   PleaseEnterCategoryNameText,
-  ReturnButtonText
 } from "../utils/texts";
 
 const CreateCategory = () => {
@@ -113,7 +112,7 @@ const CreateCategory = () => {
                 variant="danger"
                 onClick={(e) => toggleModalCategoryAlreadyExists(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -126,7 +125,7 @@ const CreateCategory = () => {
                 variant="danger"
                 onClick={(e) => toggleEnterCategoryModal(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

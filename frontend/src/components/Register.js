@@ -14,7 +14,6 @@ import {
   RegisterButtonText,
   RegisterHeaderText,
   RepeatPasswordLabelText,
-  ReturnButtonText,
   UserAlreadyRegisteredText
 } from "../utils/texts";
 
@@ -142,7 +141,7 @@ const Register = ()  =>{
                 variant="danger"
                 onClick={(e) => toggleModalPasswordsDoNotMatch(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -174,7 +173,7 @@ const Register = ()  =>{
                 variant="danger"
                 onClick={(e) => toggleModalPasswordNotLongEnough(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -187,7 +186,7 @@ const Register = ()  =>{
                 variant="danger"
                 onClick={(e) => toggleModalInvalidEmail(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

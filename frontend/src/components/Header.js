@@ -7,14 +7,16 @@ import {
   faCheck,
   faEnvelope,
   faUserPlus,
-  faCog, faList,
+  faCog,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
 import checkAccess from "../utils/helpers";
 import {
   CategoriesIconText,
-  CompletedTodosIconText, ListOfUsersIconText,
+  CompletedTodosIconText,
+  ListOfUsersIconText,
   LogoutIconText,
   ProfileIconText,
   ProvisionDemoUserIconText,

@@ -11,7 +11,6 @@ import {
     LanguageLabelText,
     PleaseEnterAnEmailText,
     ProvisionDemoUserIconText,
-    ReturnButtonText,
     SpanishLanguageText,
 } from "../utils/texts";
 import UserService from "../services/user";
@@ -120,7 +119,7 @@ const ProvisionDemoUser = () => {
                             variant="danger"
                             onClick={(e) => toggleModalDemoUserAlreadyCreated(e)}
                             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                        >{ReturnButtonText}</Button>
+                        >{CancelButtonText}</Button>
                     </ButtonGroup>
                 </ModalBody>
             </Modal>
@@ -133,7 +132,7 @@ const ProvisionDemoUser = () => {
                             variant="danger"
                             onClick={(e) => toggleModalEmptyEmail(e)}
                             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                        >{ReturnButtonText}</Button>
+                        >{CancelButtonText}</Button>
                     </ButtonGroup>
                 </ModalBody>
             </Modal>

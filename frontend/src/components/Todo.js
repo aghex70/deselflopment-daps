@@ -20,7 +20,6 @@ import {
     NoRecurringText,
     PriorityLabelText,
     RecurringLabelText,
-    ReturnButtonText,
     ViewTodoHeaderText,
     YesRecurringText
 } from "../utils/texts";
@@ -173,10 +172,10 @@ const Todo = () => {
             ) : (
               <ButtonGroup style={{width: "40%", marginLeft: "30%"}}>
               <Button
-                variant="success"
+                variant="danger"
                 onClick={() => navigateTodos()}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-              >{ReturnButtonText}</Button>
+              >{CancelButtonText}</Button>
             </ButtonGroup>
             )
           }

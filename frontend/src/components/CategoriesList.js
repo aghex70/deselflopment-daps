@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
-  faPencil, faPlus,
+  faPencil,
+  faPlus,
   faShareNodes,
   faTrash,
   faEye
@@ -28,7 +29,6 @@ import {
   HighPriorityTasksText,
   OnlyOwnerCanEditCategoryText,
   OnlyOwnersCanDeleteCategoryText,
-  ReturnButtonText,
   ShareButtonText,
   ShareCategoryHeaderText,
   ShareIconText,
@@ -326,7 +326,7 @@ const CategoriesList = () => {
               variant="danger"
               onClick={(e) => toggleUserAlreadySubscribedModal(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -339,7 +339,7 @@ const CategoriesList = () => {
               variant="danger"
               onClick={(e) => toggleCannotDeleteCategoryModal(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -352,7 +352,7 @@ const CategoriesList = () => {
               variant="danger"
               onClick={(e) => toggleCannotEditCategoryModal(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

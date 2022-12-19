@@ -21,7 +21,6 @@ import {
     PleaseEnterTodoNameText,
     PriorityLabelText,
     RecurringLabelText,
-    ReturnButtonText,
     SelectPriorityText,
     SelectRecurringText,
     YesRecurringText
@@ -190,7 +189,7 @@ const CreateTodo = () => {
                           variant="danger"
                           onClick={(e) => toggleEnterTodoNameModal(e)}
                           style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                      >{ReturnButtonText}</Button>
+                      >{CancelButtonText}</Button>
                   </ButtonGroup>
               </ModalBody>
           </Modal>

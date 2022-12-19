@@ -10,7 +10,6 @@ import {
   EditButtonText,
   EditCategoryHeaderText,
   NameLabelText,
-  ReturnButtonText,
   ViewCategoryHeaderText
 } from "../utils/texts";
 
@@ -110,10 +109,10 @@ const Category = () => {
         </ButtonGroup>
           ) : (
             <Button
-              variant="success"
+              variant="danger"
               onClick={() => navigateCategories()}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{ReturnButtonText}</Button>
+            >{CancelButtonText}</Button>
           )
         }
       </Form>
