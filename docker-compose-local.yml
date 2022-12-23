@@ -38,7 +38,6 @@ services:
       retries: 10
     volumes:
       - mysql-db123455:/var/lib/mysql-daps123455
-      - ./backend/persistence/database/utils:/
 
 #  redis:
 #    image: redis:alpine
