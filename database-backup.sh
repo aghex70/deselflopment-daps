@@ -10,7 +10,7 @@ MYSQL_DBNAME=$MYSQL_DBNAME
 BACKUP_DESTINATION="/bk/daps"
 
 # Set the filename for the backup file
-BACKUP_FILENAME=mysql-backup-$(date +%Y-%m-%d).sql
+BACKUP_FILENAME=daps-backup-$(date +%Y-%m-%d).sql
 
 # Dump the database using mysqldump
 mysqldump -u $MYSQL_USERNAME -p$MYSQL_PASSWORD -h $MYSQL_HOSTNAME $MYSQL_DBNAME > $BACKUP_FILENAME
