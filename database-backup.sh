@@ -13,7 +13,8 @@ BACKUP_DESTINATION="/bk/daps"
 BACKUP_FILENAME=daps-backup-$(date +%Y-%m-%d).sql
 
 # Dump the database using mysqldump
-mysqldump -u $MYSQL_USERNAME -p$MYSQL_PASSWORD -h $MYSQL_HOSTNAME $MYSQL_DBNAME > $BACKUP_FILENAME
+mkdir -p $BACKUP_DESTINATION
+mysqldump -u $MYSQL_USERNAME -p$MYSQL_PASSWORD -h $MYSQL_HOSTNAME $MYSQL_DBNAME > $BACKUP_DESTINATION/$BACKUP_FILENAME
 
 # Remove backups older than 7 days from the host
-find $BACKUP_DESTINATION -type f -mtime +7 -delete
+find $BACKUP_DESTINATION -name "daps-backup*.sql" -mtime +7 -type f -delete
