@@ -20,6 +20,13 @@ const options = {
   }
 }
 
+const fileOptions = {
+  headers: {
+    'Content-Type': 'multipart/form-data',
+    'Authorization': 'Bearer ' + localStorage.getItem("access_token")
+  }
+}
+
 const register = async (name, email, password) => {
   return await axios.post(REGISTER_URL, {
     name,
@@ -83,7 +90,9 @@ const provisionDemoUser = async (email, password, language) => {
 }
 
 const importCSV = async (file) => {
-    return await axios.post(`${IMPORT_CSV_URL}`, file, options);
+  const formData = new FormData();
+  formData.append("todos.csv", file);
+  return await axios.post(IMPORT_CSV_URL, formData, fileOptions);
 }
 
 const UserService = {

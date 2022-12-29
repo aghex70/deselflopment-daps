@@ -228,15 +228,16 @@ func (h UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) ImportCSV(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Accept", "multipart/form-data")
 	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
 	}
 
 	// Parse the CSV file from the request
-	f, _, err := r.FormFile("csv")
+	f, _, err := r.FormFile("todos.csv")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 	defer f.Close()

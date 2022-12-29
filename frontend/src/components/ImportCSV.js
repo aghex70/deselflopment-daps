@@ -25,8 +25,6 @@ const ImportCSV = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
-        // Upload the file here
         UserService.importCSV(file)
             .then(response => {
                 console.log(response.data);
