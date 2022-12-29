@@ -20,6 +20,7 @@ import Profile from "./components/UserConfiguration";
 import ProvisionDemoUser from "./components/ProvisionDemoUser";
 import UsersList from "./components/UsersList";
 import User from "./components/User";
+import ImportCSV from "./components/ImportCSV";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -45,6 +46,7 @@ root.render(
         <Route path="profile" element={<Profile />} />
         <Route path="provision" element={<ProvisionDemoUser />} />
         <Route path="users" element={<UsersList />} />
+        <Route path="import" element={<ImportCSV />} />
         <Route path="user/:id" element={<User />} />
         <Route path="statistics" element={<CategoriesList />} />
       </Routes>

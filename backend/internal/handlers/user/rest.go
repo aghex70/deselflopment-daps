@@ -227,6 +227,28 @@ func (h UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+func (h UserHandler) ImportCSV(w http.ResponseWriter, r *http.Request) {
+	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
+	if err != nil {
+		return
+	}
+
+	// Parse the CSV file from the request
+	f, _, err := r.FormFile("csv")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	defer f.Close()
+
+	err = h.userService.ImportCSV(nil, r, f)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+}
+
 func NewUserHandler(us ports.UserServicer, logger *log.Logger) UserHandler {
 	return UserHandler{
 		userService: us,

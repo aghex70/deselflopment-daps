@@ -50,6 +50,7 @@ const PleaseEnterTodoNameText = language === 'en' ? 'Please enter a Todo name' :
 const PleaseEnterCategoryNameText = language === 'en' ? 'Please enter a category name' : 'Por favor, introduzca un nombre para la categoría';
 const DemoUserAlreadyProvisionedText = language === 'en' ? 'Demo user already provisioned! Please try with a different email' : '¡Usuario demo ya provisionado! Por favor, inténtelo con un correo electrónico diferente';
 const PleaseEnterAnEmailText = language === 'en' ? 'Please enter an email' : 'Por favor, introduzca un correo electrónico';
+const CheckFileFormatText = language === 'en' ? 'Please check the file format' : 'Por favor, compruebe el formato del archivo';
 
 // Buttons
 const CancelButtonText = language === 'en' ? 'Cancel' : 'Cancelar';
@@ -62,6 +63,7 @@ const ReportButtonText = language === 'en' ? 'Report' : 'Reportar';
 const UnsuscribeButtonText = language === 'en' ? 'Unsubscribe' : 'Darse de baja';
 const EditButtonText = language === 'en' ? 'Edit' : 'Editar';
 const DeleteButtonText = language === 'en' ? 'Delete' : 'Eliminar';
+const ImportButtonText = language === 'en' ? 'Import' : 'Importar';
 
 // Headers
 const CategoriesHeaderText = language === 'en' ? 'Categories' : 'Categorías';
@@ -82,6 +84,7 @@ const WelcomeToDapsText = language === 'en' ? 'Welcome to DAPS!' : '¡Bienvenid@
 const ProfileHeaderText = language === 'en' ? 'Profile' : 'Perfil';
 const UsersHeaderText = language === 'en' ? 'Users' : 'Usuarios';
 const ViewUserHeaderText = language === 'en' ? 'View user' : 'Ver usuario';
+const ImportTodosHeaderText = language === 'en' ? 'Import Todos' : 'Importar tareas';
 
 
 // Forms
@@ -107,6 +110,7 @@ const EnglishLanguageText = language === 'en' ? 'English' : 'Inglés';
 const SpanishLanguageText = language === 'en' ? 'Spanish' : 'Español';
 const AutoSuggestLabelText = language === 'en' ? 'Auto-suggest' : 'Auto-sugerencia';
 const RegistrationDateText = language === 'en' ? 'Registration date' : 'Fecha de registro';
+const SelectFileText = language === 'en' ? 'Select file' : 'Seleccionar archivo';
 
 export {
     HighPriorityTasksText,
@@ -204,4 +208,8 @@ export {
     HeaderUserText,
     ViewUserHeaderText,
     RegistrationDateText,
+    ImportButtonText,
+    ImportTodosHeaderText,
+    SelectFileText,
+    CheckFileFormatText,
 };

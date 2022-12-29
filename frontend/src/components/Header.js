@@ -8,7 +8,7 @@ import {
   faEnvelope,
   faUserPlus,
   faCog,
-  faList,
+  faList, faFileImport,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
@@ -16,6 +16,7 @@ import checkAccess from "../utils/helpers";
 import {
   CategoriesIconText,
   CompletedTodosIconText,
+  ImportTodosHeaderText,
   ListOfUsersIconText,
   LogoutIconText,
   ProfileIconText,
@@ -70,6 +71,10 @@ const DapsHeader = () => {
 
   const navigateListOfUsers = () => {
     window.location.href = "/users";
+  }
+
+  const navigateImportTodos = () => {
+    window.location.href = "/import";
   }
 
   useEffect(() => {
@@ -166,6 +171,13 @@ const DapsHeader = () => {
             >
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faList} />
+            </Button>
+            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
+                    variant="danger" title={ImportTodosHeaderText}
+                    onClick={() => navigateImportTodos()}
+            >
+
+              <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faFileImport} />
             </Button>
           </ButtonGroup>
           )}

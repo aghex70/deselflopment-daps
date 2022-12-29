@@ -3,6 +3,7 @@ package ports
 import (
 	"context"
 	"github.com/aghex70/daps/internal/core/domain"
+	"mime/multipart"
 	"net/http"
 )
 
@@ -37,6 +38,7 @@ type UserServicer interface {
 	Get(ctx context.Context, r *http.Request, req GetUserRequest) (domain.User, error)
 	ProvisionDemoUser(ctx context.Context, r *http.Request, req ProvisionDemoUserRequest) error
 	List(ctx context.Context, r *http.Request) ([]domain.User, error)
+	ImportCSV(ctx context.Context, r *http.Request, f multipart.File) error
 }
 
 type UserConfigServicer interface {

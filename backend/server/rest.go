@@ -134,6 +134,9 @@ func (s *RestServer) StartServer() error {
 	// UserConfiguration
 	http.HandleFunc("/api/user-configuration/", JWTAuthMiddleware(s.userConfigHandler.HandleUserConfig))
 
+	// CSV Import
+	http.HandleFunc("/api/import", JWTAuthMiddleware(s.userHandler.ImportCSV))
+
 	//Stats
 	//http.HandleFunc("/statistics", JWTAuthMiddleware(s.toDoHandler.Todo))
 

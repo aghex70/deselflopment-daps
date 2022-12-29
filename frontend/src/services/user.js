@@ -10,6 +10,7 @@ const USER_URL = `${DAPS_BASE_URL}api/user`;
 const USERS_URL = `${DAPS_BASE_URL}api/users`;
 const ADMIN_URL = `${DAPS_BASE_URL}api/user/admin`;
 const PROVISION_DEMO_USER_URL = `${DAPS_BASE_URL}api/user/provision`;
+const IMPORT_CSV_URL = `${DAPS_BASE_URL}api/import`;
 
 const options = {
   headers: {
@@ -81,6 +82,10 @@ const provisionDemoUser = async (email, password, language) => {
   }, options);
 }
 
+const importCSV = async (file) => {
+    return await axios.post(`${IMPORT_CSV_URL}`, file, options);
+}
+
 const UserService = {
   register,
   login,
@@ -93,6 +98,7 @@ const UserService = {
   getUsers,
   getUser,
   deleteUser,
+  importCSV,
 
 }
 
