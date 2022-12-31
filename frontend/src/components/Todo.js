@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
+import {Button, ButtonGroup, Container, FloatingLabel, Form, Nav} from "react-bootstrap";
 import {useLocation, useNavigate, useParams} from 'react-router-dom'
 import TodoService from "../services/todo";
 import DapsHeader from "./Header";
@@ -18,6 +18,7 @@ import {
     MediumPriorityText,
     NameLabelText,
     NoRecurringText,
+    OpenLinkText,
     PriorityLabelText,
     RecurringLabelText,
     ViewTodoHeaderText,
@@ -145,14 +146,22 @@ const Todo = () => {
                 </Form.Select>
             </FloatingLabel>
 
-            <FloatingLabel
-                controlId="floatingLink"
-                label={LinkLabelText}
-                value={todoLink}
-                onChange={(e) => setTodoLink(e.target.value)}
-            >
-                <Form.Control type="link" placeholder="Link" value={todoLink} disabled={!enableEdit}/>
-            </FloatingLabel>
+            {!enableEdit && todoLink ?
+                <Nav className="justify-content-center" style={{marginBottom: "15px"}} activeKey={todoLink}>
+                    <Nav.Item className="font-size-lg">
+                        <Nav.Link href={todoLink} target="_blank">{OpenLinkText}</Nav.Link>
+                    </Nav.Item>
+                </Nav>
+                :
+                <FloatingLabel
+                    controlId="floatingLink"
+                    label={LinkLabelText}
+                    value={todoLink}
+                    onChange={(e) => setTodoLink(e.target.value)}
+                >
+                    <Form.Control type="link" placeholder="Link" value={todoLink} disabled={!enableEdit}/>
+                </FloatingLabel>
+            }
 
           {enableEdit ?
             (

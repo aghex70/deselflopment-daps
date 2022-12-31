@@ -110,7 +110,7 @@ const EnglishLanguageText = language === 'en' ? 'English' : 'Inglés';
 const SpanishLanguageText = language === 'en' ? 'Spanish' : 'Español';
 const AutoSuggestLabelText = language === 'en' ? 'Auto-suggest' : 'Auto-sugerencia';
 const RegistrationDateText = language === 'en' ? 'Registration date' : 'Fecha de registro';
-const SelectFileText = language === 'en' ? 'Select file' : 'Seleccionar archivo';
+const OpenLinkText = language === 'en' ? 'Click here to open the link' : 'Haga clic aquí para abrir el enlace';
 
 export {
     HighPriorityTasksText,
@@ -210,6 +210,6 @@ export {
     RegistrationDateText,
     ImportButtonText,
     ImportTodosHeaderText,
-    SelectFileText,
+    OpenLinkText,
     CheckFileFormatText,
 };
