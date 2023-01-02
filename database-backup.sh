@@ -3,7 +3,7 @@
 # Read the variables for the MySQL connection from the environment
 MYSQL_USERNAME=$MYSQL_ROOT_PASSWORD
 MYSQL_PASSWORD=$MYSQL_PASSWORD
-MYSQL_HOSTNAME=mysql
+MYSQL_HOSTNAME=db
 MYSQL_DBNAME=$MYSQL_DATABASE
 
 # Read the destination for the backup file from the environment

@@ -292,6 +292,7 @@ func (s UserService) ImportCSV(ctx context.Context, r *http.Request, f multipart
 			Name:     name,
 			Link:     link,
 			Category: categoryId,
+			Priority: domain.Priority(3),
 		})
 		if err != nil {
 			return err
