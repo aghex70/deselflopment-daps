@@ -151,9 +151,6 @@ const SuggestedTodosList = () => {
     if (!todos || todos.length === 0) {
       TodoService.getSuggestedTodos().then(
         (response) => {
-            console.log("response -----> ", response);
-            console.log("response.data -----> ", response.data);
-
           if (response.status === 200 && response.data) {
             setTodos(response.data);
           }
