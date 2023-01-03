@@ -29,6 +29,7 @@ services:
       - MYSQL_PASSWORD=root
       - MYSQL_TCP_PORT=11306
       - MYSQL_DEFAULT_AUTH=caching_sha2_password
+      - MYSQL_LOG_ERROR_SUPPRESSION_LIST=MY-013360
     ports:
       - "11306:11306"
     healthcheck:
