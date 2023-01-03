@@ -5,8 +5,10 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
+	"github.com/aghex70/daps/pkg"
 	"gorm.io/gorm"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -17,18 +19,19 @@ type TodoGormRepository struct {
 }
 
 type Todo struct {
-	Id           int        `gorm:"primaryKey;column:id"`
-	Active       bool       `gorm:"column:active"`
-	EndDate      *time.Time `gorm:"column:end_date"`
-	CategoryId   int        `gorm:"column:category_id"`
-	Completed    bool       `gorm:"column:completed"`
-	CreationDate time.Time  `gorm:"column:creation_date;autoCreateTime"`
-	Description  string     `gorm:"column:description"`
-	Link         string     `gorm:"column:link"`
-	Name         string     `gorm:"column:name"`
-	Priority     int        `gorm:"column:priority"`
-	Recurring    bool       `gorm:"column:recurring"`
-	StartDate    *time.Time `gorm:"column:start_date"`
+	Id             int        `gorm:"primaryKey;column:id"`
+	Active         bool       `gorm:"column:active"`
+	EndDate        *time.Time `gorm:"column:end_date"`
+	CategoryId     int        `gorm:"column:category_id"`
+	Completed      bool       `gorm:"column:completed"`
+	CreationDate   time.Time  `gorm:"column:creation_date;autoCreateTime"`
+	Description    string     `gorm:"column:description"`
+	Link           string     `gorm:"column:link"`
+	Name           string     `gorm:"column:name"`
+	Priority       int        `gorm:"column:priority"`
+	Recurring      bool       `gorm:"column:recurring"`
+	StartDate      *time.Time `gorm:"column:start_date"`
+	SuggestionDate *time.Time `gorm:"column:suggestion_date"`
 }
 
 type TodoInfo struct {
@@ -114,7 +117,7 @@ func (gr *TodoGormRepository) Start(ctx context.Context, id int) error {
 	return nil
 }
 
-func (gr *TodoGormRepository) GetById(ctx context.Context, id int, userId int) (domain.TodoInfo, error) {
+func (gr *TodoGormRepository) GetById(ctx context.Context, id int) (domain.TodoInfo, error) {
 	var ti TodoInfo
 	query := fmt.Sprintf("SELECT daps_todos.id, daps_todos.category_id, daps_todos.end_date, daps_todos.creation_date, daps_todos.completed, daps_todos.description, daps_todos.link, daps_todos.name, daps_todos.priority, daps_todos.recurring, daps_todos.start_date, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.id = %d", id)
 	result := gr.DB.Raw(query).Scan(&ti)
@@ -168,6 +171,58 @@ func (gr *TodoGormRepository) ListCompleted(ctx context.Context, categoryIds []i
 		todes = append(todes, todo)
 	}
 	return todes, nil
+}
+
+func (gr *TodoGormRepository) ListSuggested(ctx context.Context, userId int) ([]domain.TodoInfo, error) {
+	var tis []TodoInfo
+	var todosInfo []domain.TodoInfo
+	query := fmt.Sprintf("SELECT daps_todos.name, daps_todos.id, daps_todos.category_id, daps_todos.active, daps_todos.suggestion_date, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.suggested = true AND daps_todos.completed = false AND daps_categories.owner_id = %d ORDER BY RAND() LIMIT 8", userId)
+	result := gr.DB.Raw(query).Scan(&tis)
+
+	if result.Error != nil {
+		return []domain.TodoInfo{}, result.Error
+	}
+
+	for _, ti := range tis {
+		todoInfo := ti.ToDto()
+		todosInfo = append(todosInfo, todoInfo)
+	}
+
+	return todosInfo, nil
+}
+
+func (gr *TodoGormRepository) Suggest(ctx context.Context, userId int) error {
+	var suggestedTodosNumber int
+
+	query := fmt.Sprintf("SELECT COUNT(*) FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.suggested = true AND daps_todos.completed = false AND daps_categories.owner_id = %d", userId)
+	result := gr.DB.Raw(query).Scan(&suggestedTodosNumber)
+
+	if suggestedTodosNumber >= pkg.MaximumConcurrentSuggestions {
+		return nil
+	}
+
+	newSuggestedTodosNumber := pkg.MaximumConcurrentSuggestions - suggestedTodosNumber
+
+	var ids []int
+	query = fmt.Sprintf("SELECT daps_todos.id FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.recurring = false AND daps_todos.suggested = false AND daps_todos.completed = false AND daps_todos.active = false AND daps_categories.owner_id = %d ORDER BY RAND() LIMIT %d", userId, newSuggestedTodosNumber)
+	result = gr.DB.Raw(query).Scan(&ids)
+
+	var idList string
+	for i, id := range ids {
+		idList += strconv.Itoa(id)
+		if i < len(ids)-1 {
+			idList += ","
+		}
+	}
+
+	query2 := fmt.Sprintf("UPDATE daps_todos SET suggested = true, suggestion_date = NOW() WHERE id IN (%s)", idList)
+	result = gr.DB.Exec(query2)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
 
 func (gr *TodoGormRepository) Delete(ctx context.Context, id int) error {
@@ -229,37 +284,39 @@ func (td Todo) ToDto() domain.Todo {
 
 func fromDto(td domain.Todo) Todo {
 	return Todo{
-		Active:       td.Active,
-		EndDate:      td.EndDate,
-		CategoryId:   td.Category,
-		Completed:    td.Completed,
-		CreationDate: td.CreationDate,
-		Description:  td.Description,
-		Id:           td.Id,
-		Link:         td.Link,
-		Name:         td.Name,
-		Priority:     int(td.Priority),
-		Recurring:    td.Recurring,
-		StartDate:    td.StartDate,
+		Active:         td.Active,
+		EndDate:        td.EndDate,
+		CategoryId:     td.Category,
+		Completed:      td.Completed,
+		CreationDate:   td.CreationDate,
+		Description:    td.Description,
+		Id:             td.Id,
+		Link:           td.Link,
+		Name:           td.Name,
+		Priority:       int(td.Priority),
+		Recurring:      td.Recurring,
+		StartDate:      td.StartDate,
+		SuggestionDate: td.SuggestionDate,
 	}
 }
 
 func (ti TodoInfo) ToDto() domain.TodoInfo {
 	return domain.TodoInfo{
 		Todo: domain.Todo{
-			Active:       ti.Active,
-			EndDate:      ti.EndDate,
-			Category:     ti.CategoryId,
-			CategoryName: ti.CategoryName,
-			Completed:    ti.Completed,
-			CreationDate: ti.CreationDate,
-			Description:  ti.Description,
-			Id:           ti.Id,
-			Link:         ti.Link,
-			Name:         ti.Name,
-			Priority:     domain.Priority(ti.Priority),
-			Recurring:    ti.Recurring,
-			StartDate:    ti.StartDate,
+			Active:         ti.Active,
+			EndDate:        ti.EndDate,
+			Category:       ti.CategoryId,
+			CategoryName:   ti.CategoryName,
+			Completed:      ti.Completed,
+			CreationDate:   ti.CreationDate,
+			Description:    ti.Description,
+			Id:             ti.Id,
+			Link:           ti.Link,
+			Name:           ti.Name,
+			Priority:       domain.Priority(ti.Priority),
+			Recurring:      ti.Recurring,
+			StartDate:      ti.StartDate,
+			SuggestionDate: ti.SuggestionDate,
 		},
 		CategoryInfo: domain.CategoryInfo{CategoryName: ti.CategoryName},
 	}

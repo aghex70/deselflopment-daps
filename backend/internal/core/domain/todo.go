@@ -13,19 +13,20 @@ const (
 )
 
 type Todo struct {
-	Active       bool       `json:"active"`
-	Category     int        `json:"category_id"`
-	CategoryName string     `json:"category_name"`
-	Completed    bool       `json:"completed"`
-	CreationDate time.Time  `json:"creation_date"`
-	Description  string     `json:"description"`
-	EndDate      *time.Time `json:"end_date"`
-	Id           int        `json:"id"`
-	Link         string     `json:"link"`
-	Name         string     `json:"name"`
-	Priority     Priority   `json:"priority"`
-	Recurring    bool       `json:"recurring"`
-	StartDate    *time.Time `json:"start_date"`
+	Active         bool       `json:"active"`
+	Category       int        `json:"category_id"`
+	CategoryName   string     `json:"category_name"`
+	Completed      bool       `json:"completed"`
+	CreationDate   time.Time  `json:"creation_date"`
+	Description    string     `json:"description"`
+	EndDate        *time.Time `json:"end_date"`
+	Id             int        `json:"id"`
+	Link           string     `json:"link"`
+	Name           string     `json:"name"`
+	Priority       Priority   `json:"priority"`
+	Recurring      bool       `json:"recurring"`
+	StartDate      *time.Time `json:"start_date"`
+	SuggestionDate *time.Time `json:"suggestion_date"`
 }
 
 type Summmary struct {

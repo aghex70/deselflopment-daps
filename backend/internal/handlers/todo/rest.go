@@ -270,6 +270,27 @@ func (h TodoHandler) ListCompletedTodos(w http.ResponseWriter, r *http.Request) 
 	w.Write(b)
 }
 
+func (h TodoHandler) ListSuggestedTodos(w http.ResponseWriter, r *http.Request) {
+	todos, err := h.toDoService.ListSuggested(nil, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(todos)
+	w.Write(b)
+}
+
+func (h TodoHandler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
+	err := h.toDoService.Suggest(nil, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request, id, categoryId int) {
 	fmt.Printf("\n\nrequest ------>: %+v", r)
 	q := r.URL.Query()

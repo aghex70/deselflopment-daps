@@ -32,6 +32,10 @@ const setLanguage = (language) => {
   localStorage.setItem("language", language);
 }
 
+const setAutoSuggest = (autosuggest) => {
+    localStorage.setItem("auto-suggest", autosuggest);
+}
+
 const sortArray = (array, key, ascending) => {
     return array.sort((a, b) => {
         if (a[key] > b[key]) {
@@ -45,4 +49,4 @@ const sortArray = (array, key, ascending) => {
 }
 
 export default checkAccess;
-export { hashPassword, setLanguage, skipLogin, sortArray };
+export { hashPassword, setAutoSuggest, setLanguage, skipLogin, sortArray };

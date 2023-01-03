@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import UserService from "../services/user";
-import {skipLogin} from "../utils/helpers";
+import {setAutoSuggest, setLanguage, skipLogin} from "../utils/helpers";
 import {
   CancelButtonText,
   EmailAddressLabelText,
@@ -15,6 +15,7 @@ import {
   RegisterButtonText,
   UserNotFoundText
 } from "../utils/texts";
+import UserConfigurationService from "../services/userconfiguration";
 
 
 const Login = () => {
@@ -84,7 +85,19 @@ const Login = () => {
         }
       }
     )
-  }
+
+    UserConfigurationService.getUserConfiguration().then(
+        (response) => {
+          if (response.status === 200) {
+            setLanguage(response.data.language);
+            setAutoSuggest(response.data.auto_suggest);
+          }
+        }
+    ).catch(
+        (error) => {
+        }
+    )
+    }
 
   return (
     // Create a container with a class name "contenedor" and background color red

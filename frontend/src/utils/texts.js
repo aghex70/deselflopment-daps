@@ -10,6 +10,7 @@ const HeaderNameText = language === 'en' ? 'Name' : 'Nombre';
 const CompletedTodosIndicationText = language === 'en' ? 'You better complete some Todos first!' : '¡Debes completar alguna tarea antes!';
 const RecurringTodosIndicationText = language === 'en' ? 'You better create some recurring Todos first!' : '¡Debes crear alguna tarea recurrente antes!';
 const HeaderUserText = language === 'en' ? 'User' : 'Usuario';
+const SuggestedTodosIndicationText = language === 'en' ? 'If you want to receive some suggestions, enable them in your profile!' : '¡Si quieres recibir sugerencias, habilita la opción en tu perfil!';
 
 // Icons
 const ShareIconText = language === 'en' ? 'Share' : 'Compartir';
@@ -31,6 +32,7 @@ const CompletedTodosIconText = language === 'en' ? 'Completed Todos' : 'Tareas c
 const ProfileIconText = language === 'en' ? 'Configuration' : 'Configuración';
 const ProvisionDemoUserIconText = language === 'en' ? 'Provision demo user' : 'Provisionar usuario demo';
 const ListOfUsersIconText = language === 'en' ? 'List of users' : 'Lista de usuarios';
+const SuggestedTodosIconText = language === 'en' ? 'Suggested Todos' : 'Tareas sugeriadas';
 
 // Modals
 const UserAlreadySubscribedText = language === 'en' ? 'User already subscribed to that category!' : '¡No se puede suscribir a una categoría ya suscrita!';
@@ -85,6 +87,7 @@ const ProfileHeaderText = language === 'en' ? 'Profile' : 'Perfil';
 const UsersHeaderText = language === 'en' ? 'Users' : 'Usuarios';
 const ViewUserHeaderText = language === 'en' ? 'View user' : 'Ver usuario';
 const ImportTodosHeaderText = language === 'en' ? 'Import Todos' : 'Importar tareas';
+const SuggestedTodosHeaderText = language === 'en' ? 'Suggested Todos' : 'Tareas sugeridas';
 
 
 // Forms
@@ -212,4 +215,7 @@ export {
     ImportTodosHeaderText,
     OpenLinkText,
     CheckFileFormatText,
+    SuggestedTodosIndicationText,
+    SuggestedTodosHeaderText,
+    SuggestedTodosIconText,
 };
