@@ -38,7 +38,6 @@ import {
   UserAlreadySubscribedText,
   ViewIconText
 } from "../utils/texts";
-import TodoService from "../services/todo";
 
 const CategoriesList = () => {
   checkAccess();
