@@ -24,6 +24,8 @@ type TodoServicer interface {
 	List(ctx context.Context, r *http.Request, req ListTodosRequest) ([]domain.Todo, error)
 	ListCompleted(ctx context.Context, r *http.Request) ([]domain.Todo, error)
 	ListRecurring(ctx context.Context, r *http.Request) ([]domain.Todo, error)
+	ListSuggested(ctx context.Context, r *http.Request) ([]domain.TodoInfo, error)
+	Suggest(ctx context.Context, r *http.Request) error
 	Update(ctx context.Context, r *http.Request, req UpdateTodoRequest) error
 	Start(ctx context.Context, r *http.Request, req StartTodoRequest) error
 	Summary(ctx context.Context, r *http.Request) ([]domain.CategorySummary, error)

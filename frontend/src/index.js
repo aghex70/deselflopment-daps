@@ -21,6 +21,7 @@ import ProvisionDemoUser from "./components/ProvisionDemoUser";
 import UsersList from "./components/UsersList";
 import User from "./components/User";
 import ImportCSV from "./components/ImportCSV";
+import SuggestedTodosList from "./components/SuggestedTodosList";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -41,7 +42,7 @@ root.render(
         <Route path="create-category" element={<CreateCategory />} />
         <Route path="create-todo" element={<CreateTodo />} />
         <Route path="recurring-todos" element={<RecurringTodosList />} />
-        <Route path="suggested-todos" element={<RecurringTodosList />} />
+        <Route path="suggested-todos" element={<SuggestedTodosList />} />
         <Route path="completed-todos" element={<CompletedTodosList />} />
         <Route path="profile" element={<Profile />} />
         <Route path="provision" element={<ProvisionDemoUser />} />

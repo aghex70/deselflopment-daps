@@ -6,6 +6,8 @@ const TODO_URL = `${DAPS_BASE_URL}api/todo`;
 const TODOS_URL = `${DAPS_BASE_URL}api/todos`;
 const RECURRING_TODOS_URL = `${DAPS_BASE_URL}api/recurring-todos`;
 const COMPLETED_TODOS_URL = `${DAPS_BASE_URL}api/completed-todos`;
+const SUGGESTED_TODOS_URL = `${DAPS_BASE_URL}api/suggested-todos`;
+const SUGGEST_TODOS_URL = `${DAPS_BASE_URL}api/suggest`;
 
 const options = {
   headers: {
@@ -23,6 +25,10 @@ const getTodo = (id, categoryId) => {
   return axios.get(`${TODO_URL}/${id}?category_id=${categoryId}`, options);
 }
 
+const suggestTodos = () => {
+  return axios.post(SUGGEST_TODOS_URL, {}, options);
+}
+
 const getTodos = (id) => {
   return axios.get(TODOS_URL, {
     ...options,
@@ -38,6 +44,10 @@ const getRecurringTodos = () => {
 
 const getCompletedTodos = () => {
   return axios.get(COMPLETED_TODOS_URL, options);
+}
+
+const getSuggestedTodos = () => {
+  return axios.get(SUGGESTED_TODOS_URL, options);
 }
 
 const deleteTodo = (id, categoryId) => {
@@ -75,11 +85,13 @@ const TodoService = {
   getTodos,
   getRecurringTodos,
   getCompletedTodos,
+  getSuggestedTodos,
   deleteTodo,
   updateTodo,
   completeTodo,
   activateTodo,
   startTodo,
+  suggestTodos,
 }
 
 export default TodoService;

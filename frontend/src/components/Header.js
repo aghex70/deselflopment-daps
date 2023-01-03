@@ -8,7 +8,7 @@ import {
   faEnvelope,
   faUserPlus,
   faCog,
-  faList, faFileImport,
+  faList, faFileImport, faLightbulb,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
@@ -23,7 +23,7 @@ import {
   ProvisionDemoUserIconText,
   RecurringTodosIconText,
   ReportABugIconText,
-  StatisticsIconText
+  StatisticsIconText, SuggestedTodosIconText
 } from "../utils/texts";
 import UserService from "../services/user";
 
@@ -55,6 +55,10 @@ const DapsHeader = () => {
 
   const navigateRecurringTodos = () => {
     window.location.href = "/recurring-todos";
+  }
+
+  const navigateSuggestedTodos = () => {
+    window.location.href = "/suggested-todos";
   }
 
   const navigateProfile = () => {
@@ -109,17 +113,19 @@ const DapsHeader = () => {
               <FontAwesomeIcon style={{height: "50%"}} icon={faCheck} />
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
+                    variant="warning"
+                    onClick={() => navigateSuggestedTodos()}
+                    title={SuggestedTodosIconText}
+            >
+
+              <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faLightbulb} />
+            </Button>
+            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="secondary"
                     onClick={() => navigateRecurringTodos()}
                     title={RecurringTodosIconText}
             >
               <FontAwesomeIcon style={{height: "50%"}} icon={faClockRotateLeft} />
-            </Button>
-            <Button disabled={true} style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
-                    variant="outline-warning" title={StatisticsIconText}
-            >
-
-              <FontAwesomeIcon icon={faChartSimple} />
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="info" title={ReportABugIconText}
@@ -178,6 +184,12 @@ const DapsHeader = () => {
             >
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faFileImport} />
+            </Button>
+            <Button disabled={true} style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
+                    variant="outline-warning" title={StatisticsIconText}
+            >
+
+              <FontAwesomeIcon icon={faChartSimple} />
             </Button>
           </ButtonGroup>
           )}

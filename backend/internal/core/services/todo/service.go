@@ -121,7 +121,7 @@ func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodo
 	if err != nil {
 		return domain.TodoInfo{}, err
 	}
-	td, err := s.todoRepository.GetById(ctx, int(req.TodoId), int(userId))
+	td, err := s.todoRepository.GetById(ctx, int(req.TodoId))
 	if err != nil {
 		return domain.TodoInfo{}, err
 	}
@@ -170,6 +170,24 @@ func (s TodoService) ListCompleted(ctx context.Context, r *http.Request) ([]doma
 		return []domain.Todo{}, err
 	}
 	return todos, nil
+}
+
+func (s TodoService) ListSuggested(ctx context.Context, r *http.Request) ([]domain.TodoInfo, error) {
+	userId, _ := server.RetrieveJWTClaims(r, nil)
+	todos, err := s.todoRepository.ListSuggested(ctx, int(userId))
+	if err != nil {
+		return []domain.TodoInfo{}, err
+	}
+	return todos, nil
+}
+
+func (s TodoService) Suggest(ctx context.Context, r *http.Request) error {
+	userId, _ := server.RetrieveJWTClaims(r, nil)
+	err := s.todoRepository.Suggest(ctx, int(userId))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s TodoService) Delete(ctx context.Context, r *http.Request, req ports.DeleteTodoRequest) error {
