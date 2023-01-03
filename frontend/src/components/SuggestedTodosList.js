@@ -21,6 +21,7 @@ import {
 const SuggestedTodosList = () => {
   checkAccess();
   const [todos, setTodos] = useState([]);
+  const [suggested, setSuggested] = useState(false);
   const navigate = useNavigate();
 
   // Color code the todo based on its priority
@@ -135,6 +136,18 @@ const SuggestedTodosList = () => {
   }
 
   useEffect(() => {
+      if (!suggested && localStorage.getItem("auto-suggest") === "true") {
+          TodoService.suggestTodos().then(
+              (response) => {
+                  setSuggested(true);
+              }
+          ).catch(
+              (error) => {
+              }
+          )
+      }
+
+
     if (!todos || todos.length === 0) {
       TodoService.getSuggestedTodos().then(
         (response) => {

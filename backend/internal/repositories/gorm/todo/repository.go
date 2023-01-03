@@ -5,8 +5,10 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
+	"github.com/aghex70/daps/pkg"
 	"gorm.io/gorm"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -190,8 +192,31 @@ func (gr *TodoGormRepository) ListSuggested(ctx context.Context, userId int) ([]
 }
 
 func (gr *TodoGormRepository) Suggest(ctx context.Context, userId int) error {
-	query := fmt.Sprintf("UPDATE daps_todos SET daps_todos.suggested = true, daps_todos.suggestion_date = NOW() FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.recurring = false AND daps_todos.suggested = false AND daps_todos.completed = false AND daps_todos.active = false AND daps_categories.owner_id = %d ORDER BY RAND() LIMIT 8", userId)
-	result := gr.DB.Exec(query)
+	var suggestedTodosNumber int
+
+	query := fmt.Sprintf("SELECT COUNT(*) FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.suggested = true AND daps_todos.completed = false AND daps_categories.owner_id = %d", userId)
+	result := gr.DB.Raw(query).Scan(&suggestedTodosNumber)
+
+	if suggestedTodosNumber >= pkg.MaximumConcurrentSuggestions {
+		return nil
+	}
+
+	newSuggestedTodosNumber := pkg.MaximumConcurrentSuggestions - suggestedTodosNumber
+
+	var ids []int
+	query = fmt.Sprintf("SELECT daps_todos.id FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.recurring = false AND daps_todos.suggested = false AND daps_todos.completed = false AND daps_todos.active = false AND daps_categories.owner_id = %d ORDER BY RAND() LIMIT %d", userId, newSuggestedTodosNumber)
+	result = gr.DB.Raw(query).Scan(&ids)
+
+	var idList string
+	for i, id := range ids {
+		idList += strconv.Itoa(id)
+		if i < len(ids)-1 {
+			idList += ","
+		}
+	}
+
+	query2 := fmt.Sprintf("UPDATE daps_todos SET suggested = true, suggestion_date = NOW() WHERE id IN (%s)", idList)
+	result = gr.DB.Exec(query2)
 
 	if result.Error != nil {
 		return result.Error

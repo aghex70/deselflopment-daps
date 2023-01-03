@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
 import {useParams} from 'react-router-dom'
 import DapsHeader from "./Header";
-import checkAccess, {setLanguage} from "../utils/helpers";
+import checkAccess, {setAutoSuggest, setLanguage} from "../utils/helpers";
 import {
     AutoSuggestLabelText,
     CancelButtonText,
@@ -28,7 +28,6 @@ const Profile = () => {
     const handleSubmit = (e) => {
       e.preventDefault();
 
-
       const data = {
         language: profileLanguage,
         auto_suggest: typeof(profileAutoSuggest) == "boolean" ? profileAutoSuggest : toBoolean(profileAutoSuggest),
@@ -37,7 +36,9 @@ const Profile = () => {
       UserConfigurationService.updateUserConfiguration(data).then(
         (response) => {
           if (response.status === 200) {
+              console.log("Data language ------> ", data.language);
               setLanguage(data.language);
+              setAutoSuggest(data.auto_suggest);
               window.location.href = "/categories";
           }
         }

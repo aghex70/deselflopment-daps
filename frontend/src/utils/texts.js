@@ -10,7 +10,7 @@ const HeaderNameText = language === 'en' ? 'Name' : 'Nombre';
 const CompletedTodosIndicationText = language === 'en' ? 'You better complete some Todos first!' : '¡Debes completar alguna tarea antes!';
 const RecurringTodosIndicationText = language === 'en' ? 'You better create some recurring Todos first!' : '¡Debes crear alguna tarea recurrente antes!';
 const HeaderUserText = language === 'en' ? 'User' : 'Usuario';
-const SuggestedTodosIndicationText = language === 'en' ? 'You have no suggested Todos!' : '¡No tienes tareas sugeridas!';
+const SuggestedTodosIndicationText = language === 'en' ? 'If you want to receive some suggestions, enable them in your profile!' : '¡Si quieres recibir sugerencias, habilita la opción en tu perfil!';
 
 // Icons
 const ShareIconText = language === 'en' ? 'Share' : 'Compartir';
