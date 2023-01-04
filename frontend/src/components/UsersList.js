@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container} from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import checkAccess, {goToCategories} from "../utils/helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     DeleteIconText,
@@ -55,12 +55,12 @@ const UsersList = () => {
         UserService.checkAdminAccess().then(
             (response) => {
                 if (response.status !== 200) {
-                    window.location.href = "/categories";
+                    goToCategories();
                 }
             }
         ).catch(
             (error) => {
-                window.location.href = "/categories";
+                goToCategories();
 
             }
         )

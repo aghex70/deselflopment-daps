@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess, {hashPassword} from "../utils/helpers";
+import checkAccess, {goToCategories, goToListOfUsers, hashPassword} from "../utils/helpers";
 import {
     CancelButtonText,
     CreateButtonText,
@@ -34,12 +34,12 @@ const ProvisionDemoUser = () => {
         UserService.checkAdminAccess().then(
             (response) => {
                 if (response.status !== 200) {
-                    window.location.href = "/categories";
+                    goToCategories();
                 }
             }
         ).catch(
             (error) => {
-                window.location.href = "/categories";
+                goToCategories();
 
             }
         )
@@ -57,13 +57,13 @@ const ProvisionDemoUser = () => {
         UserService.provisionDemoUser(userEmail, hashedPassword, userLanguage).then(
             (response) => {
                 if (response.status === 201) {
-                    window.location.href = "/users";
+                    goToListOfUsers();
                 }
             }
         ).catch(
             (error) => {
                 if (error.response.data.message === "unauthorized") {
-                    window.location.href = "/categories";
+                    goToCategories();
                 }
                 setShowModalDemoUserAlreadyCreated(true);
             }

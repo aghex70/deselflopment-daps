@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
 import {useParams} from 'react-router-dom'
 import DapsHeader from "./Header";
-import checkAccess, {setAutoSuggest, setLanguage} from "../utils/helpers";
+import checkAccess, {goToCategories, setAutoSuggest, setLanguage} from "../utils/helpers";
 import {
     AutoSuggestLabelText,
     CancelButtonText,
@@ -36,16 +36,15 @@ const Profile = () => {
       UserConfigurationService.updateUserConfiguration(data).then(
         (response) => {
           if (response.status === 200) {
-              console.log("Data language ------> ", data.language);
               setLanguage(data.language);
               setAutoSuggest(data.auto_suggest);
-              window.location.href = "/categories";
+              goToCategories();
           }
         }
       ).catch(
         (error) => {
             if (error.response.data.message === "no changes were made") {
-                window.location.href = "/categories";
+                goToCategories();
             }
         }
       )

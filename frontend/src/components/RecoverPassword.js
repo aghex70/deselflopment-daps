@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {Button, Container, Form} from "react-bootstrap";
 import UserService from "../services/user";
+import {goToCategories} from "../utils/helpers";
 
 const Register = () =>{
   const [email, setEmail] = useState("");
@@ -27,7 +28,7 @@ const Register = () =>{
     )
   }
     if (login) {
-      window.location.href = "/categories";
+      goToCategories();
     }
 
   return (

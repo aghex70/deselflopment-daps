@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import UserService from "../services/user";
-import {setAutoSuggest, setLanguage, skipLogin} from "../utils/helpers";
+import {goToCategories, setAutoSuggest, setLanguage, skipLogin} from "../utils/helpers";
 import {
   CancelButtonText,
   EmailAddressLabelText,
@@ -71,7 +71,7 @@ const Login = () => {
               localStorage.setItem("language", "en");
           }
 
-          window.location.href = "/categories";
+          goToCategories();
         }
       }
     ).catch(

@@ -14,7 +14,6 @@ const IMPORT_CSV_URL = `${DAPS_BASE_URL}api/import`;
 
 const options = {
   headers: {
-    'Accept': 'application/json',
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + localStorage.getItem("access_token")
   }

@@ -3,7 +3,7 @@ import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstr
 import {useLocation, useParams} from 'react-router-dom'
 import CategoryService from "../services/category";
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import checkAccess, {goToCategories} from "../utils/helpers";
 import {
   CancelButtonText,
   DescriptionLabelText,
@@ -20,10 +20,6 @@ const Category = () => {
   const { id } = useParams();
   const location = useLocation();
   const enableEdit = location.state.action === "edit";
-
-  const navigateCategories = () => {
-    window.location.href = "/categories";
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -103,14 +99,14 @@ const Category = () => {
           >{EditButtonText}</Button>
           <Button
             variant="danger"
-            onClick={() => navigateCategories()}
+            onClick={() => goToCategories()}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >{CancelButtonText}</Button>
         </ButtonGroup>
           ) : (
             <Button
               variant="danger"
-              onClick={() => navigateCategories()}
+              onClick={() => goToCategories()}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{CancelButtonText}</Button>
           )

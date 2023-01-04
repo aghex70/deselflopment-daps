@@ -13,7 +13,7 @@ import {useNavigate} from "react-router-dom";
 import './CategoriesList.css';
 import BootstrapTable from "react-bootstrap-table-next";
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import checkAccess, {goToCreateCategory} from "../utils/helpers";
 import {
   CancelButtonText,
   CategoriesHeaderText,
@@ -104,10 +104,6 @@ const CategoriesList = () => {
 
   const navigateToCategory = (categoryId, categoryName) => {
     navigate("/todos", {state: {categoryId: categoryId, categoryName: categoryName}});
-  }
-
-  const navigateToCreateCategory = () => {
-    navigate("/create-category");
   }
 
   const getCategory = (id, action) => {
@@ -268,7 +264,7 @@ const CategoriesList = () => {
   }
 
   function indication() {
-    return <span className="createIcon" onClick={() => navigateToCreateCategory()}>
+    return <span className="createIcon" onClick={() => goToCreateCategory()}>
       <FontAwesomeIcon className="createIcon" icon={faPlus} />{CreateCategoryIconText}</span>
   }
 
@@ -276,7 +272,7 @@ const CategoriesList = () => {
     <Container>
       <DapsHeader />
       <h1 className="text-center">{CategoriesHeaderText}</h1>
-      <span style={categorySpan} className="createIcon" onClick={() => navigateToCreateCategory()}>
+      <span style={categorySpan} className="createIcon" onClick={() => goToCreateCategory()}>
       <FontAwesomeIcon className="createIcon" icon={faPlus} />{CreateCategoryIconText}</span>
       <BootstrapTable
         keyField='id'

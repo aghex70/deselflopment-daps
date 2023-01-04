@@ -1,13 +1,14 @@
 import React from 'react'
 import {Button, ButtonGroup, Container, Modal, ModalBody} from "react-bootstrap";
 import {LoginButtonText, ThankYouHeaderText} from "../utils/texts";
+import {goToLogin} from "../utils/helpers";
 
 const Logout = () => {
   localStorage.removeItem("access_token");
 
   const login = (e) => {
     e.preventDefault();
-    window.location.href = "/login";
+    goToLogin();
   }
 
   return (

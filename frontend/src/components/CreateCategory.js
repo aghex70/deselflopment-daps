@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import CategoryService from "../services/category";
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import checkAccess, {goToCategories} from "../utils/helpers";
 import {
   CancelButtonText,
   CategoryAlreadyExistsText,
@@ -19,10 +19,6 @@ const CreateCategory = () => {
   const [categoryDescription, setCategoryDescription] = useState("");
   const [showModalCategoryAlreadyExists, setShowModalCategoryAlreadyExists] = useState(false);
   const [showEnterCategoryModal, setShowEnterCategoryModal] = useState(false);
-
-  const navigateCategories = () => {
-    window.location.href = "/categories";
-  }
 
   const toggleModalCategoryAlreadyExists = () => {
     setShowModalCategoryAlreadyExists(!showModalCategoryAlreadyExists);
@@ -98,7 +94,7 @@ const CreateCategory = () => {
           >{CreateButtonText}</Button>
           <Button
             variant="danger"
-            onClick={() => navigateCategories()}
+            onClick={() => goToCategories()}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >{CancelButtonText}</Button>
         </ButtonGroup>

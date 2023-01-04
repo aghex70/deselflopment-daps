@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import checkAccess, {goToCategories, goToListOfUsers} from "../utils/helpers";
 import {
     CancelButtonText,
     DeleteButtonText,
@@ -20,20 +20,16 @@ const User = () => {
         const [userEmail, setUserEmail] = useState("");
         const [userRegistrationDate, setUserRegistrationDate] = useState("");
 
-        const navigateUsers = () => {
-            window.location.href = "/users";
-        }
-
         useEffect(() => {
             UserService.checkAdminAccess().then(
                 (response) => {
                     if (response.status !== 200) {
-                        window.location.href = "/categories";
+                        goToCategories();
                     }
                 }
             ).catch(
                 (error) => {
-                    window.location.href = "/categories";
+                    goToCategories();
 
                 }
             )
@@ -86,12 +82,12 @@ const User = () => {
                     <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
                         <Button
                             variant="success"
-                            onClick={() => navigateUsers()}
+                            onClick={() => goToListOfUsers()}
                             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                         >{CancelButtonText}</Button>
                         <Button
                             variant="danger"
-                            onClick={() => navigateUsers()}
+                            onClick={() => goToListOfUsers()}
                             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                         >{DeleteButtonText}</Button>
                     </ButtonGroup>

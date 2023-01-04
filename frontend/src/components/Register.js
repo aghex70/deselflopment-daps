@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import UserService from "../services/user";
-import {hashPassword, skipLogin} from "../utils/helpers";
+import {goToLogin, hashPassword, skipLogin} from "../utils/helpers";
 import {
   CancelButtonText,
   EmailAddressLabelText,
@@ -70,7 +70,7 @@ const Register = ()  =>{
       (response) => {
         if (response.status === 201) {
           localStorage.setItem("language", "en");
-          window.location.href = "/login";
+          goToLogin();
         }
       }
     ).catch(

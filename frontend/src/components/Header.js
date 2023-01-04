@@ -12,7 +12,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
-import checkAccess from "../utils/helpers";
+import checkAccess, {
+  goToCategories,
+  goToCompletedTodos,
+  goToListOfUsers,
+  goToLogout,
+  goToProfile,
+  goToProvisionDemoUser,
+  goToRecurringTodos,
+  goToReportABug,
+  goToSuggestedTodos
+} from "../utils/helpers";
 import {
   CategoriesIconText,
   CompletedTodosIconText,
@@ -41,46 +51,6 @@ const DapsHeader = () => {
     setIsHoverProfile(false);
   };
 
-  const navigateCategories = () => {
-    window.location.href = "/categories";
-  }
-
-  const navigateReportBug = () => {
-    window.location.href = "/report-bug";
-  }
-
-  const navigateCompletedTodos = () => {
-    window.location.href = "/completed-todos";
-  }
-
-  const navigateRecurringTodos = () => {
-    window.location.href = "/recurring-todos";
-  }
-
-  const navigateSuggestedTodos = () => {
-    window.location.href = "/suggested-todos";
-  }
-
-  const navigateProfile = () => {
-    window.location.href = "/profile";
-  }
-
-  const logout = () => {
-    window.location.href = "/logout";
-  }
-
-  const navigateProvisionDemoUser = () => {
-    window.location.href = "/provision";
-  }
-
-  const navigateListOfUsers = () => {
-    window.location.href = "/users";
-  }
-
-  const navigateImportTodos = () => {
-    window.location.href = "/import";
-  }
-
   useEffect(() => {
     UserService.checkAdminAccess().then(
         (response) => {
@@ -100,21 +70,21 @@ const DapsHeader = () => {
           <ButtonGroup style={{width: "100%", marginTop: "15px", marginBottom: "15px"}}>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="primary"
-                    onClick={() => navigateCategories()}
+                    onClick={() => goToCategories()}
                     title={CategoriesIconText}
             >
               <FontAwesomeIcon style={{height: "50%"}} icon={faHome} />
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="success"
-                    onClick={() => navigateCompletedTodos()}
+                    onClick={() => goToCompletedTodos()}
                     title={CompletedTodosIconText}
             >
               <FontAwesomeIcon style={{height: "50%"}} icon={faCheck} />
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="warning"
-                    onClick={() => navigateSuggestedTodos()}
+                    onClick={() => goToSuggestedTodos()}
                     title={SuggestedTodosIconText}
             >
 
@@ -122,14 +92,14 @@ const DapsHeader = () => {
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="secondary"
-                    onClick={() => navigateRecurringTodos()}
+                    onClick={() => goToRecurringTodos()}
                     title={RecurringTodosIconText}
             >
               <FontAwesomeIcon style={{height: "50%"}} icon={faClockRotateLeft} />
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="info" title={ReportABugIconText}
-                    onClick={() => navigateReportBug()}
+                    onClick={() => goToReportABug()}
             >
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faEnvelope} />
@@ -145,7 +115,7 @@ const DapsHeader = () => {
               borderColor: isHoverProfile ? "#eab676": "orange",
             }}
                     title={ProfileIconText}
-                    onClick={() => navigateProfile()}
+                    onClick={() => goToProfile()}
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
             >
@@ -155,7 +125,7 @@ const DapsHeader = () => {
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="danger" title={LogoutIconText}
-                    onClick={() => logout()}
+                    onClick={() => goToLogout()}
             >
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faPowerOff} />
@@ -172,21 +142,21 @@ const DapsHeader = () => {
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="danger" title={ProvisionDemoUserIconText}
-                    onClick={() => navigateProvisionDemoUser()}
+                    onClick={() => goToProvisionDemoUser()}
             >
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faUserPlus} />
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="danger" title={ListOfUsersIconText}
-                    onClick={() => navigateListOfUsers()}
+                    onClick={() => goToListOfUsers()}
             >
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faList} />
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="danger" title={ImportTodosHeaderText}
-                    onClick={() => navigateImportTodos()}
+                    onClick={() => goToImportTodos()}
             >
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faFileImport} />

@@ -7,7 +7,7 @@ import DapsHeader from "./Header";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faPencil, faPlay, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
-import checkAccess from "../utils/helpers";
+import checkAccess, {goToSuggestedTodos} from "../utils/helpers";
 import {
     CompleteIconText,
     DeleteIconText,
@@ -39,7 +39,7 @@ const SuggestedTodosList = () => {
         TodoService.completeTodo(id, categoryId).then(
             (response) => {
                 if (response.status === 200) {
-                    window.location.reload();
+                    goToSuggestedTodos();
                 }
             }
         ).catch(
@@ -51,7 +51,7 @@ const SuggestedTodosList = () => {
         TodoService.startTodo(id, categoryId).then(
             (response) => {
                 if (response.status === 200) {
-                    window.location.reload();
+                    goToSuggestedTodos();
                 }
             }
         ).catch(

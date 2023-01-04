@@ -6,7 +6,6 @@ const USER_CONFIGURATION_URL = `${DAPS_BASE_URL}api/user-configuration`;
 
 const options = {
   headers: {
-    'Accept': 'application/json',
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + localStorage.getItem("access_token")
   }

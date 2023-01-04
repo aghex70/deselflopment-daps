@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, ButtonGroup, Container, Form, Modal, ModalBody} from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import checkAccess, {goToImportTodos} from "../utils/helpers";
 import {
     CancelButtonText,
     CheckFileFormatText,
@@ -17,10 +17,6 @@ const ImportCSV = () => {
 
     const toggleIncorrectFileFormat = () => {
         setShowIncorrectFileFormat(!showIncorrectFileFormat);
-    }
-
-    const navigateImport = () => {
-        window.location.href = "/import";
     }
 
     const handleSubmit = (event) => {
@@ -54,7 +50,7 @@ const ImportCSV = () => {
             <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
                 <Button
                     variant="danger"
-                    onClick={() => navigateImport()}
+                    onClick={() => goToImportTodos()}
                     style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                 >{CancelButtonText}</Button>
                 <Button

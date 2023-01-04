@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, ButtonGroup, Container, Form, FloatingLabel } from "react-bootstrap";
 import TodoService from "../services/todo";
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import checkAccess, {goToCategories} from "../utils/helpers";
 import {CancelButtonText, DescriptionLabelText, ReportABugHeaderText, ReportButtonText} from "../utils/texts";
 
 const ReportBug = () => {
@@ -22,7 +22,7 @@ const ReportBug = () => {
 
         TodoService.createTodo(data)
             .then((response) => {
-                window.location.href = "/categories";
+                goToCategories();
             })
             .catch((error) => {
                 error = new Error("Update todo failed!");

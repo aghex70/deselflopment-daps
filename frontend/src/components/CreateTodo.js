@@ -101,8 +101,6 @@ const CreateTodo = () => {
       )
     }
 
-    useEffect(() => {}, []);
-
     return (
       <Container>
         <DapsHeader />

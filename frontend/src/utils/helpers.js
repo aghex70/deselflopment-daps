@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 
-// Create a function that ciphers a string using bcryptjs and store it in variable agp
+// Function that ciphers a string using bcryptjs and store it in variable agp
 const hashPassword = (string) => {
     return bcrypt.hashSync(string, 10);
 }
@@ -8,20 +8,13 @@ const hashPassword = (string) => {
 const checkAccess = () => {
   const token = getUserToken();
   if (!token) {
-    window.location.href = "/login";
+    goToLogin();
   }
 }
 
-// const checkSuperUser = () => {
-//   const token = getUserToken();
-//   if (!token) {
-//     window.location.href = "/login";
-//   }
-// }
-
 const skipLogin = () => {
   if (getUserToken()) {
-    window.location.href = "/categories";
+    goToCategories();
   }
 }
 const getUserToken = () => {
@@ -48,5 +41,76 @@ const sortArray = (array, key, ascending) => {
     });
 }
 
+const goToCreateCategory = () => {
+    window.location.href = "/create-category";
+}
+
+const goToCategories = () => {
+    window.location.href = "/categories";
+}
+
+const goToReportABug = () => {
+    window.location.href = "/report-a-bug";
+}
+
+const goToRecurringTodos = () => {
+    window.location.href = "/recurring-todos";
+}
+
+const goToSuggestedTodos = () => {
+    window.location.href = "/suggested-todos";
+}
+
+const goToCompletedTodos = () => {
+    window.location.href = "/completed-todos";
+}
+
+const goToProfile = () => {
+    window.location.href = "/profile";
+}
+
+const goToProvisionDemoUser = () => {
+    window.location.href = "/provision";
+}
+
+const goToListOfUsers = () => {
+    window.location.href = "/users";
+}
+
+const goToImportTodos = () => {
+    window.location.href = "/import";
+}
+
+const goToLogout = () => {
+    window.location.href = "/logout";
+}
+
+const goToLogin = () => {
+    window.location.href = "/login";
+}
+
+const goToRegister = () => {
+    window.location.href = "/register";
+}
+
 export default checkAccess;
-export { hashPassword, setAutoSuggest, setLanguage, skipLogin, sortArray };
+export {
+    hashPassword,
+    setAutoSuggest,
+    setLanguage,
+    skipLogin,
+    sortArray,
+    goToCreateCategory,
+    goToCategories,
+    goToReportABug,
+    goToRecurringTodos,
+    goToSuggestedTodos,
+    goToCompletedTodos,
+    goToProfile,
+    goToProvisionDemoUser,
+    goToListOfUsers,
+    goToImportTodos,
+    goToLogout,
+    goToLogin,
+    goToRegister,
+};
