@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
 import checkAccess, {
   goToCategories,
-  goToCompletedTodos,
+  goToCompletedTodos, goToImportTodos,
   goToListOfUsers,
   goToLogout,
   goToProfile,
