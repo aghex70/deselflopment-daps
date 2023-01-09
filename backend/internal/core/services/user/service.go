@@ -5,9 +5,11 @@ import (
 	"context"
 	"encoding/csv"
 	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
+	"github.com/aghex70/daps/internal/repositories/gorm/email"
 	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
 	"github.com/aghex70/daps/internal/repositories/gorm/userconfig"
@@ -28,6 +30,7 @@ type UserService struct {
 	categoryRepository          *category.CategoryGormRepository
 	userConfigurationRepository *userconfig.UserConfigGormRepository
 	todoRepository              *todo.TodoGormRepository
+	emailRepository             *email.EmailGormRepository
 }
 
 type MyCustomClaims struct {
@@ -65,6 +68,36 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 	if err != nil {
 		return err
 	}
+
+	e := domain.Email{
+		From:      pkg.FromEmail,
+		To:        r.Email,
+		Recipient: r.Name,
+		Subject:   "Welcome to DAPS, " + r.Name + ".",
+		Body:      "In order to complete your registration, please click on the following link: blablablabla",
+		//+ pkg.FrontendUrl + "/confirm/" + strconv.Itoa(nu.Id),
+		User: nu.Id,
+	}
+
+	err = pkg.SendEmail(e)
+	if err != nil {
+		fmt.Printf("Error sending email: %+v", err)
+		e.Error = err.Error()
+		e.Sent = false
+		_, errz := s.emailRepository.Create(ctx, e)
+		if errz != nil {
+			fmt.Printf("Error saving email: %+v", errz)
+			return errz
+		}
+		return err
+	}
+
+	e.Sent = true
+	_, err = s.emailRepository.Create(ctx, e)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -302,12 +335,13 @@ func (s UserService) ImportCSV(ctx context.Context, r *http.Request, f multipart
 	return nil
 }
 
-func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormRepository, ucr *userconfig.UserConfigGormRepository, tr *todo.TodoGormRepository, logger *log.Logger) UserService {
+func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormRepository, ucr *userconfig.UserConfigGormRepository, tr *todo.TodoGormRepository, er *email.EmailGormRepository, logger *log.Logger) UserService {
 	return UserService{
 		logger:                      logger,
 		userRepository:              ur,
 		categoryRepository:          cr,
 		userConfigurationRepository: ucr,
 		todoRepository:              tr,
+		emailRepository:             er,
 	}
 }

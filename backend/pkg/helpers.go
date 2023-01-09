@@ -1,6 +1,11 @@
 package pkg
 
-import "github.com/aghex70/daps/internal/core/domain"
+import (
+	"errors"
+	"github.com/aghex70/daps/internal/core/domain"
+	"github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
+)
 
 func GenerateDemoTodos(categoryId, anotherCategoryId, yetAnotherCategoryId int, language string) []domain.Todo {
 	if language == "en" {
@@ -237,4 +242,20 @@ func FilterUser(user domain.User) domain.FilteredUser {
 		Name:             user.Name,
 		RegistrationDate: user.RegistrationDate,
 	}
+}
+
+func SendEmail(e domain.Email) error {
+	from := mail.NewEmail(FromName, FromEmail)
+	subject := e.Subject
+	to := mail.NewEmail(e.Recipient, e.To)
+	message := mail.NewSingleEmail(from, subject, to, e.Body, e.Body)
+	client := sendgrid.NewSendClient(SendGridApiKey)
+	response, err := client.Send(message)
+	if err != nil {
+		return err
+	}
+	if response.StatusCode != 202 {
+		return errors.New("error sending email")
+	}
+	return nil
 }

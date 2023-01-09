@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
+	"github.com/aghex70/daps/internal/repositories/gorm/email"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/server"
@@ -17,6 +18,7 @@ type TodoService struct {
 	logger                 *log.Logger
 	todoRepository         *todo.TodoGormRepository
 	relationshipRepository *relationship.RelationshipGormRepository
+	emailRepository        *email.EmailGormRepository
 }
 
 func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.CreateTodoRequest) error {
@@ -131,18 +133,13 @@ func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodo
 func (s TodoService) List(ctx context.Context, r *http.Request, req ports.ListTodosRequest) ([]domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
-	fmt.Println("3333333333333333333333333333")
 	if err != nil {
-		fmt.Println("44444444444444444444444444")
 		return []domain.Todo{}, err
 	}
 	todos, err := s.todoRepository.List(ctx, req.Category)
-	fmt.Println("55555555555555555555555555")
 	if err != nil {
-		fmt.Println("6666666666666666666666666666666")
 		return []domain.Todo{}, err
 	}
-	fmt.Println("7777777777777777777777777777777")
 	return todos, nil
 }
 
@@ -212,10 +209,11 @@ func (s TodoService) Summary(ctx context.Context, r *http.Request) ([]domain.Cat
 	return summary, nil
 }
 
-func NewtodoService(tr *todo.TodoGormRepository, rr *relationship.RelationshipGormRepository, logger *log.Logger) TodoService {
+func NewtodoService(tr *todo.TodoGormRepository, rr *relationship.RelationshipGormRepository, er *email.EmailGormRepository, logger *log.Logger) TodoService {
 	return TodoService{
 		logger:                 logger,
 		todoRepository:         tr,
 		relationshipRepository: rr,
+		emailRepository:        er,
 	}
 }

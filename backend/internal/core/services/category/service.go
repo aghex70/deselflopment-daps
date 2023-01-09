@@ -6,6 +6,7 @@ import (
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
+	"github.com/aghex70/daps/internal/repositories/gorm/email"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/server"
@@ -19,6 +20,7 @@ type CategoryService struct {
 	categoryRepository     *category.CategoryGormRepository
 	relationshipRepository *relationship.RelationshipGormRepository
 	todoRepository         *todo.TodoGormRepository
+	emailRepository        *email.EmailGormRepository
 }
 
 func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.CreateCategoryRequest) error {
@@ -121,12 +123,12 @@ func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.Get
 		return domain.Category{}, err
 	}
 	fmt.Println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-	td, err := s.categoryRepository.GetById(ctx, int(req.CategoryId))
+	cat, err := s.categoryRepository.GetById(ctx, int(req.CategoryId))
 	if err != nil {
 		fmt.Println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
 		return domain.Category{}, err
 	}
-	return td, nil
+	return cat, nil
 }
 
 func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.DeleteCategoryRequest) error {
@@ -162,17 +164,18 @@ func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.
 
 func (s CategoryService) List(ctx context.Context, r *http.Request) ([]domain.Category, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
-	todos, err := s.categoryRepository.List(ctx, int(userId))
+	categories, err := s.categoryRepository.List(ctx, int(userId))
 	if err != nil {
 		return []domain.Category{}, err
 	}
-	return todos, nil
+	return categories, nil
 }
 
-func NewCategoryService(cr *category.CategoryGormRepository, rr *relationship.RelationshipGormRepository, logger *log.Logger) CategoryService {
+func NewCategoryService(cr *category.CategoryGormRepository, rr *relationship.RelationshipGormRepository, er *email.EmailGormRepository, logger *log.Logger) CategoryService {
 	return CategoryService{
 		logger:                 logger,
 		categoryRepository:     cr,
 		relationshipRepository: rr,
+		emailRepository:        er,
 	}
 }

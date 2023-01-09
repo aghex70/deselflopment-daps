@@ -47,3 +47,7 @@ type UserConfigServicer interface {
 	Update(ctx context.Context, r *http.Request, req UpdateUserConfigRequest) error
 	Get(ctx context.Context, r *http.Request) (domain.Profile, error)
 }
+
+type EmailServicer interface {
+	Send(ctx context.Context, r *http.Request, req SendEmailRequest) error
+}

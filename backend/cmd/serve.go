@@ -12,6 +12,7 @@ import (
 	userHandler "github.com/aghex70/daps/internal/handlers/user"
 	userConfigHandler "github.com/aghex70/daps/internal/handlers/userconfig"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
+	"github.com/aghex70/daps/internal/repositories/gorm/email"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
@@ -51,14 +52,15 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			rr, _ := relationship.NewRelationshipGormRepository(gdb)
 			tr, _ := todo.NewTodoGormRepository(gdb)
 			ucr, _ := userconfig.NewUserConfigGormRepository(gdb)
+			er, _ := email.NewEmailGormRepository(gdb)
 
-			us := userService.NewUserService(ur, cr, ucr, tr, &logger2)
+			us := userService.NewUserService(ur, cr, ucr, tr, er, &logger2)
 			uh := userHandler.NewUserHandler(us, &logger2)
 
-			cs := categoryService.NewCategoryService(cr, rr, &logger2)
+			cs := categoryService.NewCategoryService(cr, rr, er, &logger2)
 			ch := categoryHandler.NewCategoryHandler(cs, &logger2)
 
-			tds := todoService.NewtodoService(tr, rr, &logger2)
+			tds := todoService.NewtodoService(tr, rr, er, &logger2)
 			tdh := todoHandler.NewTodoHandler(tds, &logger2)
 
 			ucs := userConfigService.NewUserConfigService(ucr, &logger2)
