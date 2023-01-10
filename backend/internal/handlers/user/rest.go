@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"github.com/aghex70/daps/pkg"
@@ -235,6 +236,7 @@ func (h UserHandler) ImportCSV(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) ActivateUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("ActivateUser getOrigin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
@@ -251,13 +253,13 @@ func (h UserHandler) ActivateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = handlers.CheckHttpMethod(http.MethodGet, w, r)
+	err = handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 
-	err = h.userService.Activate(nil, r, payload)
+	err = h.userService.Activate(nil, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -282,13 +284,13 @@ func (h UserHandler) RefreshActivationCode(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = handlers.CheckHttpMethod(http.MethodGet, w, r)
+	err = handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 
-	err = h.userService.RefreshActivationCode(nil, r, payload)
+	err = h.userService.RefreshActivationCode(nil, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return

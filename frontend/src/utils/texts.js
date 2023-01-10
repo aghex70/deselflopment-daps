@@ -53,11 +53,12 @@ const PleaseEnterCategoryNameText = language === 'en' ? 'Please enter a category
 const DemoUserAlreadyProvisionedText = language === 'en' ? 'Demo user already provisioned! Please try with a different email' : '¡Usuario demo ya provisionado! Por favor, inténtelo con un correo electrónico diferente';
 const PleaseEnterAnEmailText = language === 'en' ? 'Please enter an email' : 'Por favor, introduzca un correo electrónico';
 const CheckFileFormatText = language === 'en' ? 'Please check the file format' : 'Por favor, compruebe el formato del archivo';
+const InvalidActivationLinkText = language === 'en' ? 'Invalid activation link! Please try again or register' : '¡Enlace de activación no válido! Por favor, inténtelo de nuevo o regístrese';
+const ActivationCodeRefreshedText = language === 'en' ? 'Activation code refreshed! Please check your email' : '¡Código de activación actualizado! Por favor, compruebe su correo electrónico';
 
 // Buttons
 const CancelButtonText = language === 'en' ? 'Cancel' : 'Cancelar';
 const ShareButtonText = language === 'en' ? 'Share' : 'Compartir';
-const ReturnButtonText = language === 'en' ? 'Return' : 'Volver';
 const CreateButtonText = language === 'en' ? 'Create' : 'Crear';
 const LoginButtonText = language === 'en' ? 'Login' : 'Iniciar sesión';
 const RegisterButtonText = language === 'en' ? 'Register' : 'Registrarse';
@@ -66,6 +67,7 @@ const UnsuscribeButtonText = language === 'en' ? 'Unsubscribe' : 'Darse de baja'
 const EditButtonText = language === 'en' ? 'Edit' : 'Editar';
 const DeleteButtonText = language === 'en' ? 'Delete' : 'Eliminar';
 const ImportButtonText = language === 'en' ? 'Import' : 'Importar';
+const RefreshCodeButtonText = language === 'en' ? 'Refresh activation link' : 'Refrescar enlace de activación';
 
 // Headers
 const CategoriesHeaderText = language === 'en' ? 'Categories' : 'Categorías';
@@ -149,7 +151,6 @@ export {
     UserAlreadyRegisteredText,
     CancelButtonText,
     ShareButtonText,
-    ReturnButtonText,
     CreateButtonText,
     LoginButtonText,
     RegisterButtonText,
@@ -220,4 +221,7 @@ export {
     SuggestedTodosHeaderText,
     SuggestedTodosIconText,
     ActivateUserHeaderText,
+    InvalidActivationLinkText,
+    RefreshCodeButtonText,
+    ActivationCodeRefreshedText,
 };

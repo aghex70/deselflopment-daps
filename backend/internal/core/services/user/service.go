@@ -47,11 +47,12 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 
 	categories, err := s.categoryRepository.GetByIds(ctx, pkg.BaseCategoriesIds)
 	u := domain.User{
-		Name:       r.Name,
-		Email:      r.Email,
-		Password:   cipheredPassword,
-		Categories: categories,
-		Active:     false,
+		Name:           r.Name,
+		Email:          r.Email,
+		Password:       cipheredPassword,
+		Categories:     categories,
+		Active:         false,
+		ActivationCode: pkg.GenerateUUID(),
 	}
 
 	nu, err := s.userRepository.Create(ctx, u)
@@ -74,10 +75,9 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 		From:      pkg.FromEmail,
 		To:        r.Email,
 		Recipient: r.Name,
-		Subject:   "Welcome to DAPS, " + r.Name + ".",
-		Body:      "In order to complete your registration, please click on the following link: blablablabla",
-		//+ pkg.FrontendUrl + "/confirm/" + strconv.Itoa(nu.Id),
-		User: nu.Id,
+		Subject:   "DAPS - Activate your account",
+		Body:      "In order to complete your registration, please click on the following link: " + pkg.ActivationCodeLink + nu.ActivationCode,
+		User:      nu.Id,
 	}
 
 	err = pkg.SendEmail(e)
@@ -336,8 +336,8 @@ func (s UserService) ImportCSV(ctx context.Context, r *http.Request, f multipart
 	return nil
 }
 
-func (s UserService) Activate(ctx context.Context, r *http.Request, req ports.ActivateUserRequest) error {
-	err := s.userRepository.ActivateUser(ctx, req.ActivationCode)
+func (s UserService) Activate(ctx context.Context, r ports.ActivateUserRequest) error {
+	err := s.userRepository.ActivateUser(ctx, r.ActivationCode)
 	if err != nil {
 		return err
 	}
@@ -345,8 +345,8 @@ func (s UserService) Activate(ctx context.Context, r *http.Request, req ports.Ac
 	return nil
 }
 
-func (s UserService) RefreshActivationCode(ctx context.Context, r *http.Request, req ports.ActivateUserRequest) error {
-	u, err := s.userRepository.RefreshActivationCode(ctx, req.ActivationCode)
+func (s UserService) RefreshActivationCode(ctx context.Context, r ports.ActivateUserRequest) error {
+	u, err := s.userRepository.RefreshActivationCode(ctx, r.ActivationCode)
 	if err != nil {
 		return err
 	}
@@ -356,7 +356,7 @@ func (s UserService) RefreshActivationCode(ctx context.Context, r *http.Request,
 		To:        u.Email,
 		Recipient: u.Name,
 		Subject:   "DAPS - Your new activation link",
-		Body:      "Your new activation link is " + pkg.ActivationCodeLink + u.ActivationCode,
+		Body:      "In order to complete your registration, please click on the following link: " + pkg.ActivationCodeLink + u.ActivationCode,
 		User:      u.Id,
 	}
 

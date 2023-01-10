@@ -94,7 +94,10 @@ func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (dom
 }
 
 func (gr *UserGormRepository) ActivateUser(ctx context.Context, code string) error {
-	result := gr.DB.Model(&relationship.User{ActivationCode: code}).Update("active", true)
+	var nu relationship.User
+	result := gr.DB.Model(&nu).Where(relationship.User{ActivationCode: code}).Updates(map[string]interface{}{
+		"active": true,
+	})
 	if result.RowsAffected == 0 {
 		return gorm.ErrRecordNotFound
 	}
@@ -106,8 +109,10 @@ func (gr *UserGormRepository) ActivateUser(ctx context.Context, code string) err
 }
 
 func (gr *UserGormRepository) RefreshActivationCode(ctx context.Context, code string) (domain.User, error) {
+	var nu relationship.User
 	newUUID := pkg.GenerateUUID()
-	result := gr.DB.Model(&relationship.User{ActivationCode: code}).Update("activation_code", newUUID)
+	result := gr.DB.Model(&nu).Where(relationship.User{ActivationCode: code}).Updates(map[string]interface{}{
+		"activation_code": newUUID})
 	if result.RowsAffected == 0 {
 		return domain.User{}, gorm.ErrRecordNotFound
 	}

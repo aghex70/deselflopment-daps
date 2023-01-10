@@ -112,7 +112,7 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/user/admin", JWTAuthMiddleware(s.userHandler.CheckAdmin))
 	http.HandleFunc("/api/user/provision", JWTAuthMiddleware(s.userHandler.ProvisionDemoUser))
 	http.HandleFunc("/api/user/activate", s.userHandler.ActivateUser)
-	http.HandleFunc("/api/user/refresh-activation-code/", s.userHandler.RefreshActivationCode)
+	http.HandleFunc("/api/user/refresh-activation-code", s.userHandler.RefreshActivationCode)
 
 	// Categories
 	http.HandleFunc("/api/categories", JWTAuthMiddleware(s.categoryHandler.ListCategories))

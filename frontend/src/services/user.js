@@ -96,12 +96,16 @@ const importCSV = async (file) => {
   return await axios.post(IMPORT_CSV_URL, formData, fileOptions);
 }
 
-const activateUser = async (id) => {
-    return await axios.get(`${ACTIVATE_USER_URL}/${id}`);
+const activateUser = async (uuid) => {
+    return await axios.post(`${ACTIVATE_USER_URL}`, {
+      activation_code: uuid,
+    });
 }
 
-const refreshActivationCode = async (id) => {
-    return await axios.get(`${REFRESH_ACTIVATION_CODE_URL}/${id}`);
+const refreshActivationCode = async (uuid) => {
+    return await axios.post(`${REFRESH_ACTIVATION_CODE_URL}`, {
+      activation_code: uuid
+    });
 }
 
 const UserService = {

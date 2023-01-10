@@ -134,6 +134,7 @@ func (u User) ToDto() domain.User {
 		Password:         u.Password,
 		IsAdmin:          u.IsAdmin,
 		RegistrationDate: u.RegistrationDate,
+		ActivationCode:   u.ActivationCode,
 	}
 }
 
