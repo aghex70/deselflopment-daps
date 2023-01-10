@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
+	"github.com/satori/go.uuid"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"time"
@@ -262,4 +263,17 @@ func SendEmail(e domain.Email) error {
 	}
 	fmt.Println("Email sent successfully to " + e.To)
 	return nil
+}
+
+func GenerateUUID() string {
+	u := uuid.NewV4()
+	return u.String()
+}
+
+func GetOrigin() string {
+	if Environment == "local" {
+		return "http://localhost:3100"
+	}
+
+	return "https://deselflopment.com"
 }

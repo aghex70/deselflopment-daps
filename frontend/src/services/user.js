@@ -11,6 +11,8 @@ const USERS_URL = `${DAPS_BASE_URL}api/users`;
 const ADMIN_URL = `${DAPS_BASE_URL}api/user/admin`;
 const PROVISION_DEMO_USER_URL = `${DAPS_BASE_URL}api/user/provision`;
 const IMPORT_CSV_URL = `${DAPS_BASE_URL}api/import`;
+const ACTIVATE_USER_URL = `${DAPS_BASE_URL}api/user/activate`;
+const REFRESH_ACTIVATION_CODE_URL = `${DAPS_BASE_URL}api/user/refresh-activation-code`;
 
 const options = {
   headers: {
@@ -94,6 +96,14 @@ const importCSV = async (file) => {
   return await axios.post(IMPORT_CSV_URL, formData, fileOptions);
 }
 
+const activateUser = async (id) => {
+    return await axios.get(`${ACTIVATE_USER_URL}/${id}`);
+}
+
+const refreshActivationCode = async (id) => {
+    return await axios.get(`${REFRESH_ACTIVATION_CODE_URL}/${id}`);
+}
+
 const UserService = {
   register,
   login,
@@ -107,6 +117,8 @@ const UserService = {
   getUser,
   deleteUser,
   importCSV,
+  activateUser,
+  refreshActivationCode,
 
 }
 

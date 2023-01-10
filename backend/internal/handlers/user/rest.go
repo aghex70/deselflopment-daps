@@ -9,7 +9,6 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -38,12 +37,7 @@ func (h UserHandler) HandleUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
-	environment := os.Getenv("ENVIRONMENT")
-	if environment == "local" {
-		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
-	} else {
-		w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-	}
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -73,12 +67,7 @@ func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
-	environment := os.Getenv("ENVIRONMENT")
-	if environment == "local" {
-		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
-	} else {
-		w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-	}
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -108,12 +97,7 @@ func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	environment := os.Getenv("ENVIRONMENT")
-	if environment == "local" {
-		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
-	} else {
-		w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-	}
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -248,6 +232,68 @@ func (h UserHandler) ImportCSV(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+}
+
+func (h UserHandler) ActivateUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	//w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	payload := ports.ActivateUserRequest{}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = handlers.CheckHttpMethod(http.MethodGet, w, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
+		return
+	}
+
+	err = h.userService.Activate(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h UserHandler) RefreshActivationCode(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	//w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	payload := ports.ActivateUserRequest{}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = handlers.CheckHttpMethod(http.MethodGet, w, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
+		return
+	}
+
+	err = h.userService.RefreshActivationCode(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func NewUserHandler(us ports.UserServicer, logger *log.Logger) UserHandler {

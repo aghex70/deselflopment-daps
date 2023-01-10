@@ -14,7 +14,6 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"net/http"
-	"os"
 	"reflect"
 	"strings"
 )
@@ -34,12 +33,7 @@ type RestServer struct {
 
 func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		environment := os.Getenv("ENVIRONMENT")
-		if environment == "local" {
-			w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3100")
-		} else {
-			w.Header().Add("Access-Control-Allow-Origin", "http://deselflopment.com")
-		}
+		w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 		w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, PUT, OPTIONS")
 		//w.Header().Add("Access-Control-Allow-Credentials", "true")
 		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -117,7 +111,8 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/users", JWTAuthMiddleware(s.userHandler.ListUsers))
 	http.HandleFunc("/api/user/admin", JWTAuthMiddleware(s.userHandler.CheckAdmin))
 	http.HandleFunc("/api/user/provision", JWTAuthMiddleware(s.userHandler.ProvisionDemoUser))
-	//http.HandleFunc("/recover-password", JWTAuthMiddleware(s.userHandler.RemoveUser))
+	http.HandleFunc("/api/user/activate", s.userHandler.ActivateUser)
+	http.HandleFunc("/api/user/refresh-activation-code/", s.userHandler.RefreshActivationCode)
 
 	// Categories
 	http.HandleFunc("/api/categories", JWTAuthMiddleware(s.categoryHandler.ListCategories))

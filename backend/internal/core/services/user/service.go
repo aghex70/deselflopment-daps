@@ -51,6 +51,7 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 		Email:      r.Email,
 		Password:   cipheredPassword,
 		Categories: categories,
+		Active:     false,
 	}
 
 	nu, err := s.userRepository.Create(ctx, u)
@@ -332,6 +333,51 @@ func (s UserService) ImportCSV(ctx context.Context, r *http.Request, f multipart
 		}
 	}
 
+	return nil
+}
+
+func (s UserService) Activate(ctx context.Context, r *http.Request, req ports.ActivateUserRequest) error {
+	err := s.userRepository.ActivateUser(ctx, req.ActivationCode)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s UserService) RefreshActivationCode(ctx context.Context, r *http.Request, req ports.ActivateUserRequest) error {
+	u, err := s.userRepository.RefreshActivationCode(ctx, req.ActivationCode)
+	if err != nil {
+		return err
+	}
+
+	e := domain.Email{
+		From:      pkg.FromEmail,
+		To:        u.Email,
+		Recipient: u.Name,
+		Subject:   "DAPS - Your new activation link",
+		Body:      "Your new activation link is " + pkg.ActivationCodeLink + u.ActivationCode,
+		User:      u.Id,
+	}
+
+	err = pkg.SendEmail(e)
+	if err != nil {
+		fmt.Printf("Error sending email: %+v", err)
+		e.Error = err.Error()
+		e.Sent = false
+		_, errz := s.emailRepository.Create(ctx, e)
+		if errz != nil {
+			fmt.Printf("Error saving email: %+v", errz)
+			return errz
+		}
+		return err
+	}
+
+	e.Sent = true
+	_, err = s.emailRepository.Create(ctx, e)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

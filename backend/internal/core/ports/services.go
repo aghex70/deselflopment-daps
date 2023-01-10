@@ -41,6 +41,8 @@ type UserServicer interface {
 	ProvisionDemoUser(ctx context.Context, r *http.Request, req ProvisionDemoUserRequest) error
 	List(ctx context.Context, r *http.Request) ([]domain.User, error)
 	ImportCSV(ctx context.Context, r *http.Request, f multipart.File) error
+	Activate(ctx context.Context, r *http.Request, req ActivateUserRequest) error
+	RefreshActivationCode(ctx context.Context, r *http.Request, req ActivateUserRequest) error
 }
 
 type UserConfigServicer interface {

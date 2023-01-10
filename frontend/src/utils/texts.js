@@ -88,6 +88,7 @@ const UsersHeaderText = language === 'en' ? 'Users' : 'Usuarios';
 const ViewUserHeaderText = language === 'en' ? 'View user' : 'Ver usuario';
 const ImportTodosHeaderText = language === 'en' ? 'Import Todos' : 'Importar tareas';
 const SuggestedTodosHeaderText = language === 'en' ? 'Suggested Todos' : 'Tareas sugeridas';
+const ActivateUserHeaderText = language === 'en' ? 'Activate user' : 'Activar usuario';
 
 
 // Forms
@@ -218,4 +219,5 @@ export {
     SuggestedTodosIndicationText,
     SuggestedTodosHeaderText,
     SuggestedTodosIconText,
+    ActivateUserHeaderText,
 };

@@ -100,7 +100,6 @@ const Login = () => {
     }
 
   return (
-    // Create a container with a class name "contenedor" and background color red
     <Container
         style={{
           display: 'flex',

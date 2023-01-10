@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
+	"github.com/aghex70/daps/pkg"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"log"
@@ -85,6 +86,38 @@ func (gr *UserGormRepository) Get(ctx context.Context, id int) (domain.User, err
 func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (domain.User, error) {
 	var u relationship.User
 	result := gr.DB.Where(&relationship.User{Email: email}).First(&u)
+	if result.Error != nil {
+		return domain.User{}, result.Error
+	}
+
+	return u.ToDto(), nil
+}
+
+func (gr *UserGormRepository) ActivateUser(ctx context.Context, code string) error {
+	result := gr.DB.Model(&relationship.User{ActivationCode: code}).Update("active", true)
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (gr *UserGormRepository) RefreshActivationCode(ctx context.Context, code string) (domain.User, error) {
+	newUUID := pkg.GenerateUUID()
+	result := gr.DB.Model(&relationship.User{ActivationCode: code}).Update("activation_code", newUUID)
+	if result.RowsAffected == 0 {
+		return domain.User{}, gorm.ErrRecordNotFound
+	}
+
+	if result.Error != nil {
+		return domain.User{}, result.Error
+	}
+
+	var u relationship.User
+	result = gr.DB.Where(&relationship.User{ActivationCode: newUUID}).First(&u)
 	if result.Error != nil {
 		return domain.User{}, result.Error
 	}

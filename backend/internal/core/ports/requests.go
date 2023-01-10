@@ -111,3 +111,7 @@ type SendEmailRequest struct {
 	Body      string `json:"body"`
 	UserId    int64  `json:"user_id"`
 }
+
+type ActivateUserRequest struct {
+	ActivationCode string `json:"activation_code"`
+}

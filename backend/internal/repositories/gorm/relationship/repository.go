@@ -25,6 +25,8 @@ type User struct {
 	Password         string     `gorm:"column:password"`
 	RegistrationDate time.Time  `gorm:"column:registration_date;autoCreateTime"`
 	Categories       []Category `gorm:"many2many:daps_category_users"`
+	ActivationCode   string     `gorm:"column:activation_code"`
+	Active           bool       `gorm:"column:active"`
 }
 
 type Category struct {
@@ -137,21 +139,13 @@ func (u User) ToDto() domain.User {
 
 func UserFromDto(u domain.User) User {
 	return User{
-		Name:     u.Name,
-		Email:    u.Email,
-		Password: u.Password,
-		IsAdmin:  u.IsAdmin,
-		//Categories: CategoryDomainDB(u.Categories, 0),
+		Name:           u.Name,
+		Email:          u.Email,
+		Password:       u.Password,
+		IsAdmin:        u.IsAdmin,
+		ActivationCode: u.ActivationCode,
+		Active:         u.Active,
 	}
-}
-
-func CategoryDomainDB(categories []domain.Category, userId int) []Category {
-	var c []Category
-	for _, category := range categories {
-		nc := CategoryFromDto(category, userId)
-		c = append(c, nc)
-	}
-	return c
 }
 
 func CategoryDBDomain(categories []Category) []domain.Category {

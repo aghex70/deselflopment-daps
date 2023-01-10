@@ -22,6 +22,7 @@ import UsersList from "./components/UsersList";
 import User from "./components/User";
 import ImportCSV from "./components/ImportCSV";
 import SuggestedTodosList from "./components/SuggestedTodosList";
+import ActivateUser from "./components/ActivateUser";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -39,6 +40,8 @@ root.render(
         <Route path="todos" element={<TodosList />} />
         <Route path="category/:id" element={<Category />} />
         <Route path="todo/:id" element={<Todo />} />
+        <Route path="activate/:id" element={<ActivateUser />} />
+        <Route path="refresh-activation-code/:id" element={<ActivateUser />} />
         <Route path="create-category" element={<CreateCategory />} />
         <Route path="create-todo" element={<CreateTodo />} />
         <Route path="recurring-todos" element={<RecurringTodosList />} />

@@ -18,7 +18,6 @@ import {
 } from "../utils/texts";
 
 const Register = ()  =>{
-  console.log("Hola hola hola")
   skipLogin();
   document.title = 'deselflopment - daps'
   const [name, setName] = useState("");

@@ -10,6 +10,8 @@ type User struct {
 	RegistrationDate time.Time  `json:"registration_date"`
 	Categories       []Category `json:"categories"`
 	IsAdmin          bool       `json:"is_admin"`
+	ActivationCode   string     `json:"activation_code"`
+	Active           bool       `json:"active"`
 }
 
 type FilteredUser struct {
