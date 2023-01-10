@@ -64,7 +64,7 @@ const Category = () => {
     <Container>
       <DapsHeader />
       <h1 className="text-center">{enableEdit ? EditCategoryHeaderText : ViewCategoryHeaderText}</h1>
-      <Form  onSubmit={(e) => handleSubmit(e)}>
+      <Form onSubmit={(e) => handleSubmit(e)}>
         <FloatingLabel
           controlId="floatingName"
           label={NameLabelText}
@@ -94,7 +94,6 @@ const Category = () => {
           <Button
             variant="success"
             type="submit"
-            onClick={(e) => handleSubmit(e)}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >{EditButtonText}</Button>
           <Button

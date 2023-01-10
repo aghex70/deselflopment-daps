@@ -100,7 +100,6 @@ const ProvisionDemoUser = () => {
                     <Button
                         variant="success"
                         type="submit"
-                        onClick={(e) => handleSubmit(e)}
                         style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                     >{CreateButtonText}</Button>
                     <Button

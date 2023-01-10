@@ -61,7 +61,6 @@ const Register = () =>{
         <Button
           variant="primary"
           type="submit"
-          onClick={(e) => handleSubmit(e)}
         >
           Submit
         </Button>

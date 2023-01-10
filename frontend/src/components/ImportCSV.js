@@ -55,7 +55,7 @@ const ImportCSV = () => {
                 >{CancelButtonText}</Button>
                 <Button
                     variant="success"
-                    onClick={(e) => handleSubmit(e)}
+                    type="submit"
                     style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                 >{ImportButtonText}</Button>
             </ButtonGroup>

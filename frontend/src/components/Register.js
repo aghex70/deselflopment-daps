@@ -18,6 +18,7 @@ import {
 } from "../utils/texts";
 
 const Register = ()  =>{
+  console.log("Hola hola hola")
   skipLogin();
   document.title = 'deselflopment - daps'
   const [name, setName] = useState("");
@@ -84,7 +85,7 @@ const Register = ()  =>{
 
   return (
     <Container style={styles}>
-      <Form  onSubmit={(e)=>handleSubmit(e)}>
+      <Form  onSubmit={(e) => handleSubmit(e)}>
         <h1 style={{ margin: '0px 0px 32px' }} className="text-center">{RegisterHeaderText}</h1>
         <FloatingLabel
           controlId="floatingName"
@@ -126,7 +127,6 @@ const Register = ()  =>{
         <Button
           variant="success"
           type="submit"
-          onClick={(e) => handleSubmit(e)}
         >
           {RegisterButtonText}
         </Button>
