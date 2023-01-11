@@ -90,17 +90,31 @@ func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (dom
 		return domain.User{}, result.Error
 	}
 
+	if u.Active == false {
+		return domain.User{}, errors.New("user is not activated")
+	}
 	return u.ToDto(), nil
 }
 
 func (gr *UserGormRepository) ActivateUser(ctx context.Context, code string) error {
 	var nu relationship.User
-	result := gr.DB.Model(&nu).Where(relationship.User{ActivationCode: code}).Updates(map[string]interface{}{
-		"active": true,
-	})
+	var u relationship.User
+	result := gr.DB.Where(&relationship.User{ActivationCode: code}).First(&u)
+	if result.Error != nil {
+		return result.Error
+	}
+
 	if result.RowsAffected == 0 {
 		return gorm.ErrRecordNotFound
 	}
+
+	if u.Active {
+		return errors.New("user is already active")
+	}
+
+	result = gr.DB.Model(&nu).Where(relationship.User{ActivationCode: code}).Updates(map[string]interface{}{
+		"active": true,
+	})
 
 	if result.Error != nil {
 		return result.Error

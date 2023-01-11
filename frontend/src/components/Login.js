@@ -13,6 +13,7 @@ import {
   PasswordLabelText,
   PasswordNotLongEnoughText,
   RegisterButtonText,
+  UserNotActivatedText,
   UserNotFoundText
 } from "../utils/texts";
 import UserConfigurationService from "../services/userconfiguration";
@@ -28,6 +29,7 @@ const Login = () => {
   const [showModalEmailNotFilled, setShowModalEmailNotFilled] = useState(false);
   const [showModalIncorrectPassword, setShowModalIncorrectPassword] = useState(false);
   const [showModalInvalidEmail, setShowModalInvalidEmail] = useState(false);
+  const [showModalUserNotActivated, setShowModalUserNotActivated] = useState(false);
 
   const toggleModalUserDoesNotExist = () => {
     setShowModalUserDoesNotExist(!showModalUserDoesNotExist);
@@ -47,6 +49,10 @@ const Login = () => {
 
   const toggleModalInvalidEmail = () => {
     setShowModalInvalidEmail(!showModalInvalidEmail);
+  }
+
+  const toggleModalUserNotActivated = () => {
+    setShowModalUserNotActivated(!showModalUserNotActivated);
   }
 
   const handleSubmit = (e) => {
@@ -82,6 +88,8 @@ const Login = () => {
           setShowModalIncorrectPassword(true);
         } else if (error.response.data.message.includes("Field validation for 'Email' failed on the 'email' tag")) {
           setShowModalInvalidEmail(true);
+        } else if (error.response.data.message === "user is not activated") {
+          setShowModalUserNotActivated(true);
         }
       }
     )
@@ -146,7 +154,7 @@ const Login = () => {
           >{RegisterButtonText}</Button>
           <Button
               variant="danger"
-              onClick={(e) => toggleModalUserDoesNotExist(e)}
+              onClick={() => toggleModalUserDoesNotExist()}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >{CancelButtonText}</Button>
         </ButtonGroup>
@@ -159,7 +167,7 @@ const Login = () => {
           <ButtonGroup style={{width: "40%"}}>
             <Button
                 variant="danger"
-                onClick={(e) => toggleModalEmailNotFilled(e)}
+                onClick={() => toggleModalEmailNotFilled()}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{CancelButtonText}</Button>
           </ButtonGroup>
@@ -172,7 +180,7 @@ const Login = () => {
           <ButtonGroup style={{width: "40%"}}>
             <Button
                 variant="danger"
-                onClick={(e) => toggleModalPasswordNotLongEnough(e)}
+                onClick={() => toggleModalPasswordNotLongEnough()}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{CancelButtonText}</Button>
           </ButtonGroup>
@@ -185,7 +193,7 @@ const Login = () => {
           <ButtonGroup style={{width: "40%"}}>
             <Button
                 variant="danger"
-                onClick={(e) => toggleModalIncorrectPassword(e)}
+                onClick={() => toggleModalIncorrectPassword()}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{CancelButtonText}</Button>
           </ButtonGroup>
@@ -198,7 +206,20 @@ const Login = () => {
           <ButtonGroup style={{width: "40%"}}>
             <Button
                 variant="danger"
-                onClick={(e) => toggleModalInvalidEmail(e)}
+                onClick={() => toggleModalInvalidEmail()}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{CancelButtonText}</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='successModal text-center' show={showModalUserNotActivated} open={showModalUserNotActivated} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>{UserNotActivatedText}</h4>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+                variant="danger"
+                onClick={() => toggleModalUserNotActivated()}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{CancelButtonText}</Button>
           </ButtonGroup>

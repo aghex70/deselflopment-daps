@@ -3,6 +3,7 @@ import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} f
 import UserService from "../services/user";
 import {goToLogin, hashPassword, skipLogin} from "../utils/helpers";
 import {
+  ActivateUserText,
   CancelButtonText,
   EmailAddressLabelText,
   InvalidEmailText,
@@ -28,6 +29,7 @@ const Register = ()  =>{
   const [showModalUserAlreadyExists, setShowModalUserAlreadyExists] = useState(false);
   const [showModalPasswordNotLongEnough, setShowModalPasswordNotLongEnough] = useState(false);
   const [showModalInvalidEmail, setShowModalInvalidEmail] = useState(false);
+  const [showModalActivateUser, setShowModalActivateUser] = useState(false);
 
 
   const toggleModalPasswordsDoNotMatch = () => {
@@ -70,7 +72,7 @@ const Register = ()  =>{
       (response) => {
         if (response.status === 201) {
           localStorage.setItem("language", "en");
-          goToLogin();
+          setShowModalActivateUser(true);
         }
       }
     ).catch(
@@ -186,6 +188,20 @@ const Register = ()  =>{
                 onClick={(e) => toggleModalInvalidEmail(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{CancelButtonText}</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='activateUser text-center' show={showModalActivateUser}
+             centered={true} size='lg'>
+        <ModalBody>
+          <h3 style={{margin: "32px"}}>{ActivateUserText}</h3>
+          <ButtonGroup style={{width: "40%"}}>
+            <Button
+                variant="success"
+                onClick={() => goToLogin()}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{LoginButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
