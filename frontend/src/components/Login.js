@@ -1,11 +1,11 @@
 import React, {useState} from 'react'
-import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
+import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody, Nav} from "react-bootstrap";
 import UserService from "../services/user";
 import {goToCategories, setAutoSuggest, setLanguage, skipLogin} from "../utils/helpers";
 import {
   CancelButtonText,
   EmailAddressLabelText,
-  EnterEmailText,
+  EnterEmailText, ForgotPasswordHeaderText,
   IncorrectPasswordText,
   InvalidEmailText,
   LoginButtonText,
@@ -141,7 +141,16 @@ const Login = () => {
         >
           {LoginButtonText}
         </Button>
+
+
+      <Nav className="justify-content-center" style={{marginBottom: "15px"}}>
+        <Nav.Item className="font-size-lg">
+          <Nav.Link href="reset-link"
+          >{ForgotPasswordHeaderText}</Nav.Link>
+        </Nav.Item>
+      </Nav>
       </Form>
+
       <Modal className='successModal text-center' show={showModalUserDoesNotExist} open={showModalUserDoesNotExist} centered={true} size='lg'>
       <ModalBody>
         <h4 style={{margin: "32px"}}>{UserNotFoundText}</h4>

@@ -57,6 +57,8 @@ const InvalidActivationLinkText = language === 'en' ? 'Invalid activation link! 
 const PasswordLinkResetText = language === 'en' ? 'Password reset link sent! Please check your email' : '¡Enlace de restablecimiento de contraseña enviado! Por favor, compruebe su correo electrónico';
 const UserNotActivatedText = language === 'en' ? 'User not activated! Please check your email and activate your account' : '¡Usuario no activado! Por favor, compruebe su correo electrónico y active su cuenta';
 const ActivateUserText = language === 'en' ? 'Congratulations, you have successfully registered! Please check your email and activate your account' : '¡Enhorabuena, te has registrado con éxito! Por favor, compruebe su correo electrónico y active su cuenta';
+const InvalidResetPasswordCodeText = language === 'en' ? 'Invalid reset password code! Please try again or register first' : 'Código de restablecimiento de contraseña no válido';
+
 
 // Buttons
 const CancelButtonText = language === 'en' ? 'Cancel' : 'Cancelar';
@@ -94,7 +96,6 @@ const ImportTodosHeaderText = language === 'en' ? 'Import Todos' : 'Importar tar
 const SuggestedTodosHeaderText = language === 'en' ? 'Suggested Todos' : 'Tareas sugeridas';
 const ForgotPasswordHeaderText = language === 'en' ? 'Forgot password?' : '¿Olvidó su contraseña?';
 const ResetPasswordHeaderText = language === 'en' ? 'Reset password' : 'Restablecer contraseña';
-
 
 // Forms
 const NameLabelText = language === 'en' ? 'Name' : 'Nombre';
@@ -230,4 +231,5 @@ export {
     ForgotPasswordHeaderText,
     ResetPasswordButtonText,
     ResetPasswordHeaderText,
+    InvalidResetPasswordCodeText,
 };

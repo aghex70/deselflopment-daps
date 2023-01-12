@@ -1,21 +1,25 @@
 import React, {useState} from 'react'
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import UserService from "../services/user";
-import {skipLogin} from "../utils/helpers";
 import {
   CancelButtonText,
-  EmailAddressLabelText, EnterEmailText,
-  ForgotPasswordHeaderText, PasswordLinkResetText,
+  EmailAddressLabelText,
+  EnterEmailText,
+  ForgotPasswordHeaderText,
+  PasswordLinkResetText,
+  RegisterButtonText,
   ResetPasswordButtonText,
+  UserNotFoundText,
 } from "../utils/texts";
 
 
 const ResetLink = () => {
-  skipLogin();
+  localStorage.removeItem("access_token");
   document.title = 'deselflopment - daps'
   const [email, setEmail] = useState("");
   const [showModalEmailNotFilled, setShowModalEmailNotFilled] = useState(false);
   const [showModalPasswordReset, setShowModalPasswordReset] = useState(false);
+  const [showModalUserDoesNotExist, setShowModalUserDoesNotExist] = useState(false);
 
   const toggleModalEmailNotFilled = () => {
     setShowModalEmailNotFilled(!showModalEmailNotFilled);
@@ -23,6 +27,10 @@ const ResetLink = () => {
 
   const toggleModalPasswordReset = () => {
     setShowModalPasswordReset(!showModalPasswordReset);
+  }
+
+  const toggleModalUserDoesNotExist = () => {
+    setShowModalUserDoesNotExist(!showModalUserDoesNotExist);
   }
 
   const handleSubmit = (e) => {
@@ -39,10 +47,9 @@ const ResetLink = () => {
         }
     ).catch(
         (error) => {
-          console.log(error);
-          console.log(error.response);
-          console.log(error.response.data);
-          console.log(error.response.data.message);
+          if (error.response.data.message === "record not found") {
+            setShowModalUserDoesNotExist(true);
+          }
         }
     )
     }
@@ -94,6 +101,25 @@ const ResetLink = () => {
             <Button
                 variant="success"
                 onClick={() => toggleModalPasswordReset()}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{CancelButtonText}</Button>
+          </ButtonGroup>
+        </ModalBody>
+      </Modal>
+
+      <Modal className='successModal text-center' show={showModalUserDoesNotExist} open={showModalUserDoesNotExist} centered={true} size='lg'>
+        <ModalBody>
+          <h4 style={{margin: "32px"}}>{UserNotFoundText}</h4>
+          <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
+            <Button
+                variant="success"
+                type="submit"
+                onClick={(e) => window.location.href = "/register"}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{RegisterButtonText}</Button>
+            <Button
+                variant="danger"
+                onClick={() => toggleModalUserDoesNotExist()}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{CancelButtonText}</Button>
           </ButtonGroup>

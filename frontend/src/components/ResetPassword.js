@@ -1,23 +1,30 @@
 import React, {useState} from 'react'
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import {
-  CancelButtonText,
-  PasswordLabelText,
-  PasswordsDoNotMatchText,
-  RepeatPasswordLabelText,
-  ResetPasswordHeaderText,
+    CancelButtonText,
+    InvalidResetPasswordCodeText,
+    PasswordLabelText,
+    PasswordsDoNotMatchText,
+    RegisterButtonText,
+    RepeatPasswordLabelText,
+    ResetPasswordHeaderText,
 } from "../utils/texts";
-import {goToLogin} from "../utils/helpers";
+import {goToLogin, goToRegister, hashPassword} from "../utils/helpers";
 import UserService from "../services/user";
 
 
-const RecoverPassword = () => {
+const ResetPassword = () => {
+  localStorage.removeItem("access_token");
   document.title = 'deselflopment - daps'
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [showModalPasswordsDoNotMatch, setShowModalPasswordsDoNotMatch] = useState(false);
   const [showModalUserNotFound, setShowModalUserNotFound] = useState(false);
   const uuid = window.location.pathname.split("reset-password/")[1];
+
+  const toggleModalPasswordsDoNotMatch = () => {
+    setShowModalPasswordsDoNotMatch(!showModalPasswordsDoNotMatch);
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,16 +33,16 @@ const RecoverPassword = () => {
       return;
     }
 
-    UserService.resetPassword(uuid, password).then(
+    const hashedPassword = hashPassword(password);
+    UserService.resetPassword(uuid, hashedPassword).then(
         () => {
           goToLogin();
         }
     ).catch(
         (error) => {
-          console.log(error);
-          console.log(error.response);
-          console.log(error.response.data);
-          console.log(error.response.data.message);
+            if (error.response.data.message === "record not found") {
+                setShowModalUserNotFound(true);
+            }
         }
     )
   }
@@ -89,21 +96,21 @@ const RecoverPassword = () => {
             </ButtonGroup>
           </ModalBody>
         </Modal>
-        {/*<Modal className='activateUser text-center' show={showModalUserNotFound}*/}
-        {/*       centered={true} size='lg'>*/}
-        {/*  <ModalBody>*/}
-        {/*    <h3 style={{margin: "32px"}}>{InvalidActivationLinkText}</h3>*/}
-        {/*    <ButtonGroup style={{width: "40%"}}>*/}
-        {/*      <Button*/}
-        {/*          variant="success"*/}
-        {/*          onClick={() => goToRegister()}*/}
-        {/*          style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}*/}
-        {/*      >{RegisterButtonText}</Button>*/}
-        {/*    </ButtonGroup>*/}
-        {/*  </ModalBody>*/}
-        {/*</Modal>*/}
+        <Modal className='activateUser text-center' show={showModalUserNotFound}
+               centered={true} size='lg'>
+          <ModalBody>
+            <h3 style={{margin: "32px"}}>{InvalidResetPasswordCodeText}</h3>
+            <ButtonGroup style={{width: "40%"}}>
+              <Button
+                  variant="success"
+                  onClick={() => goToRegister()}
+                  style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+              >{RegisterButtonText}</Button>
+            </ButtonGroup>
+          </ModalBody>
+        </Modal>
       </Container>
   )
 }
 
-export default RecoverPassword;
+export default ResetPassword;

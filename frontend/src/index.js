@@ -24,6 +24,7 @@ import ImportCSV from "./components/ImportCSV";
 import SuggestedTodosList from "./components/SuggestedTodosList";
 import ActivateUser from "./components/ActivateUser";
 import ResetLink from "./components/ResetLink";
+import ResetPassword from "./components/ResetPassword";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -42,9 +43,8 @@ root.render(
         <Route path="category/:id" element={<Category />} />
         <Route path="todo/:id" element={<Todo />} />
         <Route path="activate/:id" element={<ActivateUser />} />
-        <Route path="reset-password/:id" element={<ActivateUser />} />
+        <Route path="reset-password/:id" element={<ResetPassword />} />
         <Route path="reset-link" element={<ResetLink />} />
-        <Route path="refresh-activation-code/:id" element={<ActivateUser />} />
         <Route path="create-category" element={<CreateCategory />} />
         <Route path="create-todo" element={<CreateTodo />} />
         <Route path="recurring-todos" element={<RecurringTodosList />} />
