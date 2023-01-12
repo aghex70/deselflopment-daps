@@ -76,7 +76,7 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 		From:      pkg.FromEmail,
 		To:        r.Email,
 		Recipient: r.Name,
-		Subject:   "DAPS - Activate your account",
+		Subject:   "📣 DAPS - Activate your account 📣",
 		Body:      "In order to complete your registration, please click on the following link: " + pkg.ActivationCodeLink + nu.ActivationCode,
 		User:      nu.Id,
 	}
@@ -358,7 +358,7 @@ func (s UserService) SendResetLink(ctx context.Context, r ports.ResetLinkRequest
 		From:      pkg.FromEmail,
 		To:        u.Email,
 		Recipient: u.Name,
-		Subject:   "DAPS - Password reset request",
+		Subject:   "📣 DAPS - Password reset request 📣",
 		Body:      "In order to reset your password, please follow this link: " + pkg.ResetPasswordLink + u.ResetPasswordCode,
 		User:      u.Id,
 	}
