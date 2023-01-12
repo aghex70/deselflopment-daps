@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/satori/go.uuid"
 	"github.com/sendgrid/sendgrid-go"
@@ -250,8 +249,7 @@ func FilterUser(user domain.User) domain.FilteredUser {
 func SendEmail(e domain.Email) error {
 	from := mail.NewEmail(FromName, FromEmail)
 	subject := e.Subject
-	//to := mail.NewEmail(e.Recipient, e.To)
-	to := mail.NewEmail(FromName, FromEmail)
+	to := mail.NewEmail(e.Recipient, e.To)
 	message := mail.NewSingleEmail(from, subject, to, e.Body+time.Now().Format("2006-01-02 15:04:05"), e.Body)
 	client := sendgrid.NewSendClient(SendGridApiKey)
 	response, err := client.Send(message)
@@ -261,7 +259,6 @@ func SendEmail(e domain.Email) error {
 	if response.StatusCode != 202 {
 		return errors.New("error sending email")
 	}
-	fmt.Println("Email sent successfully to " + e.To)
 	return nil
 }
 
