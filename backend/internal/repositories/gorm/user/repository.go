@@ -122,11 +122,9 @@ func (gr *UserGormRepository) ActivateUser(ctx context.Context, code string) err
 	return nil
 }
 
-func (gr *UserGormRepository) RefreshActivationCode(ctx context.Context, code string) (domain.User, error) {
-	var nu relationship.User
-	newUUID := pkg.GenerateUUID()
-	result := gr.DB.Model(&nu).Where(relationship.User{ActivationCode: code}).Updates(map[string]interface{}{
-		"activation_code": newUUID})
+func (gr *UserGormRepository) CreateResetLink(ctx context.Context, email string) (domain.User, error) {
+	var u relationship.User
+	result := gr.DB.Where(&relationship.User{Email: email}).First(&u)
 	if result.RowsAffected == 0 {
 		return domain.User{}, gorm.ErrRecordNotFound
 	}
@@ -135,13 +133,31 @@ func (gr *UserGormRepository) RefreshActivationCode(ctx context.Context, code st
 		return domain.User{}, result.Error
 	}
 
+	return u.ToDto(), nil
+}
+
+func (gr *UserGormRepository) ResetPassword(ctx context.Context, password, code string) error {
 	var u relationship.User
-	result = gr.DB.Where(&relationship.User{ActivationCode: newUUID}).First(&u)
-	if result.Error != nil {
-		return domain.User{}, result.Error
+	result := gr.DB.Where(&relationship.User{ResetPasswordCode: code}).First(&u)
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
 	}
 
-	return u.ToDto(), nil
+	if result.Error != nil {
+		return result.Error
+	}
+
+	var nu relationship.User
+	newUUID := pkg.GenerateUUID()
+	result = gr.DB.Model(&nu).Where(relationship.User{ResetPasswordCode: code}).Updates(map[string]interface{}{
+		"reset_password_code": newUUID,
+		"password":            password})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
 
 func (gr *UserGormRepository) ProvisionDemoUser(ctx context.Context, e string) (domain.User, error) {

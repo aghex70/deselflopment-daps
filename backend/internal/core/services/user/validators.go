@@ -22,6 +22,10 @@ func (s UserService) PasswordsMatch(ctx context.Context, hashedPassword, passwor
 	return err == nil
 }
 
+func (s UserService) PasswordMatchesRepeatPassword(ctx context.Context, password, repeatPassword string) bool {
+	return password == repeatPassword
+}
+
 func (s UserService) EncryptPassword(ctx context.Context, password string) string {
 	keyString := os.Getenv("CIPHER_KEY")
 	key, _ := hex.DecodeString(keyString)

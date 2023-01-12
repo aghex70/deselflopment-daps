@@ -115,3 +115,13 @@ type SendEmailRequest struct {
 type ActivateUserRequest struct {
 	ActivationCode string `json:"activation_code"`
 }
+
+type ResetPasswordRequest struct {
+	Password          string `json:"password" validate:"required,min=13"`
+	RepeatPassword    string `json:"repeat_password" validate:"required,min=13"`
+	ResetPasswordCode string `json:"reset_password_code"`
+}
+
+type ResetLinkRequest struct {
+	Email string `json:"email" validate:"required,email"`
+}

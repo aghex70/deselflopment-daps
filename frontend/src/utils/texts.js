@@ -54,7 +54,7 @@ const DemoUserAlreadyProvisionedText = language === 'en' ? 'Demo user already pr
 const PleaseEnterAnEmailText = language === 'en' ? 'Please enter an email' : 'Por favor, introduzca un correo electrónico';
 const CheckFileFormatText = language === 'en' ? 'Please check the file format' : 'Por favor, compruebe el formato del archivo';
 const InvalidActivationLinkText = language === 'en' ? 'Invalid activation link! Please check the link, try again or register first' : '¡Enlace de activación no válido! Por favor, compruebe el enlace, inténtelo de nuevo o regístrese primero';
-const ActivationCodeRefreshedText = language === 'en' ? 'Activation code refreshed! Please check your email' : '¡Código de activación actualizado! Por favor, compruebe su correo electrónico';
+const PasswordLinkResetText = language === 'en' ? 'Password reset link sent! Please check your email' : '¡Enlace de restablecimiento de contraseña enviado! Por favor, compruebe su correo electrónico';
 const UserNotActivatedText = language === 'en' ? 'User not activated! Please check your email and activate your account' : '¡Usuario no activado! Por favor, compruebe su correo electrónico y active su cuenta';
 const ActivateUserText = language === 'en' ? 'Congratulations, you have successfully registered! Please check your email and activate your account' : '¡Enhorabuena, te has registrado con éxito! Por favor, compruebe su correo electrónico y active su cuenta';
 
@@ -69,6 +69,7 @@ const UnsuscribeButtonText = language === 'en' ? 'Unsubscribe' : 'Darse de baja'
 const EditButtonText = language === 'en' ? 'Edit' : 'Editar';
 const DeleteButtonText = language === 'en' ? 'Delete' : 'Eliminar';
 const ImportButtonText = language === 'en' ? 'Import' : 'Importar';
+const ResetPasswordButtonText = language === 'en' ? 'Reset password' : 'Restablecer contraseña';
 
 // Headers
 const CategoriesHeaderText = language === 'en' ? 'Categories' : 'Categorías';
@@ -91,6 +92,8 @@ const UsersHeaderText = language === 'en' ? 'Users' : 'Usuarios';
 const ViewUserHeaderText = language === 'en' ? 'View user' : 'Ver usuario';
 const ImportTodosHeaderText = language === 'en' ? 'Import Todos' : 'Importar tareas';
 const SuggestedTodosHeaderText = language === 'en' ? 'Suggested Todos' : 'Tareas sugeridas';
+const ForgotPasswordHeaderText = language === 'en' ? 'Forgot password?' : '¿Olvidó su contraseña?';
+const ResetPasswordHeaderText = language === 'en' ? 'Reset password' : 'Restablecer contraseña';
 
 
 // Forms
@@ -221,7 +224,10 @@ export {
     SuggestedTodosHeaderText,
     SuggestedTodosIconText,
     InvalidActivationLinkText,
-    ActivationCodeRefreshedText,
+    PasswordLinkResetText,
     UserNotActivatedText,
     ActivateUserText,
+    ForgotPasswordHeaderText,
+    ResetPasswordButtonText,
+    ResetPasswordHeaderText,
 };

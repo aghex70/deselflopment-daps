@@ -3,7 +3,6 @@ package user
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"github.com/aghex70/daps/pkg"
@@ -236,7 +235,6 @@ func (h UserHandler) ImportCSV(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) ActivateUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("ActivateUser getOrigin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
@@ -267,7 +265,7 @@ func (h UserHandler) ActivateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h UserHandler) RefreshActivationCode(w http.ResponseWriter, r *http.Request) {
+func (h UserHandler) ResetLink(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	//w.Header().Add("Access-Control-Allow-Credentials", "true")
@@ -277,7 +275,7 @@ func (h UserHandler) RefreshActivationCode(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	payload := ports.ActivateUserRequest{}
+	payload := ports.ResetLinkRequest{}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
@@ -290,7 +288,38 @@ func (h UserHandler) RefreshActivationCode(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = h.userService.RefreshActivationCode(nil, payload)
+	err = h.userService.SendResetLink(nil, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+}
+
+func (h UserHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	//w.Header().Add("Access-Control-Allow-Credentials", "true")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	payload := ports.ResetPasswordRequest{}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = handlers.CheckHttpMethod(http.MethodPost, w, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
+		return
+	}
+
+	err = h.userService.ResetPassword(nil, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return

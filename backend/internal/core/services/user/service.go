@@ -47,12 +47,13 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 
 	categories, err := s.categoryRepository.GetByIds(ctx, pkg.BaseCategoriesIds)
 	u := domain.User{
-		Name:           r.Name,
-		Email:          r.Email,
-		Password:       cipheredPassword,
-		Categories:     categories,
-		Active:         false,
-		ActivationCode: pkg.GenerateUUID(),
+		Name:              r.Name,
+		Email:             r.Email,
+		Password:          cipheredPassword,
+		Categories:        categories,
+		Active:            false,
+		ActivationCode:    pkg.GenerateUUID(),
+		ResetPasswordCode: pkg.GenerateUUID(),
 	}
 
 	nu, err := s.userRepository.Create(ctx, u)
@@ -212,9 +213,11 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 
 	cipheredPassword := s.EncryptPassword(ctx, req.Password)
 	u := domain.User{
-		Name:     pkg.DemoUserName,
-		Email:    req.Email,
-		Password: cipheredPassword,
+		Name:              pkg.DemoUserName,
+		Email:             req.Email,
+		Password:          cipheredPassword,
+		Active:            true,
+		ResetPasswordCode: pkg.GenerateUUID(),
 	}
 
 	nu, err := s.userRepository.Create(ctx, u)
@@ -345,8 +348,8 @@ func (s UserService) Activate(ctx context.Context, r ports.ActivateUserRequest) 
 	return nil
 }
 
-func (s UserService) RefreshActivationCode(ctx context.Context, r ports.ActivateUserRequest) error {
-	u, err := s.userRepository.RefreshActivationCode(ctx, r.ActivationCode)
+func (s UserService) SendResetLink(ctx context.Context, r ports.ResetLinkRequest) error {
+	u, err := s.userRepository.CreateResetLink(ctx, r.Email)
 	if err != nil {
 		return err
 	}
@@ -355,8 +358,8 @@ func (s UserService) RefreshActivationCode(ctx context.Context, r ports.Activate
 		From:      pkg.FromEmail,
 		To:        u.Email,
 		Recipient: u.Name,
-		Subject:   "DAPS - Your new activation link",
-		Body:      "In order to complete your registration, please click on the following link: " + pkg.ActivationCodeLink + u.ActivationCode,
+		Subject:   "DAPS - Password reset request",
+		Body:      "In order to reset your password, please follow this link: " + pkg.ResetPasswordLink + u.ResetPasswordCode,
 		User:      u.Id,
 	}
 
@@ -378,6 +381,21 @@ func (s UserService) RefreshActivationCode(ctx context.Context, r ports.Activate
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (s UserService) ResetPassword(ctx context.Context, r ports.ResetPasswordRequest) error {
+	match := s.PasswordMatchesRepeatPassword(ctx, r.Password, r.RepeatPassword)
+	if !match {
+		return errors.New("passwords do not match")
+	}
+
+	encryptedPassword := s.EncryptPassword(ctx, r.Password)
+	err := s.userRepository.ResetPassword(ctx, encryptedPassword, r.ResetPasswordCode)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

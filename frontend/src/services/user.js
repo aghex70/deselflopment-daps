@@ -13,6 +13,8 @@ const PROVISION_DEMO_USER_URL = `${DAPS_BASE_URL}api/user/provision`;
 const IMPORT_CSV_URL = `${DAPS_BASE_URL}api/import`;
 const ACTIVATE_USER_URL = `${DAPS_BASE_URL}api/user/activate`;
 const REFRESH_ACTIVATION_CODE_URL = `${DAPS_BASE_URL}api/user/refresh-activation-code`;
+const RESET_PASSWORD_URL = `${DAPS_BASE_URL}api/reset-password`;
+const RESET_LINK_URL = `${DAPS_BASE_URL}api/reset-link`;
 
 const options = {
   headers: {
@@ -108,6 +110,20 @@ const refreshActivationCode = async (uuid) => {
     });
 }
 
+const createResetLink = async (email) => {
+    return await axios.post(`${RESET_LINK_URL}`, {
+      email
+    });
+}
+
+const resetPassword = async (uuid, password) => {
+    return await axios.post(`${RESET_PASSWORD_URL}`, {
+      reset_password_code: uuid,
+      password,
+      repeat_password: password
+    });
+}
+
 const UserService = {
   register,
   login,
@@ -123,6 +139,8 @@ const UserService = {
   importCSV,
   activateUser,
   refreshActivationCode,
+  createResetLink,
+  resetPassword,
 
 }
 

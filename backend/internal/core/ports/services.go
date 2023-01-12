@@ -42,7 +42,8 @@ type UserServicer interface {
 	List(ctx context.Context, r *http.Request) ([]domain.User, error)
 	ImportCSV(ctx context.Context, r *http.Request, f multipart.File) error
 	Activate(ctx context.Context, r ActivateUserRequest) error
-	RefreshActivationCode(ctx context.Context, r ActivateUserRequest) error
+	SendResetLink(ctx context.Context, r ResetLinkRequest) error
+	ResetPassword(ctx context.Context, r ResetPasswordRequest) error
 }
 
 type UserConfigServicer interface {

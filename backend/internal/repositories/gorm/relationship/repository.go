@@ -18,15 +18,16 @@ type RelationshipGormRepository struct {
 }
 
 type User struct {
-	Id               int        `gorm:"primaryKey;column:id"`
-	Name             string     `gorm:"column:name"`
-	Email            string     `gorm:"column:email"`
-	IsAdmin          bool       `gorm:"column:is_admin"`
-	Password         string     `gorm:"column:password"`
-	RegistrationDate time.Time  `gorm:"column:registration_date;autoCreateTime"`
-	Categories       []Category `gorm:"many2many:daps_category_users"`
-	ActivationCode   string     `gorm:"column:activation_code"`
-	Active           bool       `gorm:"column:active"`
+	Id                int        `gorm:"primaryKey;column:id"`
+	Name              string     `gorm:"column:name"`
+	Email             string     `gorm:"column:email"`
+	IsAdmin           bool       `gorm:"column:is_admin"`
+	Password          string     `gorm:"column:password"`
+	RegistrationDate  time.Time  `gorm:"column:registration_date;autoCreateTime"`
+	Categories        []Category `gorm:"many2many:daps_category_users"`
+	ActivationCode    string     `gorm:"column:activation_code"`
+	Active            bool       `gorm:"column:active"`
+	ResetPasswordCode string     `gorm:"column:reset_password_code"`
 }
 
 type Category struct {
