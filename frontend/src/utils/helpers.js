@@ -50,7 +50,7 @@ const goToCategories = () => {
 }
 
 const goToReportABug = () => {
-    window.location.href = "/report-a-bug";
+    window.location.href = "/report-bug";
 }
 
 const goToRecurringTodos = () => {
