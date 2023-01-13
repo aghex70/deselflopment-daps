@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
   faClockRotateLeft,
-  faChartSimple,
+  // faChartSimple,
   faHome,
   faPowerOff,
   faCheck,
@@ -33,7 +33,8 @@ import {
   ProvisionDemoUserIconText,
   RecurringTodosIconText,
   ReportABugIconText,
-  StatisticsIconText, SuggestedTodosIconText
+  // StatisticsIconText,
+  SuggestedTodosIconText
 } from "../utils/texts";
 import UserService from "../services/user";
 
@@ -134,32 +135,32 @@ const DapsHeader = () => {
 
           {isAdmin && (
           <ButtonGroup style={{width: "100%", marginTop: "15px", marginBottom: "15px"}}>
-            <Button disabled={true} style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
-                    variant="outline-warning" title={StatisticsIconText}
-            >
+            {/*<Button disabled={true} style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}*/}
+            {/*        variant="outline-warning" title={StatisticsIconText}*/}
+            {/*>*/}
 
-              <FontAwesomeIcon icon={faChartSimple} />
-            </Button>
+            {/*  <FontAwesomeIcon icon={faChartSimple} />*/}
+            {/*</Button>*/}
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
-                    variant="danger" title={ProvisionDemoUserIconText}
-                    onClick={() => goToProvisionDemoUser()}
-            >
-
-              <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faUserPlus} />
-            </Button>
-            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
-                    variant="danger" title={ListOfUsersIconText}
-                    onClick={() => goToListOfUsers()}
-            >
-
-              <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faList} />
-            </Button>
-            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
-                    variant="danger" title={ImportTodosHeaderText}
+                    variant="dark" title={ImportTodosHeaderText}
                     onClick={() => goToImportTodos()}
             >
 
-              <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faFileImport} />
+              <FontAwesomeIcon style={{height: "50%", color: "red"}} icon={faFileImport} />
+            </Button>
+            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
+                    variant="dark" title={ProvisionDemoUserIconText}
+                    onClick={() => goToProvisionDemoUser()}
+            >
+
+              <FontAwesomeIcon style={{height: "50%", color: "red"}} icon={faUserPlus} />
+            </Button>
+            <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
+                    variant="dark" title={ListOfUsersIconText}
+                    onClick={() => goToListOfUsers()}
+            >
+
+              <FontAwesomeIcon style={{height: "50%", color: "red"}} icon={faList} />
             </Button>
           </ButtonGroup>
           )}
