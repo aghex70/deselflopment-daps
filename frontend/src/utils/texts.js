@@ -232,4 +232,5 @@ export {
     ResetPasswordButtonText,
     ResetPasswordHeaderText,
     InvalidResetPasswordCodeText,
+    language,
 };

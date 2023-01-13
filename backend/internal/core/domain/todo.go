@@ -39,6 +39,7 @@ type CategorySummary struct {
 	Tasks                int    `json:"tasks"`
 	HighestPriorityTasks int    `json:"highest_priority_tasks"`
 	OwnerId              int    `json:"owner_id"`
+	Shared               int    `json:"shared"`
 }
 
 type CategoryInfo struct {

@@ -251,7 +251,7 @@ func (gr *TodoGormRepository) GetByNameAndCategory(ctx context.Context, name str
 
 func (gr *TodoGormRepository) GetSummary(ctx context.Context, userId int) ([]domain.CategorySummary, error) {
 	var cs []domain.CategorySummary
-	query := fmt.Sprintf("SELECT daps_category_users.category_id, daps_categories.id, daps_categories.name, daps_categories.owner_id, SUM(CASE WHEN daps_todos.completed = FALSE AND daps_todos.priority = 5 then 1 else 0 END) as highest_priority_tasks, SUM(CASE WHEN daps_todos.completed = FALSE then 1 else 0 END) as tasks FROM daps_category_users INNER JOIN daps_categories ON daps_categories.id = daps_category_users.category_id LEFT JOIN daps_todos ON daps_todos.category_id = daps_category_users.category_id WHERE user_id = %d GROUP BY category_id", userId)
+	query := fmt.Sprintf("SELECT daps_category_users.category_id, daps_categories.id, daps_categories.name, daps_categories.owner_id, daps_categories.shared, SUM(CASE WHEN daps_todos.completed = FALSE AND daps_todos.priority = 5 then 1 else 0 END) as highest_priority_tasks, SUM(CASE WHEN daps_todos.completed = FALSE then 1 else 0 END) as tasks FROM daps_category_users INNER JOIN daps_categories ON daps_categories.id = daps_category_users.category_id LEFT JOIN daps_todos ON daps_todos.category_id = daps_category_users.category_id WHERE user_id = %d GROUP BY category_id", userId)
 	result := gr.DB.Raw(query).Scan(&cs)
 	if result.Error != nil {
 		return cs, result.Error

@@ -26,7 +26,7 @@ import {
   HeaderActionsText,
   HeaderNameText,
   HeaderTasksText,
-  HighPriorityTasksText,
+  HighPriorityTasksText, language,
   OnlyOwnerCanEditCategoryText,
   OnlyOwnersCanDeleteCategoryText,
   ShareButtonText,
@@ -59,6 +59,14 @@ const CategoriesList = () => {
   });
   const navigate = useNavigate();
 
+  const sharedTag = (shared) => {
+    if (!shared) {
+        return "";
+    }
+    return language === "en" ? "(s) " : "(c) ";
+
+  }
+
   const userId = parseInt(localStorage.getItem("user_id"))
   // Color code the todo based on its priority
   const rowTextColor = (cell, row, rowIndex) => {
@@ -67,7 +75,7 @@ const CategoriesList = () => {
       style={{color : colors[rowIndex % 5]}}
       onClick={() => navigateToCategory(row.id, row.name)}
     >
-      {row.name}
+      {sharedTag(row.shared)}{row.name}
     </div>;
   }
   // Color code the todo based on its priority
