@@ -119,6 +119,7 @@ const UsersList = () => {
             data={ users }
             columns={ columns }
             hover={true}
+            striped={true}
         />
         </Container>
     )

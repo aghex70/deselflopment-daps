@@ -69,10 +69,8 @@ const CategoriesList = () => {
 
   const userId = parseInt(localStorage.getItem("user_id"))
   // Color code the todo based on its priority
-  const rowTextColor = (cell, row, rowIndex) => {
-    const colors = ["red", "grey", "blue", "green", "orange"];
+  const rowTextColor = (cell, row) => {
     return <div
-      style={{color : colors[rowIndex % 5]}}
       onClick={() => navigateToCategory(row.id, row.name)}
     >
       {sharedTag(row.shared)}{row.name}
@@ -289,6 +287,7 @@ const CategoriesList = () => {
         noDataIndication={ indication }
         trStyle={rowTextColor}
         hover={true}
+        striped={true}
       />
       <Modal className='successModal text-center' show={showModal} open={showModal} centered={true} size='lg'>
         <ModalBody>
