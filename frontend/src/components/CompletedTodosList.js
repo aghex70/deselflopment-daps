@@ -137,6 +137,7 @@ const CompletedTodosList = () => {
         noDataIndication={ indication }
         trStyle={rowTextColor}
         hover={true}
+        striped={true}
         style={{display: "block", minHeight: "80%", width: "10%", overflow: "auto"}}
       />
     </Container>
