@@ -7,7 +7,11 @@ import DapsHeader from "./Header";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faPencil, faPlay, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
-import checkAccess, {goToSuggestedTodos} from "../utils/helpers";
+import checkAccess, {
+    clearLocalStorage,
+    sortArrayByField,
+    goToSuggestedTodos
+} from "../utils/helpers";
 import {
     CompleteIconText,
     DeleteIconText,
@@ -120,20 +124,32 @@ const SuggestedTodosList = () => {
 
 
   const navigateToTodo = (id, categoryId, categoryName, action) => {
-    navigate("/todo/" + id, {state: {categoryId: categoryId, action: action}});
+      clearLocalStorage([]);
+      navigate("/todo/" + id, {state: {categoryId: categoryId, action: action}});
   }
 
   const deleteTodo = (id, categoryId) => {
     TodoService.deleteTodo(id, categoryId).then(
       (response) => {
         if (response.status === 204) {
-          window.location.reload();
+            clearLocalStorage([]);
+            window.location.reload();
         }
       }
     ).catch(
       (error) => {
       })
   }
+
+    const sortTodosByField = (field, ascending) => {
+        let todos = JSON.parse(localStorage.getItem("todos"));
+        if (!todos) {
+            return;
+        }
+        todos = sortArrayByField(todos, field, ascending);
+        localStorage.setItem("todos", JSON.stringify(todos));
+        setTodos(todos);
+    }
 
   useEffect(() => {
       if (!suggested && localStorage.getItem("auto-suggest") === "true") {
@@ -147,19 +163,23 @@ const SuggestedTodosList = () => {
           )
       }
 
-
-    if (!todos || todos.length === 0) {
-      TodoService.getSuggestedTodos().then(
-        (response) => {
-          if (response.status === 200 && response.data) {
-            setTodos(response.data);
-          }
-        }
-      ).catch(
-        (error) => {
-        })
-    }
-  },[todos]);
+      let todos = JSON.parse(localStorage.getItem("todos"));
+      if (!todos) {
+          TodoService.getSuggestedTodos().then(
+              (response) => {
+                  if (response.status === 200 && response.data) {
+                      localStorage.setItem("todos", JSON.stringify(response.data));
+                      sortTodosByField("priority", true);
+                  }
+              }
+          ).catch(
+              (error) => {
+              })
+      }
+      else {
+          sortTodosByField("priority", true);
+      }
+  },[]);
 
     function indication() {
         return SuggestedTodosIndicationText;

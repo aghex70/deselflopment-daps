@@ -7,7 +7,10 @@ import DapsHeader from "./Header";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrashRestore, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
-import checkAccess from "../utils/helpers";
+import checkAccess, {
+    clearLocalStorage,
+    sortArrayByField,
+} from "../utils/helpers";
 import {
     CompletedTodosHeaderText,
     CompletedTodosIndicationText,
@@ -49,6 +52,7 @@ const CompletedTodosList = () => {
     }];
 
   const navigateToTodo = (id, categoryId, categoryName, action) => {
+    clearLocalStorage([]);
     navigate("/todo/" + id, {state: {categoryId: categoryId, action: action}});
   }
 
@@ -56,7 +60,8 @@ const CompletedTodosList = () => {
     TodoService.deleteTodo(id, categoryId).then(
       (response) => {
         if (response.status === 204) {
-          window.location.reload();
+            clearLocalStorage([]);
+            window.location.reload();
         }
       }
     ).catch(
@@ -68,7 +73,8 @@ const CompletedTodosList = () => {
     TodoService.activateTodo(id, categoryId).then(
       (response) => {
         if (response.status === 200) {
-          window.location.reload();
+            clearLocalStorage([]);
+            window.location.reload();
         }
       }
     ).catch(
@@ -107,20 +113,34 @@ const CompletedTodosList = () => {
     );
   }
 
-  useEffect(() => {
-    if (!todos || todos.length === 0) {
-      TodoService.getCompletedTodos().then(
-        (response) => {
-          if (response.status === 200 && response.data) {
-            setTodos(response.data);
-          }
+    const sortTodosByField = (field, ascending) => {
+        let todos = JSON.parse(localStorage.getItem("todos"));
+        if (!todos) {
+            return;
         }
-      ).catch(
-        (error) => {
-          error = new Error("Login failed!");
-        })
+        todos = sortArrayByField(todos, field, ascending);
+        localStorage.setItem("todos", JSON.stringify(todos));
+        setTodos(todos);
     }
-  },[todos]);
+
+    useEffect(() => {
+        let todos = JSON.parse(localStorage.getItem("todos"));
+        if (!todos) {
+            TodoService.getCompletedTodos().then(
+                (response) => {
+                    if (response.status === 200 && response.data) {
+                        localStorage.setItem("todos", JSON.stringify(response.data));
+                        sortTodosByField("end_date", false);
+                    }
+                }
+            ).catch(
+                (error) => {
+                })
+        }
+        else {
+            sortTodosByField("end_date", false);
+        }
+    },[]);
 
   function indication() {
     return CompletedTodosIndicationText;

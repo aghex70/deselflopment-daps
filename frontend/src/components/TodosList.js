@@ -7,9 +7,9 @@ import {useLocation, useNavigate} from "react-router-dom";
 import './TodosList.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import DapsHeader from "./Header";
-import {
+import checkAccess, {
+    clearLocalStorage,
     sortArrayByField,
-    checkAccess
 } from "../utils/helpers";
 import {
     CompleteIconText,
@@ -59,6 +59,7 @@ const TodosList = () => {
   }];
 
   const navigateToTodo = (id, categoryId, categoryName, action) => {
+    clearLocalStorage([]);
     navigate("/todo/" + id, {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName, action: action}});
   }
 
@@ -66,7 +67,7 @@ const TodosList = () => {
     TodoService.deleteTodo(id, categoryId).then(
       (response) => {
         if (response.status === 204) {
-            localStorage.removeItem("todos")
+            clearLocalStorage([]);
             window.location.reload();
         }
       }
@@ -80,7 +81,7 @@ const TodosList = () => {
     TodoService.completeTodo(id, categoryId).then(
       (response) => {
         if (response.status === 200) {
-            localStorage.removeItem("todos")
+            clearLocalStorage([]);
             window.location.reload();
         }
       }
@@ -93,7 +94,7 @@ const TodosList = () => {
     TodoService.startTodo(id, categoryId).then(
       (response) => {
         if (response.status === 200) {
-            localStorage.removeItem("todos")
+            clearLocalStorage([]);
             window.location.reload();
         }
       }
