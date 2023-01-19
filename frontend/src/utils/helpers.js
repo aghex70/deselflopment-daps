@@ -21,6 +21,14 @@ const getUserToken = () => {
   return localStorage.getItem("access_token");
 }
 
+const clearLocalStorage = (keys) => {
+    for (let key in localStorage) {
+        if (!keys.includes(key)) {
+            localStorage.removeItem(key);
+        }
+    }
+}
+
 const setLanguage = (language) => {
   localStorage.setItem("language", language);
 }
@@ -93,7 +101,20 @@ const goToRegister = () => {
     window.location.href = "/register";
 }
 
-export default checkAccess;
+const sortArrayByField = (array, field, ascending) => {
+    return array.sort((a, b) => {
+        if (a[field] > b[field]) {
+          return ascending ? 1 : -1;
+        }
+        if (a[field] < b[field]) {
+          return ascending ? -1 : 1;
+        }
+        return 0;
+    });
+
+
+}
+
 export {
     hashPassword,
     setAutoSuggest,
@@ -113,4 +134,7 @@ export {
     goToLogout,
     goToLogin,
     goToRegister,
+    sortArrayByField,
+    checkAccess,
+    clearLocalStorage,
 };

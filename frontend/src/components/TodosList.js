@@ -7,7 +7,10 @@ import {useLocation, useNavigate} from "react-router-dom";
 import './TodosList.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import {
+    sortArrayByField,
+    checkAccess
+} from "../utils/helpers";
 import {
     CompleteIconText,
     CreateIconText,
@@ -17,6 +20,7 @@ import {
     HeaderNameText,
     StartIconText
 } from "../utils/texts";
+
 
 const TodosList = () => {
   checkAccess();
@@ -62,7 +66,8 @@ const TodosList = () => {
     TodoService.deleteTodo(id, categoryId).then(
       (response) => {
         if (response.status === 204) {
-          window.location.reload();
+            localStorage.removeItem("todos")
+            window.location.reload();
         }
       }
     ).catch(
@@ -75,7 +80,8 @@ const TodosList = () => {
     TodoService.completeTodo(id, categoryId).then(
       (response) => {
         if (response.status === 200) {
-          window.location.reload();
+            localStorage.removeItem("todos")
+            window.location.reload();
         }
       }
     ).catch(
@@ -87,7 +93,8 @@ const TodosList = () => {
     TodoService.startTodo(id, categoryId).then(
       (response) => {
         if (response.status === 200) {
-          window.location.reload();
+            localStorage.removeItem("todos")
+            window.location.reload();
         }
       }
     ).catch(
@@ -99,23 +106,38 @@ const TodosList = () => {
     navigate("/create-todo", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
   }
 
+  const sortTodosByField = (field, ascending) => {
+      let todos = JSON.parse(localStorage.getItem("todos"));
+      if (!todos) {
+          return;
+      }
+      todos = sortArrayByField(todos, field, ascending);
+      localStorage.setItem("todos", JSON.stringify(todos));
+      setTodos(todos);
+      setTodoSpan({
+          textAlign: "center",
+          display: "block",
+      })
+  }
+
   useEffect(() => {
-    if (!todos || todos.length === 0) {
+    let todos = JSON.parse(localStorage.getItem("todos"));
+    if (!todos) {
       TodoService.getTodos(categoryId).then(
         (response) => {
           if (response.status === 200 && response.data) {
-            setTodos(response.data);
-            setTodoSpan({
-              textAlign: "center",
-              display: "block",
-            })
+            localStorage.setItem("todos", JSON.stringify(response.data));
+            sortTodosByField("name", true);
           }
         }
       ).catch(
         (error) => {
         })
     }
-  },[todos, categoryId]);
+    else {
+        sortTodosByField("name", true);
+    }
+  },[categoryId]);
 
   function actionsFormatter(cell, row) {
     return (
