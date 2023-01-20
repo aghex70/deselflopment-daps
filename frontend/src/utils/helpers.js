@@ -21,7 +21,7 @@ const getUserToken = () => {
 }
 
 const clearLocalStorage = (excludedKeys= []) => {
-    let baseExcludedKeys = ["access_token", "language", "auto-suggest"];
+    let baseExcludedKeys = ["access_token", "language", "auto-suggest", "user_id"];
     let untouchedKeys = baseExcludedKeys.concat(excludedKeys);
     for (let key in localStorage) {
         if (!untouchedKeys.includes(key)) {

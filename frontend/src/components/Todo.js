@@ -42,7 +42,8 @@ const Todo = () => {
     const navigate = useNavigate();
 
     const navigateTodos = () => {
-      navigate("/todos", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
+        clearLocalStorage([]);
+        navigate("/todos", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
     }
 
     const handleSubmit = (e) => {

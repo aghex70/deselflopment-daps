@@ -4,7 +4,7 @@ import {useLocation, useNavigate} from 'react-router-dom'
 import TodoService from "../services/todo";
 import toBoolean from "validator/es/lib/toBoolean";
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import checkAccess, {clearLocalStorage} from "../utils/helpers";
 import {
     CancelButtonText,
     CreateButtonText,
@@ -60,7 +60,8 @@ const CreateTodo = () => {
     disableRecurringSelect();
 
     const navigateTodos = () => {
-      navigate("/todos", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
+        clearLocalStorage([]);
+        navigate("/todos", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
     }
 
     const toggleEnterTodoNameModal = () => {
@@ -89,7 +90,8 @@ const CreateTodo = () => {
       TodoService.createTodo(data).then(
         (response) => {
           if (response.status === 201) {
-            navigateTodos(categoryId, categoryName);
+                clearLocalStorage([]);
+                navigateTodos(categoryId, categoryName);
           } else {
             window.location.reload()
           }
