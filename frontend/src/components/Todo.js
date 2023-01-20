@@ -3,7 +3,7 @@ import {Button, ButtonGroup, Container, FloatingLabel, Form, Nav} from "react-bo
 import {useLocation, useNavigate, useParams} from 'react-router-dom'
 import TodoService from "../services/todo";
 import DapsHeader from "./Header";
-import checkAccess from "../utils/helpers";
+import checkAccess, {clearLocalStorage} from "../utils/helpers";
 import toBoolean from "validator/es/lib/toBoolean";
 import {
     CancelButtonText,
@@ -60,7 +60,8 @@ const Todo = () => {
       TodoService.updateTodo(id, data).then(
         (response) => {
           if (response.status === 200) {
-            navigateTodos(categoryId, categoryName);
+              clearLocalStorage([]);
+              navigateTodos(categoryId, categoryName);
           } else {
             window.location.reload()
           }
