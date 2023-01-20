@@ -104,7 +104,8 @@ const TodosList = () => {
   }
 
   const createTodo = () => {
-    navigate("/create-todo", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
+        clearLocalStorage([]);
+        navigate("/create-todo", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
   }
 
   const sortTodosByField = (field, ascending) => {
