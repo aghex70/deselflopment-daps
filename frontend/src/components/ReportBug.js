@@ -51,18 +51,6 @@ const ReportBug = () => {
                     style={{ width: "100%", paddingLeft: "10%", paddingRight: "10%" }}
                 >
                     <Button
-                        variant="success"
-                        type="submit"
-                        style={{
-                            margin: "auto",
-                            display: "block",
-                            padding: "0",
-                            textAlign: "center",
-                        }}
-                    >
-                        {ReportButtonText}
-                    </Button>
-                    <Button
                         variant="danger"
                         onClick={() => (window.location.href = "/categories")}
                         style={{
@@ -73,6 +61,18 @@ const ReportBug = () => {
                         }}
                     >
                         {CancelButtonText}
+                    </Button>
+                    <Button
+                        variant="success"
+                        type="submit"
+                        style={{
+                            margin: "auto",
+                            display: "block",
+                            padding: "0",
+                            textAlign: "center",
+                        }}
+                    >
+                        {ReportButtonText}
                     </Button>
                 </ButtonGroup>
             </Form>

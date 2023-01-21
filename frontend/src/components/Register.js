@@ -152,16 +152,16 @@ const Register = ()  =>{
           <h4 style={{margin: "32px"}}>{UserAlreadyRegisteredText}</h4>
           <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
             <Button
+                variant="danger"
+                onClick={(e) => toggleModalUserAlreadyExists(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{CancelButtonText}</Button>
+            <Button
                 variant="success"
                 type="submit"
                 onClick={(e) => window.location.href = "/login"}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{LoginButtonText}</Button>
-            <Button
-                variant="danger"
-                onClick={(e) => toggleModalUserAlreadyExists(e)}
-                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

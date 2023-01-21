@@ -156,16 +156,16 @@ const Login = () => {
         <h4 style={{margin: "32px"}}>{UserNotFoundText}</h4>
         <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
           <Button
+              variant="danger"
+              onClick={() => toggleModalUserDoesNotExist()}
+              style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+          >{CancelButtonText}</Button>
+          <Button
               variant="success"
               type="submit"
               onClick={(e) => window.location.href = "/register"}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >{RegisterButtonText}</Button>
-          <Button
-              variant="danger"
-              onClick={() => toggleModalUserDoesNotExist()}
-              style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >{CancelButtonText}</Button>
         </ButtonGroup>
       </ModalBody>
     </Modal>

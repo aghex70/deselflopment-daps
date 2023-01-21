@@ -169,15 +169,15 @@ const Todo = () => {
             (
             <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
               <Button
-                variant="success"
-                type="submit"
-                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-              >{EditButtonText}</Button>
-              <Button
                 variant="danger"
                 onClick={() => navigateTodos()}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
               >{CancelButtonText}</Button>
+                <Button
+                    variant="success"
+                    type="submit"
+                    style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                >{EditButtonText}</Button>
             </ButtonGroup>
             ) : (
               <ButtonGroup style={{width: "40%", marginLeft: "30%"}}>
