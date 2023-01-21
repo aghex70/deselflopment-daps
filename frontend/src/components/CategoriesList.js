@@ -67,7 +67,7 @@ const CategoriesList = () => {
 
   }
 
-  const userId = parseInt(localStorage.getItem("user_id"))
+  const userId = parseInt(sessionStorage.getItem("user_id"))
   // Color code the todo based on its priority
   const rowTextColor = (cell, row) => {
     return <div

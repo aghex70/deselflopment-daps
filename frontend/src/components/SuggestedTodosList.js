@@ -122,7 +122,6 @@ const SuggestedTodosList = () => {
       headerAlign: 'center',
     }];
 
-
   const navigateToTodo = (id, categoryId, categoryName, action) => {
       clearLocalStorage([]);
       navigate("/todo/" + id, {state: {categoryId: categoryId, action: action}});

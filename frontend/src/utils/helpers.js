@@ -5,19 +5,23 @@ const hashPassword = (string) => {
 }
 
 const checkAccess = () => {
-  const token = getUserToken();
-  if (!token) {
-    goToLogin();
-  }
+    if (!getUserToken() || !getUserId()) {
+        goToLogin();
+    }
 }
 
 const skipLogin = () => {
-  if (getUserToken()) {
+  if (getUserToken() && getUserId()) {
     goToCategories();
   }
 }
+
 const getUserToken = () => {
   return localStorage.getItem("access_token");
+}
+
+const getUserId = () => {
+    return sessionStorage.getItem("user_id");
 }
 
 const clearLocalStorage = (excludedKeys= []) => {
@@ -138,4 +142,5 @@ export {
     goToRegister,
     sortArrayByField,
     clearLocalStorage,
+    getUserId,
 };

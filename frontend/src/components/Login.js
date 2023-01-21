@@ -71,7 +71,7 @@ const Login = () => {
       (response) => {
         if (response.status === 200) {
           localStorage.setItem("access_token", response.data.access_token);
-          localStorage.setItem("user_id", response.data.user_id);
+          sessionStorage.setItem("user_id", response.data.user_id);
           // Check for localStorage language and if not set it to "es"
           if (!localStorage.getItem("language")) {
               localStorage.setItem("language", "en");
