@@ -3,6 +3,7 @@ import "./App.css";
 import React from "react";
 import {goToLogin, goToRegister, skipLogin} from "./utils/helpers";
 import {LoginButtonText, RegisterButtonText, WelcomeToDapsText} from "./utils/texts";
+import OneSignalNotifier from "./components/OneSignal";
 
 export default function App() {
   skipLogin();
@@ -10,6 +11,7 @@ export default function App() {
 
   return (
     <Container>
+      <OneSignalNotifier/>
       <Modal className='unshareModal text-center' show={true}
              centered={true} size='lg'>
         <ModalBody>
