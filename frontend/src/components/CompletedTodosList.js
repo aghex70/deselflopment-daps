@@ -9,7 +9,7 @@ import {faTrashRestore, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
 import checkAccess, {
     clearLocalStorage,
-    sortArrayByField,
+    sortTodosByField,
 } from "../utils/helpers";
 import {
     CompletedTodosHeaderText,
@@ -113,16 +113,6 @@ const CompletedTodosList = () => {
     );
   }
 
-    const sortTodosByField = (field, ascending) => {
-        let todos = JSON.parse(localStorage.getItem("todos"));
-        if (!todos) {
-            return;
-        }
-        todos = sortArrayByField(todos, field, ascending);
-        localStorage.setItem("todos", JSON.stringify(todos));
-        setTodos(todos);
-    }
-
     useEffect(() => {
         let todos = JSON.parse(localStorage.getItem("todos"));
         if (!todos) {
@@ -130,7 +120,7 @@ const CompletedTodosList = () => {
                 (response) => {
                     if (response.status === 200 && response.data) {
                         localStorage.setItem("todos", JSON.stringify(response.data));
-                        sortTodosByField("end_date", false);
+                        sortTodosByField("end_date", false, setTodos, null);
                     }
                 }
             ).catch(
@@ -138,7 +128,7 @@ const CompletedTodosList = () => {
                 })
         }
         else {
-            sortTodosByField("end_date", false);
+            sortTodosByField("end_date", false, setTodos, null);
         }
     },[]);
 

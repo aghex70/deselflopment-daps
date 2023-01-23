@@ -116,8 +116,22 @@ const sortArrayByField = (array, field, ascending) => {
         }
         return 0;
     });
+}
 
-
+const sortTodosByField = (field, ascending, f, setSpan) => {
+    let todos = JSON.parse(localStorage.getItem("todos"));
+    if (!todos) {
+        return;
+    }
+    todos = sortArrayByField(todos, field, ascending);
+    localStorage.setItem("todos", JSON.stringify(todos));
+    f(todos);
+    if (setSpan) {
+        setSpan({
+            textAlign: "center",
+            display: "block",
+        })
+    }
 }
 
 export default checkAccess;
@@ -143,4 +157,5 @@ export {
     sortArrayByField,
     clearLocalStorage,
     getUserId,
+    sortTodosByField,
 };

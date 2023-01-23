@@ -9,8 +9,7 @@ import {faCheck, faPencil, faPlay, faTrash} from "@fortawesome/free-solid-svg-ic
 import {useNavigate} from "react-router-dom";
 import checkAccess, {
     clearLocalStorage,
-    sortArrayByField,
-    goToSuggestedTodos
+    goToSuggestedTodos, sortTodosByField
 } from "../utils/helpers";
 import {
     CompleteIconText,
@@ -140,16 +139,6 @@ const SuggestedTodosList = () => {
       })
   }
 
-    const sortTodosByField = (field, ascending) => {
-        let todos = JSON.parse(localStorage.getItem("todos"));
-        if (!todos) {
-            return;
-        }
-        todos = sortArrayByField(todos, field, ascending);
-        localStorage.setItem("todos", JSON.stringify(todos));
-        setTodos(todos);
-    }
-
   useEffect(() => {
       if (!suggested && localStorage.getItem("auto-suggest") === "true") {
           TodoService.suggestTodos().then(
@@ -168,7 +157,7 @@ const SuggestedTodosList = () => {
               (response) => {
                   if (response.status === 200 && response.data) {
                       localStorage.setItem("todos", JSON.stringify(response.data));
-                      sortTodosByField("priority", true);
+                      sortTodosByField("priority", true, setTodos, null);
                   }
               }
           ).catch(
@@ -176,7 +165,7 @@ const SuggestedTodosList = () => {
               })
       }
       else {
-          sortTodosByField("priority", true);
+          sortTodosByField("priority", true, setTodos, null);
       }
   },[]);
 

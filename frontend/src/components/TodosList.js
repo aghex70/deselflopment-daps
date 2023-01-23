@@ -9,7 +9,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import DapsHeader from "./Header";
 import checkAccess, {
     clearLocalStorage,
-    sortArrayByField,
+    sortTodosByField,
 } from "../utils/helpers";
 import {
     CompleteIconText,
@@ -108,20 +108,6 @@ const TodosList = () => {
         navigate("/create-todo", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
   }
 
-  const sortTodosByField = (field, ascending) => {
-      let todos = JSON.parse(localStorage.getItem("todos"));
-      if (!todos) {
-          return;
-      }
-      todos = sortArrayByField(todos, field, ascending);
-      localStorage.setItem("todos", JSON.stringify(todos));
-      setTodos(todos);
-      setTodoSpan({
-          textAlign: "center",
-          display: "block",
-      })
-  }
-
   useEffect(() => {
     let todos = JSON.parse(localStorage.getItem("todos"));
     if (!todos) {
@@ -129,7 +115,7 @@ const TodosList = () => {
         (response) => {
           if (response.status === 200 && response.data) {
             localStorage.setItem("todos", JSON.stringify(response.data));
-            sortTodosByField("name", true);
+            sortTodosByField("name", true, setTodos, setTodoSpan);
           }
         }
       ).catch(
@@ -137,7 +123,7 @@ const TodosList = () => {
         })
     }
     else {
-        sortTodosByField("name", true);
+        sortTodosByField("name", true, setTodos, setTodoSpan);
     }
   },[categoryId]);
 
