@@ -2,7 +2,6 @@ package userconfig
 
 import (
 	"context"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	uc "github.com/aghex70/daps/internal/repositories/gorm/userconfig"
@@ -34,10 +33,8 @@ func (s UserConfigService) Get(ctx context.Context, r *http.Request) (domain.Pro
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	p, err := s.userConfigRepository.GetByUserId(ctx, int(userId))
 	if err != nil {
-		fmt.Printf("error: %+v", err)
 		return domain.Profile{}, err
 	}
-	fmt.Printf("profile: %+v", p)
 	return p, nil
 }
 

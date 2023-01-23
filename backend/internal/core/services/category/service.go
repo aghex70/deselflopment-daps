@@ -2,7 +2,6 @@ package category
 
 import (
 	"context"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
@@ -38,28 +37,10 @@ func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.
 		InternationalName: req.InternationalName,
 		Users:             []domain.User{u},
 	}
-	c, err := s.categoryRepository.Create(ctx, cat, int(userId))
+	_, err = s.categoryRepository.Create(ctx, cat, int(userId))
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(c)
-	//nntd := domain.Todo{
-	//	Category:    c.Id,
-	//	Description: "This is a default todo",
-	//	Name:        "Default todo",
-	//	Link:        "Default URL",
-	//	Priority:    domain.Priority(2),
-	//	Recurring:   false,
-	//}
-	//
-	//fmt.Printf("\n\n%+v", c)
-	//fmt.Printf("\n\n%+v", nntd)
-	//err = s.todoRepository.Create(ctx, nntd)
-	//
-	//if err != nil {
-	//	return err
-	//}
 
 	return nil
 }
@@ -114,49 +95,31 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 }
 
 func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.GetCategoryRequest) (domain.Category, error) {
-	fmt.Println("99999999999999999999")
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.ValidateRetrieval(ctx, int(req.CategoryId), int(userId))
 	if err != nil {
-		fmt.Println("%+v", err)
-		fmt.Println("qweqweqweqweqweqweqwe")
 		return domain.Category{}, err
 	}
-	fmt.Println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 	cat, err := s.categoryRepository.GetById(ctx, int(req.CategoryId))
 	if err != nil {
-		fmt.Println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
 		return domain.Category{}, err
 	}
 	return cat, nil
 }
 
 func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.DeleteCategoryRequest) error {
-	fmt.Printf("\n\nrequest ------>: %+v", r)
 	q := r.URL.Query()
-	bod := r.Body
-	fmt.Printf("\n\nqparams ------>: %+v", q)
-	fmt.Printf("\n\nbody ------>: %+v", bod)
-	payload := ports.ListTodosRequest{}
-	//err := handlers.ValidateRequest(r, &payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-
 	categoryId, err := strconv.Atoi(q.Get("category_id"))
+	payload := ports.ListTodosRequest{}
 	payload.Category = categoryId
-	//todos, err := h.toDoService.List(nil, r, payload)
 
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err = s.ValidateRemoval(ctx, int(req.CategoryId), int(userId))
 	if err != nil {
 		return err
 	}
-	fmt.Println("Trying to deleeeeeeeeeeeeeeeeeeeeeete")
 	err = s.categoryRepository.Delete(ctx, int(req.CategoryId), int(userId))
 	if err != nil {
-		fmt.Println("Error deleting @@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 		return err
 	}
 	return nil

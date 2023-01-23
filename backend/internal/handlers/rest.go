@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/go-playground/validator/v10"
 	"io"
 	"net/http"
@@ -33,8 +32,6 @@ func ValidateRequest(r *http.Request, payload interface{}) error {
 	validate := validator.New()
 	err = validate.Struct(payload)
 	if err != nil {
-		fmt.Println("bbbbbbbbbbbbbbbbbbbbbbbb")
-		fmt.Println("err: ", err)
 		return err
 	}
 

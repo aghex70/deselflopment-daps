@@ -3,7 +3,6 @@ package category
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"gorm.io/gorm"
@@ -73,9 +72,7 @@ func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, 
 
 func (h CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request, id int) {
 	payload := ports.DeleteCategoryRequest{CategoryId: int64(id)}
-	fmt.Println("cccccccccccccccccccccccccccc11111111111111111111111")
 	err := handlers.ValidateRequest(r, &payload)
-	fmt.Println("cccccccccccccccccccccccccccc22222222222222222222222")
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return

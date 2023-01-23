@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/pkg"
@@ -27,7 +26,6 @@ func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) (domain
 	nu := relationship.UserFromDto(u)
 	result := gr.DB.Omit("Categories").Create(&nu)
 	if result.Error != nil {
-		fmt.Println("result.Error", result.Error)
 		return domain.User{}, result.Error
 	}
 	return nu.ToDto(), nil

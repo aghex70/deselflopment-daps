@@ -3,7 +3,6 @@ package todo
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"gorm.io/gorm"
@@ -20,7 +19,6 @@ type TodoHandler struct {
 
 func (h TodoHandler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.RequestURI, handlers.TODO_STRING)[1]
-	fmt.Println("path", path)
 
 	if startString := "/start"; strings.Contains(path, startString) {
 		todoIdString := strings.Split(path, startString)[0]
@@ -77,11 +75,8 @@ func (h TodoHandler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("queryParams -------------> ", queryParams)
 	if len(queryParams) == 1 {
 		if r.Method == http.MethodPut {
-			fmt.Println("PUT")
-			fmt.Printf("\n\nrequest: %+v", r)
 			h.UpdateTodo(w, r, todoId)
 			return
 		}
@@ -99,19 +94,15 @@ func (h TodoHandler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodGet {
-		fmt.Println("GET")
-		fmt.Printf("\n\nrequest: %+v", r)
 		h.GetTodo(w, r, todoId, categoryId)
 		return
 	}
 
 	if r.Method == http.MethodDelete {
-		fmt.Println("DELETE")
 		h.DeleteTodo(w, r, todoId, categoryId)
 		return
 	}
 
-	fmt.Println("Hola5")
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return
 }
@@ -138,8 +129,6 @@ func (h TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request, id int) {
-	fmt.Println("request: ", r)
-	fmt.Println("request: ", r.Body)
 	payload := ports.UpdateTodoRequest{TodoId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -219,32 +208,17 @@ func (h TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request, id, categor
 }
 
 func (h TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("\n\nrequest ------>: %+v", r)
 	q := r.URL.Query()
-	bod := r.Body
-	fmt.Printf("\n\nqparams ------>: %+v", q)
-	fmt.Printf("\n\nbody ------>: %+v", bod)
-	payload := ports.ListTodosRequest{}
-	//err := handlers.ValidateRequest(r, &payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-
-	fmt.Println("alberto0")
 	categoryId, err := strconv.Atoi(q.Get("category_id"))
-	fmt.Println("alberto1")
+	payload := ports.ListTodosRequest{}
 	payload.Category = categoryId
-	fmt.Println("alberto")
 	todos, err := h.toDoService.List(nil, r, payload)
 	if err != nil {
-		fmt.Println("alberto2")
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
 	b, err := json.Marshal(todos)
-	fmt.Println("alberto3")
 	w.Write(b)
 }
 
@@ -292,11 +266,8 @@ func (h TodoHandler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request, id, categoryId int) {
-	fmt.Printf("\n\nrequest ------>: %+v", r)
 	q := r.URL.Query()
 	bod := r.Body
-	fmt.Printf("\n\nqparams ------>: %+v", q)
-	fmt.Printf("\n\nbody ------>: %+v", bod)
 	//payloadz := ports.ListTodosRequest{}
 	//err := handlers.ValidateRequest(r, &payload)
 	//if err != nil {

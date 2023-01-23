@@ -41,17 +41,14 @@ func (gr *CategoryGormRepository) UserCategoryExists(ctx context.Context, condit
 	type queryResult struct {
 		Id int `json:"id"`
 	}
-	fmt.Println("\n conditions -----> ", conditions)
 	var r queryResult
 	result := gr.DB.Model(&relationship.Category{}).Select("daps_categories.id").Joins("INNER JOIN daps_category_users ON daps_categories.id = daps_category_users.category_id").Where(conditions).Find(&r)
 
 	if result.RowsAffected == 0 {
-		fmt.Println("66666666666666666666")
 		return r.Id, nil
 	}
 
 	if result.Error != nil {
-		fmt.Println("8888888888888888888")
 		return r.Id, result.Error
 	}
 	return r.Id, nil

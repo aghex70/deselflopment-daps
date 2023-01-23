@@ -6,7 +6,6 @@ import (
 	"crypto/cipher"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"os"
@@ -85,7 +84,6 @@ func (s UserService) DecryptPassword(ctx context.Context, cipheredPassword strin
 	padding := decrypted[len(decrypted)-1]
 	decrypted = decrypted[:len(decrypted)-int(padding)]
 
-	fmt.Println("decrypted password:", string(decrypted))
 	// Return the decrypted password as a string
 	return string(decrypted), nil
 }

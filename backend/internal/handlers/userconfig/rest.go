@@ -3,7 +3,6 @@ package userconfig
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"gorm.io/gorm"
@@ -52,10 +51,7 @@ func (h UserConfigHandler) GetUserConfig(w http.ResponseWriter, r *http.Request)
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	fmt.Println("111111111")
 	b, err := json.Marshal(c)
-	fmt.Println("222222")
-	fmt.Printf("b -----> %s", b)
 	w.Write(b)
 }
 
