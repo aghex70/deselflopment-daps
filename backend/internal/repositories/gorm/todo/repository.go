@@ -30,6 +30,7 @@ type Todo struct {
 	Name           string     `gorm:"column:name"`
 	Priority       int        `gorm:"column:priority"`
 	Recurring      bool       `gorm:"column:recurring"`
+	Recurrency     string     `gorm:"column:recurrency"`
 	StartDate      *time.Time `gorm:"column:start_date"`
 	SuggestionDate *time.Time `gorm:"column:suggestion_date"`
 }
@@ -66,6 +67,7 @@ func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error 
 		"name":        ntd.Name,
 		"priority":    ntd.Priority,
 		"recurring":   ntd.Recurring,
+		"recurrency":  ntd.Recurrency,
 	})
 
 	if result.RowsAffected == 0 {
@@ -119,7 +121,7 @@ func (gr *TodoGormRepository) Start(ctx context.Context, id int) error {
 
 func (gr *TodoGormRepository) GetById(ctx context.Context, id int) (domain.TodoInfo, error) {
 	var ti TodoInfo
-	query := fmt.Sprintf("SELECT daps_todos.id, daps_todos.category_id, daps_todos.end_date, daps_todos.creation_date, daps_todos.completed, daps_todos.description, daps_todos.link, daps_todos.name, daps_todos.priority, daps_todos.recurring, daps_todos.start_date, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.id = %d", id)
+	query := fmt.Sprintf("SELECT daps_todos.id, daps_todos.category_id, daps_todos.end_date, daps_todos.creation_date, daps_todos.completed, daps_todos.description, daps_todos.link, daps_todos.name, daps_todos.priority, daps_todos.recurring, daps_todos.start_date, daps_todos.recurrency, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.id = %d", id)
 	result := gr.DB.Raw(query).Scan(&ti)
 
 	if result.Error != nil {
@@ -278,6 +280,7 @@ func (td Todo) ToDto() domain.Todo {
 		Name:         td.Name,
 		Priority:     domain.Priority(td.Priority),
 		Recurring:    td.Recurring,
+		Recurrency:   td.Recurrency,
 		StartDate:    td.StartDate,
 	}
 }
@@ -295,6 +298,7 @@ func fromDto(td domain.Todo) Todo {
 		Name:           td.Name,
 		Priority:       int(td.Priority),
 		Recurring:      td.Recurring,
+		Recurrency:     td.Recurrency,
 		StartDate:      td.StartDate,
 		SuggestionDate: td.SuggestionDate,
 	}
@@ -315,6 +319,7 @@ func (ti TodoInfo) ToDto() domain.TodoInfo {
 			Name:           ti.Name,
 			Priority:       domain.Priority(ti.Priority),
 			Recurring:      ti.Recurring,
+			Recurrency:     ti.Recurrency,
 			StartDate:      ti.StartDate,
 			SuggestionDate: ti.SuggestionDate,
 		},

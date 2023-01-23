@@ -29,6 +29,7 @@ type CreateTodoRequest struct {
 	Link        string `json:"link"`
 	Name        string `json:"name" validate:"required"`
 	Recurring   bool   `json:"recurring"`
+	Recurrency  string `json:"recurrency"`
 	Priority    int32  `json:"priority" validate:"required,gte=1,lte=5"`
 }
 
@@ -63,6 +64,7 @@ type UpdateTodoRequest struct {
 	Link        string `json:"link"`
 	Name        string `json:"name"`
 	Recurring   bool   `json:"recurring"`
+	Recurrency  string `json:"recurrency"`
 	Priority    int32  `json:"priority" validate:"required,gte=1,lte=5"`
 	TodoId      int64  `json:"todo_id"`
 }
