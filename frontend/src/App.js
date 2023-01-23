@@ -5,6 +5,7 @@ import {goToLogin, goToRegister} from "./utils/helpers";
 import {LoginButtonText, RegisterButtonText, WelcomeToDapsText} from "./utils/texts";
 import OneSignal from 'react-onesignal';
 
+
 export default function App() {
   const [isOneSignalInitialized, setIsOneSignalInitialized] = useState(false);
 
