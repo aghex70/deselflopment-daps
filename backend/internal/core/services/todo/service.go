@@ -40,6 +40,7 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 		Name:        req.Name,
 		Priority:    domain.Priority(req.Priority),
 		Recurring:   req.Recurring,
+		Recurrency:  req.Recurrency,
 	}
 
 	err := s.todoRepository.Create(ctx, ntd)
@@ -65,6 +66,7 @@ func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.Upda
 		Name:        req.Name,
 		Priority:    domain.Priority(req.Priority),
 		Recurring:   req.Recurring,
+		Recurrency:  req.Recurrency,
 	}
 
 	err = s.todoRepository.Update(ctx, ntd)

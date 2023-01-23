@@ -3,10 +3,12 @@ import {Button, ButtonGroup, Container, FloatingLabel, Form, Nav} from "react-bo
 import {useLocation, useNavigate, useParams} from 'react-router-dom'
 import TodoService from "../services/todo";
 import DapsHeader from "./Header";
-import checkAccess, {clearLocalStorage} from "../utils/helpers";
+import checkAccess, {clearLocalStorage, goToCategories} from "../utils/helpers";
 import toBoolean from "validator/es/lib/toBoolean";
 import {
+    BiweeklyText,
     CancelButtonText,
+    DailyText,
     DescriptionLabelText,
     EditButtonText,
     EditTodoHeaderText,
@@ -16,12 +18,17 @@ import {
     LowestPriorityText,
     LowPriorityText,
     MediumPriorityText,
+    MonthlyText,
     NameLabelText,
     NoRecurringText,
     OpenLinkText,
     PriorityLabelText,
+    RecurrencyLabelText,
     RecurringLabelText,
     ViewTodoHeaderText,
+    WeekdaysText,
+    WeekendsText,
+    WeeklyText,
     YesRecurringText
 } from "../utils/texts";
 
@@ -32,6 +39,7 @@ const Todo = () => {
     const [todoLink, setTodoLink] = useState("");
     const [todoPriority, setTodoPriority] = useState("");
     const [todoRecurring, setTodoRecurring] = useState("");
+    const [todoRecurrencyPeriod, setTodoRecurrencyPeriod] = useState("");
     const [todoCategoryId, setTodoCategoryId] = useState();
     const [, setTodoCategoryName] = useState();
     const location = useLocation();
@@ -46,6 +54,16 @@ const Todo = () => {
         navigate("/todos", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
     }
 
+    const mapRecurrencyPeriod = () => {
+        if (todoRecurring === "true" || todoRecurring === true) {
+            if (todoRecurrencyPeriod.length === 0) {
+                return "daily";
+            }
+            return todoRecurrencyPeriod;
+        }
+        return "";
+    }
+
     const handleSubmit = (e) => {
       e.preventDefault();
 
@@ -56,13 +74,16 @@ const Todo = () => {
         priority: parseInt(todoPriority),
         recurring: typeof(todoRecurring) == "boolean" ? todoRecurring : toBoolean(todoRecurring),
         category_id: todoCategoryId,
+        recurrency: mapRecurrencyPeriod(),
       }
 
       TodoService.updateTodo(id, data).then(
         (response) => {
           if (response.status === 200) {
               clearLocalStorage([]);
-              navigateTodos(categoryId, categoryName);
+              categoryName === "" || categoryName === undefined ?
+                  navigateTodos(categoryId, categoryName) :
+                  goToCategories();
           } else {
             window.location.reload()
           }
@@ -84,6 +105,7 @@ const Todo = () => {
               setTodoRecurring(response.data.recurring);
               setTodoCategoryId(response.data.category_id);
               setTodoCategoryName(response.data.category_name);
+              setTodoRecurrencyPeriod(response.data.recurrency);
             }
           }
         ).catch(
@@ -145,6 +167,25 @@ const Todo = () => {
             >
                     <option value="false">{NoRecurringText}</option>
                     <option value="true">{YesRecurringText}</option>
+                </Form.Select>
+            </FloatingLabel>
+
+            <FloatingLabel
+                controlId="floatingRecurringPeriod"
+                style={{ display: todoRecurring === "false" || todoRecurring === false ? "none" : "block" }}
+                label={RecurrencyLabelText}>
+                <Form.Select
+                    name="recurring"
+                    value={todoRecurrencyPeriod}
+                    onChange={(e) => setTodoRecurrencyPeriod(e.target.value)}
+                    style={{ margin: '0px 0px 32px' }}
+                    disabled={!enableEdit}>
+                    <option value="daily">{DailyText}</option>
+                    <option value="weekly">{WeeklyText}</option>
+                    <option value="biweekly">{BiweeklyText}</option>
+                    <option value="monthly">{MonthlyText}</option>
+                    <option value="weekdays">{WeekdaysText}</option>
+                    <option value="weekends">{WeekendsText}</option>
                 </Form.Select>
             </FloatingLabel>
 

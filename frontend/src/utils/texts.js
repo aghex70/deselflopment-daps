@@ -109,7 +109,8 @@ const LowPriorityText = language === 'en' ? 'Low' : 'Baja';
 const MediumPriorityText = language === 'en' ? 'Medium' : 'Media';
 const HighPriorityText = language === 'en' ? 'High' : 'Alta';
 const HighestPriorityText = language === 'en' ? 'Highest' : 'Máxima';
-const RecurringLabelText = language === 'en' ? 'Recurrency' : 'Recurrente';
+const RecurringLabelText = language === 'en' ? 'Recurrenct?' : '¿Recurrente?';
+const RecurrencyLabelText = language === 'en' ? 'Recurrency' : 'Recurrencia';
 const SelectRecurringText = language === 'en' ? 'Select recurring' : 'Selecciona recurrencia';
 const YesRecurringText = language === 'en' ? 'Yes' : 'Sí';
 const NoRecurringText = language === 'en' ? 'No' : 'No';
@@ -123,6 +124,13 @@ const SpanishLanguageText = language === 'en' ? 'Spanish' : 'Español';
 const AutoSuggestLabelText = language === 'en' ? 'Auto-suggest' : 'Auto-sugerencia';
 const RegistrationDateText = language === 'en' ? 'Registration date' : 'Fecha de registro';
 const OpenLinkText = language === 'en' ? 'Click here to open the link' : 'Haga clic aquí para abrir el enlace';
+const DailyText = language === 'en' ? 'Daily' : 'Diario';
+const WeeklyText = language === 'en' ? 'Weekly' : 'Semanal';
+const BiweeklyText = language === 'en' ? 'Fortnight' : 'Quincenal';
+const MonthlyText = language === 'en' ? 'Monthly' : 'Mensual';
+const WeekdaysText = language === 'en' ? 'Weekdays' : 'Laborables';
+const WeekendsText = language === 'en' ? 'Weekends' : 'Fines de semana';
+
 
 export {
     HighPriorityTasksText,
@@ -237,4 +245,11 @@ export {
     language,
     SortByPriorityButtonText,
     SortByNameButtonText,
+    RecurrencyLabelText,
+    DailyText,
+    WeeklyText,
+    BiweeklyText,
+    MonthlyText,
+    WeekdaysText,
+    WeekendsText,
 };

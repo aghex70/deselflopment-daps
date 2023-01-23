@@ -6,9 +6,11 @@ import toBoolean from "validator/es/lib/toBoolean";
 import DapsHeader from "./Header";
 import checkAccess, {clearLocalStorage} from "../utils/helpers";
 import {
+    BiweeklyText,
     CancelButtonText,
     CreateButtonText,
     CreateTodoHeaderText,
+    DailyText,
     DescriptionLabelText,
     HighestPriorityText,
     HighPriorityText,
@@ -16,13 +18,18 @@ import {
     LowestPriorityText,
     LowPriorityText,
     MediumPriorityText,
+    MonthlyText,
     NameLabelText,
     NoRecurringText,
     PleaseEnterTodoNameText,
     PriorityLabelText,
+    RecurrencyLabelText,
     RecurringLabelText,
     SelectPriorityText,
     SelectRecurringText,
+    WeekdaysText,
+    WeekendsText,
+    WeeklyText,
     YesRecurringText
 } from "../utils/texts";
 
@@ -32,7 +39,8 @@ const CreateTodo = () => {
     const [todoDescription, setTodoDescription] = useState("");
     const [todoLink, setTodoLink] = useState("");
     const [todoPriority, setTodoPriority] = useState("3");
-    const [todoRecurring, setTodoRecurring] = useState("");
+    const [todoRecurring, setTodoRecurring] = useState("false");
+    const [todoRecurrencyPeriod, setTodoRecurrencyPeriod] = useState("daily");
     const [disablePriority, setDisablePriority] = useState(false);
     const [disableRecurring, setDisableRecurring] = useState(false);
     const [showEnterTodoNameModal, setShowEnterTodoNameModal] = useState(false);
@@ -68,6 +76,16 @@ const CreateTodo = () => {
         setShowEnterTodoNameModal(!showEnterTodoNameModal);
     }
 
+    const mapRecurrencyPeriod = () => {
+        if (todoRecurring === "true" || todoRecurring === true) {
+            if (todoRecurrencyPeriod.length === 0) {
+                return "daily";
+            }
+            return todoRecurrencyPeriod;
+        }
+        return "";
+    }
+
     const handleSubmit = (e) => {
       e.preventDefault();
 
@@ -82,9 +100,9 @@ const CreateTodo = () => {
         link: todoLink,
         // priority will be casted to int
         priority: typeof(todoPriority) === "number" ? todoPriority : parseInt(todoPriority),
-        // priority: todoPriority.,
         recurring: toBoolean(todoRecurring),
         category_id: categoryId,
+        recurrency: mapRecurrencyPeriod(),
       }
 
       TodoService.createTodo(data).then(
@@ -150,12 +168,28 @@ const CreateTodo = () => {
               value={todoRecurring}
               onChange={(e) => setTodoRecurring(e.target.value)}
                     style={{ margin: '0px 0px 32px' }}>>
-                    <option disabled={true}>{SelectRecurringText}</option>
                     <option value="false">{NoRecurringText}</option>
                     <option value="true">{YesRecurringText}</option>
                 </Form.Select>
             </FloatingLabel>
-
+            <FloatingLabel
+                controlId="floatingRecurringPeriod"
+                style={{ display: todoRecurring === "false" || todoRecurring === false ? "none" : "block" }}
+                label={RecurrencyLabelText}>
+                <Form.Select
+                    name="recurring"
+                    value={todoRecurrencyPeriod}
+                    onChange={(e) => setTodoRecurrencyPeriod(e.target.value)}
+                    style={{ margin: '0px 0px 32px' }}>>
+                    <option disabled={true}>{SelectRecurringText}</option>
+                    <option value="daily">{DailyText}</option>
+                    <option value="weekly">{WeeklyText}</option>
+                    <option value="biweekly">{BiweeklyText}</option>
+                    <option value="monthly">{MonthlyText}</option>
+                    <option value="weekdays">{WeekdaysText}</option>
+                    <option value="weekends">{WeekendsText}</option>
+                </Form.Select>
+            </FloatingLabel>
             <FloatingLabel
                 controlId="floatingLink"
                 label={LinkLabelText}
