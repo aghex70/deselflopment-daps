@@ -31,8 +31,8 @@ export default function App() {
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{LoginButtonText}</Button>
             <Button
-              variant="warning"
-              type="primary"
+              variant="primary"
+              type="submit"
               onClick={() => goToRegister()}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{RegisterButtonText}</Button>
