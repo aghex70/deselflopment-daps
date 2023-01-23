@@ -20,7 +20,6 @@ export default function App() {
 
   return (
     <Container>
-      <OneSignalNotifier/>
       <Modal className='unshareModal text-center' show={true}
              centered={true} size='lg'>
         <ModalBody>
