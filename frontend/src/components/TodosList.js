@@ -7,7 +7,6 @@ import {
     faPlus,
     faArrowDown19,
     faArrowDown91,
-    faArrowDownWideShort,
     faArrowUpWideShort,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,8 +26,8 @@ import {
     DeleteIconText,
     EditIconText,
     HeaderActionsText,
-    HeaderNameText,
-    SortByNameButtonText,
+    HeaderNameText, 
+    SortByDateButtonText,
     SortByPriorityButtonText,
     StartIconText
 } from "../utils/texts";
@@ -39,8 +38,8 @@ const TodosList = () => {
   const [todos, setTodos] = useState([]);
   const [ascendingPriority, setAscendingPriority] = useState(false);
   const [ascendingPriorityIcon, setAscendingPriorityIcon] = useState(faArrowDown91);
-  const [ascendingName, setAscendingName] = useState(true);
-  const [ascendingNameIcon, setAscendingNameIcon] = useState(faArrowUpWideShort);
+  const [ascendingDate, setAscendingDate] = useState(true);
+  const [ascendingDateIcon, setAscendingDateIcon] = useState(faArrowDown91);
   const location = useLocation();
   const navigate = useNavigate();
   const categoryId = location.state.categoryId;
@@ -124,15 +123,15 @@ const TodosList = () => {
         navigate("/create-todo", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
   }
 
-  const sortByName = () => {
-      if (ascendingName === true) {
-          sortTodosByField("name", true, setTodos, null);
-          setAscendingName(false)
-          setAscendingNameIcon(faArrowUpWideShort);
+  const sortByDate = () => {
+      if (ascendingDate === true) {
+          sortTodosByField("creation_date", true, setTodos, null);
+          setAscendingDate(false)
+          setAscendingDateIcon(faArrowDown91);
       } else {
-          sortTodosByField("name", false, setTodos, null);
-          setAscendingName(true)
-          setAscendingNameIcon(faArrowDownWideShort);
+          sortTodosByField("creation_date", false, setTodos, null);
+          setAscendingDate(true)
+          setAscendingDateIcon(faArrowDown19);
       }
   }
 
@@ -226,10 +225,10 @@ const TodosList = () => {
                 <FontAwesomeIcon style={{marginLeft: "5px"}} icon={ascendingPriorityIcon} />
             </Button>
             <Button style={{width: "50%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                    title={SortByNameButtonText}
-                    onClick={() => sortByName()}
-                    variant="secondary">{SortByNameButtonText}
-                <FontAwesomeIcon style={{marginLeft: "5px"}} icon={ascendingNameIcon} />
+                    title={SortByDateButtonText}
+                    onClick={() => sortByDate()}
+                    variant="secondary">{SortByDateButtonText}
+                <FontAwesomeIcon style={{marginLeft: "5px"}} icon={ascendingDateIcon} />
             </Button>
             </ButtonGroup>
           <BootstrapTable

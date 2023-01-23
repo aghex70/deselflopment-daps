@@ -74,6 +74,7 @@ const ImportButtonText = language === 'en' ? 'Import' : 'Importar';
 const ResetPasswordButtonText = language === 'en' ? 'Reset password' : 'Restablecer contraseña';
 const SortByPriorityButtonText = language === 'en' ? 'Sort by priority' : 'Prioridad';
 const SortByNameButtonText = language === 'en' ? 'Sort by name' : 'Nombre';
+const SortByDateButtonText = language === 'en' ? 'Sort by date' : 'Fecha creación';
 
 // Headers
 const CategoriesHeaderText = language === 'en' ? 'Categories' : 'Categorías';
@@ -237,4 +238,5 @@ export {
     language,
     SortByPriorityButtonText,
     SortByNameButtonText,
+    SortByDateButtonText,
 };
