@@ -308,16 +308,16 @@ const CategoriesList = () => {
           </Form>
           <ButtonGroup style={{width: "80%"}}>
           <Button
-            variant="success"
-            type="submit"
-            onClick={(e) => confirmShareCategory(e)}
-            style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >{ShareButtonText}</Button>
-          <Button
             variant="danger"
             onClick={(e) => toggleModal(e)}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >{CancelButtonText}</Button>
+          <Button
+              variant="success"
+              type="submit"
+              onClick={(e) => confirmShareCategory(e)}
+              style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+          >{ShareButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -366,16 +366,16 @@ const CategoriesList = () => {
           <h4 style={{margin: "32px"}}>{ConfirmUnshareCategoryText}</h4>
           <ButtonGroup style={{width: "80%"}}>
             <Button
-              variant="success"
-              type="submit"
-              onClick={(e) => confirmUnshareCategory(e)}
-              style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{UnsuscribeButtonText}</Button>
-            <Button
               variant="danger"
               onClick={(e) => toggleUnshareModal(e)}
               style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{CancelButtonText}</Button>
+            <Button
+                variant="success"
+                type="submit"
+                onClick={(e) => confirmUnshareCategory(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{UnsuscribeButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>
@@ -385,16 +385,16 @@ const CategoriesList = () => {
           <h4 style={{margin: "32px"}}>{DeletingCategoryText}</h4>
           <ButtonGroup style={{width: "80%"}}>
             <Button
+                variant="danger"
+                onClick={(e) => toggleConfirmDeleteCategoryModal(e)}
+                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+            >{CancelButtonText}</Button>
+            <Button
                 variant="success"
                 type="submit"
                 onClick={(e) => confirmDeleteCategory(e)}
                 style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
             >{DeleteButtonText}</Button>
-            <Button
-                variant="danger"
-                onClick={(e) => toggleConfirmDeleteCategoryModal(e)}
-                style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-            >{CancelButtonText}</Button>
           </ButtonGroup>
         </ModalBody>
       </Modal>

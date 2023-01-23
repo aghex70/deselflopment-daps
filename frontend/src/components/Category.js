@@ -92,15 +92,15 @@ const Category = () => {
           (
         <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
           <Button
-            variant="success"
-            type="submit"
-            style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >{EditButtonText}</Button>
-          <Button
             variant="danger"
             onClick={() => goToCategories()}
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >{CancelButtonText}</Button>
+          <Button
+              variant="success"
+              type="submit"
+              style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+          >{EditButtonText}</Button>
         </ButtonGroup>
           ) : (
             <Button

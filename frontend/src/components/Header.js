@@ -135,12 +135,6 @@ const DapsHeader = () => {
 
           {isAdmin && (
           <ButtonGroup style={{width: "100%", marginTop: "15px", marginBottom: "15px"}}>
-            {/*<Button disabled={true} style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}*/}
-            {/*        variant="outline-warning" title={StatisticsIconText}*/}
-            {/*>*/}
-
-            {/*  <FontAwesomeIcon icon={faChartSimple} />*/}
-            {/*</Button>*/}
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="dark" title={ImportTodosHeaderText}
                     onClick={() => goToImportTodos()}

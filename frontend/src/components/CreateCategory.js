@@ -87,15 +87,15 @@ const CreateCategory = () => {
 
         <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>
           <Button
+              variant="danger"
+              onClick={() => goToCategories()}
+              style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+          >{CancelButtonText}</Button>
+          <Button
             variant="success"
             type="submit"
             style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
           >{CreateButtonText}</Button>
-          <Button
-            variant="danger"
-            onClick={() => goToCategories()}
-            style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-          >{CancelButtonText}</Button>
         </ButtonGroup>
 
       </Form>
