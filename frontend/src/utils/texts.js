@@ -72,6 +72,8 @@ const EditButtonText = language === 'en' ? 'Edit' : 'Editar';
 const DeleteButtonText = language === 'en' ? 'Delete' : 'Eliminar';
 const ImportButtonText = language === 'en' ? 'Import' : 'Importar';
 const ResetPasswordButtonText = language === 'en' ? 'Reset password' : 'Restablecer contraseña';
+const SortByPriorityButtonText = language === 'en' ? 'Sort by priority' : 'Prioridad';
+const SortByNameButtonText = language === 'en' ? 'Sort by name' : 'Nombre';
 
 // Headers
 const CategoriesHeaderText = language === 'en' ? 'Categories' : 'Categorías';
@@ -233,4 +235,6 @@ export {
     ResetPasswordHeaderText,
     InvalidResetPasswordCodeText,
     language,
+    SortByPriorityButtonText,
+    SortByNameButtonText,
 };

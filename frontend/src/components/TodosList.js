@@ -1,5 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {faPencil, faPlay, faTrash, faCheck, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {
+    faPencil,
+    faPlay,
+    faTrash,
+    faCheck,
+    faPlus,
+    faArrowDown19,
+    faArrowDown91,
+    faArrowDownWideShort,
+    faArrowUpWideShort,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TodoService from "../services/todo";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
@@ -18,6 +28,8 @@ import {
     EditIconText,
     HeaderActionsText,
     HeaderNameText,
+    SortByNameButtonText,
+    SortByPriorityButtonText,
     StartIconText
 } from "../utils/texts";
 
@@ -25,6 +37,10 @@ import {
 const TodosList = () => {
   checkAccess();
   const [todos, setTodos] = useState([]);
+  const [ascendingPriority, setAscendingPriority] = useState(false);
+  const [ascendingPriorityIcon, setAscendingPriorityIcon] = useState(faArrowDown91);
+  const [ascendingName, setAscendingName] = useState(true);
+  const [ascendingNameIcon, setAscendingNameIcon] = useState(faArrowUpWideShort);
   const location = useLocation();
   const navigate = useNavigate();
   const categoryId = location.state.categoryId;
@@ -108,6 +124,30 @@ const TodosList = () => {
         navigate("/create-todo", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
   }
 
+  const sortByName = () => {
+      if (ascendingName === true) {
+          sortTodosByField("name", true, setTodos, null);
+          setAscendingName(false)
+          setAscendingNameIcon(faArrowUpWideShort);
+      } else {
+          sortTodosByField("name", false, setTodos, null);
+          setAscendingName(true)
+          setAscendingNameIcon(faArrowDownWideShort);
+      }
+  }
+
+    const sortByPriority = () => {
+        if (ascendingPriority === true) {
+            sortTodosByField("priority", true, setTodos, null);
+            setAscendingPriority(false);
+            setAscendingPriorityIcon(faArrowDown91);
+        } else {
+            sortTodosByField("priority", false, setTodos, null);
+            setAscendingPriority(true);
+            setAscendingPriorityIcon(faArrowDown19);
+        }
+    }
+
   useEffect(() => {
     let todos = JSON.parse(localStorage.getItem("todos"));
     if (!todos) {
@@ -169,7 +209,7 @@ const TodosList = () => {
 
   function indication() {
     return <span className="createIcon" onClick={() => createTodo()}>
-      <FontAwesomeIcon className="createIcon" icon={faPlus} />{CreateIconText}</span>
+        <FontAwesomeIcon className="createIcon" icon={faPlus} />{CreateIconText}</span>
   }
 
       return (
@@ -178,6 +218,20 @@ const TodosList = () => {
           <h1 className="text-center">{location.state.categoryName}</h1>
           <span style={todoSpan} className="createIcon" onClick={() => createTodo()}>
           <FontAwesomeIcon className="createIcon" icon={faPlus} />{CreateIconText}</span>
+            <ButtonGroup style={{width: "100%", marginTop: "10px"}}>
+            <Button style={{width: "50%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                    title={SortByPriorityButtonText}
+                    onClick={() => sortByPriority()}
+                    variant="primary">{SortByPriorityButtonText}
+                <FontAwesomeIcon style={{marginLeft: "5px"}} icon={ascendingPriorityIcon} />
+            </Button>
+            <Button style={{width: "50%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                    title={SortByNameButtonText}
+                    onClick={() => sortByName()}
+                    variant="secondary">{SortByNameButtonText}
+                <FontAwesomeIcon style={{marginLeft: "5px"}} icon={ascendingNameIcon} />
+            </Button>
+            </ButtonGroup>
           <BootstrapTable
             keyField='id'
             data={ todos }
@@ -189,7 +243,7 @@ const TodosList = () => {
             style={{display: "block", minHeight: "80%", width: "10%", overflow: "auto"}}
           />
         </Container>
-      );
-    };
+        );
+};
 
 export default TodosList;
