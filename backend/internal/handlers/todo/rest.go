@@ -267,7 +267,6 @@ func (h TodoHandler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
 
 func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request, id, categoryId int) {
 	q := r.URL.Query()
-	bod := r.Body
 	//payloadz := ports.ListTodosRequest{}
 	//err := handlers.ValidateRequest(r, &payload)
 	//if err != nil {
