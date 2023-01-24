@@ -110,7 +110,7 @@ const LowPriorityText = language === 'en' ? 'Low' : 'Baja';
 const MediumPriorityText = language === 'en' ? 'Medium' : 'Media';
 const HighPriorityText = language === 'en' ? 'High' : 'Alta';
 const HighestPriorityText = language === 'en' ? 'Highest' : 'Máxima';
-const RecurringLabelText = language === 'en' ? 'Recurrenct?' : '¿Recurrente?';
+const RecurringLabelText = language === 'en' ? 'Recurrent?' : '¿Recurrente?';
 const RecurrencyLabelText = language === 'en' ? 'Recurrency' : 'Recurrencia';
 const SelectRecurringText = language === 'en' ? 'Select recurring' : 'Selecciona recurrencia';
 const YesRecurringText = language === 'en' ? 'Yes' : 'Sí';
