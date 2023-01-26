@@ -7,11 +7,10 @@ import {
     faPlus,
     faArrowDown19,
     faArrowDown91,
-    faArrowUpWideShort,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TodoService from "../services/todo";
-import {Button, ButtonGroup, Container} from "react-bootstrap";
+import {Button, ButtonGroup, Container, Modal, ModalBody} from "react-bootstrap";
 import {useLocation, useNavigate} from "react-router-dom";
 import './TodosList.css';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -21,12 +20,15 @@ import checkAccess, {
     sortTodosByField,
 } from "../utils/helpers";
 import {
+    CancelButtonText,
     CompleteIconText,
     CreateIconText,
+    DeleteButtonText,
     DeleteIconText,
+    DeletingTodoText,
     EditIconText,
     HeaderActionsText,
-    HeaderNameText, 
+    HeaderNameText,
     SortByDateButtonText,
     SortByPriorityButtonText,
     StartIconText
@@ -40,6 +42,8 @@ const TodosList = () => {
   const [ascendingPriorityIcon, setAscendingPriorityIcon] = useState(faArrowDown91);
   const [ascendingDate, setAscendingDate] = useState(true);
   const [ascendingDateIcon, setAscendingDateIcon] = useState(faArrowDown91);
+  const [showDeleteTodoModal, setShowDeleteTodoModal] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const categoryId = location.state.categoryId;
@@ -72,6 +76,12 @@ const TodosList = () => {
     formatter: actionsFormatter,
     headerAlign: 'center',
   }];
+
+    const toggleConfirmDeleteTodoModal = (id) => {
+        setDeleteId(id);
+        setShowDeleteTodoModal(!showDeleteTodoModal);
+    }
+
 
   const navigateToTodo = (id, categoryId, categoryName, action) => {
     clearLocalStorage([]);
@@ -198,7 +208,7 @@ const TodosList = () => {
         </Button>
 
         <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                title={DeleteIconText} variant="outline-danger" onClick={() => deleteTodo(row.id)}>
+                title={DeleteIconText} variant="outline-danger" onClick={() => toggleConfirmDeleteTodoModal(row.id)}>
           <FontAwesomeIcon icon={faTrash} />
         </Button>
       </ButtonGroup>
@@ -241,6 +251,25 @@ const TodosList = () => {
             striped={true}
             style={{display: "block", minHeight: "80%", width: "10%", overflow: "auto"}}
           />
+
+        <Modal className='unshareModal text-center' show={showDeleteTodoModal} open={showDeleteTodoModal} centered={true} size='lg'>
+            <ModalBody>
+                <h4 style={{margin: "32px"}}>{DeletingTodoText}</h4>
+                <ButtonGroup style={{width: "80%"}}>
+                    <Button
+                        variant="danger"
+                        onClick={(e) => toggleConfirmDeleteTodoModal(e)}
+                        style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                    >{CancelButtonText}</Button>
+                    <Button
+                        variant="success"
+                        type="submit"
+                        onClick={() => deleteTodo(deleteId)}
+                        style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                    >{DeleteButtonText}</Button>
+                </ButtonGroup>
+            </ModalBody>
+        </Modal>
         </Container>
         );
 };
