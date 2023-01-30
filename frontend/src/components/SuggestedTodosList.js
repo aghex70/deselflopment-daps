@@ -76,12 +76,12 @@ const SuggestedTodosList = () => {
 
         <ButtonGroup style={{width: "100%"}}>
             {row.active === false? (
-                <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center", }}
+                <Button style={{width: "20%", margin: "auto", display: "block", padding: "0", textAlign: "center", }}
                         title={StartIconText} variant="outline-warning" onClick={() => startTodo(row.id, row.category_id)}>
                     <FontAwesomeIcon icon={faPlay} />
                 </Button>
             ) : (
-                <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                <Button style={{width: "20%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                         title={CompleteIconText} variant="outline-success" onClick={() => completeTodo(row.id, row.category_id)}>
                     <FontAwesomeIcon icon={faCheck} />
                 </Button>
@@ -111,12 +111,12 @@ const SuggestedTodosList = () => {
     {
       dataField: 'name',
       text: HeaderNameText,
-      style:{'width' : '80%'},
+      style:{'width' : '70%'},
       formatter: rowTextColor,
     }, {
       dataField: 'actions',
       text: HeaderActionsText,
-      style:{'width' : '20%'},
+      style:{'width' : '30%'},
       formatter: actionsFormatter,
       headerAlign: 'center',
     }];

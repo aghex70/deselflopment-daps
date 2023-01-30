@@ -32,6 +32,7 @@ type Todo struct {
 	Recurring      bool       `gorm:"column:recurring"`
 	Recurrency     string     `gorm:"column:recurrency"`
 	StartDate      *time.Time `gorm:"column:start_date"`
+	Suggestable    bool       `gorm:"suggestable"`
 	SuggestionDate *time.Time `gorm:"column:suggestion_date"`
 }
 
@@ -68,6 +69,7 @@ func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error 
 		"priority":    ntd.Priority,
 		"recurring":   ntd.Recurring,
 		"recurrency":  ntd.Recurrency,
+		"suggestable": ntd.Suggestable,
 	})
 
 	if result.RowsAffected == 0 {
@@ -178,7 +180,7 @@ func (gr *TodoGormRepository) ListCompleted(ctx context.Context, categoryIds []i
 func (gr *TodoGormRepository) ListSuggested(ctx context.Context, userId int) ([]domain.TodoInfo, error) {
 	var tis []TodoInfo
 	var todosInfo []domain.TodoInfo
-	query := fmt.Sprintf("SELECT daps_todos.name, daps_todos.id, daps_todos.category_id, daps_todos.active, daps_todos.suggestion_date, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.suggested = true AND daps_todos.completed = false AND daps_categories.owner_id = %d ORDER BY RAND() LIMIT 8", userId)
+	query := fmt.Sprintf("SELECT daps_todos.name, daps_todos.id, daps_todos.category_id, daps_todos.active, daps_todos.suggestion_date, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.suggested = true AND daps_todos.completed = false AND daps_categories.owner_id = %d AND daps_todos.suggestable = true ORDER BY RAND() LIMIT 8", userId)
 	result := gr.DB.Raw(query).Scan(&tis)
 
 	if result.Error != nil {
@@ -196,6 +198,7 @@ func (gr *TodoGormRepository) ListSuggested(ctx context.Context, userId int) ([]
 func (gr *TodoGormRepository) Suggest(ctx context.Context, userId int) error {
 	var suggestedTodosNumber int
 
+	// Retrieve current number of suggested todos
 	query := fmt.Sprintf("SELECT COUNT(*) FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.suggested = true AND daps_todos.completed = false AND daps_categories.owner_id = %d", userId)
 	result := gr.DB.Raw(query).Scan(&suggestedTodosNumber)
 
@@ -205,8 +208,9 @@ func (gr *TodoGormRepository) Suggest(ctx context.Context, userId int) error {
 
 	newSuggestedTodosNumber := pkg.MaximumConcurrentSuggestions - suggestedTodosNumber
 
+	// Retrieve todos that are going to be suggested
 	var ids []int
-	query = fmt.Sprintf("SELECT daps_todos.id FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.recurring = false AND daps_todos.suggested = false AND daps_todos.completed = false AND daps_todos.active = false AND daps_categories.owner_id = %d ORDER BY RAND() LIMIT %d", userId, newSuggestedTodosNumber)
+	query = fmt.Sprintf("SELECT daps_todos.id FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.recurring = false AND daps_todos.suggested = false AND daps_todos.completed = false AND daps_todos.active = false AND daps_categories.owner_id = %d AND daps_todos.suggestable = true ORDER BY RAND() LIMIT %d", userId, newSuggestedTodosNumber)
 	result = gr.DB.Raw(query).Scan(&ids)
 
 	var idList string
@@ -217,13 +221,13 @@ func (gr *TodoGormRepository) Suggest(ctx context.Context, userId int) error {
 		}
 	}
 
+	// Set them to suggested
 	query2 := fmt.Sprintf("UPDATE daps_todos SET suggested = true, suggestion_date = NOW() WHERE id IN (%s)", idList)
 	result = gr.DB.Exec(query2)
 
 	if result.Error != nil {
 		return result.Error
 	}
-
 	return nil
 }
 
@@ -281,6 +285,7 @@ func (td Todo) ToDto() domain.Todo {
 		Priority:     domain.Priority(td.Priority),
 		Recurring:    td.Recurring,
 		Recurrency:   td.Recurrency,
+		Suggestable:  td.Suggestable,
 		StartDate:    td.StartDate,
 	}
 }
@@ -300,6 +305,7 @@ func fromDto(td domain.Todo) Todo {
 		Recurring:      td.Recurring,
 		Recurrency:     td.Recurrency,
 		StartDate:      td.StartDate,
+		Suggestable:    td.Suggestable,
 		SuggestionDate: td.SuggestionDate,
 	}
 }

@@ -67,6 +67,7 @@ func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.Upda
 		Priority:    domain.Priority(req.Priority),
 		Recurring:   req.Recurring,
 		Recurrency:  req.Recurrency,
+		Suggestable: req.Suggestable,
 	}
 
 	err = s.todoRepository.Update(ctx, ntd)

@@ -10,10 +10,10 @@ import {
     EmailAddressLabelText,
     EnglishLanguageText,
     LanguageLabelText,
-    NoRecurringText,
+    NoText,
     ProfileHeaderText,
     SpanishLanguageText,
-    YesRecurringText
+    YesText
 } from "../utils/texts";
 import UserConfigurationService from "../services/userconfiguration";
 import toBoolean from "validator/es/lib/toBoolean";
@@ -98,8 +98,8 @@ const Profile = () => {
           onChange={(e) => setProfileAutoSuggest(e.target.value)}
           style={{ margin: '0px 0px 32px' }}
         >
-            <option value="false">{NoRecurringText}</option>
-            <option value="true">{YesRecurringText}</option>
+            <option value="false">{NoText}</option>
+            <option value="true">{YesText}</option>
             </Form.Select>
         </FloatingLabel>
 

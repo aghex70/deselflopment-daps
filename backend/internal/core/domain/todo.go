@@ -27,6 +27,7 @@ type Todo struct {
 	Recurring      bool       `json:"recurring"`
 	Recurrency     string     `json:"recurrency"`
 	StartDate      *time.Time `json:"start_date"`
+	Suggestable    bool       `json:"suggestable"`
 	SuggestionDate *time.Time `json:"suggestion_date"`
 }
 

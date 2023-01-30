@@ -20,16 +20,16 @@ import {
     MediumPriorityText,
     MonthlyText,
     NameLabelText,
-    NoRecurringText,
+    NoText,
     OpenLinkText,
     PriorityLabelText,
     RecurrencyLabelText,
-    RecurringLabelText,
+    RecurringLabelText, SuggestableLabelText,
     ViewTodoHeaderText,
     WeekdaysText,
     WeekendsText,
     WeeklyText,
-    YesRecurringText
+    YesText
 } from "../utils/texts";
 
 const Todo = () => {
@@ -39,6 +39,7 @@ const Todo = () => {
     const [todoLink, setTodoLink] = useState("");
     const [todoPriority, setTodoPriority] = useState("");
     const [todoRecurring, setTodoRecurring] = useState("");
+    const [todoSuggestable, setTodoSuggestable] = useState("");
     const [todoRecurrencyPeriod, setTodoRecurrencyPeriod] = useState("");
     const [todoCategoryId, setTodoCategoryId] = useState();
     const [, setTodoCategoryName] = useState();
@@ -75,6 +76,7 @@ const Todo = () => {
         recurring: typeof(todoRecurring) == "boolean" ? todoRecurring : toBoolean(todoRecurring),
         category_id: todoCategoryId,
         recurrency: mapRecurrencyPeriod(),
+        suggestable: typeof(todoSuggestable) == "boolean" ? todoSuggestable : toBoolean(todoSuggestable),
       }
 
       TodoService.updateTodo(id, data).then(
@@ -90,6 +92,10 @@ const Todo = () => {
         }
       ).catch(
         (error) => {
+            clearLocalStorage([]);
+            categoryName === "" || categoryName === undefined ?
+                navigateTodos(categoryId, categoryName) :
+                goToCategories();
         }
       )
     }
@@ -106,6 +112,7 @@ const Todo = () => {
               setTodoCategoryId(response.data.category_id);
               setTodoCategoryName(response.data.category_name);
               setTodoRecurrencyPeriod(response.data.recurrency);
+              setTodoSuggestable(response.data.suggestable)
             }
           }
         ).catch(
@@ -165,8 +172,21 @@ const Todo = () => {
               style={{ margin: '0px 0px 32px' }}
               disabled={!enableEdit}
             >
-                    <option value="false">{NoRecurringText}</option>
-                    <option value="true">{YesRecurringText}</option>
+                    <option value="false">{NoText}</option>
+                    <option value="true">{YesText}</option>
+                </Form.Select>
+            </FloatingLabel>
+
+            <FloatingLabel controlId="floatingSuggestable" label={SuggestableLabelText}>
+                <Form.Select
+                    name="suggestable"
+                    value={todoSuggestable}
+                    onChange={(e) => setTodoSuggestable(e.target.value)}
+                    style={{ margin: '0px 0px 32px' }}
+                    disabled={!enableEdit}
+                >
+                    <option value="false">{NoText}</option>
+                    <option value="true">{YesText}</option>
                 </Form.Select>
             </FloatingLabel>
 

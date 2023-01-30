@@ -20,7 +20,7 @@ import {
     MediumPriorityText,
     MonthlyText,
     NameLabelText,
-    NoRecurringText,
+    NoText,
     PleaseEnterTodoNameText,
     PriorityLabelText,
     RecurrencyLabelText,
@@ -30,7 +30,7 @@ import {
     WeekdaysText,
     WeekendsText,
     WeeklyText,
-    YesRecurringText
+    YesText
 } from "../utils/texts";
 
 const CreateTodo = () => {
@@ -168,8 +168,8 @@ const CreateTodo = () => {
               value={todoRecurring}
               onChange={(e) => setTodoRecurring(e.target.value)}
                     style={{ margin: '0px 0px 32px' }}>>
-                    <option value="false">{NoRecurringText}</option>
-                    <option value="true">{YesRecurringText}</option>
+                    <option value="false">{NoText}</option>
+                    <option value="true">{YesText}</option>
                 </Form.Select>
             </FloatingLabel>
             <FloatingLabel

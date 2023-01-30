@@ -10,7 +10,7 @@ const HeaderNameText = language === 'en' ? 'Name' : 'Nombre';
 const CompletedTodosIndicationText = language === 'en' ? 'You better complete some Todos first!' : '¡Debes completar alguna tarea antes!';
 const RecurringTodosIndicationText = language === 'en' ? 'You better create some recurring Todos first!' : '¡Debes crear alguna tarea recurrente antes!';
 const HeaderUserText = language === 'en' ? 'User' : 'Usuario';
-const SuggestedTodosIndicationText = language === 'en' ? 'If you want to receive some suggestions, enable them in your profile!' : '¡Si quieres recibir sugerencias, habilita la opción en tu perfil!';
+const SuggestedTodosIndicationText = language === 'en' ? 'If you want to receive some suggestions, enable them in your profile! Please take care, that recurring todos cannot be suggested' : '¡Si quieres recibir sugerencias, habilita la opción en tu perfil! Tenga en cuenta que las tareas recurrentes nunca serán sugeridas';
 
 // Icons
 const ShareIconText = language === 'en' ? 'Share' : 'Compartir';
@@ -114,8 +114,8 @@ const HighestPriorityText = language === 'en' ? 'Highest' : 'Máxima';
 const RecurringLabelText = language === 'en' ? 'Recurrent?' : '¿Recurrente?';
 const RecurrencyLabelText = language === 'en' ? 'Recurrency' : 'Recurrencia';
 const SelectRecurringText = language === 'en' ? 'Select recurring' : 'Selecciona recurrencia';
-const YesRecurringText = language === 'en' ? 'Yes' : 'Sí';
-const NoRecurringText = language === 'en' ? 'No' : 'No';
+const YesText = language === 'en' ? 'Yes' : 'Sí';
+const NoText = language === 'en' ? 'No' : 'No';
 const LinkLabelText = language === 'en' ? 'Link' : 'Enlace';
 const EmailAddressLabelText = language === 'en' ? 'Email address' : 'Correo electrónico';
 const PasswordLabelText = language === 'en' ? 'Password' : 'Contraseña';
@@ -132,6 +132,7 @@ const BiweeklyText = language === 'en' ? 'Fortnight' : 'Quincenal';
 const MonthlyText = language === 'en' ? 'Monthly' : 'Mensual';
 const WeekdaysText = language === 'en' ? 'Weekdays' : 'Laborables';
 const WeekendsText = language === 'en' ? 'Weekends' : 'Fines de semana';
+const SuggestableLabelText = language === 'en' ? 'Suggestable?' : '¿Sugerible?';
 
 
 export {
@@ -190,8 +191,8 @@ export {
     HighPriorityText,
     HighestPriorityText,
     RecurringLabelText,
-    YesRecurringText,
-    NoRecurringText,
+    YesText,
+    NoText,
     LinkLabelText,
     EmailAddressLabelText,
     PasswordLabelText,
@@ -256,4 +257,5 @@ export {
     WeekendsText,
     SortByDateButtonText,
     DeletingTodoText,
+    SuggestableLabelText,
 };
