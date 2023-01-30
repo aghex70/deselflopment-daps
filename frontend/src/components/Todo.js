@@ -39,7 +39,7 @@ const Todo = () => {
     const [todoLink, setTodoLink] = useState("");
     const [todoPriority, setTodoPriority] = useState("");
     const [todoRecurring, setTodoRecurring] = useState("");
-    const [todoSuggestable, setTodoSuggestable] = useState("");
+    const [todoSuggestable, setTodoSuggestable] = useState(true);
     const [todoRecurrencyPeriod, setTodoRecurrencyPeriod] = useState("");
     const [todoCategoryId, setTodoCategoryId] = useState();
     const [, setTodoCategoryName] = useState();
@@ -112,7 +112,7 @@ const Todo = () => {
               setTodoCategoryId(response.data.category_id);
               setTodoCategoryName(response.data.category_name);
               setTodoRecurrencyPeriod(response.data.recurrency);
-              setTodoSuggestable(response.data.suggestable)
+              setTodoSuggestable(response.data.suggestable);
             }
           }
         ).catch(

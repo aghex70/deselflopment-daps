@@ -41,6 +41,7 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 		Priority:    domain.Priority(req.Priority),
 		Recurring:   req.Recurring,
 		Recurrency:  req.Recurrency,
+		Suggestable: true,
 	}
 
 	err := s.todoRepository.Create(ctx, ntd)
