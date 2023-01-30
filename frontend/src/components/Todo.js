@@ -39,7 +39,7 @@ const Todo = () => {
     const [todoLink, setTodoLink] = useState("");
     const [todoPriority, setTodoPriority] = useState("");
     const [todoRecurring, setTodoRecurring] = useState("");
-    const [todoSuggestable, setTodoSuggestable] = useState(true);
+    const [todoSuggestable, setTodoSuggestable] = useState("");
     const [todoRecurrencyPeriod, setTodoRecurrencyPeriod] = useState("");
     const [todoCategoryId, setTodoCategoryId] = useState();
     const [, setTodoCategoryName] = useState();

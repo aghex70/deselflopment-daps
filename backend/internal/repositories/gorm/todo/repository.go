@@ -327,6 +327,7 @@ func (ti TodoInfo) ToDto() domain.TodoInfo {
 			Recurring:      ti.Recurring,
 			Recurrency:     ti.Recurrency,
 			StartDate:      ti.StartDate,
+			Suggestable:    ti.Suggestable,
 			SuggestionDate: ti.SuggestionDate,
 		},
 		CategoryInfo: domain.CategoryInfo{CategoryName: ti.CategoryName},
