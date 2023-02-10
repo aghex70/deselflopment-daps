@@ -19,9 +19,4 @@ func MigrateCommand(db *sql.DB) *cobra.Command {
 		},
 	}
 	return cmd
-	//err := cmd.Execute()
-	//if err != nil {
-	//	log.Fatalf("error executing command %+v", err.Error())
-	//}
-
 }

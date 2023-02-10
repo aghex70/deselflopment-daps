@@ -28,19 +28,6 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 		Use:   "serve",
 		Short: "Serve application",
 		Run: func(cmd *cobra.Command, args []string) {
-			//log.Println("Starting app...")
-			//
-			//log.Println("Loading configuration...")
-			//c, err := config.NewConfig()
-			//log.Println("Configuration load successfully")
-
-			// Intialize database
-			//log.Println("Starting application database")
-			//_, err := database.NewSqlDB(*cfg.Database)
-			//if err != nil {
-			//	log.Fatalf("error starting application database %+v", err.Error())
-			//}
-
 			logger2 := log.Logger{}
 			gdb, err := database.NewGormDB(*cfg.Database)
 			if err != nil {

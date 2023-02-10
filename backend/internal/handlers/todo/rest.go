@@ -108,11 +108,6 @@ func (h TodoHandler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
-	//w.Header().Set("Content-Type", "application/json")
-	//bodyBytes, _ := ioutil.ReadAll(r.Body)
-	//bodyString := string(bodyBytes)
-	//fmt.Println(bodyString)
-
 	payload := ports.CreateTodoRequest{}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -267,15 +262,7 @@ func (h TodoHandler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
 
 func (h TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request, id, categoryId int) {
 	q := r.URL.Query()
-	//payloadz := ports.ListTodosRequest{}
-	//err := handlers.ValidateRequest(r, &payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-
 	categoryId, err := strconv.Atoi(q.Get("category_id"))
-	//payload.Category = categoryId
 	payload := ports.DeleteTodoRequest{TodoId: int64(id), Category: categoryId}
 	err = handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -300,9 +287,7 @@ func (h TodoHandler) Summary(w http.ResponseWriter, r *http.Request) {
 
 	// Return a list of summaries
 	b, err := json.Marshal(summary)
-	//b, err := json.Marshal(handlers.SummaryResponse{Summary: summary})
 	w.Write(b)
-	//w.Write(summary)
 }
 
 func NewTodoHandler(ts ports.TodoServicer, logger *log.Logger) TodoHandler {

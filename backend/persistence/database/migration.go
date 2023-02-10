@@ -36,17 +36,6 @@ func Migrate(db *sql.DB) error {
 	return nil
 }
 
-func Rollback(db *sql.DB) error {
-	if err := goose.SetDialect("mysql"); err != nil {
-		return err
-	}
-
-	if err := goose.Run("down", db, migrationDirectory); err != nil {
-		return err
-	}
-	return nil
-}
-
 func MakeMigrations(db *sql.DB, filename string) error {
 	if filename == "" {
 		return ErrMigrationFile

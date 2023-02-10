@@ -35,7 +35,6 @@ func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 		w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, PUT, OPTIONS")
-		//w.Header().Add("Access-Control-Allow-Credentials", "true")
 		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
@@ -128,9 +127,6 @@ func (s *RestServer) StartServer() error {
 
 	// CSV Import
 	http.HandleFunc("/api/import", JWTAuthMiddleware(s.userHandler.ImportCSV))
-
-	//Stats
-	//http.HandleFunc("/statistics", JWTAuthMiddleware(s.toDoHandler.Todo))
 
 	// CAREFUL!!!!
 	// Root (not included out of the box damn!)

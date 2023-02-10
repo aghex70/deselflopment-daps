@@ -45,7 +45,6 @@ type Tabler interface {
 	TableName() string
 }
 
-// TableName overrides the table name used by User to `profiles`
 func (Todo) TableName() string {
 	return "daps_todos"
 }
