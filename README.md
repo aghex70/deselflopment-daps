@@ -1,5 +1,3 @@
-https://www.deselflopment.com
-
 # daps - disorganization and procrastination stopper
 
 ## What is it?
