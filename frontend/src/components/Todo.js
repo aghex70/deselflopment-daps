@@ -84,8 +84,9 @@ const Todo = () => {
           if (response.status === 200) {
               clearLocalStorage([]);
               categoryName === "" || categoryName === undefined ?
-                  navigateTodos(categoryId, categoryName) :
-                  goToCategories();
+                  goToCategories() :
+                  navigateTodos(categoryId, categoryName) ;
+
           } else {
             window.location.reload()
           }
@@ -94,8 +95,8 @@ const Todo = () => {
         (error) => {
             clearLocalStorage([]);
             categoryName === "" || categoryName === undefined ?
-                navigateTodos(categoryId, categoryName) :
-                goToCategories();
+                goToCategories() :
+                navigateTodos(categoryId, categoryName) ;
         }
       )
     }

@@ -113,8 +113,8 @@ const CategoriesList = () => {
     navigate("/todos", {state: {categoryId: categoryId, categoryName: categoryName}});
   }
 
-  const getCategory = (id, action) => {
-    navigate("/category/" + id, {state: {action: action}});
+  const getCategory = (id, action, categoryName) => {
+    navigate("/category/" + id, {state: {action: action, categoryName: categoryName}});
   }
 
   const confirmDeleteCategory = () => {
@@ -249,13 +249,13 @@ const CategoriesList = () => {
           {isOwner(row.owner_id)? (
           <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
                   title={EditIconText}
-                  variant="outline-primary" onClick={() => getCategory(row.id, "edit")}>
+                  variant="outline-primary" onClick={() => getCategory(row.id, "edit", row.name)}>
             <FontAwesomeIcon icon={faPencil} />
           </Button>
           ) : (
             <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
                     title={ViewIconText}
-                    variant="outline-primary" onClick={() => getCategory(row.id, "view")}>
+                    variant="outline-primary" onClick={() => getCategory(row.id, "view", row.name)}>
               <FontAwesomeIcon icon={faEye} />
             </Button>
           )}
