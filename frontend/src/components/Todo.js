@@ -210,21 +210,32 @@ const Todo = () => {
                 </Form.Select>
             </FloatingLabel>
 
-            {!enableEdit && todoLink ?
+            {enableEdit &&
+                <FloatingLabel
+                    controlId="floatingLink"
+                    label={LinkLabelText}
+                    value={todoLink}
+                    onChange={(e) => {
+                          const link = e.target.value;
+                          if (link === "") {
+                              setTodoLink("");
+                          } else if (!/^https?:\/\//i.test(link)) { // checks if http:// or https:// is already present
+                              setTodoLink('https://' + link); // prepends https:// if it's not present
+                          } else {
+                            setTodoLink(link); // otherwise, set the link as is
+                          }
+                        }}
+                >
+                    <Form.Control type="link" placeholder="Link" value={todoLink} disabled={!enableEdit}/>
+                </FloatingLabel>
+            }
+
+            {todoLink &&
                 <Nav className="justify-content-center" style={{marginBottom: "15px"}} activeKey={todoLink}>
                     <Nav.Item className="font-size-lg">
                         <Nav.Link href={todoLink} target="_blank">{OpenLinkText}</Nav.Link>
                     </Nav.Item>
                 </Nav>
-                :
-                <FloatingLabel
-                    controlId="floatingLink"
-                    label={LinkLabelText}
-                    value={todoLink}
-                    onChange={(e) => setTodoLink(e.target.value)}
-                >
-                    <Form.Control type="link" placeholder="Link" value={todoLink} disabled={!enableEdit}/>
-                </FloatingLabel>
             }
 
           {enableEdit ?
