@@ -26,38 +26,67 @@ import ActivateUser from "./components/ActivateUser";
 import ResetLink from "./components/ResetLink";
 import ResetPassword from "./components/ResetPassword";
 
-
+const production = process.env.REACT_APP_API_URL === "https://deselflopment.com/";
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="login" element={<Login />} />
-        <Route path="logout" element={<Logout />} />
-        <Route path="register" element={<Register />} />
-        <Route path="recover-password" element={<Register />} />
-        <Route path="report-bug" element={<ReportBug />} />
-        <Route path="categories" element={<CategoriesList />} />
-        <Route path="todos" element={<TodosList />} />
-        <Route path="category/:id" element={<Category />} />
-        <Route path="todo/:id" element={<Todo />} />
-        <Route path="activate/:id" element={<ActivateUser />} />
-        <Route path="reset-password/:id" element={<ResetPassword />} />
-        <Route path="reset-link" element={<ResetLink />} />
-        <Route path="create-category" element={<CreateCategory />} />
-        <Route path="create-todo" element={<CreateTodo />} />
-        <Route path="recurring-todos" element={<RecurringTodosList />} />
-        <Route path="suggested-todos" element={<SuggestedTodosList />} />
-        <Route path="completed-todos" element={<CompletedTodosList />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="provision" element={<ProvisionDemoUser />} />
-        <Route path="users" element={<UsersList />} />
-        <Route path="import" element={<ImportCSV />} />
-        <Route path="user/:id" element={<User />} />
-        <Route path="statistics" element={<CategoriesList />} />
-      </Routes>
-    </BrowserRouter>
-  </React.StrictMode>
-);
 
+root.render(
+    production ? (
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="login" element={<Login />} />
+            <Route path="logout" element={<Logout />} />
+            <Route path="register" element={<Register />} />
+            <Route path="recover-password" element={<Register />} />
+            <Route path="report-bug" element={<ReportBug />} />
+            <Route path="categories" element={<CategoriesList />} />
+            <Route path="todos" element={<TodosList />} />
+            <Route path="category/:id" element={<Category />} />
+            <Route path="todo/:id" element={<Todo />} />
+            <Route path="activate/:id" element={<ActivateUser />} />
+            <Route path="reset-password/:id" element={<ResetPassword />} />
+            <Route path="reset-link" element={<ResetLink />} />
+            <Route path="create-category" element={<CreateCategory />} />
+            <Route path="create-todo" element={<CreateTodo />} />
+            <Route path="recurring-todos" element={<RecurringTodosList />} />
+            <Route path="suggested-todos" element={<SuggestedTodosList />} />
+            <Route path="completed-todos" element={<CompletedTodosList />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="provision" element={<ProvisionDemoUser />} />
+            <Route path="users" element={<UsersList />} />
+            <Route path="import" element={<ImportCSV />} />
+            <Route path="user/:id" element={<User />} />
+          </Routes>
+        </BrowserRouter>
+    ) : (
+        <React.StrictMode>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<App/>}/>
+              <Route path="login" element={<Login/>}/>
+              <Route path="logout" element={<Logout/>}/>
+              <Route path="register" element={<Register/>}/>
+              <Route path="recover-password" element={<Register/>}/>
+              <Route path="report-bug" element={<ReportBug/>}/>
+              <Route path="categories" element={<CategoriesList/>}/>
+              <Route path="todos" element={<TodosList/>}/>
+              <Route path="category/:id" element={<Category/>}/>
+              <Route path="todo/:id" element={<Todo/>}/>
+              <Route path="activate/:id" element={<ActivateUser/>}/>
+              <Route path="reset-password/:id" element={<ResetPassword/>}/>
+              <Route path="reset-link" element={<ResetLink/>}/>
+              <Route path="create-category" element={<CreateCategory/>}/>
+              <Route path="create-todo" element={<CreateTodo/>}/>
+              <Route path="recurring-todos" element={<RecurringTodosList/>}/>
+              <Route path="suggested-todos" element={<SuggestedTodosList/>}/>
+              <Route path="completed-todos" element={<CompletedTodosList/>}/>
+              <Route path="profile" element={<Profile/>}/>
+              <Route path="provision" element={<ProvisionDemoUser/>}/>
+              <Route path="users" element={<UsersList/>}/>
+              <Route path="import" element={<ImportCSV/>}/>
+              <Route path="user/:id" element={<User/>}/>
+            </Routes>
+          </BrowserRouter>
+        </React.StrictMode>
+    )
+);
