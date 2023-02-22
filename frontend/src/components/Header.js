@@ -43,7 +43,7 @@ const DapsHeader = () => {
   checkAccess();
 
   const [isHoverProfile, setIsHoverProfile] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState("");
 
   const handleMouseEnter = () => {
     setIsHoverProfile(true);
@@ -53,6 +53,7 @@ const DapsHeader = () => {
   };
 
   useEffect(() => {
+    if (isAdmin === "") {
     UserService.checkAdminAccess().then(
         (response) => {
           if (response.status === 200) {
@@ -64,7 +65,7 @@ const DapsHeader = () => {
           setIsAdmin(false);
         }
     )
-  }, [isAdmin]);
+  }}, [isAdmin]);
 
       return (
         <Container>
