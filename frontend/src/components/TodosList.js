@@ -34,6 +34,7 @@ import {
     SortByPriorityButtonText,
     StartIconText,
     RestartIconText,
+    CannotDeleteActiveTodoText,
 } from "../utils/texts";
 
 
@@ -45,6 +46,7 @@ const TodosList = () => {
   const [ascendingDate, setAscendingDate] = useState(true);
   const [ascendingDateIcon, setAscendingDateIcon] = useState(faArrowDown91);
   const [showDeleteTodoModal, setShowDeleteTodoModal] = useState(false);
+  const [showCannotDeleteActiveTodoModal, setShowCannotDeleteActiveTodoModal] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
@@ -82,6 +84,10 @@ const TodosList = () => {
     const toggleConfirmDeleteTodoModal = (id) => {
         setDeleteId(id);
         setShowDeleteTodoModal(!showDeleteTodoModal);
+    }
+
+    const toggleCannotDeleteStartedTodoModal = () => {
+        setShowCannotDeleteActiveTodoModal(!showCannotDeleteActiveTodoModal);
     }
 
 
@@ -233,7 +239,7 @@ const TodosList = () => {
        }
 
         <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                title={DeleteIconText} variant="outline-danger" onClick={() => toggleConfirmDeleteTodoModal(row.id)}>
+                title={DeleteIconText} variant="outline-danger" onClick={() => row.active ? toggleCannotDeleteStartedTodoModal() : toggleConfirmDeleteTodoModal(row.id)}>
           <FontAwesomeIcon icon={faTrash} />
         </Button>
       </ButtonGroup>
@@ -292,6 +298,19 @@ const TodosList = () => {
                         onClick={() => deleteTodo(deleteId)}
                         style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                     >{DeleteButtonText}</Button>
+                </ButtonGroup>
+            </ModalBody>
+        </Modal>
+
+        <Modal className='deleteActiveTodoModal text-center' show={showCannotDeleteActiveTodoModal} open={showCannotDeleteActiveTodoModal} centered={true} size='lg'>
+            <ModalBody>
+                <h4 style={{margin: "32px"}}>{CannotDeleteActiveTodoText}</h4>
+                <ButtonGroup style={{width: "80%"}}>
+                    <Button
+                        variant="danger"
+                        onClick={() => toggleCannotDeleteStartedTodoModal()}
+                        style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                    >{CancelButtonText}</Button>
                 </ButtonGroup>
             </ModalBody>
         </Modal>

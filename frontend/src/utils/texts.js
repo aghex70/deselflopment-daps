@@ -60,7 +60,7 @@ const PasswordLinkResetText = language === 'en' ? 'Password reset link sent! Ple
 const UserNotActivatedText = language === 'en' ? 'User not activated! Please check your email and activate your account' : '¡Usuario no activado! Por favor, compruebe su correo electrónico y active su cuenta';
 const ActivateUserText = language === 'en' ? 'Congratulations, you have successfully registered! Please check your email and activate your account' : '¡Enhorabuena, te has registrado con éxito! Por favor, compruebe su correo electrónico y active su cuenta';
 const InvalidResetPasswordCodeText = language === 'en' ? 'Invalid reset password code! Please try again or register first' : 'Código de restablecimiento de contraseña no válido';
-
+const CannotDeleteActiveTodoText = language === 'en' ? 'Cannot delete an active Todo!' : '¡No se puede eliminar una tarea activa!';
 
 // Buttons
 const CancelButtonText = language === 'en' ? 'Cancel' : 'Cancelar';
@@ -260,4 +260,5 @@ export {
     DeletingTodoText,
     SuggestableLabelText,
     RestartIconText,
+    CannotDeleteActiveTodoText,
 };
