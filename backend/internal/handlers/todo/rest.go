@@ -36,6 +36,22 @@ func (h TodoHandler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if restartString := "/restart"; strings.Contains(path, restartString) {
+		todoIdString := strings.Split(path, restartString)[0]
+		todoId, err := strconv.Atoi(todoIdString)
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		if r.Method != http.MethodPut {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		// TODO PENDING
+		h.RestartTodo(w, r, todoId, 0)
+		return
+	}
+
 	if completeString := "/complete"; strings.Contains(path, completeString) {
 		todoIdString := strings.Split(path, completeString)[0]
 		todoId, err := strconv.Atoi(todoIdString)
@@ -52,8 +68,8 @@ func (h TodoHandler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if completeString := "/activate"; strings.Contains(path, completeString) {
-		todoIdString := strings.Split(path, completeString)[0]
+	if activateString := "/activate"; strings.Contains(path, activateString) {
+		todoIdString := strings.Split(path, activateString)[0]
 		todoId, err := strconv.Atoi(todoIdString)
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
@@ -175,6 +191,21 @@ func (h TodoHandler) StartTodo(w http.ResponseWriter, r *http.Request, id, categ
 	}
 
 	err = h.toDoService.Start(nil, r, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+}
+
+func (h TodoHandler) RestartTodo(w http.ResponseWriter, r *http.Request, id, categoryId int) {
+	payload := ports.StartTodoRequest{TodoId: int64(id), Category: categoryId}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.toDoService.Restart(nil, r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return

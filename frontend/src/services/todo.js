@@ -78,6 +78,13 @@ const startTodo = (id, categoryId, payload) => {
   }, options);
 }
 
+const restartTodo = (id, categoryId, payload) => {
+  return axios.put(`${TODO_URL}/${id}/start`, {
+    ...payload,
+    category_id: categoryId,
+  }, options);
+}
+
 const TodoService = {
   createTodo,
   getTodo,
@@ -90,6 +97,7 @@ const TodoService = {
   completeTodo,
   activateTodo,
   startTodo,
+  restartTodo,
   suggestTodos,
 }
 

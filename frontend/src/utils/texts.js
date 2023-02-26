@@ -24,6 +24,7 @@ const StatisticsIconText = language === 'en' ? 'Statistics (coming soon)' : 'Est
 const ReportABugIconText = language === 'en' ? 'Report a bug' : 'Reportar un error';
 const LogoutIconText = language === 'en' ? 'Logout' : 'Cerrar sesión';
 const StartIconText = language === 'en' ? 'Start' : 'Iniciar';
+const RestartIconText = language === 'en' ? 'Restart' : 'Reiniciar';
 const CompleteIconText = language === 'en' ? 'Complete' : 'Completar';
 const CreateIconText = language === 'en' ? 'Create a new Todo' : 'Crear una nueva tarea';
 const CreateCategoryIconText = language === 'en' ? 'Create a new Category' : 'Crear una nueva categoría';
@@ -258,4 +259,5 @@ export {
     SortByDateButtonText,
     DeletingTodoText,
     SuggestableLabelText,
+    RestartIconText,
 };

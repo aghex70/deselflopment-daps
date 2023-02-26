@@ -120,6 +120,19 @@ func (gr *TodoGormRepository) Start(ctx context.Context, id int) error {
 	return nil
 }
 
+func (gr *TodoGormRepository) Restart(ctx context.Context, id int) error {
+	result := gr.DB.Model(&Todo{Id: id}).Update("active", false).Update("start_date", nil)
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 func (gr *TodoGormRepository) GetById(ctx context.Context, id int) (domain.TodoInfo, error) {
 	var ti TodoInfo
 	query := fmt.Sprintf("SELECT daps_todos.id, daps_todos.category_id, daps_todos.end_date, daps_todos.creation_date, daps_todos.completed, daps_todos.description, daps_todos.link, daps_todos.name, daps_todos.priority, daps_todos.recurring, daps_todos.start_date, daps_todos.recurrency, daps_todos.suggestable, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.id = %d", id)

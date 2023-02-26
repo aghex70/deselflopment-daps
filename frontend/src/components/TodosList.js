@@ -7,6 +7,7 @@ import {
     faPlus,
     faArrowDown19,
     faArrowDown91,
+    faBackwardFast,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TodoService from "../services/todo";
@@ -31,7 +32,8 @@ import {
     HeaderNameText,
     SortByDateButtonText,
     SortByPriorityButtonText,
-    StartIconText
+    StartIconText,
+    RestartIconText,
 } from "../utils/texts";
 
 
@@ -128,6 +130,19 @@ const TodosList = () => {
       })
   }
 
+  const restartTodo = (id) => {
+    TodoService.restartTodo(id, categoryId).then(
+      (response) => {
+        if (response.status === 200) {
+            clearLocalStorage([]);
+            window.location.reload();
+        }
+      }
+    ).catch(
+      (error) => {
+      })
+  }
+
   const createTodo = () => {
         clearLocalStorage([]);
         navigate("/create-todo", {state: {categoryId: location.state.categoryId, categoryName: location.state.categoryName}});
@@ -202,10 +217,20 @@ const TodosList = () => {
         )
         }
 
+       {row.active === true ? (
+       <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center", backgroundColor: "orange", borderColor: "orange"}}
+               title={RestartIconText}
+               // variant="outline-primary"
+               onClick={() => restartTodo(row.id)}>
+          <FontAwesomeIcon style = {{backgroundColor: "orange", borderColor: "orange"}} icon={faBackwardFast} />
+        </Button>
+           ) : (
         <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
                 title={EditIconText} variant="outline-primary" onClick={() => navigateToTodo(row.id, categoryId, 0,"edit")}>
           <FontAwesomeIcon icon={faPencil} />
         </Button>
+           )
+       }
 
         <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                 title={DeleteIconText} variant="outline-danger" onClick={() => toggleConfirmDeleteTodoModal(row.id)}>

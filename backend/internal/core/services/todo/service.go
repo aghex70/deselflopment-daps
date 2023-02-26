@@ -117,6 +117,19 @@ func (s TodoService) Start(ctx context.Context, r *http.Request, req ports.Start
 	return nil
 }
 
+func (s TodoService) Restart(ctx context.Context, r *http.Request, req ports.StartTodoRequest) error {
+	userId, _ := server.RetrieveJWTClaims(r, req)
+	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
+	if err != nil {
+		return err
+	}
+	err = s.todoRepository.Restart(ctx, int(req.TodoId))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodoRequest) (domain.TodoInfo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)

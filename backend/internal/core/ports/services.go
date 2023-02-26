@@ -28,6 +28,7 @@ type TodoServicer interface {
 	Suggest(ctx context.Context, r *http.Request) error
 	Update(ctx context.Context, r *http.Request, req UpdateTodoRequest) error
 	Start(ctx context.Context, r *http.Request, req StartTodoRequest) error
+	Restart(ctx context.Context, r *http.Request, req StartTodoRequest) error
 	Summary(ctx context.Context, r *http.Request) ([]domain.CategorySummary, error)
 }
 
