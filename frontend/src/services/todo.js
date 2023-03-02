@@ -79,7 +79,7 @@ const startTodo = (id, categoryId, payload) => {
 }
 
 const restartTodo = (id, categoryId, payload) => {
-  return axios.put(`${TODO_URL}/${id}/start`, {
+  return axios.put(`${TODO_URL}/${id}/restart`, {
     ...payload,
     category_id: categoryId,
   }, options);

@@ -19,7 +19,6 @@ type TodoHandler struct {
 
 func (h TodoHandler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.RequestURI, handlers.TODO_STRING)[1]
-
 	if startString := "/start"; strings.Contains(path, startString) {
 		todoIdString := strings.Split(path, startString)[0]
 		todoId, err := strconv.Atoi(todoIdString)

@@ -212,7 +212,7 @@ const TodosList = () => {
       <ButtonGroup style={{width: "100%"}}>
         {row.active === false? (
           <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center", }}
-                  title={StartIconText} variant="outline-warning" onClick={() => startTodo(row.id)}>
+                  title={StartIconText} variant="outline-success" onClick={() => startTodo(row.id)}>
             <FontAwesomeIcon icon={faPlay} />
           </Button>
         ) : (
@@ -224,11 +224,13 @@ const TodosList = () => {
         }
 
        {row.active === true ? (
-       <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center", backgroundColor: "orange", borderColor: "orange"}}
+       <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center",
+       }}
                title={RestartIconText}
-               // variant="outline-primary"
+               variant="outline-primary"
                onClick={() => restartTodo(row.id)}>
-          <FontAwesomeIcon style = {{backgroundColor: "orange", borderColor: "orange"}} icon={faBackwardFast} />
+          <FontAwesomeIcon
+              icon={faBackwardFast} />
         </Button>
            ) : (
         <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}

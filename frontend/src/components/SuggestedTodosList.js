@@ -1,22 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import TodoService from "../services/todo";
-import {Button, ButtonGroup, Container} from "react-bootstrap";
+import {Button, ButtonGroup, Container, Modal, ModalBody} from "react-bootstrap";
 import './TodosList.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import DapsHeader from "./Header";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCheck, faPencil, faPlay, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faPencil, faPlay, faTrash, faBackwardFast} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
 import checkAccess, {
     clearLocalStorage,
     goToSuggestedTodos, sortTodosByField
 } from "../utils/helpers";
 import {
+    CancelButtonText,
+    CannotDeleteActiveTodoText,
     CompleteIconText,
     DeleteIconText,
     EditIconText,
     HeaderActionsText,
-    HeaderNameText, StartIconText,
+    HeaderNameText, RestartIconText, StartIconText,
     SuggestedTodosHeaderText,
     SuggestedTodosIndicationText
 } from "../utils/texts";
@@ -26,6 +28,11 @@ const SuggestedTodosList = () => {
   const [todos, setTodos] = useState([]);
   const [suggested, setSuggested] = useState(false);
   const navigate = useNavigate();
+  const [showCannotDeleteActiveTodoModal, setShowCannotDeleteActiveTodoModal] = useState(false);
+
+  const toggleCannotDeleteStartedTodoModal = () => {
+    setShowCannotDeleteActiveTodoModal(!showCannotDeleteActiveTodoModal);
+  }
 
   // Color code the todo based on its priority
   const rowTextColor = (cell, row) => {
@@ -62,6 +69,19 @@ const SuggestedTodosList = () => {
             })
     }
 
+    const restartTodo = (id, categoryId) => {
+        TodoService.restartTodo(id, categoryId).then(
+            (response) => {
+                if (response.status === 200) {
+                    clearLocalStorage([]);
+                    window.location.reload();
+                }
+            }
+        ).catch(
+            (error) => {
+            })
+    }
+
   function actionsFormatter(cell, row) {
     return (
       <div
@@ -77,7 +97,7 @@ const SuggestedTodosList = () => {
         <ButtonGroup style={{width: "100%"}}>
             {row.active === false? (
                 <Button style={{width: "20%", margin: "auto", display: "block", padding: "0", textAlign: "center", }}
-                        title={StartIconText} variant="outline-warning" onClick={() => startTodo(row.id, row.category_id)}>
+                        title={StartIconText} variant="outline-success" onClick={() => startTodo(row.id, row.category_id)}>
                     <FontAwesomeIcon icon={faPlay} />
                 </Button>
             ) : (
@@ -87,13 +107,22 @@ const SuggestedTodosList = () => {
                 </Button>
             )
             }
-          <Button style={{width: "20%", margin: "auto", padding: "0", textAlign: "center"}}
-                  variant="outline-primary"
-                  title={EditIconText}
-                  onClick={() => navigateToTodo(row.id, row.category_id, 0, "edit")}
-          >
-            <FontAwesomeIcon icon={faPencil} />
-          </Button>
+            {row.active === true ? (
+                <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center",
+                }}
+                        title={RestartIconText}
+                        variant="outline-primary"
+                        onClick={() => restartTodo(row.id, row.category_id)}>
+                    <FontAwesomeIcon
+                        icon={faBackwardFast} />
+                </Button>
+            ) : (
+                <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
+                        title={EditIconText} variant="outline-primary" onClick={() => navigateToTodo(row.id, row.category_id, 0,"edit")}>
+                    <FontAwesomeIcon icon={faPencil} />
+                </Button>
+            )
+            }
 
           <Button style={{width: "20%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
                   variant="outline-danger"
@@ -187,7 +216,22 @@ const SuggestedTodosList = () => {
         striped={true}
         style={{display: "block", minHeight: "80%", width: "10%", overflow: "auto"}}
       />
+
+    <Modal className='deleteActiveTodoModal text-center' show={showCannotDeleteActiveTodoModal} open={showCannotDeleteActiveTodoModal} centered={true} size='lg'>
+        <ModalBody>
+            <h4 style={{margin: "32px"}}>{CannotDeleteActiveTodoText}</h4>
+            <ButtonGroup style={{width: "80%"}}>
+                <Button
+                    variant="danger"
+                    onClick={() => toggleCannotDeleteStartedTodoModal()}
+                    style={{margin: "auto", display: "block", padding: "0", textAlign: "center"}}
+                >{CancelButtonText}</Button>
+            </ButtonGroup>
+        </ModalBody>
+    </Modal>
     </Container>
+
+
   );
 };
 
