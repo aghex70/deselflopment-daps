@@ -277,6 +277,16 @@ func (gr *TodoGormRepository) GetSummary(ctx context.Context, userId int) ([]dom
 	return cs, nil
 }
 
+func (gr *TodoGormRepository) GetRemindSummary(ctx context.Context, userId int) ([]domain.RemindSummary, error) {
+	var rs []domain.RemindSummary
+	query := fmt.Sprintf("SELECT t.name as todo_name, c.name as category_name, t.priority as todo_priority, t.description as todo_description, t.link as todo_link FROM daps_users u JOIN daps_categories c ON c.owner_id = u.id JOIN (SELECT id, name, priority, description, completed, link, category_id, ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY priority DESC, RAND()) as rn FROM daps_todos) t ON t.category_id = c.id AND t.rn <= 3 WHERE c.owner_id = %d AND t.completed = false ORDER BY u.id, c.id, t.id", userId)
+	result := gr.DB.Raw(query).Scan(&rs)
+	if result.Error != nil {
+		return rs, result.Error
+	}
+	return rs, nil
+}
+
 func NewTodoGormRepository(db *gorm.DB) (*TodoGormRepository, error) {
 	return &TodoGormRepository{
 		DB: db,

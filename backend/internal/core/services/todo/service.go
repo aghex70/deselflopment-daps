@@ -3,14 +3,18 @@ package todo
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/email"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/internal/repositories/gorm/todo"
+	"github.com/aghex70/daps/internal/repositories/gorm/user"
+	"github.com/aghex70/daps/pkg"
 	"github.com/aghex70/daps/server"
 	"log"
 	"net/http"
+	"time"
 )
 
 type TodoService struct {
@@ -18,6 +22,7 @@ type TodoService struct {
 	todoRepository         *todo.TodoGormRepository
 	relationshipRepository *relationship.RelationshipGormRepository
 	emailRepository        *email.EmailGormRepository
+	userRepository         *user.UserGormRepository
 }
 
 func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.CreateTodoRequest) error {
@@ -222,11 +227,63 @@ func (s TodoService) Summary(ctx context.Context, r *http.Request) ([]domain.Cat
 	return summary, nil
 }
 
-func NewtodoService(tr *todo.TodoGormRepository, rr *relationship.RelationshipGormRepository, er *email.EmailGormRepository, logger *log.Logger) TodoService {
+func (s TodoService) Remind(ctx context.Context) error {
+	fmt.Println("Reminding users...")
+	users, err := s.userRepository.List(ctx)
+	fmt.Printf("Users: %+v", users)
+	if err != nil {
+		fmt.Printf("Error retrieving users: %+v", err)
+		return err
+	}
+
+	for _, u := range users {
+		rs, err := s.todoRepository.GetRemindSummary(ctx, u.Id)
+		if err != nil {
+			return err
+		}
+		e, err := pkg.GenerateRemindTodosHTMLContent(rs)
+		if err != nil {
+			return err
+		}
+
+		ne := domain.Email{
+			From:      pkg.FromEmail,
+			To:        u.Email,
+			Recipient: u.Name,
+			Subject:   fmt.Sprintf("📣 DAPS - Tareas pendientes (%s) 📣", time.Now().Format("02/01/2006")),
+			Body:      e.Body,
+			User:      u.Id,
+		}
+
+		err = pkg.SendEmail(ne)
+		if err != nil {
+			fmt.Printf("Error sending email: %+v", err)
+			ne.Error = err.Error()
+			ne.Sent = false
+			_, errz := s.emailRepository.Create(ctx, ne)
+			if errz != nil {
+				fmt.Printf("Error saving email: %+v", errz)
+				return errz
+			}
+			return err
+		}
+
+		ne.Sent = true
+		_, err = s.emailRepository.Create(ctx, ne)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func NewtodoService(tr *todo.TodoGormRepository, rr *relationship.RelationshipGormRepository, er *email.EmailGormRepository, ur *user.UserGormRepository, logger *log.Logger) TodoService {
 	return TodoService{
 		logger:                 logger,
 		todoRepository:         tr,
 		relationshipRepository: rr,
 		emailRepository:        er,
+		userRepository:         ur,
 	}
 }

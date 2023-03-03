@@ -14,7 +14,7 @@ import (
 
 type CategoryHandler struct {
 	categoryService ports.CategoryServicer
-	toDoService     ports.TodoServicer
+	todoService     ports.TodoServicer
 	logger          *log.Logger
 }
 

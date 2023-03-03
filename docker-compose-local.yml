@@ -20,6 +20,11 @@ services:
     volumes:
       - ./backend:/daps/backend
 
+#  asynq-worker:
+#
+#
+#  asynq-client:
+
   db:
     image: mysql:latest
     environment:
@@ -40,9 +45,9 @@ services:
     volumes:
       - mysql-db123455:/var/lib/mysql-daps123455
 
-#  redis:
-#    image: redis:alpine
-#    command: [ redis-server, --port, "10379" ]
+  redis:
+    image: redis:alpine
+    command: [ redis-server, --port, "10379" ]
 
   frontend:
     build:

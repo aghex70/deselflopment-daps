@@ -44,6 +44,14 @@ type CategorySummary struct {
 	Shared               int    `json:"shared"`
 }
 
+type RemindSummary struct {
+	TodoName        string `json:"todo_name"`
+	TodoPriority    int    `json:"todo_priority"`
+	TodoDescription string `json:"todo_description"`
+	TodoLink        string `json:"todo_link"`
+	CategoryName    string `json:"category_name"`
+}
+
 type CategoryInfo struct {
 	CategoryName string `json:"category_name"`
 }

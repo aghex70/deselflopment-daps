@@ -28,7 +28,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 		Use:   "serve",
 		Short: "Serve application",
 		Run: func(cmd *cobra.Command, args []string) {
-			logger2 := log.Logger{}
+			logger := log.Logger{}
 			gdb, err := database.NewGormDB(*cfg.Database)
 			if err != nil {
 				log.Fatal("error starting database", err.Error())
@@ -41,21 +41,21 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			ucr, _ := userconfig.NewUserConfigGormRepository(gdb)
 			er, _ := email.NewEmailGormRepository(gdb)
 
-			us := userService.NewUserService(ur, cr, ucr, tr, er, &logger2)
-			uh := userHandler.NewUserHandler(us, &logger2)
+			us := userService.NewUserService(ur, cr, ucr, tr, er, &logger)
+			uh := userHandler.NewUserHandler(us, &logger)
 
-			cs := categoryService.NewCategoryService(cr, rr, er, &logger2)
-			ch := categoryHandler.NewCategoryHandler(cs, &logger2)
+			cs := categoryService.NewCategoryService(cr, rr, er, &logger)
+			ch := categoryHandler.NewCategoryHandler(cs, &logger)
 
-			tds := todoService.NewtodoService(tr, rr, er, &logger2)
-			tdh := todoHandler.NewTodoHandler(tds, &logger2)
+			tds := todoService.NewtodoService(tr, rr, er, ur, &logger)
+			tdh := todoHandler.NewTodoHandler(tds, &logger)
 
-			ucs := userConfigService.NewUserConfigService(ucr, &logger2)
-			uch := userConfigHandler.NewUserConfigHandler(ucs, &logger2)
+			ucs := userConfigService.NewUserConfigService(ucr, &logger)
+			uch := userConfigHandler.NewUserConfigHandler(ucs, &logger)
 
-			rh := root.NewRootHandler(cs, tds, us, &logger2)
+			rh := root.NewRootHandler(cs, tds, us, &logger)
 
-			s := server.NewRestServer(cfg.Server.Rest, ch, tdh, uh, rh, uch, &logger2)
+			s := server.NewRestServer(cfg.Server.Rest, ch, tdh, uh, rh, uch, &logger)
 			err = s.StartServer()
 			if err != nil {
 				log.Fatal("error starting server", err.Error())

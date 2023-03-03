@@ -30,6 +30,7 @@ type TodoServicer interface {
 	Start(ctx context.Context, r *http.Request, req StartTodoRequest) error
 	Restart(ctx context.Context, r *http.Request, req StartTodoRequest) error
 	Summary(ctx context.Context, r *http.Request) ([]domain.CategorySummary, error)
+	Remind(ctx context.Context) error
 }
 
 type UserServicer interface {

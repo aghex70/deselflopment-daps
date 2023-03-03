@@ -1,11 +1,13 @@
 package pkg
 
 import (
+	"bytes"
 	"errors"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/satori/go.uuid"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	"html/template"
 	"time"
 )
 
@@ -273,4 +275,64 @@ func GetOrigin() string {
 	}
 
 	return "https://deselflopment.com"
+}
+
+func GenerateRemindTodosHTMLContent(rs []domain.RemindSummary) (domain.Email, error) {
+	e := domain.Email{}
+	reminders := make(map[string][]domain.RemindSummary)
+	for _, r := range rs {
+		if _, ok := reminders[r.CategoryName]; !ok {
+			reminders[r.CategoryName] = []domain.RemindSummary{r}
+		} else {
+			reminders[r.CategoryName] = append(reminders[r.CategoryName], r)
+		}
+	}
+
+	var tpl bytes.Buffer
+	t := template.Must(template.New("emailTemplate").Parse(`
+		<html>
+			<head>
+				<title>{{.Title}}</title>
+			</head>
+			<body>
+				<h1>{{.Header}}</h1>
+				{{range $category, $todos := .Reminders}}
+				<h2>- {{$category}}</h3>
+				<ul>
+					{{range $i, $todo := $todos}}
+					{{if eq $todo.TodoPriority 1}}
+					<li style="color:gray">{{$todo.TodoName}}</li>
+					{{else if eq $todo.TodoPriority 2}}
+					<li style="color:blue">{{$todo.TodoName}}</li>
+					{{else if eq $todo.TodoPriority 3}}
+					<li style="color:green">{{$todo.TodoName}}</li>
+					{{else if eq $todo.TodoPriority 4}}
+					<li style="color:yellow">{{$todo.TodoName}}</li>
+					{{else if eq $todo.TodoPriority 5}}
+					<li style="color:red">{{$todo.TodoName}}</li>
+					{{end}}
+					{{end}}
+				</ul>
+				{{end}}
+			</body>
+		</html>
+	`))
+
+	data := struct {
+		Title     string
+		Header    string
+		Reminders map[string][]domain.RemindSummary
+	}{
+		Title:     "DAPS - Tareas pendientes",
+		Header:    "(Algunas) de tus tareas pendientes (" + time.Now().Format("02/01/2006") + ")",
+		Reminders: reminders,
+	}
+
+	err := t.Execute(&tpl, data)
+	if err != nil {
+		return e, err
+	}
+
+	e.Body = tpl.String()
+	return e, nil
 }
