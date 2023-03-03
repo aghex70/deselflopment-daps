@@ -241,7 +241,7 @@ func (s TodoService) Remind(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
-		e, err := pkg.GenerateRemindTodosHTMLContent(rs)
+		e, err := pkg.GenerateRemindTodosHTMLContent(u, rs)
 		if err != nil {
 			return err
 		}

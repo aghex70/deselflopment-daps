@@ -277,7 +277,7 @@ func GetOrigin() string {
 	return "https://deselflopment.com"
 }
 
-func GenerateRemindTodosHTMLContent(rs []domain.RemindSummary) (domain.Email, error) {
+func GenerateRemindTodosHTMLContent(u domain.User, rs []domain.RemindSummary) (domain.Email, error) {
 	e := domain.Email{}
 	reminders := make(map[string][]domain.RemindSummary)
 	for _, r := range rs {
@@ -291,11 +291,9 @@ func GenerateRemindTodosHTMLContent(rs []domain.RemindSummary) (domain.Email, er
 	var tpl bytes.Buffer
 	t := template.Must(template.New("emailTemplate").Parse(`
 		<html>
-			<head>
-				<title>{{.Title}}</title>
-			</head>
 			<body>
-				<h1>{{.Header}}</h1>
+				<h2>Hola {{.Name}},</h2>
+				<h2>{{.Header}}</h2>
 				{{range $category, $todos := .Reminders}}
 				<h2>- {{$category}}</h3>
 				<ul>
@@ -319,12 +317,12 @@ func GenerateRemindTodosHTMLContent(rs []domain.RemindSummary) (domain.Email, er
 	`))
 
 	data := struct {
-		Title     string
+		Name      string
 		Header    string
 		Reminders map[string][]domain.RemindSummary
 	}{
-		Title:     "DAPS - Tareas pendientes",
-		Header:    "(Algunas) de tus tareas pendientes (" + time.Now().Format("02/01/2006") + ")",
+		Name:      u.Name,
+		Header:    "Aquí tienes (algunas) de tus tareas pendientes a fecha de " + time.Now().Format("02/01/2006"+":"),
 		Reminders: reminders,
 	}
 
