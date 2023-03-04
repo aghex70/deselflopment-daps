@@ -90,6 +90,7 @@ type RefreshTokenRequest struct {
 
 type UpdateUserConfigRequest struct {
 	AutoSuggest bool   `json:"auto_suggest"`
+	AutoRemind  bool   `json:"auto_remind"`
 	Language    string `json:"language"`
 }
 

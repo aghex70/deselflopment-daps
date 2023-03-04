@@ -11,13 +11,13 @@ import (
 
 type WorkerServer struct {
 	logger      *log.Logger
-	cfg         config.WorkerConfig
+	cfg         config.CacheConfig
 	todoService ports.TodoServicer
 }
 
 func (s *WorkerServer) StartServer() error {
-	port := strconv.Itoa(s.cfg.BrokerConfig.Port)
-	address := fmt.Sprintf("%s:%s", s.cfg.BrokerConfig.Host, port)
+	port := strconv.Itoa(s.cfg.Port)
+	address := fmt.Sprintf("%s:%s", s.cfg.Host, port)
 	srv := asynq.NewServer(
 		asynq.RedisClientOpt{Addr: address},
 		asynq.Config{
@@ -44,7 +44,7 @@ func (s *WorkerServer) StartServer() error {
 	return nil
 }
 
-func NewWorkerServer(cfg *config.WorkerConfig, ts ports.TodoServicer, logger *log.Logger) *WorkerServer {
+func NewWorkerServer(cfg *config.CacheConfig, ts ports.TodoServicer, logger *log.Logger) *WorkerServer {
 	return &WorkerServer{
 		cfg:         *cfg,
 		logger:      logger,

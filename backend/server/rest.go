@@ -121,6 +121,7 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/suggest", JWTAuthMiddleware(s.toDoHandler.SuggestTodos))
 	http.HandleFunc("/api/suggested-todos", JWTAuthMiddleware(s.toDoHandler.ListSuggestedTodos))
 	http.HandleFunc("/api/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
+	http.HandleFunc("/api/remind", s.toDoHandler.Remind)
 
 	// UserConfiguration
 	http.HandleFunc("/api/user-configuration/", JWTAuthMiddleware(s.userConfigHandler.HandleUserConfig))

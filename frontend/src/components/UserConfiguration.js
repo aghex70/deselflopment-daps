@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
 import {useParams} from 'react-router-dom'
 import DapsHeader from "./Header";
-import checkAccess, {goToCategories, setAutoSuggest, setLanguage} from "../utils/helpers";
+import checkAccess, {goToCategories, setAutoSuggest, setAutoRemind, setLanguage} from "../utils/helpers";
 import {
     AutoSuggestLabelText,
     CancelButtonText,
@@ -13,7 +13,8 @@ import {
     NoText,
     ProfileHeaderText,
     SpanishLanguageText,
-    YesText
+    YesText,
+    AutoRemindLabelText,
 } from "../utils/texts";
 import UserConfigurationService from "../services/userconfiguration";
 import toBoolean from "validator/es/lib/toBoolean";
@@ -22,7 +23,8 @@ const Profile = () => {
     checkAccess();
     const [userEmail, setUserEmail] = useState("");
     const [profileLanguage, setProfileLanguage] = useState("en");
-    const [profileAutoSuggest, setProfileAutoSuggest] = useState("en");
+    const [profileAutoSuggest, setProfileAutoSuggest] = useState("false");
+    const [profileAutoRemind, setProfileAutoRemind] = useState("false");
     const { id } = useParams();
 
     const handleSubmit = (e) => {
@@ -31,6 +33,7 @@ const Profile = () => {
       const data = {
         language: profileLanguage,
         auto_suggest: typeof(profileAutoSuggest) == "boolean" ? profileAutoSuggest : toBoolean(profileAutoSuggest),
+        auto_remind: typeof(profileAutoRemind) == "boolean" ? profileAutoRemind : toBoolean(profileAutoRemind),
       }
 
       UserConfigurationService.updateUserConfiguration(data).then(
@@ -38,6 +41,7 @@ const Profile = () => {
           if (response.status === 200) {
               setLanguage(data.language);
               setAutoSuggest(data.auto_suggest);
+              setAutoRemind(data.auto_remind);
               goToCategories();
           }
         }
@@ -56,6 +60,7 @@ const Profile = () => {
             if (response.status === 200) {
              setProfileLanguage(response.data.language);
              setProfileAutoSuggest(response.data.auto_suggest);
+             setProfileAutoRemind(response.data.auto_remind);
              setUserEmail(response.data.email);
             }
           }
@@ -100,6 +105,18 @@ const Profile = () => {
         >
             <option value="false">{NoText}</option>
             <option value="true">{YesText}</option>
+            </Form.Select>
+        </FloatingLabel>
+
+        <FloatingLabel controlId="floatingAutoRemind" label={AutoRemindLabelText}>
+            <Form.Select
+                name="auto-remind"
+                value={profileAutoRemind}
+                onChange={(e) => setProfileAutoRemind(e.target.value)}
+                style={{ margin: '0px 0px 32px' }}
+            >
+                <option value="false">{NoText}</option>
+                <option value="true">{YesText}</option>
             </Form.Select>
         </FloatingLabel>
 

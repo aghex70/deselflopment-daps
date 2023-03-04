@@ -38,8 +38,12 @@ const setLanguage = (language) => {
   localStorage.setItem("language", language);
 }
 
-const setAutoSuggest = (autosuggest) => {
-    localStorage.setItem("auto-suggest", autosuggest);
+const setAutoSuggest = (autoSuggest) => {
+    localStorage.setItem("auto-suggest", autoSuggest);
+}
+
+const setAutoRemind = (autoRemind) => {
+    localStorage.setItem("auto-remind", autoRemind);
 }
 
 const goToCreateCategory = () => {
@@ -139,6 +143,7 @@ export default checkAccess;
 export {
     hashPassword,
     setAutoSuggest,
+    setAutoRemind,
     setLanguage,
     skipLogin,
     goToCreateCategory,

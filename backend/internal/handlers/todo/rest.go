@@ -320,6 +320,15 @@ func (h TodoHandler) Summary(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+func (h TodoHandler) Remind(w http.ResponseWriter, r *http.Request) {
+	err := h.todoService.Remind(nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
 func NewTodoHandler(ts ports.TodoServicer, logger *log.Logger) TodoHandler {
 	return TodoHandler{
 		todoService: ts,

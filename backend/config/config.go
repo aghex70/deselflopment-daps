@@ -17,7 +17,7 @@ type Config struct {
 	Logger    *LoggerConfig
 	Providers *ProvidersConfig
 	Server    *ServerConfig
-	Worker    *WorkerConfig
+	Broker    *CacheConfig
 }
 
 func NewConfig() (*Config, error) {
@@ -37,6 +37,6 @@ func NewConfig() (*Config, error) {
 		Logger:    LoadLoggerConfig(),
 		Providers: LoadProvidersConfig(),
 		Server:    LoadServerConfig(),
-		Worker:    LoadWorkerConfig(),
+		Broker:    LoadCacheConfig(),
 	}, nil
 }

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
+	"github.com/aghex70/daps/internal/errors"
 	"github.com/aghex70/daps/pkg"
 	"gorm.io/gorm"
 	"log"
@@ -279,10 +280,31 @@ func (gr *TodoGormRepository) GetSummary(ctx context.Context, userId int) ([]dom
 
 func (gr *TodoGormRepository) GetRemindSummary(ctx context.Context, userId int) ([]domain.RemindSummary, error) {
 	var rs []domain.RemindSummary
-	query := fmt.Sprintf("SELECT t.name as todo_name, c.name as category_name, t.priority as todo_priority, t.description as todo_description, t.link as todo_link FROM daps_users u JOIN daps_categories c ON c.owner_id = u.id JOIN (SELECT id, name, priority, description, completed, link, category_id, ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY priority DESC, RAND()) as rn FROM daps_todos) t ON t.category_id = c.id AND t.rn <= 3 WHERE c.owner_id = %d AND t.completed = false ORDER BY u.id, c.id, t.id", userId)
-	result := gr.DB.Raw(query).Scan(&rs)
+
+	// Check if reminder has already been sent
+	var e domain.Email
+	//subject := fmt.Sprintf("DAPS - Tareas pendientes \\(%s\\)", time.Now().Format("02/01/2006"))
+	subject := fmt.Sprintf("📣 DAPS - Tareas pendientes (%s) 📣", time.Now().Format("02/01/2006"))
+	query := fmt.Sprintf("SELECT * FROM daps_emails WHERE subject IN ('%s') AND sent = true AND user_id = %d", subject, userId)
+	result := gr.DB.Raw(query).Scan(&e)
+
 	if result.Error != nil {
 		return rs, result.Error
+	}
+
+	if result.RowsAffected != 0 {
+		return rs, errors.ReminderAlreadySent
+	}
+
+	// Retrieve todos to be reminded
+	query = fmt.Sprintf("SELECT t.name as todo_name, c.name as category_name, t.priority as todo_priority, t.description as todo_description, t.link as todo_link FROM daps_users u JOIN daps_user_configs uc ON uc.user_id = u.id AND uc.auto_remind = true JOIN daps_categories c ON c.owner_id = u.id JOIN (SELECT id, name, priority, description, completed, link, category_id, ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY priority DESC, RAND()) as rn FROM daps_todos) t ON t.category_id = c.id AND t.rn <= 3 WHERE c.owner_id = %d AND t.completed = false ORDER BY u.id, c.id, t.id", userId)
+	result = gr.DB.Raw(query).Scan(&rs)
+	if result.Error != nil {
+		return rs, result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return rs, gorm.ErrRecordNotFound
 	}
 	return rs, nil
 }

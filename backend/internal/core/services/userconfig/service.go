@@ -20,6 +20,7 @@ func (s UserConfigService) Update(ctx context.Context, r *http.Request, req port
 	uConfig := domain.UserConfig{
 		UserId:      int(userId),
 		AutoSuggest: req.AutoSuggest,
+		AutoRemind:  req.AutoRemind,
 		Language:    req.Language,
 	}
 	err := s.userConfigRepository.Update(ctx, uConfig, int(userId))

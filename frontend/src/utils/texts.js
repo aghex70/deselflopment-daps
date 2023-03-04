@@ -125,6 +125,7 @@ const LanguageLabelText = language === 'en' ? 'Language' : 'Idioma';
 const EnglishLanguageText = language === 'en' ? 'English' : 'Inglés';
 const SpanishLanguageText = language === 'en' ? 'Spanish' : 'Español';
 const AutoSuggestLabelText = language === 'en' ? 'Auto-suggest' : 'Auto-sugerencia';
+const AutoRemindLabelText = language === 'en' ? 'Auto-remind' : 'Auto-recordatorio';
 const RegistrationDateText = language === 'en' ? 'Registration date' : 'Fecha de registro';
 const OpenLinkText = language === 'en' ? 'Click here to open the link' : 'Haga clic aquí para abrir el enlace';
 const DailyText = language === 'en' ? 'Daily' : 'Diario';
@@ -261,4 +262,5 @@ export {
     SuggestableLabelText,
     RestartIconText,
     CannotDeleteActiveTodoText,
+    AutoRemindLabelText,
 };

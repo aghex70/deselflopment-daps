@@ -23,5 +23,7 @@ func RootCommand(cfg *config.Config) *cobra.Command {
 	cmd.AddCommand(ServeCommand(cfg))
 	cmd.AddCommand(MakeMigrationsCommand(db))
 	cmd.AddCommand(MigrateCommand(db))
+	cmd.AddCommand(WorkerServerCommand(cfg))
+	cmd.AddCommand(WorkerClientCommand(cfg))
 	return cmd
 }

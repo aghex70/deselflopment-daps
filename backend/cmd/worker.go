@@ -31,7 +31,7 @@ func WorkerServerCommand(cfg *config.Config) *cobra.Command {
 
 			tds := todoService.NewtodoService(tr, rr, er, ur, &logger)
 
-			s := queues.NewWorkerServer(cfg.Worker, tds, &logger)
+			s := queues.NewWorkerServer(cfg.Broker, tds, &logger)
 			err = s.StartServer()
 			if err != nil {
 				log.Fatal("error starting worker server", err.Error())

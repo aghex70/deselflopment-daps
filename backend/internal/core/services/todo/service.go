@@ -6,12 +6,14 @@ import (
 	"fmt"
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
+	customErrors "github.com/aghex70/daps/internal/errors"
 	"github.com/aghex70/daps/internal/repositories/gorm/email"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/internal/repositories/gorm/user"
 	"github.com/aghex70/daps/pkg"
 	"github.com/aghex70/daps/server"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"time"
@@ -238,11 +240,20 @@ func (s TodoService) Remind(ctx context.Context) error {
 
 	for _, u := range users {
 		rs, err := s.todoRepository.GetRemindSummary(ctx, u.Id)
+		fmt.Printf("Remind summary for user %d: %+v", u.Id, rs)
 		if err != nil {
 			return err
 		}
 		e, err := pkg.GenerateRemindTodosHTMLContent(u, rs)
 		if err != nil {
+			fmt.Printf("Error generating email content: %+v", err)
+			fmt.Printf("Error generating email content: %+v", err)
+			fmt.Printf("Error generating email content: %+v", err)
+			fmt.Printf("Error generating email content: %+v", err)
+			fmt.Printf("Error generating email content: %+v", err)
+			if err == gorm.ErrRecordNotFound || err == customErrors.ReminderAlreadySent {
+				return nil
+			}
 			return err
 		}
 

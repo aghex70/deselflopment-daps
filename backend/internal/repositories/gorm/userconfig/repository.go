@@ -20,6 +20,7 @@ type UserConfig struct {
 	Id          int    `gorm:"primaryKey;column:id"`
 	UserId      int    `gorm:"column:user_id"`
 	AutoSuggest bool   `gorm:"column:auto_suggest"`
+	AutoRemind  bool   `gorm:"column:auto_remind"`
 	Language    string `gorm:"column:language"`
 }
 
@@ -38,7 +39,7 @@ func (UserConfig) TableName() string {
 
 func (gr *UserConfigGormRepository) GetByUserId(ctx context.Context, userId int) (domain.Profile, error) {
 	var p Profile
-	query := fmt.Sprintf("SELECT daps_user_configs.auto_suggest, daps_user_configs.language, daps_users.email FROM daps_user_configs JOIN daps_users ON daps_user_configs.user_id = daps_users.id WHERE daps_users.id = %d", userId)
+	query := fmt.Sprintf("SELECT daps_user_configs.auto_suggest, daps_user_configs.auto_remind, daps_user_configs.language, daps_users.email FROM daps_user_configs JOIN daps_users ON daps_user_configs.user_id = daps_users.id WHERE daps_users.id = %d", userId)
 
 	result := gr.DB.Raw(query).Scan(&p)
 
@@ -52,6 +53,7 @@ func (gr *UserConfigGormRepository) Update(ctx context.Context, uc domain.UserCo
 	nuc := fromDto(uc)
 	result := gr.DB.Model(&nuc).Where(UserConfig{UserId: userId}).Updates(map[string]interface{}{
 		"auto_suggest": nuc.AutoSuggest,
+		"auto_remind":  nuc.AutoRemind,
 		"language":     nuc.Language,
 	})
 
@@ -94,6 +96,7 @@ func fromDto(uc domain.UserConfig) UserConfig {
 	return UserConfig{
 		Id:          uc.Id,
 		AutoSuggest: uc.AutoSuggest,
+		AutoRemind:  uc.AutoRemind,
 		Language:    uc.Language,
 		UserId:      uc.UserId,
 	}
@@ -105,6 +108,7 @@ func (p Profile) ToDto() domain.Profile {
 		UserConfig: domain.UserConfig{
 			Id:          p.Id,
 			AutoSuggest: p.AutoSuggest,
+			AutoRemind:  p.AutoRemind,
 			Language:    p.Language,
 			UserId:      p.UserId,
 		},
