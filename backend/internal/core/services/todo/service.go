@@ -232,9 +232,7 @@ func (s TodoService) Summary(ctx context.Context, r *http.Request) ([]domain.Cat
 func (s TodoService) Remind(ctx context.Context) error {
 	fmt.Println("Reminding users...")
 	users, err := s.userRepository.List(ctx)
-	fmt.Printf("Users: %+v", users)
 	if err != nil {
-		fmt.Printf("Error retrieving users: %+v", err)
 		return err
 	}
 
@@ -246,11 +244,6 @@ func (s TodoService) Remind(ctx context.Context) error {
 		}
 		e, err := pkg.GenerateRemindTodosHTMLContent(u, rs)
 		if err != nil {
-			fmt.Printf("Error generating email content: %+v", err)
-			fmt.Printf("Error generating email content: %+v", err)
-			fmt.Printf("Error generating email content: %+v", err)
-			fmt.Printf("Error generating email content: %+v", err)
-			fmt.Printf("Error generating email content: %+v", err)
 			if err == gorm.ErrRecordNotFound || err == customErrors.ReminderAlreadySent {
 				return nil
 			}
