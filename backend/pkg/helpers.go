@@ -299,15 +299,55 @@ func GenerateRemindTodosHTMLContent(u domain.User, rs []domain.RemindSummary) (d
 				<ul>
 					{{range $i, $todo := $todos}}
 					{{if eq $todo.TodoPriority 1}}
-					<li style="color:gray">{{$todo.TodoName}}</li>
+					<li style="color:gray">
+						{{$todo.TodoName}}
+						{{if $todo.TodoDescription}}
+						({{$todo.TodoDescription}})
+						{{end}}
+						{{if $todo.TodoLink}}
+						<a href="{{$todo.TodoLink}}">Link</a>
+						{{end}}
+					</li>
 					{{else if eq $todo.TodoPriority 2}}
-					<li style="color:blue">{{$todo.TodoName}}</li>
+					<li style="color:blue">
+						{{$todo.TodoName}}
+						{{if $todo.TodoDescription}}
+						({{$todo.TodoDescription}})
+						{{end}}
+						{{if $todo.TodoLink}}
+						<a href="{{$todo.TodoLink}}">Link</a>
+						{{end}}
+					</li>
 					{{else if eq $todo.TodoPriority 3}}
-					<li style="color:green">{{$todo.TodoName}}</li>
+					<li style="color:green">
+						{{$todo.TodoName}}
+						{{if $todo.TodoDescription}}
+						({{$todo.TodoDescription}})
+						{{end}}
+						{{if $todo.TodoLink}}
+						<a href="{{$todo.TodoLink}}">Link</a>
+						{{end}}
+					</li>
 					{{else if eq $todo.TodoPriority 4}}
-					<li style="color:yellow">{{$todo.TodoName}}</li>
+					<li style="color:yellow">
+						{{$todo.TodoName}}
+						{{if $todo.TodoDescription}}
+						({{$todo.TodoDescription}})
+						{{end}}
+						{{if $todo.TodoLink}}
+						<a href="{{$todo.TodoLink}}">Link</a>
+						{{end}}
+					</li>
 					{{else if eq $todo.TodoPriority 5}}
-					<li style="color:red">{{$todo.TodoName}}</li>
+					<li style="color:red">
+						{{$todo.TodoName}}
+						{{if $todo.TodoDescription}}
+						({{$todo.TodoDescription}})
+						{{end}}
+						{{if $todo.TodoLink}}
+						<a href="{{$todo.TodoLink}}">Link</a>
+						{{end}}
+					</li>
 					{{end}}
 					{{end}}
 				</ul>
