@@ -100,7 +100,7 @@ const CreateTodo = () => {
         link: todoLink,
         // priority will be casted to int
         priority: typeof(todoPriority) === "number" ? todoPriority : parseInt(todoPriority),
-        recurring: toBoolean(todoRecurring),
+        recurring: typeof(todoRecurring) == "boolean" ? todoRecurring : toBoolean(todoRecurring),
         category_id: categoryId,
         recurrency: mapRecurrencyPeriod(),
       }
@@ -172,6 +172,7 @@ const CreateTodo = () => {
                     <option value="true">{YesText}</option>
                 </Form.Select>
             </FloatingLabel>
+
             <FloatingLabel
                 controlId="floatingRecurringPeriod"
                 style={{ display: todoRecurring === "false" || todoRecurring === false ? "none" : "block" }}

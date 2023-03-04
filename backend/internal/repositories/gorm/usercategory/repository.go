@@ -17,14 +17,13 @@ type CategoryGormRepository struct {
 }
 
 type Category struct {
-	Id                int    `gorm:"primaryKey;column:id"`
-	CategoryId        int    `gorm:"column:category_id"`
-	UserId            int    `gorm:"column:user_id"`
-	Shared            bool   `gorm:"column:shared"`
-	Custom            bool   `gorm:"column:custom"`
-	Description       string `gorm:"column:description"`
-	Name              string `gorm:"column:name"`
-	InternationalName string `gorm:"column:international_name"`
+	Id          int    `gorm:"primaryKey;column:id"`
+	CategoryId  int    `gorm:"column:category_id"`
+	UserId      int    `gorm:"column:user_id"`
+	Shared      bool   `gorm:"column:shared"`
+	Custom      bool   `gorm:"column:custom"`
+	Description string `gorm:"column:description"`
+	Name        string `gorm:"column:name"`
 }
 
 type Tabler interface {
@@ -78,9 +77,8 @@ func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category,
 	}
 
 	result = gr.DB.Model(&nc).Where(Category{Id: c.Id}).Updates(map[string]interface{}{
-		"name":               c.Name,
-		"international_name": c.InternationalName,
-		"description":        c.Description,
+		"name":        c.Name,
+		"description": c.Description,
 	})
 
 	if result.RowsAffected == 0 {
@@ -154,22 +152,20 @@ func NewCategoryGormRepository(db *gorm.DB) (*CategoryGormRepository, error) {
 
 func (c Category) ToDto() domain.Category {
 	return domain.Category{
-		Id:                c.Id,
-		Description:       c.Description,
-		Shared:            &c.Shared,
-		Custom:            c.Custom,
-		Name:              c.Name,
-		InternationalName: c.InternationalName,
+		Id:          c.Id,
+		Description: c.Description,
+		Shared:      &c.Shared,
+		Custom:      c.Custom,
+		Name:        c.Name,
 	}
 }
 
 func fromDto(c domain.Category) Category {
 	return Category{
-		Id:                c.Id,
-		Shared:            *c.Shared,
-		Custom:            c.Custom,
-		Description:       c.Description,
-		Name:              c.Name,
-		InternationalName: c.InternationalName,
+		Id:          c.Id,
+		Shared:      *c.Shared,
+		Custom:      c.Custom,
+		Description: c.Description,
+		Name:        c.Name,
 	}
 }

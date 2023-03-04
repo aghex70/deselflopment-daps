@@ -30,12 +30,12 @@ func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.
 	}
 	u := domain.User{Id: int(userId)}
 	cat := domain.Category{
-		OwnerId:           int(userId),
-		Description:       req.Description,
-		Custom:            true,
-		Name:              req.Name,
-		InternationalName: req.InternationalName,
-		Users:             []domain.User{u},
+		OwnerId:     int(userId),
+		Description: req.Description,
+		Custom:      true,
+		Name:        req.Name,
+		Notifiable:  req.Notifiable,
+		Users:       []domain.User{u},
 	}
 	_, err = s.categoryRepository.Create(ctx, cat, int(userId))
 	if err != nil {
@@ -54,10 +54,10 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 			return err
 		}
 		cat := domain.Category{
-			Id:                int(req.CategoryId),
-			Description:       req.Description,
-			Name:              req.Name,
-			InternationalName: req.InternationalName,
+			Id:          int(req.CategoryId),
+			Description: req.Description,
+			Notifiable:  req.Notifiable,
+			Name:        req.Name,
 		}
 		err = s.categoryRepository.Update(ctx, cat)
 		if err != nil {

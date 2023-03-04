@@ -113,6 +113,7 @@ const MediumPriorityText = language === 'en' ? 'Medium' : 'Media';
 const HighPriorityText = language === 'en' ? 'High' : 'Alta';
 const HighestPriorityText = language === 'en' ? 'Highest' : 'Máxima';
 const RecurringLabelText = language === 'en' ? 'Recurrent?' : '¿Recurrente?';
+const NotifiableLabelText = language === 'en' ? 'Notifiable?' : '¿Notificable?';
 const RecurrencyLabelText = language === 'en' ? 'Recurrency' : 'Recurrencia';
 const SelectRecurringText = language === 'en' ? 'Select recurring' : 'Selecciona recurrencia';
 const YesText = language === 'en' ? 'Yes' : 'Sí';
@@ -263,4 +264,5 @@ export {
     RestartIconText,
     CannotDeleteActiveTodoText,
     AutoRemindLabelText,
+    NotifiableLabelText,
 };

@@ -9,14 +9,16 @@ import {
   DescriptionLabelText,
   EditButtonText,
   EditCategoryHeaderText,
-  NameLabelText,
-  ViewCategoryHeaderText
+  NameLabelText, NoText, NotifiableLabelText,
+  ViewCategoryHeaderText, YesText
 } from "../utils/texts";
+import toBoolean from "validator/es/lib/toBoolean";
 
 const Category = () => {
   checkAccess();
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
+  const [categoryNotifiable, setCategoryNotifiable] = useState("false");
   const { id } = useParams();
   const location = useLocation();
   const enableEdit = location.state.action === "edit";
@@ -27,6 +29,7 @@ const Category = () => {
     const data = {
       name: categoryName,
       description: categoryDescription,
+      notifiable: typeof(categoryNotifiable) == "boolean" ? categoryNotifiable : toBoolean(categoryNotifiable),
     }
 
     CategoryService.updateCategory(id, data).then(
@@ -39,7 +42,6 @@ const Category = () => {
       }
     ).catch(
       (error) => {
-        error = new Error("Update category failed!");
       }
     )
   }
@@ -50,11 +52,11 @@ const Category = () => {
         if (response.status === 200) {
           setCategoryName(response.data.name);
           setCategoryDescription(response.data.description);
+          setCategoryNotifiable(response.data.notifiable);
         }
       }
     ).catch(
       (error) => {
-        // window.location.href = "/categories";
       }
     )
   }
@@ -86,6 +88,18 @@ const Category = () => {
             value={categoryDescription}
             onChange={(e) => setCategoryDescription(e.target.value)}
             disabled={!enableEdit}/>
+        </FloatingLabel>
+
+        <FloatingLabel controlId="floatingNotifiable" label={NotifiableLabelText}>
+          <Form.Select
+              name="notifiable"
+              value={categoryNotifiable}
+              onChange={(e) => setCategoryNotifiable(e.target.value)}
+              style={{ margin: '0px 0px 32px' }}
+              disabled={!enableEdit}>
+            <option value="false">{NoText}</option>
+            <option value="true">{YesText}</option>
+          </Form.Select>
         </FloatingLabel>
 
         {enableEdit ?

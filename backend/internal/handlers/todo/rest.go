@@ -315,7 +315,6 @@ func (h TodoHandler) Summary(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return a list of summaries
 	b, err := json.Marshal(summary)
 	w.Write(b)
 }

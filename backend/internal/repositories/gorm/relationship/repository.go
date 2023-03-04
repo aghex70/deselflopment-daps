@@ -31,14 +31,14 @@ type User struct {
 }
 
 type Category struct {
-	Id                int    `gorm:"primaryKey;column:id"`
-	OwnerId           int    `gorm:"column:owner_id"`
-	Shared            bool   `gorm:"column:shared"`
-	Custom            bool   `gorm:"column:custom"`
-	Description       string `gorm:"column:description"`
-	Name              string `gorm:"column:name"`
-	InternationalName string `gorm:"column:international_name"`
-	Users             []User `gorm:"many2many:daps_category_users"`
+	Id          int    `gorm:"primaryKey;column:id"`
+	OwnerId     int    `gorm:"column:owner_id"`
+	Shared      bool   `gorm:"column:shared"`
+	Notifiable  bool   `gorm:"column:notifiable"`
+	Custom      bool   `gorm:"column:custom"`
+	Description string `gorm:"column:description"`
+	Name        string `gorm:"column:name"`
+	Users       []User `gorm:"many2many:daps_category_users"`
 }
 
 type UserCategory struct {
@@ -104,25 +104,25 @@ func NewRelationshipGormRepository(db *gorm.DB) (*RelationshipGormRepository, er
 
 func (c Category) ToDto() domain.Category {
 	return domain.Category{
-		Id:                c.Id,
-		OwnerId:           c.OwnerId,
-		Description:       c.Description,
-		Shared:            &c.Shared,
-		Custom:            c.Custom,
-		Name:              c.Name,
-		InternationalName: c.InternationalName,
+		Id:          c.Id,
+		OwnerId:     c.OwnerId,
+		Description: c.Description,
+		Shared:      &c.Shared,
+		Notifiable:  c.Notifiable,
+		Custom:      c.Custom,
+		Name:        c.Name,
 	}
 }
 
 func CategoryFromDto(c domain.Category, userId int) Category {
 	return Category{
-		Id:                c.Id,
-		OwnerId:           c.OwnerId,
-		Custom:            c.Custom,
-		Description:       c.Description,
-		Name:              c.Name,
-		InternationalName: c.InternationalName,
-		Users:             []User{{Id: userId}},
+		Id:          c.Id,
+		OwnerId:     c.OwnerId,
+		Custom:      c.Custom,
+		Description: c.Description,
+		Name:        c.Name,
+		Notifiable:  c.Notifiable,
+		Users:       []User{{Id: userId}},
 	}
 }
 

@@ -10,15 +10,30 @@ import {
   CreateCategoryHeaderText,
   DescriptionLabelText,
   NameLabelText,
+  NoText,
+  NotifiableLabelText,
   PleaseEnterCategoryNameText,
+  YesText,
 } from "../utils/texts";
+import toBoolean from "validator/es/lib/toBoolean";
 
 const CreateCategory = () => {
   checkAccess();
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
+  const [categoryNotifiable, setCategoryNotifiable] = useState("false");
+  const [disableNotifiable, setDisableNotifiable] = useState(false);
   const [showModalCategoryAlreadyExists, setShowModalCategoryAlreadyExists] = useState(false);
   const [showEnterCategoryModal, setShowEnterCategoryModal] = useState(false);
+
+  const disableNotifiableSelect = () => {
+    if (!disableNotifiable) {
+      if (categoryNotifiable === "true" || categoryNotifiable === "false") {
+        setDisableNotifiable(true);
+      }
+    }
+  }
+  disableNotifiableSelect();
 
   const toggleModalCategoryAlreadyExists = () => {
     setShowModalCategoryAlreadyExists(!showModalCategoryAlreadyExists);
@@ -39,6 +54,7 @@ const CreateCategory = () => {
     const data = {
       name: categoryName,
       description: categoryDescription,
+      notifiable: typeof(categoryNotifiable) == "boolean" ? categoryNotifiable : toBoolean(categoryNotifiable),
     }
 
     CategoryService.createCategory(data).then(
@@ -74,7 +90,6 @@ const CreateCategory = () => {
               onChange={(e) => setCategoryName(e.target.value)} />
           </FloatingLabel>
 
-
           <FloatingLabel controlId="floatingDescription" label={DescriptionLabelText}>
             <Form.Control
               as="textarea"
@@ -83,6 +98,17 @@ const CreateCategory = () => {
               type="description"
               value={categoryDescription}
               onChange={(e) => setCategoryDescription(e.target.value)}/>
+          </FloatingLabel>
+
+          <FloatingLabel controlId="floatingNotifiable" label={NotifiableLabelText}>
+            <Form.Select
+                name="notifiable"
+                value={categoryNotifiable}
+                onChange={(e) => setCategoryNotifiable(e.target.value)}
+                style={{ margin: '0px 0px 32px' }}>>
+              <option value="false">{NoText}</option>
+              <option value="true">{YesText}</option>
+            </Form.Select>
           </FloatingLabel>
 
         <ButtonGroup style={{width: "100%", paddingLeft: "10%", paddingRight: "10%"}}>

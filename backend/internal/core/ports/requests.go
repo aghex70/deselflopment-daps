@@ -1,9 +1,9 @@
 package ports
 
 type CreateCategoryRequest struct {
-	Description       string `json:"description"`
-	Name              string `json:"name" validate:"required"`
-	InternationalName string `json:"international_name"`
+	Description string `json:"description"`
+	Name        string `json:"name" validate:"required"`
+	Notifiable  bool   `json:"notifiable"`
 }
 
 type DeleteCategoryRequest struct {
@@ -15,12 +15,12 @@ type GetCategoryRequest struct {
 }
 
 type UpdateCategoryRequest struct {
-	CategoryId        int64  `json:"category_id"`
-	Description       string `json:"description"`
-	Name              string `json:"name"`
-	InternationalName string `json:"international_name"`
-	Shared            *bool  `json:"shared"`
-	Email             string `json:"email"`
+	CategoryId  int64  `json:"category_id"`
+	Description string `json:"description"`
+	Name        string `json:"name"`
+	Shared      *bool  `json:"shared"`
+	Notifiable  bool   `json:"notifiable"`
+	Email       string `json:"email"`
 }
 
 type CreateTodoRequest struct {

@@ -66,9 +66,9 @@ func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category,
 func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category) error {
 	var nc relationship.Category
 	result := gr.DB.Model(&nc).Where(relationship.Category{Id: c.Id}).Updates(map[string]interface{}{
-		"name":               c.Name,
-		"international_name": c.InternationalName,
-		"description":        c.Description,
+		"name":        c.Name,
+		"description": c.Description,
+		"notifiable":  c.Notifiable,
 	})
 
 	if result.Error != nil {
