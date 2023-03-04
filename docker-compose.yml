@@ -21,6 +21,36 @@ services:
       - ./backend:/daps/backend
       - ./certbot/conf/:/etc/nginx/ssl/
 
+  asynq-worker:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    command: [ "air", "worker" ]
+    env_file:
+      - backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./backend:/daps/backend
+
+  asynq-client:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    command: [ "air", "client" ]
+    env_file:
+      - backend/.env
+    depends_on:
+      redis:
+        condition: service_started
+      asynq-worker:
+        condition: service_started
+    volumes:
+      - ./backend:/daps/backend
+      - 
   db:
     image: mysql:latest
     environment:
@@ -41,10 +71,10 @@ services:
     volumes:
       -  mysql-db123:/var/lib/mysql-daps
 
-#  redis:
-#    image: redis:alpine
+  redis:
+    image: redis:alpine
 #    command: [ redis-server, --port, "10379" ]
-#
+
 
   frontend:
     build:
