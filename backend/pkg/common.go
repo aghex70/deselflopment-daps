@@ -10,6 +10,7 @@ var MaximumConcurrentSuggestions = 4
 var FromName = os.Getenv("FROM_NAME")
 var FromEmail = os.Getenv("FROM_EMAIL")
 var SendGridApiKey = os.Getenv("SENDGRID_API_KEY")
+var TunnelUrl = os.Getenv("TUNNEL_URL")
 var Environment = os.Getenv("ENVIRONMENT")
 var ActivationCodeLink = GetOrigin() + "/activate/"
 var ResetPasswordLink = GetOrigin() + "/reset-password/"

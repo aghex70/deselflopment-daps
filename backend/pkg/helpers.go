@@ -271,7 +271,7 @@ func GenerateUUID() string {
 
 func GetOrigin() string {
 	if Environment == "local" {
-		return "http://localhost:3100"
+		return TunnelUrl
 	}
 
 	return "https://deselflopment.com"
