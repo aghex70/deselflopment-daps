@@ -271,10 +271,10 @@ func GenerateUUID() string {
 
 func GetOrigin() string {
 	if Environment == "local" {
-		return TunnelUrl
+		return DevelopUrl
 	}
 
-	return "https://deselflopment.com"
+	return ProductionUrl
 }
 
 func GenerateRemindTodosHTMLContent(u domain.User, rs []domain.RemindSummary) (domain.Email, error) {

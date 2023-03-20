@@ -2,14 +2,14 @@ version: '3.9'
 
 services:
   backend:
+    container_name: daps-backend
     build:
       context: backend
-      dockerfile: Dockerfile
     command: ["air", "migrate", "&&", "air", "serve"]
     env_file:
       - backend/.env
     ports:
-      - "11001:11001"
+      - "18001:18001"
     depends_on:
       db:
         condition: service_healthy
@@ -21,6 +21,7 @@ services:
       - ./backend:/daps/backend
 
   asynq-worker:
+    container_name: daps-worker
     build:
       context: backend
       dockerfile: Dockerfile
@@ -36,6 +37,7 @@ services:
       - ./backend:/daps/backend
 
   asynq-client:
+    container_name: daps-client
     build:
       context: backend
       dockerfile: Dockerfile
@@ -51,30 +53,28 @@ services:
       - ./backend:/daps/backend
 
   db:
+    container_name: deselflopment-db
     image: mysql:latest
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=dapsdb
-      - MYSQL_USER=dapsuser
-      - MYSQL_PASSWORD=root
-      - MYSQL_TCP_PORT=11306
-      - MYSQL_DEFAULT_AUTH=caching_sha2_password
-      - MYSQL_LOG_ERROR_SUPPRESSION_LIST=MY-013360
+    env_file:
+      - backend/.env
     ports:
-      - "11306:11306"
+      - "13306:13306"
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "db", "-u$$MYSQL_USER", "-p$$MYSQL_ROOT_PASSWORD" ]
       interval: 5s
       timeout: 5s
       retries: 10
     volumes:
-      - mysql-db123455:/var/lib/mysql-daps123455
+      - deselflopment:/var/lib/deselflopment
+      - .docker/database-setup.sh:/docker-entrypoint-initdb.d/setup.sql
 
   redis:
+    container_name: deselflopment-redis
     image: redis:alpine
-#    command: [ redis-server, --port, "11379" ]
+    command: [ redis-server, --port, "16379" ]
 
   frontend:
+    container_name: daps-frontend
     build:
       context: frontend
       dockerfile: Dockerfile-local
@@ -83,14 +83,11 @@ services:
     command: ["npm", "run", "start:dev"]
     restart: always
     ports:
-      - "3100:3000"
+      - "13001:13001"
     stdin_open: true
-#    volumes:
-#      - ./frontend:/daps/frontend
-#    depends_on:
-#      - backend
 
   nginx:
+    container_name: deselflopment-nginx
     image: nginx
     volumes:
       - ./data/nginx:/etc/nginx/conf.d
@@ -102,6 +99,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+
 #  certbot:
 #    image: certbot/certbot
 #    volumes:
@@ -109,4 +107,4 @@ services:
 #      - ./data/certbot/www:/var/www/certbot
 
 volumes:
-  mysql-db123455:
+  deselflopment:
