@@ -58,7 +58,6 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			s := server.NewRestServer(cfg.Server.Rest, ch, tdh, uh, rh, uch, &logger)
 			err = s.StartServer()
 			if err != nil {
-				log.Println("error starting server", err.Error())
 				log.Fatal("error starting server", err.Error())
 			}
 		},
