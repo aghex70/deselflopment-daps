@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+    allow:
+      - severity: "low"
+    ignore:
+      - dependency-name: "github.com/aghex70/daps"
