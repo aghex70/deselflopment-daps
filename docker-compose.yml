@@ -2,30 +2,30 @@ version: '3.9'
 
 services:
   backend:
+    container_name: daps-backend
     build:
       context: backend
-      dockerfile: Dockerfile
     command: ["air", "migrate", "&&", "air", "serve"]
     env_file:
       - backend/.env
     ports:
-      - "11001:11001"
+      - "18001:18001"
     depends_on:
       db:
         condition: service_healthy
-#      redis:
-#        condition: service_started
+      redis:
+        condition: service_started
       frontend:
         condition: service_started
     volumes:
       - ./backend:/daps/backend
-      - ./certbot/conf/:/etc/nginx/ssl/
 
   asynq-worker:
+    container_name: daps-worker
     build:
       context: backend
       dockerfile: Dockerfile
-    command: [ "air", "worker" ]
+    command: ["air", "worker"]
     env_file:
       - backend/.env
     depends_on:
@@ -37,10 +37,11 @@ services:
       - ./backend:/daps/backend
 
   asynq-client:
+    container_name: daps-client
     build:
       context: backend
       dockerfile: Dockerfile
-    command: [ "air", "client" ]
+    command: ["air", "client"]
     env_file:
       - backend/.env
     depends_on:
@@ -52,67 +53,58 @@ services:
       - ./backend:/daps/backend
 
   db:
+    container_name: deselflopment-db
     image: mysql:latest
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=dapsdb
-      - MYSQL_USER=dapsuser
-      - MYSQL_PASSWORD=root
-      - MYSQL_TCP_PORT=11306
-      - MYSQL_DEFAULT_AUTH=caching_sha2_password
-      - MYSQL_LOG_ERROR_SUPPRESSION_LIST=MY-013360
+    env_file:
+      - backend/.env
     ports:
-      - "11306:11306"
+      - "13306:13306"
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "db", "-u$$MYSQL_USER", "-p$$MYSQL_ROOT_PASSWORD" ]
       interval: 5s
       timeout: 5s
       retries: 10
     volumes:
-      -  mysql-db123:/var/lib/mysql-daps
+      - deselflopment:/var/lib/deselflopment
+      - .docker/database-setup.sh:/docker-entrypoint-initdb.d/setup.sql
 
   redis:
+    container_name: deselflopment-redis
     image: redis:alpine
-#    command: [ redis-server, --port, "10379" ]
-
+    command: [ redis-server, --port, "16379" ]
 
   frontend:
+    container_name: daps-frontend
     build:
       context: frontend
-      dockerfile: Dockerfile
-    command: ["npm", "run", "start:prod"]
+      dockerfile: Dockerfile-local
     env_file:
-      - frontend/.prod.env
+      - frontend/.dev.env
+    command: ["npm", "run", "start:dev"]
+    restart: always
     ports:
-      - "3000:3000"
+      - "13001:13001"
     stdin_open: true
-  #    volumes:
-  #      - ./frontend:/daps/frontend
-  #    depends_on:
-  #      - backend
 
-  webserver:
+  nginx:
+    container_name: deselflopment-nginx
     image: nginx
     volumes:
-      - ./nginx/conf/:/etc/nginx/conf.d/
-      - ./certbot/www:/var/www/certbot/
-      - ./certbot/conf/:/etc/nginx/ssl/
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     depends_on:
       - backend
       - frontend
     ports:
       - "80:80"
       - "443:443"
-    restart: always
 
 #  certbot:
-#    image: certbot/certbot:latest
+#    image: certbot/certbot
 #    volumes:
-#      - ./certbot/www/:/var/www/certbot/
-#      - ./certbot/conf/:/etc/letsencrypt/
-#    command: certonly --webroot -w /var/www/certbot --force-renewal --email albertogarciaperez128@gmail.com -d deselflopment.com --agree-tos
-#    depends_on:
-#      - webserver
+#      - ./data/certbot/conf:/etc/letsencrypt
+#      - ./data/certbot/www:/var/www/certbot
 
 volumes:
-  mysql-db123:
+  deselflopment:
