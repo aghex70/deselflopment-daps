@@ -81,7 +81,7 @@ services:
     command: ["npm", "run", "start:dev"]
     restart: always
     ports:
-      - "13001:13001"
+      - "13001:3000"
     depends_on:
       backend:
         condition: service_started
