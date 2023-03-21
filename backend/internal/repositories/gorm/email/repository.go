@@ -3,16 +3,15 @@ package email
 import (
 	"context"
 	"database/sql"
+	"time"
+
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
-	"log"
-	"time"
 )
 
 type EmailGormRepository struct {
 	*gorm.DB
-	SqlDb  *sql.DB
-	logger *log.Logger
+	SqlDb *sql.DB
 }
 
 type Email struct {

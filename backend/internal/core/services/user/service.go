@@ -6,6 +6,13 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
+	"io"
+	"log"
+	"mime/multipart"
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
@@ -16,12 +23,6 @@ import (
 	"github.com/aghex70/daps/pkg"
 	"github.com/aghex70/daps/server"
 	"github.com/golang-jwt/jwt/v4"
-	"io"
-	"log"
-	"mime/multipart"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 type UserService struct {
@@ -46,6 +47,9 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 	cipheredPassword := s.EncryptPassword(ctx, r.Password)
 
 	categories, err := s.categoryRepository.GetByIds(ctx, pkg.BaseCategoriesIds)
+	if err != nil {
+		return err
+	}
 	u := domain.User{
 		Name:              r.Name,
 		Email:             r.Email,
@@ -140,6 +144,9 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 
 func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string, error) {
 	userId, err := server.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		return "", errors.New("invalid token")
+	}
 	u, err := s.userRepository.Get(ctx, int(userId))
 	if err != nil {
 		return "", errors.New("invalid token")
@@ -165,6 +172,9 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 
 func (s UserService) CheckAdmin(ctx context.Context, r *http.Request) (int, error) {
 	userId, err := server.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		return 0, errors.New("invalid token")
+	}
 	u, err := s.userRepository.Get(ctx, int(userId))
 	if err != nil {
 		return 0, errors.New("invalid token")
@@ -245,6 +255,9 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 	}
 
 	c, err := s.categoryRepository.Create(ctx, demoCategory, nu.Id)
+	if err != nil {
+		return err
+	}
 
 	anotherDemoCategory := domain.Category{
 		OwnerId:     nu.Id,
@@ -255,6 +268,9 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 	}
 
 	ac, err := s.categoryRepository.Create(ctx, anotherDemoCategory, nu.Id)
+	if err != nil {
+		return err
+	}
 
 	yetAnotherDemoCategory := domain.Category{
 		OwnerId:     nu.Id,
@@ -265,6 +281,9 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 	}
 
 	yac, err := s.categoryRepository.Create(ctx, yetAnotherDemoCategory, nu.Id)
+	if err != nil {
+		return err
+	}
 
 	todos := pkg.GenerateDemoTodos(c.Id, ac.Id, yac.Id, req.Language)
 

@@ -8,6 +8,12 @@ type WorkerConfig struct {
 
 func LoadWorkerConfig() *WorkerConfig {
 	cfg := &WorkerConfig{}
-	viper.Unmarshal(cfg)
+	err := viper.Unmarshal(cfg)
+	if err != nil {
+		return nil
+	}
+	if err != nil {
+		return nil
+	}
 	return cfg
 }

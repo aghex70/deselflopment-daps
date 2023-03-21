@@ -4,6 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"net/http"
+	"time"
+
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	customErrors "github.com/aghex70/daps/internal/errors"
@@ -14,9 +18,6 @@ import (
 	"github.com/aghex70/daps/pkg"
 	"github.com/aghex70/daps/server"
 	"gorm.io/gorm"
-	"log"
-	"net/http"
-	"time"
 )
 
 type TodoService struct {

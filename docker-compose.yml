@@ -13,10 +13,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_started
-      frontend:
-        condition: service_started
+#      redis:
+#        condition: service_started
     volumes:
       - ./backend:/daps/backend
 
@@ -60,18 +58,18 @@ services:
     ports:
       - "13306:13306"
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "db", "-u$$MYSQL_USER", "-p$$MYSQL_ROOT_PASSWORD" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "db", "-u $$MYSQL_ROOT_USER", "-p$$MYSQL_ROOT_PASSWORD"]
       interval: 5s
       timeout: 5s
       retries: 10
     volumes:
       - deselflopment:/var/lib/deselflopment
-      - .docker/database-setup.sh:/docker-entrypoint-initdb.d/setup.sql
+      - ./backend/scripts/database-initialization.sh:/docker-entrypoint-initdb.d/setup.sql
 
   redis:
     container_name: deselflopment-redis
     image: redis:alpine
-    command: [ redis-server, --port, "16379" ]
+    command: [redis-server, --port, "16379"]
 
   frontend:
     container_name: daps-frontend
@@ -79,11 +77,14 @@ services:
       context: frontend
       dockerfile: Dockerfile-local
     env_file:
-      - frontend/.dev.env
+      - frontend/.env-dev
     command: ["npm", "run", "start:dev"]
     restart: always
     ports:
       - "13001:13001"
+    depends_on:
+      backend:
+        condition: service_started
     stdin_open: true
 
   nginx:

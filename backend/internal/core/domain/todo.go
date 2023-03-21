@@ -15,7 +15,7 @@ const (
 type Todo struct {
 	Active         bool       `json:"active"`
 	Category       int        `json:"category_id"`
-	CategoryName   string     `json:"category_name"`
+	KategoryName   string     `json:"category_name"`
 	Completed      bool       `json:"completed"`
 	CreationDate   time.Time  `json:"creation_date"`
 	Description    string     `json:"description"`
@@ -53,7 +53,7 @@ type RemindSummary struct {
 }
 
 type CategoryInfo struct {
-	CategoryName string `json:"category_name"`
+	KategoryName string `json:"kategory_name"`
 }
 
 type TodoInfo struct {

@@ -15,6 +15,9 @@ type CacheConfig struct {
 
 func LoadCacheConfig() *CacheConfig {
 	cfg := &CacheConfig{}
-	viper.Unmarshal(cfg)
+	err := viper.Unmarshal(cfg)
+	if err != nil {
+		return nil
+	}
 	return cfg
 }

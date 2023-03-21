@@ -1,8 +1,9 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 type DatabaseConfig struct {
@@ -22,6 +23,9 @@ type DatabaseConfig struct {
 
 func LoadDatabaseConfig() *DatabaseConfig {
 	cfg := &DatabaseConfig{}
-	viper.Unmarshal(cfg)
+	err := viper.Unmarshal(cfg)
+	if err != nil {
+		return nil
+	}
 	return cfg
 }

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	"github.com/aghex70/daps/internal/core/ports"
 	customErrors "github.com/aghex70/daps/internal/errors"
 	"github.com/hibiken/asynq"
@@ -20,7 +21,7 @@ func (processor *ReminderTodosProcessor) ProcessTask(ctx context.Context, t *asy
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
-	err := processor.todoService.Remind(nil)
+	err := processor.todoService.Remind(context.TODO())
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, customErrors.ReminderAlreadySent) {
 			// In order to avoid unnecessary retries, we return nil here.

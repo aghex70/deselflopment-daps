@@ -2,8 +2,13 @@ package server
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+	"reflect"
+	"strings"
+	"time"
+
 	"github.com/aghex70/daps/config"
-	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"github.com/aghex70/daps/internal/handlers/category"
 	"github.com/aghex70/daps/internal/handlers/root"
@@ -12,10 +17,6 @@ import (
 	"github.com/aghex70/daps/internal/handlers/userconfig"
 	"github.com/aghex70/daps/pkg"
 	"github.com/golang-jwt/jwt/v4"
-	"log"
-	"net/http"
-	"reflect"
-	"strings"
 )
 
 type RestServer struct {
@@ -24,9 +25,6 @@ type RestServer struct {
 	categoryHandler   category.CategoryHandler
 	toDoHandler       todo.TodoHandler
 	userHandler       user.UserHandler
-	categoryService   ports.CategoryServicer
-	todoService       ports.TodoServicer
-	userService       ports.UserServicer
 	rootHandler       root.RootHandler
 	userConfigHandler userconfig.UserConfigHandler
 }
@@ -134,7 +132,11 @@ func (s *RestServer) StartServer() error {
 
 	address := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 	fmt.Printf("Starting server on address %s", address)
-	err := http.ListenAndServe(address, nil)
+	server := &http.Server{
+		Addr:              address,
+		ReadHeaderTimeout: 10 * time.Second,
+	}
+	err := server.ListenAndServe()
 	if err != nil {
 		fmt.Printf("Error starting HTTP server %+v", err.Error())
 		return err

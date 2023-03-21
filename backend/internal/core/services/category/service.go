@@ -2,23 +2,22 @@ package category
 
 import (
 	"context"
+	"log"
+	"net/http"
+	"strconv"
+
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/repositories/gorm/category"
 	"github.com/aghex70/daps/internal/repositories/gorm/email"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
-	"github.com/aghex70/daps/internal/repositories/gorm/todo"
 	"github.com/aghex70/daps/server"
-	"log"
-	"net/http"
-	"strconv"
 )
 
 type CategoryService struct {
 	logger                 *log.Logger
 	categoryRepository     *category.CategoryGormRepository
 	relationshipRepository *relationship.RelationshipGormRepository
-	todoRepository         *todo.TodoGormRepository
 	emailRepository        *email.EmailGormRepository
 }
 
@@ -48,7 +47,8 @@ func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.
 func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.UpdateCategoryRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 
-	if req.Shared == nil {
+	switch {
+	case req.Shared == nil:
 		err := s.ValidateModification(ctx, int(req.CategoryId), int(userId))
 		if err != nil {
 			return err
@@ -63,7 +63,8 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 		if err != nil {
 			return err
 		}
-	} else if *req.Shared == true {
+
+	case *req.Shared:
 		err := s.ValidateShare(ctx, int(req.CategoryId), int(userId))
 		if err != nil {
 			return err
@@ -77,7 +78,7 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 			return err
 		}
 
-	} else if *req.Shared == false {
+	case !*req.Shared:
 		err := s.ValidateUnshare(ctx, int(req.CategoryId), int(userId))
 		if err != nil {
 			return err
@@ -110,6 +111,9 @@ func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.Get
 func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.DeleteCategoryRequest) error {
 	q := r.URL.Query()
 	categoryId, err := strconv.Atoi(q.Get("category_id"))
+	if err != nil {
+		return err
+	}
 	payload := ports.ListTodosRequest{}
 	payload.Category = categoryId
 

@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"log"
+
 	"github.com/aghex70/daps/config"
 	todoService "github.com/aghex70/daps/internal/core/services/todo"
 	"github.com/aghex70/daps/internal/repositories/gorm/email"
@@ -10,7 +12,6 @@ import (
 	"github.com/aghex70/daps/persistence/database"
 	"github.com/aghex70/daps/queues"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 func WorkerServerCommand(cfg *config.Config) *cobra.Command {

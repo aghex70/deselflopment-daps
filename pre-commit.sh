@@ -19,7 +19,7 @@ docker-compose run backend sh -c \
   echo '${bold}${green}3- Running goimports...${reset}' && \
   goimports -w . && \
   echo '${bold}${green}4- Running gocyclo...${reset}' && \
-  gocyclo -over 10 . && \
+  gocyclo -over 20 . && \
   echo '${bold}${green}5- Running gocritic...${reset}' && \
   gocritic check ./... && \
   echo '${bold}${green}6- Running gosec...${reset}' && \

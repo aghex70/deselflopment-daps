@@ -3,9 +3,10 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/go-playground/validator/v10"
 	"io"
 	"net/http"
+
+	"github.com/go-playground/validator/v10"
 )
 
 const (

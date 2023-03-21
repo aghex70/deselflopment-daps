@@ -5,15 +5,14 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
-	"log"
 )
 
 type UserConfigGormRepository struct {
 	*gorm.DB
-	SqlDb  *sql.DB
-	logger *log.Logger
+	SqlDb *sql.DB
 }
 
 type UserConfig struct {

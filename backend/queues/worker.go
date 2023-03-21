@@ -2,11 +2,12 @@ package queues
 
 import (
 	"fmt"
+	"log"
+	"strconv"
+
 	"github.com/aghex70/daps/config"
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/hibiken/asynq"
-	"log"
-	"strconv"
 )
 
 type WorkerServer struct {
@@ -28,7 +29,7 @@ func (s *WorkerServer) StartServer() error {
 			//	"critical": 6,
 			//	"default":  3,
 			//	"low":      1,
-			//},
+			// },
 			// See the godoc for other configuration options
 		},
 	)

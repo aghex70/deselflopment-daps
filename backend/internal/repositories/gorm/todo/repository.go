@@ -4,19 +4,18 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/errors"
 	"github.com/aghex70/daps/pkg"
 	"gorm.io/gorm"
-	"log"
-	"strconv"
-	"time"
 )
 
 type TodoGormRepository struct {
 	*gorm.DB
-	SqlDb  *sql.DB
-	logger *log.Logger
+	SqlDb *sql.DB
 }
 
 type Todo struct {
@@ -38,7 +37,7 @@ type Todo struct {
 }
 
 type TodoInfo struct {
-	CategoryName string `json:"category_name"`
+	KategoryName string `json:"category_name"`
 	Todo
 }
 
@@ -213,7 +212,7 @@ func (gr *TodoGormRepository) Suggest(ctx context.Context, userId int) error {
 
 	// Retrieve current number of suggested todos
 	query := fmt.Sprintf("SELECT COUNT(*) FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.suggested = true AND daps_todos.completed = false AND daps_categories.owner_id = %d", userId)
-	result := gr.DB.Raw(query).Scan(&suggestedTodosNumber)
+	_ = gr.DB.Raw(query).Scan(&suggestedTodosNumber)
 
 	if suggestedTodosNumber >= pkg.MaximumConcurrentSuggestions {
 		return nil
@@ -224,7 +223,7 @@ func (gr *TodoGormRepository) Suggest(ctx context.Context, userId int) error {
 	// Retrieve todos that are going to be suggested
 	var ids []int
 	query = fmt.Sprintf("SELECT daps_todos.id FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.recurring = false AND daps_todos.suggested = false AND daps_todos.completed = false AND daps_todos.active = false AND daps_categories.owner_id = %d AND daps_todos.suggestable = true ORDER BY RAND() LIMIT %d", userId, newSuggestedTodosNumber)
-	result = gr.DB.Raw(query).Scan(&ids)
+	_ = gr.DB.Raw(query).Scan(&ids)
 
 	var idList string
 	for i, id := range ids {
@@ -236,7 +235,7 @@ func (gr *TodoGormRepository) Suggest(ctx context.Context, userId int) error {
 
 	// Set them to suggested
 	query2 := fmt.Sprintf("UPDATE daps_todos SET suggested = true, suggestion_date = NOW() WHERE id IN (%s)", idList)
-	result = gr.DB.Exec(query2)
+	result := gr.DB.Exec(query2)
 
 	if result.Error != nil {
 		return result.Error
@@ -362,7 +361,7 @@ func (ti TodoInfo) ToDto() domain.TodoInfo {
 			Active:         ti.Active,
 			EndDate:        ti.EndDate,
 			Category:       ti.CategoryId,
-			CategoryName:   ti.CategoryName,
+			KategoryName:   ti.KategoryName,
 			Completed:      ti.Completed,
 			CreationDate:   ti.CreationDate,
 			Description:    ti.Description,
@@ -376,6 +375,6 @@ func (ti TodoInfo) ToDto() domain.TodoInfo {
 			Suggestable:    ti.Suggestable,
 			SuggestionDate: ti.SuggestionDate,
 		},
-		CategoryInfo: domain.CategoryInfo{CategoryName: ti.CategoryName},
+		CategoryInfo: domain.CategoryInfo{KategoryName: ti.KategoryName},
 	}
 }

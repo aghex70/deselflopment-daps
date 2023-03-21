@@ -5,16 +5,15 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
-	"log"
-	"time"
 )
 
 type RelationshipGormRepository struct {
 	*gorm.DB
-	SqlDb  *sql.DB
-	logger *log.Logger
+	SqlDb *sql.DB
 }
 
 type User struct {

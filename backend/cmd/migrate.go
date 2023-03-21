@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"database/sql"
+	"log"
+
 	"github.com/aghex70/daps/persistence/database"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 func MigrateCommand(db *sql.DB) *cobra.Command {

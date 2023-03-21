@@ -1,15 +1,15 @@
 package email
 
 import (
+	"context"
+	"net/http"
+
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
-	"log"
-	"net/http"
 )
 
 type EmailHandler struct {
 	emailService ports.EmailServicer
-	logger       *log.Logger
 }
 
 func (h EmailHandler) CreateEmail(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +23,7 @@ func (h EmailHandler) CreateEmail(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = h.emailService.Send(nil, r, payload)
+		err = h.emailService.Send(context.TODO(), r, payload)
 		if err != nil {
 			handlers.ThrowError(err, http.StatusBadRequest, w)
 			return
@@ -32,9 +32,8 @@ func (h EmailHandler) CreateEmail(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func NewEmailHandler(es ports.EmailServicer, logger *log.Logger) EmailHandler {
+func NewEmailHandler(es ports.EmailServicer) EmailHandler {
 	return EmailHandler{
 		emailService: es,
-		logger:       logger,
 	}
 }

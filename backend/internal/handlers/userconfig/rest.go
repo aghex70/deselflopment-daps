@@ -1,18 +1,18 @@
 package userconfig
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
+	"net/http"
+
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"gorm.io/gorm"
-	"log"
-	"net/http"
 )
 
 type UserConfigHandler struct {
 	userConfigService ports.UserConfigServicer
-	logger            *log.Logger
 }
 
 func (h UserConfigHandler) HandleUserConfig(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +34,7 @@ func (h UserConfigHandler) UpdateUserConfig(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = h.userConfigService.Update(nil, r, payload)
+	err = h.userConfigService.Update(context.TODO(), r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -42,7 +42,7 @@ func (h UserConfigHandler) UpdateUserConfig(w http.ResponseWriter, r *http.Reque
 }
 
 func (h UserConfigHandler) GetUserConfig(w http.ResponseWriter, r *http.Request) {
-	c, err := h.userConfigService.Get(nil, r)
+	c, err := h.userConfigService.Get(context.TODO(), r)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			w.WriteHeader(http.StatusNotFound)
@@ -52,12 +52,17 @@ func (h UserConfigHandler) GetUserConfig(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	b, err := json.Marshal(c)
-	w.Write(b)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 }
 
-func NewUserConfigHandler(ucs ports.UserConfigServicer, logger *log.Logger) UserConfigHandler {
+func NewUserConfigHandler(ucs ports.UserConfigServicer) UserConfigHandler {
 	return UserConfigHandler{
 		userConfigService: ucs,
-		logger:            logger,
 	}
 }

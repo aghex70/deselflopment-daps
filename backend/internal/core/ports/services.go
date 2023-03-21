@@ -2,9 +2,10 @@ package ports
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/domain"
 	"mime/multipart"
 	"net/http"
+
+	"github.com/aghex70/daps/internal/core/domain"
 )
 
 type CategoryServicer interface {

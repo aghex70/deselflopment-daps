@@ -6,9 +6,10 @@ import (
 	"crypto/cipher"
 	"encoding/hex"
 	"errors"
+	"os"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"os"
 )
 
 func (s UserService) CheckExistentUser(ctx context.Context, email string) bool {

@@ -5,17 +5,16 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
-	"log"
 )
 
 type CategoryGormRepository struct {
 	*gorm.DB
-	SqlDb  *sql.DB
-	logger *log.Logger
+	SqlDb *sql.DB
 }
 
 type Tabler interface {

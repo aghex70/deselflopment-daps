@@ -3,9 +3,10 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
+
 	"github.com/aghex70/daps/config"
 	"github.com/go-sql-driver/mysql"
-	"log"
 )
 
 func NewSqlDB(cfg config.DatabaseConfig) (*sql.DB, error) {

@@ -3,12 +3,14 @@ package pkg
 import (
 	"bytes"
 	"errors"
-	"github.com/aghex70/daps/internal/core/domain"
-	"github.com/satori/go.uuid"
-	"github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"html/template"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
+
+	"github.com/aghex70/daps/internal/core/domain"
+	"github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 func GenerateDemoTodos(categoryId, anotherCategoryId, yetAnotherCategoryId int, language string) []domain.Todo {

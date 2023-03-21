@@ -1,9 +1,10 @@
 package main
 
 import (
+	"log"
+
 	"github.com/aghex70/daps/cmd"
 	"github.com/aghex70/daps/config"
-	"log"
 )
 
 func main() {

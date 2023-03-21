@@ -1,21 +1,20 @@
 package category
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
-	"github.com/aghex70/daps/internal/core/ports"
-	"github.com/aghex70/daps/internal/handlers"
-	"gorm.io/gorm"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/aghex70/daps/internal/core/ports"
+	"github.com/aghex70/daps/internal/handlers"
+	"gorm.io/gorm"
 )
 
 type CategoryHandler struct {
 	categoryService ports.CategoryServicer
-	todoService     ports.TodoServicer
-	logger          *log.Logger
 }
 
 func (h CategoryHandler) HandleCategory(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +46,7 @@ func (h CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = h.categoryService.Create(nil, r, payload)
+	err = h.categoryService.Create(context.TODO(), r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -63,7 +62,7 @@ func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	err = h.categoryService.Update(nil, r, payload)
+	err = h.categoryService.Update(context.TODO(), r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -78,7 +77,7 @@ func (h CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	err = h.categoryService.Delete(nil, r, payload)
+	err = h.categoryService.Delete(context.TODO(), r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -94,7 +93,7 @@ func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request, id 
 		return
 	}
 
-	c, err := h.categoryService.Get(nil, r, payload)
+	c, err := h.categoryService.Get(context.TODO(), r, payload)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			w.WriteHeader(http.StatusNotFound)
@@ -104,7 +103,13 @@ func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request, id 
 		return
 	}
 	b, err := json.Marshal(c)
-	w.Write(b)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 }
 
 func (h CategoryHandler) ListCategories(w http.ResponseWriter, r *http.Request) {
@@ -113,19 +118,24 @@ func (h CategoryHandler) ListCategories(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	categories, err := h.categoryService.List(nil, r)
+	categories, err := h.categoryService.List(context.TODO(), r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
 	b, err := json.Marshal(handlers.ListCategoriesResponse{Categories: categories})
-	w.Write(b)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 }
 
-func NewCategoryHandler(cs ports.CategoryServicer, logger *log.Logger) CategoryHandler {
+func NewCategoryHandler(cs ports.CategoryServicer) CategoryHandler {
 	return CategoryHandler{
 		categoryService: cs,
-		logger:          logger,
 	}
 }

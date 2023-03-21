@@ -2,8 +2,9 @@ package queues
 
 import (
 	"encoding/json"
-	"github.com/hibiken/asynq"
 	"time"
+
+	"github.com/hibiken/asynq"
 )
 
 func NewTodosReminderTask() (*asynq.Task, error) {

@@ -4,18 +4,17 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
 	"github.com/aghex70/daps/pkg"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"log"
 )
 
 type UserGormRepository struct {
 	*gorm.DB
-	SqlDb  *sql.DB
-	logger *log.Logger
+	SqlDb *sql.DB
 }
 
 type Tabler interface {
@@ -88,7 +87,7 @@ func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (dom
 		return domain.User{}, result.Error
 	}
 
-	if u.Active == false {
+	if !u.Active {
 		return domain.User{}, errors.New("user is not activated")
 	}
 	return u.ToDto(), nil

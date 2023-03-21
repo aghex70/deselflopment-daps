@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"log"
+
 	"github.com/aghex70/daps/config"
 	categoryService "github.com/aghex70/daps/internal/core/services/category"
 	todoService "github.com/aghex70/daps/internal/core/services/todo"
@@ -20,7 +22,6 @@ import (
 	"github.com/aghex70/daps/persistence/database"
 	"github.com/aghex70/daps/server"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 func ServeCommand(cfg *config.Config) *cobra.Command {
@@ -42,18 +43,18 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			er, _ := email.NewEmailGormRepository(gdb)
 
 			us := userService.NewUserService(ur, cr, ucr, tr, er, &logger)
-			uh := userHandler.NewUserHandler(us, &logger)
+			uh := userHandler.NewUserHandler(us)
 
 			cs := categoryService.NewCategoryService(cr, rr, er, &logger)
-			ch := categoryHandler.NewCategoryHandler(cs, &logger)
+			ch := categoryHandler.NewCategoryHandler(cs)
 
 			tds := todoService.NewtodoService(tr, rr, er, ur, &logger)
-			tdh := todoHandler.NewTodoHandler(tds, &logger)
+			tdh := todoHandler.NewTodoHandler(tds)
 
 			ucs := userConfigService.NewUserConfigService(ucr, &logger)
-			uch := userConfigHandler.NewUserConfigHandler(ucs, &logger)
+			uch := userConfigHandler.NewUserConfigHandler(ucs)
 
-			rh := root.NewRootHandler(cs, tds, us, &logger)
+			rh := root.NewRootHandler(cs, tds, us)
 
 			s := server.NewRestServer(cfg.Server.Rest, ch, tdh, uh, rh, uch, &logger)
 			err = s.StartServer()

@@ -2,12 +2,13 @@ package userconfig
 
 import (
 	"context"
+	"log"
+	"net/http"
+
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	uc "github.com/aghex70/daps/internal/repositories/gorm/userconfig"
 	"github.com/aghex70/daps/server"
-	"log"
-	"net/http"
 )
 
 type UserConfigService struct {

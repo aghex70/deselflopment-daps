@@ -1,21 +1,21 @@
 package user
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
+	"net/http"
+	"strconv"
+	"strings"
+
 	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/aghex70/daps/internal/handlers"
 	"github.com/aghex70/daps/pkg"
 	"gorm.io/gorm"
-	"log"
-	"net/http"
-	"strconv"
-	"strings"
 )
 
 type UserHandler struct {
 	userService ports.UserServicer
-	logger      *log.Logger
 }
 
 func (h UserHandler) HandleUser(w http.ResponseWriter, r *http.Request) {
@@ -57,7 +57,7 @@ func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.userService.Register(nil, payload)
+	err = h.userService.Register(context.TODO(), payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -85,13 +85,19 @@ func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, userId, err := h.userService.Login(nil, payload)
+	token, userId, err := h.userService.Login(context.TODO(), payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 	b, err := json.Marshal(handlers.TokenResponse{AccessToken: token, UserId: userId})
-	w.Write(b)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 }
 
 func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
@@ -107,14 +113,20 @@ func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.userService.RefreshToken(nil, r)
+	token, err := h.userService.RefreshToken(context.TODO(), r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
 	b, err := json.Marshal(handlers.TokenResponse{AccessToken: token})
-	w.Write(b)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 }
 
 func (h UserHandler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
@@ -123,7 +135,7 @@ func (h UserHandler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.userService.CheckAdmin(nil, r)
+	_, err = h.userService.CheckAdmin(context.TODO(), r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -140,7 +152,7 @@ func (h UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, id int) 
 		return
 	}
 
-	err = h.userService.Delete(nil, r, payload)
+	err = h.userService.Delete(context.TODO(), r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -156,7 +168,7 @@ func (h UserHandler) GetUser(w http.ResponseWriter, r *http.Request, id int) {
 		return
 	}
 
-	user, err := h.userService.Get(nil, r, payload)
+	user, err := h.userService.Get(context.TODO(), r, payload)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			w.WriteHeader(http.StatusNotFound)
@@ -167,7 +179,13 @@ func (h UserHandler) GetUser(w http.ResponseWriter, r *http.Request, id int) {
 	}
 	filteredUser := pkg.FilterUser(user)
 	b, err := json.Marshal(filteredUser)
-	w.Write(b)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 }
 
 func (h UserHandler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
@@ -183,7 +201,7 @@ func (h UserHandler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.userService.ProvisionDemoUser(nil, r, payload)
+	err = h.userService.ProvisionDemoUser(context.TODO(), r, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -197,7 +215,7 @@ func (h UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, err := h.userService.List(nil, r)
+	users, err := h.userService.List(context.TODO(), r)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -205,7 +223,13 @@ func (h UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 
 	filteredUsers := pkg.FilterUsers(users)
 	b, err := json.Marshal(handlers.ListUsersResponse{Users: filteredUsers})
-	w.Write(b)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 }
 
 func (h UserHandler) ImportCSV(w http.ResponseWriter, r *http.Request) {
@@ -223,7 +247,7 @@ func (h UserHandler) ImportCSV(w http.ResponseWriter, r *http.Request) {
 	}
 	defer f.Close()
 
-	err = h.userService.ImportCSV(nil, r, f)
+	err = h.userService.ImportCSV(context.TODO(), r, f)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -253,7 +277,7 @@ func (h UserHandler) ActivateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.userService.Activate(nil, payload)
+	err = h.userService.Activate(context.TODO(), payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -283,7 +307,7 @@ func (h UserHandler) ResetLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.userService.SendResetLink(nil, payload)
+	err = h.userService.SendResetLink(context.TODO(), payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -313,7 +337,7 @@ func (h UserHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.userService.ResetPassword(nil, payload)
+	err = h.userService.ResetPassword(context.TODO(), payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -321,9 +345,8 @@ func (h UserHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func NewUserHandler(us ports.UserServicer, logger *log.Logger) UserHandler {
+func NewUserHandler(us ports.UserServicer) UserHandler {
 	return UserHandler{
 		userService: us,
-		logger:      logger,
 	}
 }

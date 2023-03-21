@@ -1,10 +1,11 @@
 package cmd
 
 import (
+	"log"
+
 	"github.com/aghex70/daps/config"
 	"github.com/aghex70/daps/persistence/database"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 func RootCommand(cfg *config.Config) *cobra.Command {

@@ -2,10 +2,11 @@ package queues
 
 import (
 	"fmt"
-	"github.com/aghex70/daps/config"
-	"github.com/hibiken/asynq"
 	"log"
 	"strconv"
+
+	"github.com/aghex70/daps/config"
+	"github.com/hibiken/asynq"
 )
 
 type WorkerClient struct {
