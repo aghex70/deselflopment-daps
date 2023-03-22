@@ -93,7 +93,7 @@ services:
     volumes:
       - ./data/nginx:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ./data/certbot/www/:/var/www/certbot
     depends_on:
       - backend
       - frontend
@@ -103,6 +103,12 @@ services:
 
 #  certbot:
 #    image: certbot/certbot
+#    depends_on:
+#      - nginx
+#    command: >-
+#        certonly --reinstall --webroot --webroot-path=/var/www/certbot
+#        --email albertogarciaperez128@gmail.com --agree-tos --no-eff-email
+#        -d deselflopment.com
 #    volumes:
 #      - ./data/certbot/conf:/etc/letsencrypt
 #      - ./data/certbot/www:/var/www/certbot
