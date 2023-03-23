@@ -11,3 +11,7 @@ frontend/.env-prod
 # Miscellaneous
 .idea
 .vscode
+
+# Certbot & Nginx
+data/
+certbot/
