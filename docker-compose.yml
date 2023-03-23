@@ -76,6 +76,8 @@ services:
     container_name: deselflopment-redis
     image: redis:alpine
     command: [redis-server, --port, "16379"]
+    ports:
+      - "16379:16379"
     networks:
       database: {}
 
