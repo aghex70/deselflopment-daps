@@ -17,6 +17,8 @@ services:
 #        condition: service_started
     volumes:
       - ./backend:/daps/backend
+    networks:
+      database: {}
 
   asynq-worker:
     container_name: daps-worker
@@ -33,6 +35,8 @@ services:
         condition: service_started
     volumes:
       - ./backend:/daps/backend
+    networks:
+      database: {}
 
   asynq-client:
     container_name: daps-client
@@ -65,11 +69,15 @@ services:
     volumes:
       - deselflopment:/var/lib/deselflopment
       - ./backend/scripts/database-initialization.sh:/docker-entrypoint-initdb.d/setup.sql
+    networks:
+      database: {}
 
   redis:
     container_name: deselflopment-redis
     image: redis:alpine
     command: [redis-server, --port, "16379"]
+    networks:
+      database: {}
 
   frontend:
     container_name: daps-frontend
@@ -115,3 +123,7 @@ services:
 
 volumes:
   deselflopment:
+
+networks:
+  database:
+    external: true
