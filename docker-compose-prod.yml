@@ -88,7 +88,7 @@ services:
       context: frontend
       dockerfile: Dockerfile-local
     env_file:
-      - frontend/.env-dev
+      - frontend/.env-prod
     command: ["npm", "run", "start:dev"]
     restart: always
     ports:
