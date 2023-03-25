@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Retrieve user, password, and database name from environment variables
-user=$MYSQL_USER
-root_user=$MYSQL_ROOT_USER
-password=$MYSQL_PASSWORD
-database=$MYSQL_DATABASE
+user="$MYSQL_USER"
+root_user="$MYSQL_ROOT_USER"
+password="$MYSQL_PASSWORD"
+database="$MYSQL_DATABASE"
 
 # Create the database
 mysql -u "${MYSQL_ROOT_USER}" -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE DATABASE IF NOT EXISTS ${database};"
