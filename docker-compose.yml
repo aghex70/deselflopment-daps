@@ -13,11 +13,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
-#      redis:
-#        condition: service_started
+      redis:
+        condition: service_started
     volumes:
       - ./backend:/daps/backend
+      - ./certbot/conf/:/etc/nginx/ssl/
     networks:
+      daps:
       database: {}
 
   asynq-worker:
@@ -47,12 +49,14 @@ services:
     env_file:
       - backend/.env
     depends_on:
+      db:
+        condition: service_healthy
       redis:
-        condition: service_started
-      asynq-worker:
         condition: service_started
     volumes:
       - ./backend:/daps/backend
+    networks:
+      database: {}
 
   db:
     container_name: deselflopment-db
@@ -63,9 +67,9 @@ services:
       - "13306:13306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "db", "-u $$MYSQL_ROOT_USER", "-p$$MYSQL_ROOT_PASSWORD"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
     volumes:
       - deselflopment:/var/lib/deselflopment
       - ./backend/scripts/database-initialization.sh:/docker-entrypoint-initdb.d/setup.sql
@@ -78,6 +82,11 @@ services:
     command: [redis-server, --port, "16379"]
     ports:
       - "16379:16379"
+    #    healthcheck:
+    #      test: ["CMD", "redis-cli", "ping"]
+    #      interval: 10s
+    #      timeout: 5s
+    #      retries: 5
     networks:
       database: {}
 
@@ -87,7 +96,7 @@ services:
       context: frontend
       dockerfile: Dockerfile-local
     env_file:
-      - frontend/.env-dev
+      - frontend/.env-prod
     command: ["npm", "run", "start:dev"]
     restart: always
     ports:
@@ -95,33 +104,35 @@ services:
     depends_on:
       backend:
         condition: service_started
+    networks:
+      daps:
+      database: {}
     stdin_open: true
 
-  nginx:
+  webserver:
     container_name: deselflopment-nginx
     image: nginx
     volumes:
-      - ./data/nginx:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www/:/var/www/certbot
+      - ./nginx/conf/:/etc/nginx/conf.d/
+      - ./certbot/www:/var/www/certbot/
+      - ./certbot/conf/:/etc/nginx/ssl/
     depends_on:
       - backend
       - frontend
+    networks:
+      daps:
     ports:
       - "80:80"
       - "443:443"
 
-#  certbot:
-#    image: certbot/certbot
-#    depends_on:
-#      - nginx
-#    command: >-
-#        certonly --reinstall --webroot --webroot-path=/var/www/certbot
-#        --email albertogarciaperez128@gmail.com --agree-tos --no-eff-email
-#        -d deselflopment.com
-#    volumes:
-#      - ./data/certbot/conf:/etc/letsencrypt
-#      - ./data/certbot/www:/var/www/certbot
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/
+      - ./certbot/conf/:/etc/letsencrypt/
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email albertogarciaperez128@gmail.com -d deselflopment.com --agree-tos
+    depends_on:
+      - webserver
 
 volumes:
   deselflopment:
@@ -129,3 +140,5 @@ volumes:
 networks:
   database:
     external: true
+  daps:
+    driver: bridge

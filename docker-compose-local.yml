@@ -13,11 +13,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    #      redis:
-    #        condition: service_started
+#      redis:
+#        condition: service_started
     volumes:
       - ./backend:/daps/backend
-      - ./certbot/conf/:/etc/nginx/ssl/
     networks:
       database: {}
 
@@ -88,7 +87,7 @@ services:
       context: frontend
       dockerfile: Dockerfile-local
     env_file:
-      - frontend/.env-prod
+      - frontend/.env-dev
     command: ["npm", "run", "start:dev"]
     restart: always
     ports:
