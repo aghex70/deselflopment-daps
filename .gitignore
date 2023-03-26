@@ -15,3 +15,6 @@ frontend/.env-prod
 # Certbot & Nginx
 data/
 certbot/
+
+# SQL initialization script
+./scripts/database-initialization.sql
