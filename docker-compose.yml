@@ -82,11 +82,6 @@ services:
     command: [redis-server, --port, "16379"]
     ports:
       - "16379:16379"
-    #    healthcheck:
-    #      test: ["CMD", "redis-cli", "ping"]
-    #      interval: 10s
-    #      timeout: 5s
-    #      retries: 5
     networks:
       database: {}
 
@@ -101,9 +96,6 @@ services:
     restart: always
     ports:
       - "13001:3000"
-    depends_on:
-      backend:
-        condition: service_started
     networks:
       daps:
       database: {}
@@ -116,25 +108,21 @@ services:
       - ./nginx/conf/:/etc/nginx/conf.d/
       - ./certbot/www:/var/www/certbot/
       - ./certbot/conf/:/etc/nginx/ssl/
-    depends_on:
-      - backend
-      - frontend
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     networks:
       daps:
     ports:
       - "80:80"
       - "443:443"
 
-#  certbot:
-#    image: certbot/certbot:latest
-#    env_file:
-#      - backend/.env
-#    volumes:
-#      - ./certbot/www/:/var/www/certbot/
-#      - ./certbot/conf/:/etc/letsencrypt/
-#    command:  ["certonly", "--webroot", "-w", "/var/www/certbot", "--force-renewal", "--email $$DOMAIN_EMAIL", "-d $$DOMAIN_NAME", "--agree-tos"]
-#    depends_on:
-#      - webserver
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/
+      - ./certbot/conf/:/etc/letsencrypt/
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    depends_on:
+      - webserver
 
 volumes:
   deselflopment:
