@@ -17,4 +17,4 @@ data/
 certbot/
 
 # SQL initialization script
-scripts/database-initialization.sql
+scripts/database-initialization*
