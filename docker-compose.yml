@@ -105,7 +105,7 @@ services:
     container_name: deselflopment-nginx
     image: nginx
     volumes:
-      - ./nginx/conf/:/etc/nginx/conf.d/
+      - ./nginx/conf/production.conf:/etc/nginx/conf.d/default.conf
       - ./certbot/www:/var/www/certbot/
       - ./certbot/conf/:/etc/nginx/ssl/
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
