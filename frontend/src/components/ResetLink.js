@@ -15,6 +15,7 @@ import {
 
 const ResetLink = () => {
   localStorage.removeItem("access_token");
+  localStorage.removeItem("user_id");
   document.title = 'deselflopment - daps'
   const [email, setEmail] = useState("");
   const [showModalEmailNotFilled, setShowModalEmailNotFilled] = useState(false);

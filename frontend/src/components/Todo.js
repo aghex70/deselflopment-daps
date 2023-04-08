@@ -3,7 +3,7 @@ import {Button, ButtonGroup, Container, FloatingLabel, Form, Nav} from "react-bo
 import {useLocation, useNavigate, useParams} from 'react-router-dom'
 import TodoService from "../services/todo";
 import DapsHeader from "./Header";
-import checkAccess, {clearLocalStorage, goToCategories} from "../utils/helpers";
+import checkAccess, {checkValidToken, clearLocalStorage, goToCategories} from "../utils/helpers";
 import toBoolean from "validator/es/lib/toBoolean";
 import {
     BiweeklyText,
@@ -94,6 +94,7 @@ const Todo = () => {
       ).catch(
         (error) => {
             clearLocalStorage([]);
+            checkValidToken(error)
             categoryName === "" || categoryName === undefined ?
                 goToCategories() :
                 navigateTodos(categoryId, categoryName) ;
@@ -118,6 +119,7 @@ const Todo = () => {
           }
         ).catch(
           (error) => {
+              checkValidToken(error)
           }
         )
       }
@@ -270,5 +272,3 @@ const Todo = () => {
 
 
 export default Todo;
-
-

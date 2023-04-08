@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
@@ -109,16 +108,8 @@ func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.Get
 }
 
 func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.DeleteCategoryRequest) error {
-	q := r.URL.Query()
-	categoryId, err := strconv.Atoi(q.Get("category_id"))
-	if err != nil {
-		return err
-	}
-	payload := ports.ListTodosRequest{}
-	payload.Category = categoryId
-
 	userId, _ := server.RetrieveJWTClaims(r, req)
-	err = s.ValidateRemoval(ctx, int(req.CategoryId), int(userId))
+	err := s.ValidateRemoval(ctx, int(req.CategoryId), int(userId))
 	if err != nil {
 		return err
 	}

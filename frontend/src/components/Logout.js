@@ -5,6 +5,7 @@ import {goToLogin} from "../utils/helpers";
 
 const Logout = () => {
   localStorage.removeItem("access_token");
+  localStorage.removeItem("user_id");
 
   const login = (e) => {
     e.preventDefault();

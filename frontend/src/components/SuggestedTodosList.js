@@ -8,6 +8,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faPencil, faPlay, faTrash, faBackwardFast} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
 import checkAccess, {
+    checkValidToken,
     clearLocalStorage,
     goToSuggestedTodos, sortTodosByField
 } from "../utils/helpers";
@@ -54,6 +55,7 @@ const SuggestedTodosList = () => {
             }
         ).catch(
             (error) => {
+                checkValidToken(error)
             })
     }
 
@@ -66,6 +68,7 @@ const SuggestedTodosList = () => {
             }
         ).catch(
             (error) => {
+                checkValidToken(error)
             })
     }
 
@@ -79,6 +82,7 @@ const SuggestedTodosList = () => {
             }
         ).catch(
             (error) => {
+                checkValidToken(error)
             })
     }
 
@@ -165,6 +169,7 @@ const SuggestedTodosList = () => {
       }
     ).catch(
       (error) => {
+          checkValidToken(error)
       })
   }
 
@@ -176,6 +181,7 @@ const SuggestedTodosList = () => {
               }
           ).catch(
               (error) => {
+                  checkValidToken(error)
               }
           )
       }
@@ -191,6 +197,7 @@ const SuggestedTodosList = () => {
               }
           ).catch(
               (error) => {
+                  checkValidToken(error)
               })
       }
       else {

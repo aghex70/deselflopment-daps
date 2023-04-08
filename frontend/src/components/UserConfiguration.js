@@ -2,7 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
 import {useParams} from 'react-router-dom'
 import DapsHeader from "./Header";
-import checkAccess, {goToCategories, setAutoSuggest, setAutoRemind, setLanguage} from "../utils/helpers";
+import checkAccess, {
+    goToCategories,
+    setAutoSuggest,
+    setAutoRemind,
+    setLanguage,
+    checkValidToken
+} from "../utils/helpers";
 import {
     AutoSuggestLabelText,
     CancelButtonText,
@@ -50,6 +56,7 @@ const Profile = () => {
             if (error.response.data.message === "no changes were made") {
                 goToCategories();
             }
+            checkValidToken(error)
         }
       )
     }
@@ -66,6 +73,7 @@ const Profile = () => {
           }
         ).catch(
           (error) => {
+              checkValidToken(error)
           }
         )
       }
@@ -140,5 +148,3 @@ const Profile = () => {
 
 
 export default Profile;
-
-

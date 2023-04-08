@@ -13,7 +13,12 @@ import {useNavigate} from "react-router-dom";
 import './CategoriesList.css';
 import BootstrapTable from "react-bootstrap-table-next";
 import DapsHeader from "./Header";
-import checkAccess, {clearLocalStorage, goToCreateCategory} from "../utils/helpers";
+import checkAccess, {
+  checkValidToken,
+  clearLocalStorage,
+  goToCreateCategory,
+  sortCategoriesByField
+} from "../utils/helpers";
 import {
   CancelButtonText,
   CategoriesHeaderText,
@@ -67,7 +72,7 @@ const CategoriesList = () => {
 
   }
 
-  const userId = parseInt(sessionStorage.getItem("user_id"))
+  const userId = parseInt(localStorage.getItem("user_id"))
   // Color code the todo based on its priority
   const rowTextColor = (cell, row) => {
     return <div
@@ -126,6 +131,7 @@ const CategoriesList = () => {
         }
     ).catch(
         (error) => {
+          checkValidToken(error)
           if (error.response.data.message === "cannot remove category") {
             setShowModalCannotDeleteCategory(true);
           }
@@ -176,6 +182,7 @@ const CategoriesList = () => {
       }
     ).catch(
       (error) => {
+        checkValidToken(error)
       })
   }
 
@@ -188,6 +195,7 @@ const CategoriesList = () => {
       }
     ).catch(
       (error) => {
+        checkValidToken(error)
         if (error.response.data.message === "user already subscribed to that category") {
           setShowModal(false);
           setShowModalUserAlreadySubscribed(true);
@@ -201,16 +209,12 @@ const CategoriesList = () => {
       CategoryService.getCategories().then(
         (response) => {
           if (response.status === 200 && response.data) {
-            setCategories(response.data);
-            setCategorySpan({
-              textAlign: "center",
-              display: "block",
-            }
-            );
+            sortCategoriesByField(response.data, "name", true, setCategories, setCategorySpan);
           }
         }
       ).catch(
         (error) => {
+          checkValidToken(error)
         })
     }
 

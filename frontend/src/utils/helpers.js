@@ -20,8 +20,16 @@ const getUserToken = () => {
   return localStorage.getItem("access_token");
 }
 
+const checkValidToken = (error) => {
+    if (error.response.data.message === "signature is invalid") {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("user_id");
+        goToLogin();
+    }
+}
+
 const getUserId = () => {
-    return sessionStorage.getItem("user_id");
+    return localStorage.getItem("user_id");
 }
 
 const clearLocalStorage = (excludedKeys= []) => {
@@ -138,6 +146,17 @@ const sortTodosByField = (field, ascending, f, setSpan) => {
     }
 }
 
+const sortCategoriesByField = (data, field, ascending, f, setSpan) => {
+    let categories = sortArrayByField(data, field, ascending);
+    f(categories);
+    if (setSpan) {
+        setSpan({
+            textAlign: "center",
+            display: "block",
+        })
+    }
+}
+
 export default checkAccess;
 
 export {
@@ -163,4 +182,6 @@ export {
     clearLocalStorage,
     getUserId,
     sortTodosByField,
+    checkValidToken,
+    sortCategoriesByField,
 };

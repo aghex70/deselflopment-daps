@@ -7,7 +7,7 @@ import DapsHeader from "./Header";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPencil, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
-import checkAccess from "../utils/helpers";
+import checkAccess, {checkValidToken} from "../utils/helpers";
 import {
     DeleteIconText,
     EditIconText,
@@ -94,6 +94,7 @@ const RecurringTodosList = () => {
       }
     ).catch(
       (error) => {
+          checkValidToken(error)
       })
   }
 
@@ -107,6 +108,7 @@ const RecurringTodosList = () => {
         }
       ).catch(
         (error) => {
+            checkValidToken(error)
         })
     }
   },[todos]);

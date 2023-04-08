@@ -15,6 +15,7 @@ import UserService from "../services/user";
 
 const ResetPassword = () => {
   localStorage.removeItem("access_token");
+  localStorage.removeItem("user_id");
   document.title = 'deselflopment - daps'
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");

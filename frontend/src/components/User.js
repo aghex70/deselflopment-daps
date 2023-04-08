@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess, {goToCategories, goToListOfUsers} from "../utils/helpers";
+import checkAccess, {checkValidToken, goToCategories, goToListOfUsers} from "../utils/helpers";
 import {
     CancelButtonText,
     DeleteButtonText,
@@ -29,6 +29,7 @@ const User = () => {
                 }
             ).catch(
                 (error) => {
+                    checkValidToken(error)
                     goToCategories();
 
                 }
@@ -45,6 +46,7 @@ const User = () => {
                     }
                 ).catch(
                     (error) => {
+                        checkValidToken(error)
                     })
             }
         }, [userName]);

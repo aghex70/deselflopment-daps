@@ -3,7 +3,7 @@ import {Button, ButtonGroup, Container, FloatingLabel, Form} from "react-bootstr
 import {useLocation, useParams} from 'react-router-dom'
 import CategoryService from "../services/category";
 import DapsHeader from "./Header";
-import checkAccess, {goToCategories} from "../utils/helpers";
+import checkAccess, {checkValidToken, goToCategories} from "../utils/helpers";
 import {
   CancelButtonText,
   DescriptionLabelText,
@@ -42,6 +42,7 @@ const Category = () => {
       }
     ).catch(
       (error) => {
+        checkValidToken(error)
       }
     )
   }
@@ -57,6 +58,7 @@ const Category = () => {
       }
     ).catch(
       (error) => {
+        checkValidToken(error)
       }
     )
   }
@@ -132,5 +134,3 @@ const Category = () => {
 
 
 export default Category;
-
-

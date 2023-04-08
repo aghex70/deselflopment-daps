@@ -8,6 +8,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrashRestore, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
 import checkAccess, {
+    checkValidToken,
     clearLocalStorage,
     sortTodosByField,
 } from "../utils/helpers";
@@ -66,6 +67,7 @@ const CompletedTodosList = () => {
       }
     ).catch(
       (error) => {
+          checkValidToken(error)
       })
   }
 
@@ -79,6 +81,7 @@ const CompletedTodosList = () => {
       }
     ).catch(
       (error) => {
+          checkValidToken(error)
       })
   }
 
@@ -125,6 +128,7 @@ const CompletedTodosList = () => {
                 }
             ).catch(
                 (error) => {
+                    checkValidToken(error)
                 })
         }
         else {

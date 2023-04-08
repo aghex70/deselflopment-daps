@@ -17,6 +17,7 @@ import './TodosList.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import DapsHeader from "./Header";
 import checkAccess, {
+    checkValidToken,
     clearLocalStorage,
     sortTodosByField,
 } from "../utils/helpers";
@@ -106,7 +107,7 @@ const TodosList = () => {
       }
     ).catch(
       (error) => {
-        error = new Error("Deletion failed!");
+          checkValidToken(error)
       })
   }
 
@@ -120,6 +121,7 @@ const TodosList = () => {
       }
     ).catch(
       (error) => {
+          checkValidToken(error)
       })
   }
 
@@ -133,6 +135,7 @@ const TodosList = () => {
       }
     ).catch(
       (error) => {
+          checkValidToken(error)
       })
   }
 
@@ -146,6 +149,7 @@ const TodosList = () => {
       }
     ).catch(
       (error) => {
+          checkValidToken(error)
       })
   }
 
@@ -190,6 +194,7 @@ const TodosList = () => {
         }
       ).catch(
         (error) => {
+            checkValidToken(error)
         })
     }
     else {

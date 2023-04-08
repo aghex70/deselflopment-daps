@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import CategoryService from "../services/category";
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess, {goToCategories} from "../utils/helpers";
+import checkAccess, {checkValidToken, goToCategories} from "../utils/helpers";
 import {
   CancelButtonText,
   CategoryAlreadyExistsText,
@@ -65,8 +65,9 @@ const CreateCategory = () => {
       }
     ).catch(
       (error) => {
+        checkValidToken(error)
         if (error.response.data.message === "already existent category with that user and name") {
-            setShowModalCategoryAlreadyExists(true);
+          setShowModalCategoryAlreadyExists(true);
         }
       }
     )

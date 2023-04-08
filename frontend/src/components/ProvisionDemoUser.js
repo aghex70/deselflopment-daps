@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container, FloatingLabel, Form, Modal, ModalBody} from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess, {goToCategories, goToListOfUsers, hashPassword} from "../utils/helpers";
+import checkAccess, {checkValidToken, goToCategories, goToListOfUsers, hashPassword} from "../utils/helpers";
 import {
     CancelButtonText,
     CreateButtonText,
@@ -39,6 +39,7 @@ const ProvisionDemoUser = () => {
             }
         ).catch(
             (error) => {
+                checkValidToken(error)
                 goToCategories();
 
             }
@@ -62,6 +63,7 @@ const ProvisionDemoUser = () => {
             }
         ).catch(
             (error) => {
+                checkValidToken(error)
                 if (error.response.data.message === "unauthorized") {
                     goToCategories();
                 }
@@ -142,5 +144,3 @@ const ProvisionDemoUser = () => {
 
 
 export default ProvisionDemoUser;
-
-

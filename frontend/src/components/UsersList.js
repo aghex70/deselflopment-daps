@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, ButtonGroup, Container} from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess, {goToCategories} from "../utils/helpers";
+import checkAccess, {checkValidToken, goToCategories} from "../utils/helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     DeleteIconText,
@@ -33,7 +33,7 @@ const UsersList = () => {
             }
         ).catch(
             (error) => {
-                error = new Error("Deletion failed!");
+                checkValidToken(error)
             })
     }
 
@@ -60,6 +60,7 @@ const UsersList = () => {
             }
         ).catch(
             (error) => {
+                checkValidToken(error)
                 goToCategories();
 
             }
@@ -74,6 +75,7 @@ const UsersList = () => {
                 }
             ).catch(
                 (error) => {
+                    checkValidToken(error)
                 })
         }
     }, [users]);

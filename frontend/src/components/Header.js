@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   faClockRotateLeft,
-  // faChartSimple,
   faHome,
   faPowerOff,
   faCheck,
@@ -14,7 +13,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
 import checkAccess, {
   goToCategories,
-  goToCompletedTodos, goToImportTodos,
+  goToCompletedTodos,
+  goToImportTodos,
   goToListOfUsers,
   goToLogout,
   goToProfile,
@@ -33,7 +33,6 @@ import {
   ProvisionDemoUserIconText,
   RecurringTodosIconText,
   ReportABugIconText,
-  // StatisticsIconText,
   SuggestedTodosIconText
 } from "../utils/texts";
 import UserService from "../services/user";

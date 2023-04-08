@@ -4,7 +4,7 @@ import {useLocation, useNavigate} from 'react-router-dom'
 import TodoService from "../services/todo";
 import toBoolean from "validator/es/lib/toBoolean";
 import DapsHeader from "./Header";
-import checkAccess, {clearLocalStorage} from "../utils/helpers";
+import checkAccess, {checkValidToken, clearLocalStorage} from "../utils/helpers";
 import {
     BiweeklyText,
     CancelButtonText,
@@ -116,7 +116,7 @@ const CreateTodo = () => {
         }
       ).catch(
         (error) => {
-          error = new Error("Update todo failed!");
+            checkValidToken(error)
         }
       )
     }
@@ -235,5 +235,3 @@ const CreateTodo = () => {
 
 
 export default CreateTodo;
-
-
