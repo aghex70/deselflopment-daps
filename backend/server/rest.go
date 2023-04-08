@@ -22,11 +22,11 @@ import (
 type RestServer struct {
 	logger            *log.Logger
 	cfg               config.RestConfig
-	categoryHandler   category.CategoryHandler
-	toDoHandler       todo.TodoHandler
-	userHandler       user.UserHandler
-	rootHandler       root.RootHandler
-	userConfigHandler userconfig.UserConfigHandler
+	categoryHandler   category.Handler
+	toDoHandler       todo.Handler
+	userHandler       user.Handler
+	rootHandler       root.Handler
+	userConfigHandler userconfig.Handler
 }
 
 func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
@@ -146,7 +146,7 @@ func (s *RestServer) StartServer() error {
 	return nil
 }
 
-func NewRestServer(cfg *config.RestConfig, ch category.CategoryHandler, tdh todo.TodoHandler, uh user.UserHandler, rh root.RootHandler, uch userconfig.UserConfigHandler, logger *log.Logger) *RestServer {
+func NewRestServer(cfg *config.RestConfig, ch category.Handler, tdh todo.Handler, uh user.Handler, rh root.Handler, uch userconfig.Handler, logger *log.Logger) *RestServer {
 	return &RestServer{
 		cfg:               *cfg,
 		logger:            logger,

@@ -11,13 +11,13 @@ import (
 	"github.com/aghex70/daps/internal/handlers/user"
 )
 
-type RootHandler struct {
+type Handler struct {
 	todoService     ports.TodoServicer
 	categoryService ports.CategoryServicer
 	userService     ports.UserServicer
 }
 
-func (h RootHandler) Root(w http.ResponseWriter, r *http.Request) {
+func (h Handler) Root(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case strings.Contains(r.RequestURI, handlers.TODO_STRING):
 		th := todo.NewTodoHandler(h.todoService)
@@ -33,8 +33,8 @@ func (h RootHandler) Root(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func NewRootHandler(cs ports.CategoryServicer, ts ports.TodoServicer, us ports.UserServicer) RootHandler {
-	return RootHandler{
+func NewRootHandler(cs ports.CategoryServicer, ts ports.TodoServicer, us ports.UserServicer) Handler {
+	return Handler{
 		categoryService: cs,
 		todoService:     ts,
 		userService:     us,

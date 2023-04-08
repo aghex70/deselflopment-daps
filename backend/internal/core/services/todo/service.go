@@ -20,15 +20,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type TodoService struct {
+type Service struct {
 	logger                 *log.Logger
-	todoRepository         *todo.TodoGormRepository
-	relationshipRepository *relationship.RelationshipGormRepository
-	emailRepository        *email.EmailGormRepository
-	userRepository         *user.UserGormRepository
+	todoRepository         *todo.GormRepository
+	relationshipRepository *relationship.GormRepository
+	emailRepository        *email.GormRepository
+	userRepository         *user.GormRepository
 }
 
-func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.CreateTodoRequest) error {
+func (s Service) Create(ctx context.Context, r *http.Request, req ports.CreateTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	if req.Category != 1 {
 		err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
@@ -60,7 +60,7 @@ func (s TodoService) Create(ctx context.Context, r *http.Request, req ports.Crea
 	return nil
 }
 
-func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.UpdateTodoRequest) error {
+func (s Service) Update(ctx context.Context, r *http.Request, req ports.UpdateTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
 	if err != nil {
@@ -86,7 +86,7 @@ func (s TodoService) Update(ctx context.Context, r *http.Request, req ports.Upda
 	return nil
 }
 
-func (s TodoService) Complete(ctx context.Context, r *http.Request, req ports.CompleteTodoRequest) error {
+func (s Service) Complete(ctx context.Context, r *http.Request, req ports.CompleteTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
 	if err != nil {
@@ -99,7 +99,7 @@ func (s TodoService) Complete(ctx context.Context, r *http.Request, req ports.Co
 	return nil
 }
 
-func (s TodoService) Activate(ctx context.Context, r *http.Request, req ports.ActivateTodoRequest) error {
+func (s Service) Activate(ctx context.Context, r *http.Request, req ports.ActivateTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
 	if err != nil {
@@ -112,7 +112,7 @@ func (s TodoService) Activate(ctx context.Context, r *http.Request, req ports.Ac
 	return nil
 }
 
-func (s TodoService) Start(ctx context.Context, r *http.Request, req ports.StartTodoRequest) error {
+func (s Service) Start(ctx context.Context, r *http.Request, req ports.StartTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
 	if err != nil {
@@ -125,7 +125,7 @@ func (s TodoService) Start(ctx context.Context, r *http.Request, req ports.Start
 	return nil
 }
 
-func (s TodoService) Restart(ctx context.Context, r *http.Request, req ports.StartTodoRequest) error {
+func (s Service) Restart(ctx context.Context, r *http.Request, req ports.StartTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
 	if err != nil {
@@ -138,7 +138,7 @@ func (s TodoService) Restart(ctx context.Context, r *http.Request, req ports.Sta
 	return nil
 }
 
-func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodoRequest) (domain.TodoInfo, error) {
+func (s Service) Get(ctx context.Context, r *http.Request, req ports.GetTodoRequest) (domain.TodoInfo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
 	if err != nil {
@@ -151,7 +151,7 @@ func (s TodoService) Get(ctx context.Context, r *http.Request, req ports.GetTodo
 	return td, nil
 }
 
-func (s TodoService) List(ctx context.Context, r *http.Request, req ports.ListTodosRequest) ([]domain.Todo, error) {
+func (s Service) List(ctx context.Context, r *http.Request, req ports.ListTodosRequest) ([]domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
 	if err != nil {
@@ -164,7 +164,7 @@ func (s TodoService) List(ctx context.Context, r *http.Request, req ports.ListTo
 	return todos, nil
 }
 
-func (s TodoService) ListRecurring(ctx context.Context, r *http.Request) ([]domain.Todo, error) {
+func (s Service) ListRecurring(ctx context.Context, r *http.Request) ([]domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	categoryIds, err := s.CheckCategoriesPermissions(ctx, int(userId))
 	if err != nil {
@@ -177,7 +177,7 @@ func (s TodoService) ListRecurring(ctx context.Context, r *http.Request) ([]doma
 	return todos, nil
 }
 
-func (s TodoService) ListCompleted(ctx context.Context, r *http.Request) ([]domain.Todo, error) {
+func (s Service) ListCompleted(ctx context.Context, r *http.Request) ([]domain.Todo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	categoryIds, err := s.CheckCategoriesPermissions(ctx, int(userId))
 	if err != nil {
@@ -190,7 +190,7 @@ func (s TodoService) ListCompleted(ctx context.Context, r *http.Request) ([]doma
 	return todos, nil
 }
 
-func (s TodoService) ListSuggested(ctx context.Context, r *http.Request) ([]domain.TodoInfo, error) {
+func (s Service) ListSuggested(ctx context.Context, r *http.Request) ([]domain.TodoInfo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	todos, err := s.todoRepository.ListSuggested(ctx, int(userId))
 	if err != nil {
@@ -199,7 +199,7 @@ func (s TodoService) ListSuggested(ctx context.Context, r *http.Request) ([]doma
 	return todos, nil
 }
 
-func (s TodoService) Suggest(ctx context.Context, r *http.Request) error {
+func (s Service) Suggest(ctx context.Context, r *http.Request) error {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	err := s.todoRepository.Suggest(ctx, int(userId))
 	if err != nil {
@@ -208,7 +208,7 @@ func (s TodoService) Suggest(ctx context.Context, r *http.Request) error {
 	return nil
 }
 
-func (s TodoService) Delete(ctx context.Context, r *http.Request, req ports.DeleteTodoRequest) error {
+func (s Service) Delete(ctx context.Context, r *http.Request, req ports.DeleteTodoRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.CheckCategoryPermissions(ctx, int(userId), req.Category)
 	if err != nil {
@@ -221,7 +221,7 @@ func (s TodoService) Delete(ctx context.Context, r *http.Request, req ports.Dele
 	return nil
 }
 
-func (s TodoService) Summary(ctx context.Context, r *http.Request) ([]domain.CategorySummary, error) {
+func (s Service) Summary(ctx context.Context, r *http.Request) ([]domain.CategorySummary, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	summary, err := s.todoRepository.GetSummary(ctx, int(userId))
 	if err != nil {
@@ -230,7 +230,7 @@ func (s TodoService) Summary(ctx context.Context, r *http.Request) ([]domain.Cat
 	return summary, nil
 }
 
-func (s TodoService) Remind(ctx context.Context) error {
+func (s Service) Remind(ctx context.Context) error {
 	fmt.Println("Reminding users...")
 	users, err := s.userRepository.List(ctx)
 	if err != nil {
@@ -283,8 +283,8 @@ func (s TodoService) Remind(ctx context.Context) error {
 	return nil
 }
 
-func NewtodoService(tr *todo.TodoGormRepository, rr *relationship.RelationshipGormRepository, er *email.EmailGormRepository, ur *user.UserGormRepository, logger *log.Logger) TodoService {
-	return TodoService{
+func NewtodoService(tr *todo.GormRepository, rr *relationship.GormRepository, er *email.GormRepository, ur *user.GormRepository, logger *log.Logger) Service {
+	return Service{
 		logger:                 logger,
 		todoRepository:         tr,
 		relationshipRepository: rr,

@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserConfigGormRepository struct {
+type GormRepository struct {
 	*gorm.DB
 	SqlDb *sql.DB
 }
@@ -36,7 +36,7 @@ func (UserConfig) TableName() string {
 	return "daps_user_configs"
 }
 
-func (gr *UserConfigGormRepository) GetByUserId(ctx context.Context, userId int) (domain.Profile, error) {
+func (gr *GormRepository) GetByUserId(ctx context.Context, userId int) (domain.Profile, error) {
 	var p Profile
 	query := fmt.Sprintf("SELECT daps_user_configs.auto_suggest, daps_user_configs.auto_remind, daps_user_configs.language, daps_users.email FROM daps_user_configs JOIN daps_users ON daps_user_configs.user_id = daps_users.id WHERE daps_users.id = %d", userId)
 
@@ -48,7 +48,7 @@ func (gr *UserConfigGormRepository) GetByUserId(ctx context.Context, userId int)
 	return p.ToDto(), nil
 }
 
-func (gr *UserConfigGormRepository) Update(ctx context.Context, uc domain.UserConfig, userId int) error {
+func (gr *GormRepository) Update(ctx context.Context, uc domain.UserConfig, userId int) error {
 	nuc := fromDto(uc)
 	result := gr.DB.Model(&nuc).Where(UserConfig{UserId: userId}).Updates(map[string]interface{}{
 		"auto_suggest": nuc.AutoSuggest,
@@ -67,7 +67,7 @@ func (gr *UserConfigGormRepository) Update(ctx context.Context, uc domain.UserCo
 	return nil
 }
 
-func (gr *UserConfigGormRepository) Create(ctx context.Context, uc domain.UserConfig) error {
+func (gr *GormRepository) Create(ctx context.Context, uc domain.UserConfig) error {
 	nuc := fromDto(uc)
 	result := gr.DB.Create(&nuc)
 	if result.Error != nil {
@@ -76,8 +76,8 @@ func (gr *UserConfigGormRepository) Create(ctx context.Context, uc domain.UserCo
 	return nil
 }
 
-func NewUserConfigGormRepository(db *gorm.DB) (*UserConfigGormRepository, error) {
-	return &UserConfigGormRepository{
+func NewUserConfigGormRepository(db *gorm.DB) (*GormRepository, error) {
+	return &GormRepository{
 		DB: db,
 	}, nil
 }

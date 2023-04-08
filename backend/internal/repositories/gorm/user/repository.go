@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type UserGormRepository struct {
+type GormRepository struct {
 	*gorm.DB
 	SqlDb *sql.DB
 }
@@ -21,7 +21,7 @@ type Tabler interface {
 	TableName() string
 }
 
-func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) (domain.User, error) {
+func (gr *GormRepository) Create(ctx context.Context, u domain.User) (domain.User, error) {
 	nu := relationship.UserFromDto(u)
 	result := gr.DB.Omit("Categories").Create(&nu)
 	if result.Error != nil {
@@ -30,7 +30,7 @@ func (gr *UserGormRepository) Create(ctx context.Context, u domain.User) (domain
 	return nu.ToDto(), nil
 }
 
-func (gr *UserGormRepository) Delete(ctx context.Context, adminId, id int) error {
+func (gr *GormRepository) Delete(ctx context.Context, adminId, id int) error {
 	if adminId == id {
 		return errors.New("admin user cannot be deleted")
 	}
@@ -70,7 +70,7 @@ func (gr *UserGormRepository) Delete(ctx context.Context, adminId, id int) error
 	return nil
 }
 
-func (gr *UserGormRepository) Get(ctx context.Context, id int) (domain.User, error) {
+func (gr *GormRepository) Get(ctx context.Context, id int) (domain.User, error) {
 	var u relationship.User
 	result := gr.DB.Where(&relationship.User{Id: id}).First(&u)
 	if result.Error != nil {
@@ -80,7 +80,7 @@ func (gr *UserGormRepository) Get(ctx context.Context, id int) (domain.User, err
 	return u.ToDto(), nil
 }
 
-func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (domain.User, error) {
+func (gr *GormRepository) GetByEmail(ctx context.Context, email string) (domain.User, error) {
 	var u relationship.User
 	result := gr.DB.Where(&relationship.User{Email: email}).First(&u)
 	if result.Error != nil {
@@ -93,7 +93,7 @@ func (gr *UserGormRepository) GetByEmail(ctx context.Context, email string) (dom
 	return u.ToDto(), nil
 }
 
-func (gr *UserGormRepository) ActivateUser(ctx context.Context, code string) error {
+func (gr *GormRepository) ActivateUser(ctx context.Context, code string) error {
 	var nu relationship.User
 	var u relationship.User
 	result := gr.DB.Where(&relationship.User{ActivationCode: code}).First(&u)
@@ -119,7 +119,7 @@ func (gr *UserGormRepository) ActivateUser(ctx context.Context, code string) err
 	return nil
 }
 
-func (gr *UserGormRepository) CreateResetLink(ctx context.Context, email string) (domain.User, error) {
+func (gr *GormRepository) CreateResetLink(ctx context.Context, email string) (domain.User, error) {
 	var u relationship.User
 	result := gr.DB.Where(&relationship.User{Email: email}).First(&u)
 	if result.RowsAffected == 0 {
@@ -133,7 +133,7 @@ func (gr *UserGormRepository) CreateResetLink(ctx context.Context, email string)
 	return u.ToDto(), nil
 }
 
-func (gr *UserGormRepository) ResetPassword(ctx context.Context, password, code string) error {
+func (gr *GormRepository) ResetPassword(ctx context.Context, password, code string) error {
 	var u relationship.User
 	result := gr.DB.Where(&relationship.User{ResetPasswordCode: code}).First(&u)
 	if result.RowsAffected == 0 {
@@ -157,7 +157,7 @@ func (gr *UserGormRepository) ResetPassword(ctx context.Context, password, code 
 	return nil
 }
 
-func (gr *UserGormRepository) ProvisionDemoUser(ctx context.Context, e string) (domain.User, error) {
+func (gr *GormRepository) ProvisionDemoUser(ctx context.Context, e string) (domain.User, error) {
 	nu := relationship.User{
 		Name:     "Demo user",
 		Email:    e,
@@ -173,7 +173,7 @@ func (gr *UserGormRepository) ProvisionDemoUser(ctx context.Context, e string) (
 	return nu.ToDto(), nil
 }
 
-func (gr *UserGormRepository) List(ctx context.Context) ([]domain.User, error) {
+func (gr *GormRepository) List(ctx context.Context) ([]domain.User, error) {
 	var dbUsers []relationship.User
 	var users []domain.User
 	result := gr.DB.Find(&dbUsers)
@@ -188,8 +188,8 @@ func (gr *UserGormRepository) List(ctx context.Context) ([]domain.User, error) {
 	return users, nil
 }
 
-func NewUserGormRepository(db *gorm.DB) (*UserGormRepository, error) {
-	return &UserGormRepository{
+func NewUserGormRepository(db *gorm.DB) (*GormRepository, error) {
+	return &GormRepository{
 		DB: db,
 	}, nil
 }

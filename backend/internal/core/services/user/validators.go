@@ -12,21 +12,21 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s UserService) CheckExistentUser(ctx context.Context, email string) bool {
+func (s Service) CheckExistentUser(ctx context.Context, email string) bool {
 	_, err := s.userRepository.GetByEmail(ctx, email)
 	return !errors.Is(err, gorm.ErrRecordNotFound)
 }
 
-func (s UserService) PasswordsMatch(ctx context.Context, hashedPassword, password string) bool {
+func (s Service) PasswordsMatch(ctx context.Context, hashedPassword, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
 }
 
-func (s UserService) PasswordMatchesRepeatPassword(ctx context.Context, password, repeatPassword string) bool {
+func (s Service) PasswordMatchesRepeatPassword(ctx context.Context, password, repeatPassword string) bool {
 	return password == repeatPassword
 }
 
-func (s UserService) EncryptPassword(ctx context.Context, password string) string {
+func (s Service) EncryptPassword(ctx context.Context, password string) string {
 	keyString := os.Getenv("CIPHER_KEY")
 	key, _ := hex.DecodeString(keyString)
 
@@ -54,7 +54,7 @@ func (s UserService) EncryptPassword(ctx context.Context, password string) strin
 	return hex.EncodeToString(encrypted)
 }
 
-func (s UserService) DecryptPassword(ctx context.Context, cipheredPassword string) (string, error) {
+func (s Service) DecryptPassword(ctx context.Context, cipheredPassword string) (string, error) {
 	// Convert the ciphertext from a hexadecimal string to a byte slice
 	encrypted, err := hex.DecodeString(cipheredPassword)
 	if err != nil {

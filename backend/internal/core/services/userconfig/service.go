@@ -11,12 +11,12 @@ import (
 	"github.com/aghex70/daps/server"
 )
 
-type UserConfigService struct {
+type Service struct {
 	logger               *log.Logger
-	userConfigRepository *uc.UserConfigGormRepository
+	userConfigRepository *uc.GormRepository
 }
 
-func (s UserConfigService) Update(ctx context.Context, r *http.Request, req ports.UpdateUserConfigRequest) error {
+func (s Service) Update(ctx context.Context, r *http.Request, req ports.UpdateUserConfigRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	uConfig := domain.UserConfig{
 		UserId:      int(userId),
@@ -31,7 +31,7 @@ func (s UserConfigService) Update(ctx context.Context, r *http.Request, req port
 	return nil
 }
 
-func (s UserConfigService) Get(ctx context.Context, r *http.Request) (domain.Profile, error) {
+func (s Service) Get(ctx context.Context, r *http.Request) (domain.Profile, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	p, err := s.userConfigRepository.GetByUserId(ctx, int(userId))
 	if err != nil {
@@ -40,8 +40,8 @@ func (s UserConfigService) Get(ctx context.Context, r *http.Request) (domain.Pro
 	return p, nil
 }
 
-func NewUserConfigService(ucr *uc.UserConfigGormRepository, logger *log.Logger) UserConfigService {
-	return UserConfigService{
+func NewUserConfigService(ucr *uc.GormRepository, logger *log.Logger) Service {
+	return Service{
 		logger:               logger,
 		userConfigRepository: ucr,
 	}

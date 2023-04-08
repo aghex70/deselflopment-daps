@@ -14,11 +14,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserHandler struct {
+type Handler struct {
 	userService ports.UserServicer
 }
 
-func (h UserHandler) HandleUser(w http.ResponseWriter, r *http.Request) {
+func (h Handler) HandleUser(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.RequestURI, handlers.USER_STRING)[1]
 	userId, err := strconv.Atoi(path)
 	if err != nil {
@@ -36,7 +36,7 @@ func (h UserHandler) HandleUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
+func (h Handler) Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -65,7 +65,7 @@ func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
+func (h Handler) Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -100,7 +100,7 @@ func (h UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
+func (h Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -129,7 +129,7 @@ func (h UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h UserHandler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
+func (h Handler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
 	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
 		return
@@ -144,7 +144,7 @@ func (h UserHandler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, id int) {
+func (h Handler) DeleteUser(w http.ResponseWriter, r *http.Request, id int) {
 	payload := ports.DeleteUserRequest{UserId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -160,7 +160,7 @@ func (h UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request, id int) 
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (h UserHandler) GetUser(w http.ResponseWriter, r *http.Request, id int) {
+func (h Handler) GetUser(w http.ResponseWriter, r *http.Request, id int) {
 	payload := ports.GetUserRequest{UserId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -188,7 +188,7 @@ func (h UserHandler) GetUser(w http.ResponseWriter, r *http.Request, id int) {
 	}
 }
 
-func (h UserHandler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
+func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 	payload := ports.ProvisionDemoUserRequest{}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -209,7 +209,7 @@ func (h UserHandler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (h UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
+func (h Handler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	err := handlers.CheckHttpMethod(http.MethodGet, w, r)
 	if err != nil {
 		return
@@ -232,7 +232,7 @@ func (h UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h UserHandler) ImportCSV(w http.ResponseWriter, r *http.Request) {
+func (h Handler) ImportCSV(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Accept", "multipart/form-data")
 	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
 	if err != nil {
@@ -255,7 +255,7 @@ func (h UserHandler) ImportCSV(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (h UserHandler) ActivateUser(w http.ResponseWriter, r *http.Request) {
+func (h Handler) ActivateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -285,7 +285,7 @@ func (h UserHandler) ActivateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h UserHandler) ResetLink(w http.ResponseWriter, r *http.Request) {
+func (h Handler) ResetLink(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -315,7 +315,7 @@ func (h UserHandler) ResetLink(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (h UserHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
+func (h Handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -345,8 +345,8 @@ func (h UserHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func NewUserHandler(us ports.UserServicer) UserHandler {
-	return UserHandler{
+func NewUserHandler(us ports.UserServicer) Handler {
+	return Handler{
 		userService: us,
 	}
 }

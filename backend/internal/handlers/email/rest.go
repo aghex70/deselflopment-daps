@@ -8,11 +8,11 @@ import (
 	"github.com/aghex70/daps/internal/handlers"
 )
 
-type EmailHandler struct {
+type Handler struct {
 	emailService ports.EmailServicer
 }
 
-func (h EmailHandler) CreateEmail(w http.ResponseWriter, r *http.Request) {
+func (h Handler) CreateEmail(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 
@@ -32,8 +32,8 @@ func (h EmailHandler) CreateEmail(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func NewEmailHandler(es ports.EmailServicer) EmailHandler {
-	return EmailHandler{
+func NewEmailHandler(es ports.EmailServicer) Handler {
+	return Handler{
 		emailService: es,
 	}
 }

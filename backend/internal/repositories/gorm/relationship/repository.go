@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type RelationshipGormRepository struct {
+type GormRepository struct {
 	*gorm.DB
 	SqlDb *sql.DB
 }
@@ -61,7 +61,7 @@ func (UserCategory) TableName() string {
 	return "daps_category_users"
 }
 
-func (gr *RelationshipGormRepository) GetUserCategory(ctx context.Context, userId, categoryId int) error {
+func (gr *GormRepository) GetUserCategory(ctx context.Context, userId, categoryId int) error {
 	type queryResult struct {
 		Id int
 	}
@@ -79,7 +79,7 @@ func (gr *RelationshipGormRepository) GetUserCategory(ctx context.Context, userI
 	return nil
 }
 
-func (gr *RelationshipGormRepository) ListUserCategories(ctx context.Context, userId int) ([]int, error) {
+func (gr *GormRepository) ListUserCategories(ctx context.Context, userId int) ([]int, error) {
 	var uc []UserCategory
 	result := gr.DB.Where(&UserCategory{UserId: userId}).Find(&uc)
 
@@ -95,8 +95,8 @@ func (gr *RelationshipGormRepository) ListUserCategories(ctx context.Context, us
 	return categoryIds, nil
 }
 
-func NewRelationshipGormRepository(db *gorm.DB) (*RelationshipGormRepository, error) {
-	return &RelationshipGormRepository{
+func NewRelationshipGormRepository(db *gorm.DB) (*GormRepository, error) {
+	return &GormRepository{
 		DB: db,
 	}, nil
 }

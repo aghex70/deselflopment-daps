@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type TodoGormRepository struct {
+type GormRepository struct {
 	*gorm.DB
 	SqlDb *sql.DB
 }
@@ -49,7 +49,7 @@ func (Todo) TableName() string {
 	return "daps_todos"
 }
 
-func (gr *TodoGormRepository) Create(ctx context.Context, td domain.Todo) error {
+func (gr *GormRepository) Create(ctx context.Context, td domain.Todo) error {
 	ntd := fromDto(td)
 	result := gr.DB.Create(&ntd)
 	if result.Error != nil {
@@ -58,7 +58,7 @@ func (gr *TodoGormRepository) Create(ctx context.Context, td domain.Todo) error 
 	return nil
 }
 
-func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error {
+func (gr *GormRepository) Update(ctx context.Context, td domain.Todo) error {
 	ntd := fromDto(td)
 	result := gr.DB.Model(&ntd).Where(Todo{Id: ntd.Id}).Updates(map[string]interface{}{
 		"category_id": ntd.CategoryId,
@@ -81,7 +81,7 @@ func (gr *TodoGormRepository) Update(ctx context.Context, td domain.Todo) error 
 	return nil
 }
 
-func (gr *TodoGormRepository) Complete(ctx context.Context, id int) error {
+func (gr *GormRepository) Complete(ctx context.Context, id int) error {
 	result := gr.DB.Model(&Todo{Id: id}).Update("completed", true).Update("end_date", time.Now())
 
 	if result.RowsAffected == 0 {
@@ -94,7 +94,7 @@ func (gr *TodoGormRepository) Complete(ctx context.Context, id int) error {
 	return nil
 }
 
-func (gr *TodoGormRepository) Activate(ctx context.Context, id int) error {
+func (gr *GormRepository) Activate(ctx context.Context, id int) error {
 	result := gr.DB.Model(&Todo{Id: id}).Update("completed", false).Update("end_date", nil)
 
 	if result.RowsAffected == 0 {
@@ -107,7 +107,7 @@ func (gr *TodoGormRepository) Activate(ctx context.Context, id int) error {
 	return nil
 }
 
-func (gr *TodoGormRepository) Start(ctx context.Context, id int) error {
+func (gr *GormRepository) Start(ctx context.Context, id int) error {
 	result := gr.DB.Model(&Todo{Id: id}).Update("active", true).Update("start_date", time.Now())
 
 	if result.RowsAffected == 0 {
@@ -120,7 +120,7 @@ func (gr *TodoGormRepository) Start(ctx context.Context, id int) error {
 	return nil
 }
 
-func (gr *TodoGormRepository) Restart(ctx context.Context, id int) error {
+func (gr *GormRepository) Restart(ctx context.Context, id int) error {
 	result := gr.DB.Model(&Todo{Id: id}).Update("active", false).Update("start_date", nil)
 
 	if result.RowsAffected == 0 {
@@ -133,7 +133,7 @@ func (gr *TodoGormRepository) Restart(ctx context.Context, id int) error {
 	return nil
 }
 
-func (gr *TodoGormRepository) GetById(ctx context.Context, id int) (domain.TodoInfo, error) {
+func (gr *GormRepository) GetById(ctx context.Context, id int) (domain.TodoInfo, error) {
 	var ti TodoInfo
 	query := fmt.Sprintf("SELECT daps_todos.id, daps_todos.category_id, daps_todos.end_date, daps_todos.creation_date, daps_todos.completed, daps_todos.description, daps_todos.link, daps_todos.name, daps_todos.priority, daps_todos.recurring, daps_todos.start_date, daps_todos.recurrency, daps_todos.suggestable, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.id = %d", id)
 	result := gr.DB.Raw(query).Scan(&ti)
@@ -144,7 +144,7 @@ func (gr *TodoGormRepository) GetById(ctx context.Context, id int) (domain.TodoI
 	return ti.ToDto(), nil
 }
 
-func (gr *TodoGormRepository) List(ctx context.Context, categoryId int) ([]domain.Todo, error) {
+func (gr *GormRepository) List(ctx context.Context, categoryId int) ([]domain.Todo, error) {
 	var todos []Todo
 	var todes []domain.Todo
 	result := gr.DB.Where("category_id = ? AND completed = ?", categoryId, false).Find(&todos)
@@ -159,7 +159,7 @@ func (gr *TodoGormRepository) List(ctx context.Context, categoryId int) ([]domai
 	return todes, nil
 }
 
-func (gr *TodoGormRepository) ListRecurring(ctx context.Context, categoryIds []int) ([]domain.Todo, error) {
+func (gr *GormRepository) ListRecurring(ctx context.Context, categoryIds []int) ([]domain.Todo, error) {
 	var todos []Todo
 	var todes []domain.Todo
 	result := gr.DB.Where("recurring = ? AND category_id IN ?", true, categoryIds).Find(&todos)
@@ -174,7 +174,7 @@ func (gr *TodoGormRepository) ListRecurring(ctx context.Context, categoryIds []i
 	return todes, nil
 }
 
-func (gr *TodoGormRepository) ListCompleted(ctx context.Context, categoryIds []int) ([]domain.Todo, error) {
+func (gr *GormRepository) ListCompleted(ctx context.Context, categoryIds []int) ([]domain.Todo, error) {
 	var todos []Todo
 	var todes []domain.Todo
 	result := gr.DB.Where("completed = ? AND recurring = ? AND category_id IN ?", true, false, categoryIds).Find(&todos)
@@ -189,7 +189,7 @@ func (gr *TodoGormRepository) ListCompleted(ctx context.Context, categoryIds []i
 	return todes, nil
 }
 
-func (gr *TodoGormRepository) ListSuggested(ctx context.Context, userId int) ([]domain.TodoInfo, error) {
+func (gr *GormRepository) ListSuggested(ctx context.Context, userId int) ([]domain.TodoInfo, error) {
 	var tis []TodoInfo
 	var todosInfo []domain.TodoInfo
 	query := fmt.Sprintf("SELECT daps_todos.name, daps_todos.id, daps_todos.category_id, daps_todos.active, daps_todos.suggestion_date, daps_categories.name as category_name FROM daps_todos JOIN daps_categories ON daps_todos.category_id = daps_categories.id WHERE daps_todos.suggested = true AND daps_todos.completed = false AND daps_categories.owner_id = %d AND daps_todos.suggestable = true ORDER BY RAND() LIMIT 8", userId)
@@ -207,7 +207,7 @@ func (gr *TodoGormRepository) ListSuggested(ctx context.Context, userId int) ([]
 	return todosInfo, nil
 }
 
-func (gr *TodoGormRepository) Suggest(ctx context.Context, userId int) error {
+func (gr *GormRepository) Suggest(ctx context.Context, userId int) error {
 	var suggestedTodosNumber int
 
 	// Retrieve current number of suggested todos
@@ -243,7 +243,7 @@ func (gr *TodoGormRepository) Suggest(ctx context.Context, userId int) error {
 	return nil
 }
 
-func (gr *TodoGormRepository) Delete(ctx context.Context, id int) error {
+func (gr *GormRepository) Delete(ctx context.Context, id int) error {
 	td := Todo{Id: id}
 	result := gr.DB.Delete(&td)
 	if result.Error != nil {
@@ -257,7 +257,7 @@ func (gr *TodoGormRepository) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-func (gr *TodoGormRepository) GetByNameAndCategory(ctx context.Context, name string, categoryId int) (domain.Todo, error) {
+func (gr *GormRepository) GetByNameAndCategory(ctx context.Context, name string, categoryId int) (domain.Todo, error) {
 	var td Todo
 	result := gr.DB.Where(&Todo{Name: name, CategoryId: categoryId}).First(&td)
 	if result.Error != nil {
@@ -267,7 +267,7 @@ func (gr *TodoGormRepository) GetByNameAndCategory(ctx context.Context, name str
 	return td.ToDto(), nil
 }
 
-func (gr *TodoGormRepository) GetSummary(ctx context.Context, userId int) ([]domain.CategorySummary, error) {
+func (gr *GormRepository) GetSummary(ctx context.Context, userId int) ([]domain.CategorySummary, error) {
 	var cs []domain.CategorySummary
 	query := fmt.Sprintf("SELECT daps_category_users.category_id, daps_categories.id, daps_categories.name, daps_categories.owner_id, daps_categories.shared, SUM(CASE WHEN daps_todos.completed = FALSE AND daps_todos.priority = 5 then 1 else 0 END) as highest_priority_tasks, SUM(CASE WHEN daps_todos.completed = FALSE then 1 else 0 END) as tasks FROM daps_category_users INNER JOIN daps_categories ON daps_categories.id = daps_category_users.category_id LEFT JOIN daps_todos ON daps_todos.category_id = daps_category_users.category_id WHERE user_id = %d GROUP BY category_id", userId)
 	result := gr.DB.Raw(query).Scan(&cs)
@@ -277,7 +277,7 @@ func (gr *TodoGormRepository) GetSummary(ctx context.Context, userId int) ([]dom
 	return cs, nil
 }
 
-func (gr *TodoGormRepository) GetRemindSummary(ctx context.Context, userId int) ([]domain.RemindSummary, error) {
+func (gr *GormRepository) GetRemindSummary(ctx context.Context, userId int) ([]domain.RemindSummary, error) {
 	var rs []domain.RemindSummary
 
 	// Check if reminder has already been sent
@@ -310,8 +310,8 @@ func (gr *TodoGormRepository) GetRemindSummary(ctx context.Context, userId int) 
 	return rs, nil
 }
 
-func NewTodoGormRepository(db *gorm.DB) (*TodoGormRepository, error) {
-	return &TodoGormRepository{
+func NewTodoGormRepository(db *gorm.DB) (*GormRepository, error) {
+	return &GormRepository{
 		DB: db,
 	}, nil
 }

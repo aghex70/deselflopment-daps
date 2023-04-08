@@ -25,13 +25,13 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-type UserService struct {
+type Service struct {
 	logger                      *log.Logger
-	userRepository              *user.UserGormRepository
-	categoryRepository          *category.CategoryGormRepository
-	userConfigurationRepository *userconfig.UserConfigGormRepository
-	todoRepository              *todo.TodoGormRepository
-	emailRepository             *email.EmailGormRepository
+	userRepository              *user.GormRepository
+	categoryRepository          *category.GormRepository
+	userConfigurationRepository *userconfig.GormRepository
+	todoRepository              *todo.GormRepository
+	emailRepository             *email.GormRepository
 }
 
 type MyCustomClaims struct {
@@ -39,7 +39,7 @@ type MyCustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) error {
+func (s Service) Register(ctx context.Context, r ports.CreateUserRequest) error {
 	preexistent := s.CheckExistentUser(ctx, r.Email)
 	if preexistent {
 		return errors.New("user already registered")
@@ -107,7 +107,7 @@ func (s UserService) Register(ctx context.Context, r ports.CreateUserRequest) er
 	return nil
 }
 
-func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (string, int, error) {
+func (s Service) Login(ctx context.Context, r ports.LoginUserRequest) (string, int, error) {
 	u, err := s.userRepository.GetByEmail(ctx, r.Email)
 	if err != nil {
 		return "", 0, err
@@ -142,7 +142,7 @@ func (s UserService) Login(ctx context.Context, r ports.LoginUserRequest) (strin
 	return ss, u.Id, nil
 }
 
-func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string, error) {
+func (s Service) RefreshToken(ctx context.Context, r *http.Request) (string, error) {
 	userId, err := server.RetrieveJWTClaims(r, nil)
 	if err != nil {
 		return "", errors.New("invalid token")
@@ -170,7 +170,7 @@ func (s UserService) RefreshToken(ctx context.Context, r *http.Request) (string,
 	return ss, nil
 }
 
-func (s UserService) CheckAdmin(ctx context.Context, r *http.Request) (int, error) {
+func (s Service) CheckAdmin(ctx context.Context, r *http.Request) (int, error) {
 	userId, err := server.RetrieveJWTClaims(r, nil)
 	if err != nil {
 		return 0, errors.New("invalid token")
@@ -187,7 +187,7 @@ func (s UserService) CheckAdmin(ctx context.Context, r *http.Request) (int, erro
 	return int(userId), nil
 }
 
-func (s UserService) Delete(ctx context.Context, r *http.Request, req ports.DeleteUserRequest) error {
+func (s Service) Delete(ctx context.Context, r *http.Request, req ports.DeleteUserRequest) error {
 	adminId, err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return err
@@ -201,7 +201,7 @@ func (s UserService) Delete(ctx context.Context, r *http.Request, req ports.Dele
 	return nil
 }
 
-func (s UserService) Get(ctx context.Context, r *http.Request, req ports.GetUserRequest) (domain.User, error) {
+func (s Service) Get(ctx context.Context, r *http.Request, req ports.GetUserRequest) (domain.User, error) {
 	_, err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return domain.User{}, err
@@ -215,7 +215,7 @@ func (s UserService) Get(ctx context.Context, r *http.Request, req ports.GetUser
 	return u, nil
 }
 
-func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req ports.ProvisionDemoUserRequest) error {
+func (s Service) ProvisionDemoUser(ctx context.Context, r *http.Request, req ports.ProvisionDemoUserRequest) error {
 	_, err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return err
@@ -297,7 +297,7 @@ func (s UserService) ProvisionDemoUser(ctx context.Context, r *http.Request, req
 	return nil
 }
 
-func (s UserService) List(ctx context.Context, r *http.Request) ([]domain.User, error) {
+func (s Service) List(ctx context.Context, r *http.Request) ([]domain.User, error) {
 	_, err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return []domain.User{}, err
@@ -311,7 +311,7 @@ func (s UserService) List(ctx context.Context, r *http.Request) ([]domain.User, 
 	return users, nil
 }
 
-func (s UserService) ImportCSV(ctx context.Context, r *http.Request, f multipart.File) error {
+func (s Service) ImportCSV(ctx context.Context, r *http.Request, f multipart.File) error {
 	_, err := s.CheckAdmin(ctx, r)
 	if err != nil {
 		return err
@@ -358,7 +358,7 @@ func (s UserService) ImportCSV(ctx context.Context, r *http.Request, f multipart
 	return nil
 }
 
-func (s UserService) Activate(ctx context.Context, r ports.ActivateUserRequest) error {
+func (s Service) Activate(ctx context.Context, r ports.ActivateUserRequest) error {
 	err := s.userRepository.ActivateUser(ctx, r.ActivationCode)
 	if err != nil {
 		return err
@@ -367,7 +367,7 @@ func (s UserService) Activate(ctx context.Context, r ports.ActivateUserRequest) 
 	return nil
 }
 
-func (s UserService) SendResetLink(ctx context.Context, r ports.ResetLinkRequest) error {
+func (s Service) SendResetLink(ctx context.Context, r ports.ResetLinkRequest) error {
 	u, err := s.userRepository.CreateResetLink(ctx, r.Email)
 	if err != nil {
 		return err
@@ -403,7 +403,7 @@ func (s UserService) SendResetLink(ctx context.Context, r ports.ResetLinkRequest
 	return nil
 }
 
-func (s UserService) ResetPassword(ctx context.Context, r ports.ResetPasswordRequest) error {
+func (s Service) ResetPassword(ctx context.Context, r ports.ResetPasswordRequest) error {
 	match := s.PasswordMatchesRepeatPassword(ctx, r.Password, r.RepeatPassword)
 	if !match {
 		return errors.New("passwords do not match")
@@ -418,8 +418,8 @@ func (s UserService) ResetPassword(ctx context.Context, r ports.ResetPasswordReq
 	return nil
 }
 
-func NewUserService(ur *user.UserGormRepository, cr *category.CategoryGormRepository, ucr *userconfig.UserConfigGormRepository, tr *todo.TodoGormRepository, er *email.EmailGormRepository, logger *log.Logger) UserService {
-	return UserService{
+func NewUserService(ur *user.GormRepository, cr *category.GormRepository, ucr *userconfig.GormRepository, tr *todo.GormRepository, er *email.GormRepository, logger *log.Logger) Service {
+	return Service{
 		logger:                      logger,
 		userRepository:              ur,
 		categoryRepository:          cr,

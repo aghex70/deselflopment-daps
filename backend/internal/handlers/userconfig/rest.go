@@ -11,11 +11,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserConfigHandler struct {
+type Handler struct {
 	userConfigService ports.UserConfigServicer
 }
 
-func (h UserConfigHandler) HandleUserConfig(w http.ResponseWriter, r *http.Request) {
+func (h Handler) HandleUserConfig(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		h.GetUserConfig(w, r)
@@ -26,7 +26,7 @@ func (h UserConfigHandler) HandleUserConfig(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (h UserConfigHandler) UpdateUserConfig(w http.ResponseWriter, r *http.Request) {
+func (h Handler) UpdateUserConfig(w http.ResponseWriter, r *http.Request) {
 	payload := ports.UpdateUserConfigRequest{}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -41,7 +41,7 @@ func (h UserConfigHandler) UpdateUserConfig(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (h UserConfigHandler) GetUserConfig(w http.ResponseWriter, r *http.Request) {
+func (h Handler) GetUserConfig(w http.ResponseWriter, r *http.Request) {
 	c, err := h.userConfigService.Get(context.TODO(), r)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -61,8 +61,8 @@ func (h UserConfigHandler) GetUserConfig(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func NewUserConfigHandler(ucs ports.UserConfigServicer) UserConfigHandler {
-	return UserConfigHandler{
+func NewUserConfigHandler(ucs ports.UserConfigServicer) Handler {
+	return Handler{
 		userConfigService: ucs,
 	}
 }

@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type EmailGormRepository struct {
+type GormRepository struct {
 	*gorm.DB
 	SqlDb *sql.DB
 }
@@ -32,7 +32,7 @@ func (Email) TableName() string {
 	return "daps_emails"
 }
 
-func (gr *EmailGormRepository) Create(ctx context.Context, e domain.Email) (domain.Email, error) {
+func (gr *GormRepository) Create(ctx context.Context, e domain.Email) (domain.Email, error) {
 	ne := EmailFromDto(e)
 	result := gr.DB.Create(&ne)
 	if result.Error != nil {
@@ -41,8 +41,8 @@ func (gr *EmailGormRepository) Create(ctx context.Context, e domain.Email) (doma
 	return ne.ToDto(), nil
 }
 
-func NewEmailGormRepository(db *gorm.DB) (*EmailGormRepository, error) {
-	return &EmailGormRepository{
+func NewEmailGormRepository(db *gorm.DB) (*GormRepository, error) {
+	return &GormRepository{
 		DB: db,
 	}, nil
 }

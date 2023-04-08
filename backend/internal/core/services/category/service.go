@@ -13,14 +13,14 @@ import (
 	"github.com/aghex70/daps/server"
 )
 
-type CategoryService struct {
+type Service struct {
 	logger                 *log.Logger
-	categoryRepository     *category.CategoryGormRepository
-	relationshipRepository *relationship.RelationshipGormRepository
-	emailRepository        *email.EmailGormRepository
+	categoryRepository     *category.GormRepository
+	relationshipRepository *relationship.GormRepository
+	emailRepository        *email.GormRepository
 }
 
-func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.CreateCategoryRequest) error {
+func (s Service) Create(ctx context.Context, r *http.Request, req ports.CreateCategoryRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.ValidateCreation(ctx, req.Name, int(userId))
 	if err != nil {
@@ -43,7 +43,7 @@ func (s CategoryService) Create(ctx context.Context, r *http.Request, req ports.
 	return nil
 }
 
-func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.UpdateCategoryRequest) error {
+func (s Service) Update(ctx context.Context, r *http.Request, req ports.UpdateCategoryRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 
 	switch {
@@ -94,7 +94,7 @@ func (s CategoryService) Update(ctx context.Context, r *http.Request, req ports.
 	return nil
 }
 
-func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.GetCategoryRequest) (domain.Category, error) {
+func (s Service) Get(ctx context.Context, r *http.Request, req ports.GetCategoryRequest) (domain.Category, error) {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.ValidateRetrieval(ctx, int(req.CategoryId), int(userId))
 	if err != nil {
@@ -107,7 +107,7 @@ func (s CategoryService) Get(ctx context.Context, r *http.Request, req ports.Get
 	return cat, nil
 }
 
-func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.DeleteCategoryRequest) error {
+func (s Service) Delete(ctx context.Context, r *http.Request, req ports.DeleteCategoryRequest) error {
 	userId, _ := server.RetrieveJWTClaims(r, req)
 	err := s.ValidateRemoval(ctx, int(req.CategoryId), int(userId))
 	if err != nil {
@@ -120,7 +120,7 @@ func (s CategoryService) Delete(ctx context.Context, r *http.Request, req ports.
 	return nil
 }
 
-func (s CategoryService) List(ctx context.Context, r *http.Request) ([]domain.Category, error) {
+func (s Service) List(ctx context.Context, r *http.Request) ([]domain.Category, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	categories, err := s.categoryRepository.List(ctx, int(userId))
 	if err != nil {
@@ -129,8 +129,8 @@ func (s CategoryService) List(ctx context.Context, r *http.Request) ([]domain.Ca
 	return categories, nil
 }
 
-func NewCategoryService(cr *category.CategoryGormRepository, rr *relationship.RelationshipGormRepository, er *email.EmailGormRepository, logger *log.Logger) CategoryService {
-	return CategoryService{
+func NewCategoryService(cr *category.GormRepository, rr *relationship.GormRepository, er *email.GormRepository, logger *log.Logger) Service {
+	return Service{
 		logger:                 logger,
 		categoryRepository:     cr,
 		relationshipRepository: rr,

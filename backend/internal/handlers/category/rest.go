@@ -13,11 +13,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type CategoryHandler struct {
+type Handler struct {
 	categoryService ports.CategoryServicer
 }
 
-func (h CategoryHandler) HandleCategory(w http.ResponseWriter, r *http.Request) {
+func (h Handler) HandleCategory(w http.ResponseWriter, r *http.Request) {
 	path := strings.Split(r.RequestURI, handlers.CATEGORY_STRING)[1]
 
 	categoryId, err := strconv.Atoi(path)
@@ -38,7 +38,7 @@ func (h CategoryHandler) HandleCategory(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
-func (h CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) {
+func (h Handler) CreateCategory(w http.ResponseWriter, r *http.Request) {
 	payload := ports.CreateCategoryRequest{}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -54,7 +54,7 @@ func (h CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, id int) {
+func (h Handler) UpdateCategory(w http.ResponseWriter, r *http.Request, id int) {
 	payload := ports.UpdateCategoryRequest{CategoryId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -69,7 +69,7 @@ func (h CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request, 
 	}
 }
 
-func (h CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request, id int) {
+func (h Handler) DeleteCategory(w http.ResponseWriter, r *http.Request, id int) {
 	payload := ports.DeleteCategoryRequest{CategoryId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -85,7 +85,7 @@ func (h CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request, 
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request, id int) {
+func (h Handler) GetCategory(w http.ResponseWriter, r *http.Request, id int) {
 	payload := ports.GetCategoryRequest{CategoryId: int64(id)}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -112,7 +112,7 @@ func (h CategoryHandler) GetCategory(w http.ResponseWriter, r *http.Request, id 
 	}
 }
 
-func (h CategoryHandler) ListCategories(w http.ResponseWriter, r *http.Request) {
+func (h Handler) ListCategories(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		http.Error(w, "No Content", http.StatusNoContent)
 		return
@@ -134,8 +134,8 @@ func (h CategoryHandler) ListCategories(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
-func NewCategoryHandler(cs ports.CategoryServicer) CategoryHandler {
-	return CategoryHandler{
+func NewCategoryHandler(cs ports.CategoryServicer) Handler {
+	return Handler{
 		categoryService: cs,
 	}
 }

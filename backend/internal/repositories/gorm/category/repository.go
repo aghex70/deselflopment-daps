@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type CategoryGormRepository struct {
+type GormRepository struct {
 	*gorm.DB
 	SqlDb *sql.DB
 }
@@ -21,7 +21,7 @@ type Tabler interface {
 	TableName() string
 }
 
-func (gr *CategoryGormRepository) GetByIds(ctx context.Context, ids []int) ([]domain.Category, error) {
+func (gr *GormRepository) GetByIds(ctx context.Context, ids []int) ([]domain.Category, error) {
 	var cs []relationship.Category
 	var cats []domain.Category
 	result := gr.DB.Find(&cs, ids)
@@ -36,7 +36,7 @@ func (gr *CategoryGormRepository) GetByIds(ctx context.Context, ids []int) ([]do
 	return cats, nil
 }
 
-func (gr *CategoryGormRepository) UserCategoryExists(ctx context.Context, conditions string) (int, error) {
+func (gr *GormRepository) UserCategoryExists(ctx context.Context, conditions string) (int, error) {
 	type queryResult struct {
 		Id int `json:"id"`
 	}
@@ -53,7 +53,7 @@ func (gr *CategoryGormRepository) UserCategoryExists(ctx context.Context, condit
 	return r.Id, nil
 }
 
-func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category, userId int) (domain.Category, error) {
+func (gr *GormRepository) Create(ctx context.Context, c domain.Category, userId int) (domain.Category, error) {
 	nc := relationship.CategoryFromDto(c, userId)
 	result := gr.DB.Create(&nc)
 	if result.Error != nil {
@@ -62,7 +62,7 @@ func (gr *CategoryGormRepository) Create(ctx context.Context, c domain.Category,
 	return nc.ToDto(), nil
 }
 
-func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category) error {
+func (gr *GormRepository) Update(ctx context.Context, c domain.Category) error {
 	var nc relationship.Category
 	result := gr.DB.Model(&nc).Where(relationship.Category{Id: c.Id}).Updates(map[string]interface{}{
 		"name":        c.Name,
@@ -77,7 +77,7 @@ func (gr *CategoryGormRepository) Update(ctx context.Context, c domain.Category)
 	return nil
 }
 
-func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category, email string) error {
+func (gr *GormRepository) Share(ctx context.Context, c domain.Category, email string) error {
 	type queryResult struct {
 		Id int
 	}
@@ -113,7 +113,7 @@ func (gr *CategoryGormRepository) Share(ctx context.Context, c domain.Category, 
 	return nil
 }
 
-func (gr *CategoryGormRepository) Unshare(ctx context.Context, c domain.Category, userId int) error {
+func (gr *GormRepository) Unshare(ctx context.Context, c domain.Category, userId int) error {
 	var cat relationship.Category
 	result := gr.DB.Raw("DELETE FROM daps_category_users WHERE category_id = ? AND user_id = ?", c.Id, userId).Scan(&cat)
 	if result.Error != nil {
@@ -122,7 +122,7 @@ func (gr *CategoryGormRepository) Unshare(ctx context.Context, c domain.Category
 	return nil
 }
 
-func (gr *CategoryGormRepository) GetById(ctx context.Context, id int) (domain.Category, error) {
+func (gr *GormRepository) GetById(ctx context.Context, id int) (domain.Category, error) {
 	var c relationship.Category
 	result := gr.DB.Where(&relationship.Category{Id: id}).First(&c)
 	if result.RowsAffected == 0 {
@@ -135,7 +135,7 @@ func (gr *CategoryGormRepository) GetById(ctx context.Context, id int) (domain.C
 	return c.ToDto(), nil
 }
 
-func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int) error {
+func (gr *GormRepository) Delete(ctx context.Context, id int, userId int) error {
 	var c relationship.Category
 	result := gr.DB.Raw("DELETE FROM daps_todos WHERE category_id = ?", id).Scan(&c)
 	if result.Error != nil {
@@ -159,7 +159,7 @@ func (gr *CategoryGormRepository) Delete(ctx context.Context, id int, userId int
 	return nil
 }
 
-func (gr *CategoryGormRepository) List(ctx context.Context, userId int) ([]domain.Category, error) {
+func (gr *GormRepository) List(ctx context.Context, userId int) ([]domain.Category, error) {
 	var cs []relationship.Category
 	var cats []domain.Category
 	result := gr.DB.Where(gr.DB.Where("user_id = ?", &userId).Where("custom = ?", true)).Or("custom = ?", false).Find(&cs)
@@ -174,8 +174,8 @@ func (gr *CategoryGormRepository) List(ctx context.Context, userId int) ([]domai
 	return cats, nil
 }
 
-func NewCategoryGormRepository(db *gorm.DB) (*CategoryGormRepository, error) {
-	return &CategoryGormRepository{
+func NewGormRepository(db *gorm.DB) (*GormRepository, error) {
+	return &GormRepository{
 		DB: db,
 	}, nil
 }
