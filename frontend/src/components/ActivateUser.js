@@ -4,7 +4,7 @@ import {
     InvalidActivationLinkText,
     RegisterButtonText,
 } from "../utils/texts";
-import {checkValidToken, goToLogin, goToRegister} from "../utils/helpers";
+import {goToLogin, goToRegister} from "../utils/helpers";
 import UserService from "../services/user";
 
 
@@ -20,7 +20,6 @@ const ActivateUser = () => {
         }
       ).catch(
           (error) => {
-              checkValidToken(error)
               if (error.response.data.message === "record not found") {
                   setShowModalUserNotFound(true);
               } else if (error.response.data.message === "user is already active") {

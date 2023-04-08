@@ -90,6 +90,12 @@ func (s Service) Register(ctx context.Context, r ports.CreateUserRequest) error 
 		fmt.Printf("Error sending email: %+v", err)
 		e.Error = err.Error()
 		e.Sent = false
+
+		err = s.userRepository.Delete(ctx, 0, nu.Id)
+		if err != nil {
+			return err
+		}
+
 		_, errz := s.emailRepository.Create(ctx, e)
 		if errz != nil {
 			fmt.Printf("Error saving email: %+v", errz)
