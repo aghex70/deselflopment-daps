@@ -1,11 +1,12 @@
 import {Container, Button, ModalBody, ButtonGroup, Modal} from "react-bootstrap";
 import "./App.css";
 import React from "react";
-import {goToLogin, goToRegister} from "./utils/helpers";
+import {goToLogin, goToRegister, skipLogin} from "./utils/helpers";
 import {LoginButtonText, RegisterButtonText, WelcomeToDapsText} from "./utils/texts";
 
 
 export default function App() {
+  skipLogin();
   return (
     <Container>
       <Modal className='unshareModal text-center' show={true}

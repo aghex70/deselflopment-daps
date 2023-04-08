@@ -71,7 +71,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - deselflopment:/var/lib/deselflopment
+      - deselflopment:/var/lib/mysql
       - ./scripts/database-initialization.sql:/docker-entrypoint-initdb.d/setup.sql
     networks:
       database: {}
