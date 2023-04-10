@@ -8,7 +8,7 @@ CREATE TABLE daps_emails (
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     sent INT NOT NULL DEFAULT 0,
     error TEXT,
-    user_id INT NOT NULL REFERENCES daps_users(id) ON DELETE CASCADE
+    user_id INT NOT NULL REFERENCES deselflopment_users(id) ON DELETE CASCADE
 );
 
 -- +goose Down

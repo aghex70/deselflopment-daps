@@ -186,7 +186,7 @@ func (s Service) CheckAdmin(ctx context.Context, r *http.Request) (int, error) {
 		return 0, errors.New("invalid token")
 	}
 
-	if !u.IsAdmin {
+	if !u.Admin {
 		return 0, errors.New("unauthorized")
 	}
 

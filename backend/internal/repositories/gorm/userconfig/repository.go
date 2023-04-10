@@ -38,7 +38,7 @@ func (UserConfig) TableName() string {
 
 func (gr *GormRepository) GetByUserId(ctx context.Context, userId int) (domain.Profile, error) {
 	var p Profile
-	query := fmt.Sprintf("SELECT daps_user_configs.auto_suggest, daps_user_configs.auto_remind, daps_user_configs.language, daps_users.email FROM daps_user_configs JOIN daps_users ON daps_user_configs.user_id = daps_users.id WHERE daps_users.id = %d", userId)
+	query := fmt.Sprintf("SELECT daps_user_configs.auto_suggest, daps_user_configs.auto_remind, daps_user_configs.language, deselflopment_users.email FROM daps_user_configs JOIN deselflopment_users ON daps_user_configs.user_id = deselflopment_users.id WHERE deselflopment_users.id = %d", userId)
 
 	result := gr.DB.Raw(query).Scan(&p)
 

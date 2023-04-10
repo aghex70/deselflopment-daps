@@ -85,6 +85,14 @@ func (s Service) DecryptPassword(ctx context.Context, cipheredPassword string) (
 	padding := decrypted[len(decrypted)-1]
 	decrypted = decrypted[:len(decrypted)-int(padding)]
 
-	// Return the decrypted password as a string
-	return string(decrypted), nil
+	password := string(decrypted)
+
+	// Now you can use bcrypt to compare the decrypted password with a hashed password
+	err = bcrypt.CompareHashAndPassword([]byte(cipheredPassword), []byte(password))
+	if err != nil {
+		// Passwords do not match
+		return "", err
+	}
+
+	return password, nil
 }

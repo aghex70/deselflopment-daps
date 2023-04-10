@@ -20,7 +20,7 @@ type User struct {
 	Id                int        `gorm:"primaryKey;column:id"`
 	Name              string     `gorm:"column:name"`
 	Email             string     `gorm:"column:email"`
-	IsAdmin           bool       `gorm:"column:is_admin"`
+	Admin             bool       `gorm:"column:admin"`
 	Password          string     `gorm:"column:password"`
 	RegistrationDate  time.Time  `gorm:"column:registration_date;autoCreateTime"`
 	Categories        []Category `gorm:"many2many:daps_category_users"`
@@ -54,7 +54,7 @@ func (Category) TableName() string {
 }
 
 func (User) TableName() string {
-	return "daps_users"
+	return "deselflopment_users"
 }
 
 func (UserCategory) TableName() string {
@@ -66,7 +66,7 @@ func (gr *GormRepository) GetUserCategory(ctx context.Context, userId, categoryI
 		Id int
 	}
 	var qr queryResult
-	query := fmt.Sprintf("SELECT daps_categories.id FROM daps_categories INNER JOIN daps_category_users ON daps_categories.id = daps_category_users.category_id INNER JOIN daps_users ON daps_users.id = daps_category_users.user_id WHERE daps_category_users.user_id = %d AND daps_category_users.category_id = %d", userId, categoryId)
+	query := fmt.Sprintf("SELECT daps_categories.id FROM daps_categories INNER JOIN daps_category_users ON daps_categories.id = daps_category_users.category_id INNER JOIN deselflopment_users ON deselflopment_users.id = daps_category_users.user_id WHERE daps_category_users.user_id = %d AND daps_category_users.category_id = %d", userId, categoryId)
 	result := gr.DB.Raw(query).Scan(&qr)
 
 	if result.RowsAffected == 0 {
@@ -132,7 +132,7 @@ func (u User) ToDto() domain.User {
 		Email:             u.Email,
 		Categories:        CategoryDBDomain(u.Categories),
 		Password:          u.Password,
-		IsAdmin:           u.IsAdmin,
+		Admin:             u.Admin,
 		RegistrationDate:  u.RegistrationDate,
 		ActivationCode:    u.ActivationCode,
 		ResetPasswordCode: u.ResetPasswordCode,
@@ -144,7 +144,7 @@ func UserFromDto(u domain.User) User {
 		Name:              u.Name,
 		Email:             u.Email,
 		Password:          u.Password,
-		IsAdmin:           u.IsAdmin,
+		Admin:             u.Admin,
 		ActivationCode:    u.ActivationCode,
 		Active:            u.Active,
 		ResetPasswordCode: u.ResetPasswordCode,

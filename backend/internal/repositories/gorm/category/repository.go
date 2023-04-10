@@ -83,7 +83,7 @@ func (gr *GormRepository) Share(ctx context.Context, c domain.Category, email st
 	}
 	var qr queryResult
 	var nc relationship.Category
-	query := fmt.Sprintf("SELECT daps_users.id FROM daps_users WHERE daps_users.email = '%s'", email)
+	query := fmt.Sprintf("SELECT deselflopment_users.id FROM deselflopment_users WHERE deselflopment_users.email = '%s'", email)
 	result := gr.DB.Raw(query).Scan(&qr)
 	if result.RowsAffected == 0 {
 		return errors.New("invalid email")

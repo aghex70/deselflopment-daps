@@ -298,7 +298,7 @@ func (gr *GormRepository) GetRemindSummary(ctx context.Context, userId int) ([]d
 	// - Todos that are not completed
 	// - Belong to a category that is notifiable
 	// - Belong to a category that belongs to the user
-	query = fmt.Sprintf("SELECT t.name as todo_name, c.name as category_name, t.priority as todo_priority, t.description as todo_description, t.link as todo_link FROM daps_users u JOIN daps_user_configs uc ON uc.user_id = u.id AND uc.auto_remind = true JOIN daps_categories c ON c.owner_id = u.id JOIN (SELECT id, name, priority, description, completed, link, category_id, ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY priority DESC, RAND()) as rn FROM daps_todos) t ON t.category_id = c.id AND t.rn <= 3 WHERE c.owner_id = %d AND t.completed = false and c.notifiable = true ORDER BY u.id, c.id, t.id", userId)
+	query = fmt.Sprintf("SELECT t.name as todo_name, c.name as category_name, t.priority as todo_priority, t.description as todo_description, t.link as todo_link FROM deselflopment_users u JOIN daps_user_configs uc ON uc.user_id = u.id AND uc.auto_remind = true JOIN daps_categories c ON c.owner_id = u.id JOIN (SELECT id, name, priority, description, completed, link, category_id, ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY priority DESC, RAND()) as rn FROM daps_todos) t ON t.category_id = c.id AND t.rn <= 3 WHERE c.owner_id = %d AND t.completed = false and c.notifiable = true ORDER BY u.id, c.id, t.id", userId)
 	result = gr.DB.Raw(query).Scan(&rs)
 	if result.Error != nil {
 		return rs, result.Error

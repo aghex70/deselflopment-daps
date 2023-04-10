@@ -161,7 +161,7 @@ func (gr *GormRepository) ProvisionDemoUser(ctx context.Context, e string) (doma
 	nu := relationship.User{
 		Name:     "Demo user",
 		Email:    e,
-		IsAdmin:  false,
+		Admin:    false,
 		Password: "demopassword123",
 	}
 	result := gr.DB.Omit("Categories").Create(&nu)

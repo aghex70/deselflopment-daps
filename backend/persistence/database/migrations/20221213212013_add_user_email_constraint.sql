@@ -1,2 +1,2 @@
 -- +goose Up
-ALTER TABLE daps_users ADD UNIQUE (email);
+ALTER TABLE deselflopment_users ADD UNIQUE (email);

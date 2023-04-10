@@ -2,13 +2,13 @@
 DROP TABLE IF EXISTS daps_category_users;
 DROP TABLE IF EXISTS daps_todos;
 DROP TABLE IF EXISTS daps_categories;
-DROP TABLE IF EXISTS daps_users;
+DROP TABLE IF EXISTS deselflopment_users;
 
-CREATE TABLE daps_users (
+CREATE TABLE deselflopment_users (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(128),
     email VARCHAR(128) NOT NULL,
-    is_admin INT NOT NULL DEFAULT 0,
+    admin INT NOT NULL DEFAULT 0,
     registration_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     password VARCHAR(128) NOT NULL
 );
@@ -22,12 +22,12 @@ CREATE TABLE daps_categories (
      name VARCHAR(128),
      international_name VARCHAR(128),
      shared INT NOT NULL DEFAULT 0,
-     FOREIGN KEY(owner_id) REFERENCES daps_users(id)
+     FOREIGN KEY(owner_id) REFERENCES deselflopment_users(id)
 );
 
 CREATE TABLE daps_category_users (
      category_id INT NOT NULL REFERENCES daps_categories(id) ON DELETE CASCADE,
-     user_id INT NOT NULL REFERENCES daps_users(id) ON DELETE CASCADE,
+     user_id INT NOT NULL REFERENCES deselflopment_users(id) ON DELETE CASCADE,
      PRIMARY KEY (category_id, user_id)
 );
 
@@ -52,7 +52,7 @@ CREATE TABLE daps_todos (
 -- +goose Down
 -- DROP TABLE IF EXISTS daps_categories_users_relationships;
 -- DROP TABLE IF EXISTS daps_categories;
--- DROP TABLE IF EXISTS daps_users;
+-- DROP TABLE IF EXISTS deselflopment_users;
 -- DROP TABLE IF EXISTS daps_todos;
 -- +goose StatementBegin
 -- +goose StatementEnd

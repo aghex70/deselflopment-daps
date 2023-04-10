@@ -9,7 +9,7 @@ type User struct {
 	Password          string     `json:"password"`
 	RegistrationDate  time.Time  `json:"registration_date"`
 	Categories        []Category `json:"categories"`
-	IsAdmin           bool       `json:"is_admin"`
+	Admin             bool       `json:"admin"`
 	ActivationCode    string     `json:"activation_code"`
 	Active            bool       `json:"active"`
 	ResetPasswordCode string     `json:"reset_password_code"`
