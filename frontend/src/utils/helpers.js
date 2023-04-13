@@ -110,12 +110,14 @@ const goToLogout = () => {
 
 const goToLogin = () => {
     clearLocalStorage([]);
-    window.location.href = "/login";
+    window.location.href = getHost() === "daps.localhost" ? "http://localhost/login"
+        : "https://deselflopment.com/login";
 }
 
 const goToRegister = () => {
     clearLocalStorage([]);
-    window.location.href = "/register";
+    window.location.href = getHost() === "daps.localhost" ? "http://localhost/register"
+        : "https://deselflopment.com/register";
 }
 
 const sortArrayByField = (array, field, ascending) => {
@@ -155,6 +157,10 @@ const sortCategoriesByField = (data, field, ascending, f, setSpan) => {
             display: "block",
         })
     }
+}
+
+function getHost() {
+    return window.location.host;
 }
 
 export default checkAccess;
