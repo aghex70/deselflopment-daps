@@ -13,4 +13,5 @@ type Email struct {
 	CreationDate time.Time `json:"creation_date"`
 	Sent         bool      `json:"sent"`
 	Error        string    `json:"error"`
+	Source       string    `json:"source"`
 }

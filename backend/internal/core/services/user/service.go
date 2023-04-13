@@ -35,7 +35,8 @@ type Service struct {
 }
 
 type MyCustomClaims struct {
-	UserId int `json:"user_id"`
+	UserId int  `json:"user_id"`
+	Admin  bool `json:"admin"`
 	jwt.RegisteredClaims
 }
 
@@ -132,6 +133,7 @@ func (s Service) Login(ctx context.Context, r ports.LoginUserRequest) (string, i
 
 	claims := MyCustomClaims{
 		UserId: u.Id,
+		Admin:  u.Admin,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   r.Email,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),
@@ -160,6 +162,7 @@ func (s Service) RefreshToken(ctx context.Context, r *http.Request) (string, err
 
 	newClaims := MyCustomClaims{
 		UserId: u.Id,
+		Admin:  u.Admin,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   u.Email,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),

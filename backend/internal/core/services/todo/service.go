@@ -258,6 +258,7 @@ func (s Service) Remind(ctx context.Context) error {
 			Subject:   fmt.Sprintf("📣 DAPS - Tareas pendientes (%s) 📣", time.Now().Format("02/01/2006")),
 			Body:      e.Body,
 			User:      u.Id,
+			Source:    "daps",
 		}
 
 		err = pkg.SendEmail(ne)
