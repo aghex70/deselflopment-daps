@@ -25,6 +25,7 @@ import SuggestedTodosList from "./components/SuggestedTodosList";
 import ActivateUser from "./components/ActivateUser";
 import ResetLink from "./components/ResetLink";
 import ResetPassword from "./components/ResetPassword";
+import QueryParamsToLocalStorage from "./components/Synchronizer";
 
 const production = process.env.REACT_APP_API_URL === "https://deselflopment.com/";
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -34,18 +35,12 @@ root.render(
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<App />} />
-            <Route path="login" element={<Login />} />
-            <Route path="logout" element={<Logout />} />
-            <Route path="register" element={<Register />} />
-            <Route path="recover-password" element={<Register />} />
+            <Route path="sync" element={<QueryParamsToLocalStorage />} />
             <Route path="report-bug" element={<ReportBug />} />
             <Route path="categories" element={<CategoriesList />} />
             <Route path="todos" element={<TodosList />} />
             <Route path="category/:id" element={<Category />} />
             <Route path="todo/:id" element={<Todo />} />
-            <Route path="activate/:id" element={<ActivateUser />} />
-            <Route path="reset-password/:id" element={<ResetPassword />} />
-            <Route path="reset-link" element={<ResetLink />} />
             <Route path="create-category" element={<CreateCategory />} />
             <Route path="create-todo" element={<CreateTodo />} />
             <Route path="recurring-todos" element={<RecurringTodosList />} />
@@ -63,18 +58,12 @@ root.render(
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<App/>}/>
-              <Route path="login" element={<Login/>}/>
-              <Route path="logout" element={<Logout/>}/>
-              <Route path="register" element={<Register/>}/>
-              <Route path="recover-password" element={<Register/>}/>
+              <Route path="sync" element={<QueryParamsToLocalStorage />} />
               <Route path="report-bug" element={<ReportBug/>}/>
               <Route path="categories" element={<CategoriesList/>}/>
               <Route path="todos" element={<TodosList/>}/>
               <Route path="category/:id" element={<Category/>}/>
               <Route path="todo/:id" element={<Todo/>}/>
-              <Route path="activate/:id" element={<ActivateUser/>}/>
-              <Route path="reset-password/:id" element={<ResetPassword/>}/>
-              <Route path="reset-link" element={<ResetLink/>}/>
               <Route path="create-category" element={<CreateCategory/>}/>
               <Route path="create-todo" element={<CreateTodo/>}/>
               <Route path="recurring-todos" element={<RecurringTodosList/>}/>
