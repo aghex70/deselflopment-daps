@@ -19,7 +19,7 @@ services:
       - ./backend:/daps/backend
       - ./certbot/conf/:/etc/nginx/ssl/
     networks:
-      daps:
+      daps: {}
       database: {}
 
   asynq-worker:
