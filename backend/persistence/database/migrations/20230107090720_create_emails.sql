@@ -1,7 +1,7 @@
 -- +goose Up
-DROP TABLE IF EXISTS daps_emails;
+DROP TABLE IF EXISTS deselflopment_emails;
 
-CREATE TABLE daps_emails (
+CREATE TABLE deselflopment_emails (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     subject VARCHAR(128) NOT NULL,
     body TEXT NOT NULL,
@@ -12,4 +12,4 @@ CREATE TABLE daps_emails (
 );
 
 -- +goose Down
--- DROP TABLE IF EXISTS daps_emails;
+-- DROP TABLE IF EXISTS deselflopment_emails;
