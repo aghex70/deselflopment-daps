@@ -38,7 +38,7 @@ import {
 import UserService from "../services/user";
 
 const DapsHeader = () => {
-  document.title = 'deselflopment - daps'
+  document.title = 'daps'
   checkAccess();
 
   const [isHoverProfile, setIsHoverProfile] = useState(false);
