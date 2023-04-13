@@ -22,6 +22,7 @@ type Email struct {
 	CreationDate time.Time `gorm:"column:creation_date"`
 	Error        string    `gorm:"column:error"`
 	UserId       int       `gorm:"column:user_id"`
+	Source       string    `gorm:"column:source"`
 }
 
 type Tabler interface {
@@ -29,7 +30,7 @@ type Tabler interface {
 }
 
 func (Email) TableName() string {
-	return "daps_emails"
+	return "deselflopment_emails"
 }
 
 func (gr *GormRepository) Create(ctx context.Context, e domain.Email) (domain.Email, error) {
@@ -56,6 +57,7 @@ func (e Email) ToDto() domain.Email {
 		CreationDate: e.CreationDate,
 		Error:        e.Error,
 		User:         e.UserId,
+		Source:       e.Source,
 	}
 }
 

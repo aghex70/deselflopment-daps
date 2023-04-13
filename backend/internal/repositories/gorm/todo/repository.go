@@ -283,7 +283,7 @@ func (gr *GormRepository) GetRemindSummary(ctx context.Context, userId int) ([]d
 	// Check if reminder has already been sent
 	var e domain.Email
 	subject := fmt.Sprintf("📣 DAPS - Tareas pendientes (%s) 📣", time.Now().Format("02/01/2006"))
-	query := fmt.Sprintf("SELECT * FROM daps_emails WHERE subject IN ('%s') AND sent = true AND user_id = %d", subject, userId)
+	query := fmt.Sprintf("SELECT * FROM deselflopment_emails WHERE subject IN ('%s') AND sent = true AND user_id = %d", subject, userId)
 	result := gr.DB.Raw(query).Scan(&e)
 
 	if result.Error != nil {
