@@ -103,15 +103,11 @@ const goToImportTodos = () => {
     window.location.href = "/import";
 }
 
-const goToLogout = () => {
-    clearLocalStorage([]);
-    window.location.href = "/logout";
-}
-
 const goToLogin = () => {
     clearLocalStorage([]);
-    window.location.href = getHost() === "daps.localhost" ? "http://localhost/login"
-        : "https://deselflopment.com/login";
+    // Rather than redirecting to the login page, we redirect to the desync page in order to clear localStorage on domain change.
+    window.location.href = getHost() === "daps.localhost" ? "http://localhost/desync"
+        : "https://deselflopment.com/desync";
 }
 
 const goToRegister = () => {
@@ -181,7 +177,6 @@ export {
     goToProvisionDemoUser,
     goToListOfUsers,
     goToImportTodos,
-    goToLogout,
     goToLogin,
     goToRegister,
     sortArrayByField,

@@ -7,7 +7,9 @@ import {
   faEnvelope,
   faUserPlus,
   faCog,
-  faList, faFileImport, faLightbulb,
+  faList,
+  faFileImport,
+  faLightbulb,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Button, ButtonGroup, Container} from "react-bootstrap";
@@ -16,7 +18,7 @@ import checkAccess, {
   goToCompletedTodos,
   goToImportTodos,
   goToListOfUsers,
-  goToLogout,
+  goToLogin,
   goToProfile,
   goToProvisionDemoUser,
   goToRecurringTodos,
@@ -126,7 +128,7 @@ const DapsHeader = () => {
             </Button>
             <Button style={{height: "50px", width: "100%", margin: "auto", padding: "0", textAlign: "center"}}
                     variant="danger" title={LogoutIconText}
-                    onClick={() => goToLogout()}
+                    onClick={() => goToLogin()}
             >
 
               <FontAwesomeIcon style={{height: "50%", color: "white"}} icon={faPowerOff} />

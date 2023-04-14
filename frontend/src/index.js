@@ -21,7 +21,7 @@ import ImportCSV from "./components/ImportCSV";
 import SuggestedTodosList from "./components/SuggestedTodosList";
 import QueryParamsToLocalStorage from "./components/Synchronizer";
 
-const production = process.env.REACT_APP_API_URL === "https://deselflopment.com/";
+const production = process.env.REACT_APP_API_URL === "https://daps.deselflopment.com/";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
