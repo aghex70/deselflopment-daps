@@ -19,8 +19,8 @@ services:
       - ./backend:/daps/backend
       - ./certbot/conf/:/etc/nginx/ssl/
     networks:
-      daps: {}
-      database: {}
+      deselflopment-database-network: {}
+      deselflopment-webserver-network: {}
 
   asynq-worker:
     container_name: daps-worker
@@ -38,7 +38,7 @@ services:
     volumes:
       - ./backend:/daps/backend
     networks:
-      database: {}
+      deselflopment-database-network: {}
 
   asynq-client:
     container_name: daps-client
@@ -56,7 +56,7 @@ services:
     volumes:
       - ./backend:/daps/backend
     networks:
-      database: {}
+      deselflopment-database-network: {}
 
   db:
     container_name: deselflopment-db
@@ -74,7 +74,7 @@ services:
       - deselflopment:/var/lib/mysql
       - ./scripts/database-initialization.sql:/docker-entrypoint-initdb.d/setup.sql
     networks:
-      database: {}
+      deselflopment-database-network: {}
 
   redis:
     container_name: deselflopment-redis
@@ -83,7 +83,7 @@ services:
     ports:
       - "16379:16379"
     networks:
-      database: {}
+      deselflopment-database-network: {}
 
   frontend:
     container_name: daps-frontend
@@ -93,30 +93,28 @@ services:
     env_file:
       - frontend/.env-prod
     command: ["npm", "run", "start:prod"]
-    restart: always
     ports:
       - "13001:3000"
     networks:
-      daps:
-      database: {}
+      deselflopment-webserver-network: {}
     stdin_open: true
 
   webserver:
-    container_name: deselflopment-nginx
+    container_name: deselflopment-nginx-production
     image: nginx
     volumes:
       - ./nginx/conf/production.conf:/etc/nginx/conf.d/default.conf
       - ./certbot/www:/var/www/certbot/
       - ./certbot/conf/:/etc/nginx/ssl/
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-    networks:
-      daps:
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - backend
       - frontend
+    networks:
+      deselflopment-webserver-network: {}
 
   certbot:
     image: certbot/certbot:latest
@@ -126,12 +124,14 @@ services:
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     depends_on:
       - webserver
+    networks:
+      deselflopment-webserver-network: {}
 
 volumes:
   deselflopment:
 
 networks:
-  database:
+  deselflopment-database-network:
     external: true
-  daps:
-    driver: bridge
+  deselflopment-webserver-network:
+    external: true

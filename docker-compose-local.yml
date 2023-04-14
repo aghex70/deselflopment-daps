@@ -92,28 +92,26 @@ services:
     env_file:
       - frontend/.env-dev
     command: ["npm", "run", "start:dev"]
-    restart: always
     ports:
       - "13001:3000"
     networks:
-      daps: {}
       deselflopment-webserver-network: {}
 
     stdin_open: true
 
   webserver:
-    container_name: deselflopment-nginx
+    container_name: deselflopment-nginx-local
     image: nginx
     volumes:
       - ./nginx/conf/local.conf:/etc/nginx/conf.d/default.conf
-    networks:
-      deselflopment-webserver-network: {}
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - backend
       - frontend
+    networks:
+      deselflopment-webserver-network: {}
 
 volumes:
   deselflopment:
@@ -123,5 +121,3 @@ networks:
     external: true
   deselflopment-webserver-network:
     external: true
-  daps:
-    driver: bridge
