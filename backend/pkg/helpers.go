@@ -273,10 +273,9 @@ func GenerateUUID() string {
 
 func GetOrigin() string {
 	if Environment == "local" {
-		return DevelopUrl
+		return DapsLocalUrl
 	}
-
-	return ProductionUrl
+	return DapsProductionUrl
 }
 
 func GenerateRemindTodosHTMLContent(u domain.User, rs []domain.RemindSummary) (domain.Email, error) {

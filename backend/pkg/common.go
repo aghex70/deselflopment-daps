@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -13,9 +12,10 @@ var MaximumConcurrentSuggestions = 4
 var FromName = os.Getenv("FROM_NAME")
 var FromEmail = os.Getenv("FROM_EMAIL")
 var SendGridApiKey = os.Getenv("SENDGRID_API_KEY")
-var FrontendPort = os.Getenv("FRONTEND_PORT")
-var DevelopUrl = fmt.Sprintf("http://localhost:%s", FrontendPort)
-var ProductionUrl = os.Getenv("PRODUCTION_URL")
+var DapsLocalUrl = os.Getenv("DAPS_LOCAL_URL")
+var DapsProductionUrl = os.Getenv("DAPS_PRODUCTION_URL")
+var DeselflopmentLocalUrl = os.Getenv("DESELFLOPMENT_LOCAL_URL")
+var DeselflopmentProductionUrl = os.Getenv("DESELFLOPMENT_PRODUCTION_URL")
 var Environment = os.Getenv("ENVIRONMENT")
 var ActivationCodeLink = GetOrigin() + "/activate/"
 var ResetPasswordLink = GetOrigin() + "/reset-password/"
