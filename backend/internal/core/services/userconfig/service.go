@@ -34,9 +34,29 @@ func (s Service) Update(ctx context.Context, r *http.Request, req ports.UpdateUs
 func (s Service) Get(ctx context.Context, r *http.Request) (domain.Profile, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
 	p, err := s.userConfigRepository.GetByUserId(ctx, int(userId))
+
 	if err != nil {
 		return domain.Profile{}, err
 	}
+
+	if p.UserId == 0 {
+		nuc := domain.UserConfig{
+			UserId:      int(userId),
+			AutoSuggest: false,
+			Language:    "en",
+		}
+
+		err = s.userConfigRepository.Create(ctx, nuc)
+		if err != nil {
+			return domain.Profile{}, err
+		}
+		profile, err := s.userConfigRepository.GetByUserId(ctx, int(userId))
+		if err != nil {
+			return domain.Profile{}, err
+		}
+		return profile, nil
+	}
+
 	return p, nil
 }
 
