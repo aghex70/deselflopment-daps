@@ -1,41 +1,40 @@
 .editIcon {
-    color: orange;
-    cursor: pointer;
+  color: orange;
+  cursor: pointer;
 }
 
 .deleteIcon {
-    color: red;
-    cursor: pointer;
+  color: red;
+  cursor: pointer;
 }
 
 .inspectIcon {
-    color: cornflowerblue;
-    cursor: pointer;
+  color: cornflowerblue;
+  cursor: pointer;
 }
 
 .shareIcon {
-    color: forestgreen;
-    cursor: pointer;
+  color: forestgreen;
+  cursor: pointer;
 }
 
 .startIcon {
-    color: green;
-    cursor: pointer;
+  color: green;
+  cursor: pointer;
 }
 
 .stopIcon {
-    color: red;
-    cursor: pointer;
+  color: red;
+  cursor: pointer;
 }
 
 .endIcon {
-    color: blue;
-    cursor: pointer;
+  color: blue;
+  cursor: pointer;
 }
 
 .createIcon {
-    color: green;
-    cursor: pointer;
-    margin-right: 5px;
+  color: green;
+  cursor: pointer;
+  margin-right: 5px;
 }
-

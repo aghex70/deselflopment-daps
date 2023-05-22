@@ -1,131 +1,138 @@
-import React, {useEffect, useState} from 'react';
-import {Button, ButtonGroup, Container} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, ButtonGroup, Container } from "react-bootstrap";
 import DapsHeader from "./Header";
-import checkAccess, {checkValidToken, goToCategories} from "../utils/helpers";
+import checkAccess, { checkValidToken, goToCategories } from "../utils/helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    DeleteIconText,
-    HeaderActionsText,
-    HeaderUserText,
-    UsersHeaderText,
-    ViewIconText,
+  DeleteIconText,
+  HeaderActionsText,
+  HeaderUserText,
+  UsersHeaderText,
+  ViewIconText,
 } from "../utils/texts";
 import UserService from "../services/user";
 import BootstrapTable from "react-bootstrap-table-next";
-import {faEye, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {useNavigate} from "react-router-dom";
+import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const UsersList = () => {
-    checkAccess();
-    const navigate = useNavigate();
-    const [users, setUsers] = useState([]);
+  checkAccess();
+  const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
 
-    const navigateToUser = (id) => {
-        navigate("/user/" + id);
-    }
+  const navigateToUser = (id) => {
+    navigate("/user/" + id);
+  };
 
-    const deleteUser = (id) => {
-        UserService.deleteUser(id).then(
-            (response) => {
-                if (response.status === 204) {
-                    window.location.reload();
-                }
-            }
-        ).catch(
-            (error) => {
-                checkValidToken(error)
-            })
-    }
-
-    const columns = [
-        {
-            dataField: 'email',
-            text: HeaderUserText,
-            style:{'width' : '70%', cursor: "pointer", verticalAlign: "middle"},
-        },
-        {
-            dataField: 'link',
-            text: HeaderActionsText,
-            style:{'width' : '30%', verticalAlign: "middle"},
-            formatter: actionsFormatter,
-            headerAlign: 'center',
-        }];
-
-    useEffect(() => {
-        UserService.checkAdminAccess().then(
-            (response) => {
-                if (response.status !== 200) {
-                    goToCategories();
-                }
-            }
-        ).catch(
-            (error) => {
-                checkValidToken(error)
-                goToCategories();
-
-            }
-        )
-
-        if (!users || users.length === 0) {
-            UserService.getUsers().then(
-                (response) => {
-                    if (response.status === 200) {
-                        setUsers(response.data.users);
-                    }
-                }
-            ).catch(
-                (error) => {
-                    checkValidToken(error)
-                })
+  const deleteUser = (id) => {
+    UserService.deleteUser(id)
+      .then((response) => {
+        if (response.status === 204) {
+          window.location.reload();
         }
-    }, [users]);
+      })
+      .catch((error) => {
+        checkValidToken(error);
+      });
+  };
 
-    function actionsFormatter(cell, row) {
-        return (
-            <div
-                style={{
-                    textAlign: "center",
-                    cursor: "pointer",
-                    lineHeight: "normal",
-                    width: "100%",
-                    flexDirection: "row",
-                }}
-            >
-                <ButtonGroup style={{width: "100%"}}>
-                    <Button style={{width: "15%", margin: "auto", padding: "0", textAlign: "center"}}
-                            title={ViewIconText}
-                            variant="outline-primary"
-                            onClick={() => navigateToUser(row.id)}
-                    >
-                        <FontAwesomeIcon icon={faEye} />
-                    </Button>
+  const columns = [
+    {
+      dataField: "email",
+      text: HeaderUserText,
+      style: { width: "70%", cursor: "pointer", verticalAlign: "middle" },
+    },
+    {
+      dataField: "link",
+      text: HeaderActionsText,
+      style: { width: "30%", verticalAlign: "middle" },
+      formatter: actionsFormatter,
+      headerAlign: "center",
+    },
+  ];
 
-                    <Button style={{width: "15%", margin: "auto", display: "block", padding: "0", textAlign: "center"}}
-                            title={DeleteIconText}
-                            variant="outline-danger"
-                           onClick={() => deleteUser(row.id)}
-                    >
-                        <FontAwesomeIcon icon={faTrash} />
-                    </Button>
-                </ButtonGroup>
-            </div>
-        );
+  useEffect(() => {
+    UserService.checkAdminAccess()
+      .then((response) => {
+        if (response.status !== 200) {
+          goToCategories();
+        }
+      })
+      .catch((error) => {
+        checkValidToken(error);
+        goToCategories();
+      });
+
+    if (!users || users.length === 0) {
+      UserService.getUsers()
+        .then((response) => {
+          if (response.status === 200) {
+            setUsers(response.data.users);
+          }
+        })
+        .catch((error) => {
+          checkValidToken(error);
+        });
     }
+  }, [users]);
 
+  function actionsFormatter(cell, row) {
     return (
-        <Container>
-        <DapsHeader />
-        <h1 className="text-center">{UsersHeaderText}</h1>
-        <BootstrapTable
-            keyField='id'
-            data={ users }
-            columns={ columns }
-            hover={true}
-            striped={true}
-        />
-        </Container>
-    )
-}
-;
+      <div
+        style={{
+          textAlign: "center",
+          cursor: "pointer",
+          lineHeight: "normal",
+          width: "100%",
+          flexDirection: "row",
+        }}
+      >
+        <ButtonGroup style={{ width: "100%" }}>
+          <Button
+            style={{
+              width: "15%",
+              margin: "auto",
+              padding: "0",
+              textAlign: "center",
+            }}
+            title={ViewIconText}
+            variant="outline-primary"
+            onClick={() => navigateToUser(row.id)}
+          >
+            <FontAwesomeIcon icon={faEye} />
+          </Button>
 
+          <Button
+            style={{
+              width: "15%",
+              margin: "auto",
+              display: "block",
+              padding: "0",
+              textAlign: "center",
+            }}
+            title={DeleteIconText}
+            variant="outline-danger"
+            onClick={() => deleteUser(row.id)}
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </Button>
+        </ButtonGroup>
+      </div>
+    );
+  }
+
+  return (
+    <Container>
+      <DapsHeader />
+      <h1 className="text-center">{UsersHeaderText}</h1>
+      <BootstrapTable
+        keyField="id"
+        data={users}
+        columns={columns}
+        hover={true}
+        striped={true}
+      />
+    </Container>
+  );
+};
 export default UsersList;

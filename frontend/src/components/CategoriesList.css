@@ -1,23 +1,23 @@
 .editIcon {
-    color: orange;
-    cursor: pointer;
+  color: orange;
+  cursor: pointer;
 }
 
 .deleteIcon {
-    color: red;
-    cursor: pointer;
+  color: red;
+  cursor: pointer;
 }
 
 .inspectIcon {
-    color: cornflowerblue;
-    cursor: pointer;
+  color: cornflowerblue;
+  cursor: pointer;
 }
 
 .shareIcon {
-    color: forestgreen;
-    cursor: pointer;
+  color: forestgreen;
+  cursor: pointer;
 }
 
 table td {
-    vertical-align: middle !important;
+  vertical-align: middle !important;
 }
