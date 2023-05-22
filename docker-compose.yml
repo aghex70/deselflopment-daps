@@ -98,6 +98,8 @@ services:
     networks:
       deselflopment-webserver-network: {}
     stdin_open: true
+    volumes:
+      - ./frontend:/daps/frontend
 
   webserver:
     container_name: deselflopment-nginx-production
