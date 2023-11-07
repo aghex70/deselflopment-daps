@@ -1,6 +1,7 @@
 package category
 
 import (
+	"context"
 	"github.com/aghex70/daps/internal/core/domain"
 	"gorm.io/gorm"
 )
@@ -46,22 +47,22 @@ func (User) TableName() string {
 	return "deselflopment_users"
 }
 
-func (gr *GormRepository) GetUser(id int) (domain.User, error) {
+func (gr *GormRepository) GetUser(ctx context.Context, id int) (domain.User, error) {
 	return domain.User{}, nil
 }
 
-func (gr *GormRepository) GetUsers() ([]domain.User, error) {
+func (gr *GormRepository) GetUsers(ctx context.Context) ([]domain.User, error) {
 	return []domain.User{}, nil
 }
 
-func (gr *GormRepository) CreateUser(u User) (domain.User, error) {
+func (gr *GormRepository) CreateUser(ctx context.Context, u User) (domain.User, error) {
 	return domain.User{}, nil
 }
 
-func (gr *GormRepository) UpdateUser(u User) error {
+func (gr *GormRepository) UpdateUser(ctx context.Context, u User) error {
 	return nil
 }
 
-func (gr *GormRepository) DeleteUser(id int) error {
+func (gr *GormRepository) DeleteUser(ctx context.Context, id int) error {
 	return nil
 }

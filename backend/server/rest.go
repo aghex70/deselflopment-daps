@@ -120,8 +120,8 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/suggested-todos", JWTAuthMiddleware(s.toDoHandler.ListSuggestedTodos))
 	http.HandleFunc("/api/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
 
-	// UserConfiguration
-	http.HandleFunc("/api/user-configuration/", JWTAuthMiddleware(s.userConfigHandler.HandleUserConfig))
+	//UserConfiguration
+	//http.HandleFunc("	/api/user-configuration/", JWTAuthMiddleware(s.userConfigHandler.HandleUserConfig))
 
 	// CSV Import
 	http.HandleFunc("/api/import", JWTAuthMiddleware(s.userHandler.ImportCSV))

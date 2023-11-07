@@ -15,23 +15,15 @@ import (
 
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
-	"github.com/aghex70/daps/internal/repositories/gorm/category"
-	"github.com/aghex70/daps/internal/repositories/gorm/email"
-	"github.com/aghex70/daps/internal/repositories/gorm/todo"
-	"github.com/aghex70/daps/internal/repositories/gorm/user"
-	"github.com/aghex70/daps/internal/repositories/gorm/userconfig"
+	repository "github.com/aghex70/daps/internal/repositories/gorm"
 	"github.com/aghex70/daps/pkg"
 	"github.com/aghex70/daps/server"
 	"github.com/golang-jwt/jwt/v4"
 )
 
 type Service struct {
-	logger                      *log.Logger
-	userRepository              *user.GormRepository
-	categoryRepository          *category.GormRepository
-	userConfigurationRepository *userconfig.GormRepository
-	todoRepository              *todo.GormRepository
-	emailRepository             *email.GormRepository
+	logger     *log.Logger
+	repository *repository.GormRepository
 }
 
 type MyCustomClaims struct {
@@ -47,7 +39,7 @@ func (s Service) Register(ctx context.Context, r ports.CreateUserRequest) error 
 	}
 	cipheredPassword := s.EncryptPassword(ctx, r.Password)
 
-	categories, err := s.categoryRepository.GetByIds(ctx, pkg.BaseCategoriesIds)
+	categories, err := s.repository.GetCategories(ctx, pkg.BaseCategoriesIds)
 	if err != nil {
 		return err
 	}
@@ -61,7 +53,7 @@ func (s Service) Register(ctx context.Context, r ports.CreateUserRequest) error 
 		ResetPasswordCode: pkg.GenerateUUID(),
 	}
 
-	nu, err := s.userRepository.Create(ctx, u)
+	nu, err := s.repository.CreateUser(ctx, u)
 	if err != nil {
 		return err
 	}
@@ -72,10 +64,10 @@ func (s Service) Register(ctx context.Context, r ports.CreateUserRequest) error 
 		Language:    "en",
 	}
 
-	err = s.userConfigurationRepository.Create(ctx, nuc)
-	if err != nil {
-		return err
-	}
+	//err = s.userConfigurationRepository.Create(ctx, nuc)
+	//if err != nil {
+	//	return err
+	//}
 
 	e := domain.Email{
 		From:      pkg.FromEmail,
@@ -92,12 +84,12 @@ func (s Service) Register(ctx context.Context, r ports.CreateUserRequest) error 
 		e.Error = err.Error()
 		e.Sent = false
 
-		err = s.userRepository.Delete(ctx, 0, nu.Id)
+		err = s.repository.DeleteUser(ctx, 0, nu.Id)
 		if err != nil {
 			return err
 		}
 
-		_, errz := s.emailRepository.Create(ctx, e)
+		_, errz := s.repository.CreateEmail(ctx, e)
 		if errz != nil {
 			fmt.Printf("Error saving email: %+v", errz)
 			return errz
@@ -106,7 +98,7 @@ func (s Service) Register(ctx context.Context, r ports.CreateUserRequest) error 
 	}
 
 	e.Sent = true
-	_, err = s.emailRepository.Create(ctx, e)
+	_, err = s.repository.CreateEmail(ctx, e)
 	if err != nil {
 		return err
 	}
@@ -115,7 +107,7 @@ func (s Service) Register(ctx context.Context, r ports.CreateUserRequest) error 
 }
 
 func (s Service) Login(ctx context.Context, r ports.LoginUserRequest) (string, int, error) {
-	u, err := s.userRepository.GetByEmail(ctx, r.Email)
+	u, err := s.repository.GetUser(ctx, r.Email)
 	if err != nil {
 		return "", 0, err
 	}
@@ -155,7 +147,7 @@ func (s Service) RefreshToken(ctx context.Context, r *http.Request) (string, err
 	if err != nil {
 		return "", errors.New("invalid token")
 	}
-	u, err := s.userRepository.Get(ctx, int(userId))
+	u, err := s.repository.GetUser(ctx, int(userId))
 	if err != nil {
 		return "", errors.New("invalid token")
 	}
@@ -184,7 +176,7 @@ func (s Service) CheckAdmin(ctx context.Context, r *http.Request) (int, error) {
 	if err != nil {
 		return 0, errors.New("invalid token")
 	}
-	u, err := s.userRepository.Get(ctx, int(userId))
+	u, err := s.repository.GetUser(ctx, int(userId))
 	if err != nil {
 		return 0, errors.New("invalid token")
 	}
@@ -202,7 +194,7 @@ func (s Service) Delete(ctx context.Context, r *http.Request, req ports.DeleteUs
 		return err
 	}
 
-	err = s.userRepository.Delete(ctx, adminId, int(req.UserId))
+	err = s.repository.DeleteUser(ctx, adminId, int(req.UserId))
 	if err != nil {
 		return err
 	}
@@ -216,7 +208,7 @@ func (s Service) Get(ctx context.Context, r *http.Request, req ports.GetUserRequ
 		return domain.User{}, err
 	}
 
-	u, err := s.userRepository.Get(ctx, int(req.UserId))
+	u, err := s.repository.GetUser(ctx, int(req.UserId))
 	if err != nil {
 		return domain.User{}, err
 	}
@@ -239,7 +231,7 @@ func (s Service) ProvisionDemoUser(ctx context.Context, r *http.Request, req por
 		ResetPasswordCode: pkg.GenerateUUID(),
 	}
 
-	nu, err := s.userRepository.Create(ctx, u)
+	nu, err := s.repository.CreateUser(ctx, u)
 	if err != nil {
 		return err
 	}
@@ -250,10 +242,11 @@ func (s Service) ProvisionDemoUser(ctx context.Context, r *http.Request, req por
 		Language:    "en",
 	}
 
-	err = s.userConfigurationRepository.Create(ctx, nuc)
-	if err != nil {
-		return err
-	}
+	//err = s.userConfigurationRepository.Create(ctx, nuc)
+	//err = s.userConfigurationRepository.Create(ctx, nuc)
+	//if err != nil {
+	//	return err
+	//}
 
 	demoCategory := domain.Category{
 		OwnerId:     nu.Id,
@@ -263,7 +256,7 @@ func (s Service) ProvisionDemoUser(ctx context.Context, r *http.Request, req por
 		Users:       []domain.User{u},
 	}
 
-	c, err := s.categoryRepository.Create(ctx, demoCategory, nu.Id)
+	c, err := s.repository.CreateCategory(ctx, demoCategory, nu.Id)
 	if err != nil {
 		return err
 	}
@@ -276,7 +269,7 @@ func (s Service) ProvisionDemoUser(ctx context.Context, r *http.Request, req por
 		Users:       []domain.User{u},
 	}
 
-	ac, err := s.categoryRepository.Create(ctx, anotherDemoCategory, nu.Id)
+	ac, err := s.repository.CreateCategory(ctx, anotherDemoCategory, nu.Id)
 	if err != nil {
 		return err
 	}
@@ -289,7 +282,7 @@ func (s Service) ProvisionDemoUser(ctx context.Context, r *http.Request, req por
 		Users:       []domain.User{u},
 	}
 
-	yac, err := s.categoryRepository.Create(ctx, yetAnotherDemoCategory, nu.Id)
+	yac, err := s.repository.CreateCategory(ctx, yetAnotherDemoCategory, nu.Id)
 	if err != nil {
 		return err
 	}
@@ -297,7 +290,7 @@ func (s Service) ProvisionDemoUser(ctx context.Context, r *http.Request, req por
 	todos := pkg.GenerateDemoTodos(c.Id, ac.Id, yac.Id, req.Language)
 
 	for _, t := range todos {
-		err = s.todoRepository.Create(ctx, t)
+		err, _ = s.repository.CreateTodo(ctx, t)
 		if err != nil {
 			return err
 		}
@@ -312,7 +305,7 @@ func (s Service) List(ctx context.Context, r *http.Request) ([]domain.User, erro
 		return []domain.User{}, err
 	}
 
-	users, err := s.userRepository.List(ctx)
+	users, err := s.repository.GetUsers(ctx)
 	if err != nil {
 		return []domain.User{}, err
 	}
@@ -353,7 +346,7 @@ func (s Service) ImportCSV(ctx context.Context, r *http.Request, f multipart.Fil
 		link := record[1]
 		categoryId, _ := strconv.Atoi(record[2])
 
-		err = s.todoRepository.Create(ctx, domain.Todo{
+		err, _ = s.repository.CreateTodo(ctx, domain.Todo{
 			Name:     name,
 			Link:     link,
 			Category: categoryId,
@@ -368,7 +361,7 @@ func (s Service) ImportCSV(ctx context.Context, r *http.Request, f multipart.Fil
 }
 
 func (s Service) Activate(ctx context.Context, r ports.ActivateUserRequest) error {
-	err := s.userRepository.ActivateUser(ctx, r.ActivationCode)
+	err := s.repository.ActivateUser(ctx, r.ActivationCode)
 	if err != nil {
 		return err
 	}
@@ -377,7 +370,7 @@ func (s Service) Activate(ctx context.Context, r ports.ActivateUserRequest) erro
 }
 
 func (s Service) SendResetLink(ctx context.Context, r ports.ResetLinkRequest) error {
-	u, err := s.userRepository.CreateResetLink(ctx, r.Email)
+	u, err := s.repository.CreateResetLink(ctx, r.Email)
 	if err != nil {
 		return err
 	}
@@ -396,7 +389,7 @@ func (s Service) SendResetLink(ctx context.Context, r ports.ResetLinkRequest) er
 		fmt.Printf("Error sending email: %+v", err)
 		e.Error = err.Error()
 		e.Sent = false
-		_, errz := s.emailRepository.Create(ctx, e)
+		_, errz := s.repository.CreateEmail(ctx, e)
 		if errz != nil {
 			fmt.Printf("Error saving email: %+v", errz)
 			return errz
@@ -405,7 +398,7 @@ func (s Service) SendResetLink(ctx context.Context, r ports.ResetLinkRequest) er
 	}
 
 	e.Sent = true
-	_, err = s.emailRepository.Create(ctx, e)
+	_, err = s.repository.CreateEmail(ctx, e)
 	if err != nil {
 		return err
 	}
@@ -419,7 +412,7 @@ func (s Service) ResetPassword(ctx context.Context, r ports.ResetPasswordRequest
 	}
 
 	encryptedPassword := s.EncryptPassword(ctx, r.Password)
-	err := s.userRepository.ResetPassword(ctx, encryptedPassword, r.ResetPasswordCode)
+	err := s.repository.ResetPassword(ctx, encryptedPassword, r.ResetPasswordCode)
 	if err != nil {
 		return err
 	}
@@ -427,13 +420,9 @@ func (s Service) ResetPassword(ctx context.Context, r ports.ResetPasswordRequest
 	return nil
 }
 
-func NewUserService(ur *user.GormRepository, cr *category.GormRepository, ucr *userconfig.GormRepository, tr *todo.GormRepository, er *email.GormRepository, logger *log.Logger) Service {
+func NewUserService(gr *repository.GormRepository, logger *log.Logger) Service {
 	return Service{
-		logger:                      logger,
-		userRepository:              ur,
-		categoryRepository:          cr,
-		userConfigurationRepository: ucr,
-		todoRepository:              tr,
-		emailRepository:             er,
+		logger:     logger,
+		repository: gr,
 	}
 }

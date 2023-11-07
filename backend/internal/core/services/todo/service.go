@@ -11,21 +11,15 @@ import (
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
 	customErrors "github.com/aghex70/daps/internal/errors"
-	"github.com/aghex70/daps/internal/repositories/gorm/email"
-	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
-	"github.com/aghex70/daps/internal/repositories/gorm/todo"
-	"github.com/aghex70/daps/internal/repositories/gorm/user"
+	repository "github.com/aghex70/daps/internal/repositories/gorm"
 	"github.com/aghex70/daps/pkg"
 	"github.com/aghex70/daps/server"
 	"gorm.io/gorm"
 )
 
 type Service struct {
-	logger                 *log.Logger
-	todoRepository         *todo.GormRepository
-	relationshipRepository *relationship.GormRepository
-	emailRepository        *email.GormRepository
-	userRepository         *user.GormRepository
+	logger     *log.Logger
+	repository *repository.GormRepository
 }
 
 func (s Service) Create(ctx context.Context, r *http.Request, req ports.CreateTodoRequest) error {
@@ -52,7 +46,7 @@ func (s Service) Create(ctx context.Context, r *http.Request, req ports.CreateTo
 		Suggestable: true,
 	}
 
-	err := s.todoRepository.Create(ctx, ntd)
+	err, _ := s.repository.CreateTodo(ctx, ntd)
 	if err != nil {
 		return err
 	}
@@ -79,7 +73,7 @@ func (s Service) Update(ctx context.Context, r *http.Request, req ports.UpdateTo
 		Suggestable: req.Suggestable,
 	}
 
-	err = s.todoRepository.Update(ctx, ntd)
+	err = s.repository.UpdateTodo(ctx, ntd)
 	if err != nil {
 		return err
 	}
@@ -92,7 +86,7 @@ func (s Service) Complete(ctx context.Context, r *http.Request, req ports.Comple
 	if err != nil {
 		return err
 	}
-	err = s.todoRepository.Complete(ctx, int(req.TodoId))
+	err = s.repository.Complete(ctx, int(req.TodoId))
 	if err != nil {
 		return err
 	}
@@ -105,7 +99,7 @@ func (s Service) Activate(ctx context.Context, r *http.Request, req ports.Activa
 	if err != nil {
 		return err
 	}
-	err = s.todoRepository.Activate(ctx, int(req.TodoId))
+	err = s.repository.Activate(ctx, int(req.TodoId))
 	if err != nil {
 		return err
 	}
@@ -118,7 +112,7 @@ func (s Service) Start(ctx context.Context, r *http.Request, req ports.StartTodo
 	if err != nil {
 		return err
 	}
-	err = s.todoRepository.Start(ctx, int(req.TodoId))
+	err = s.repository.Start(ctx, int(req.TodoId))
 	if err != nil {
 		return err
 	}
@@ -131,7 +125,7 @@ func (s Service) Restart(ctx context.Context, r *http.Request, req ports.StartTo
 	if err != nil {
 		return err
 	}
-	err = s.todoRepository.Restart(ctx, int(req.TodoId))
+	err = s.repository.Restart(ctx, int(req.TodoId))
 	if err != nil {
 		return err
 	}
@@ -144,7 +138,7 @@ func (s Service) Get(ctx context.Context, r *http.Request, req ports.GetTodoRequ
 	if err != nil {
 		return domain.TodoInfo{}, err
 	}
-	td, err := s.todoRepository.GetById(ctx, int(req.TodoId))
+	td, err := s.repository.GetTodo(ctx, int(req.TodoId))
 	if err != nil {
 		return domain.TodoInfo{}, err
 	}
@@ -157,7 +151,7 @@ func (s Service) List(ctx context.Context, r *http.Request, req ports.ListTodosR
 	if err != nil {
 		return []domain.Todo{}, err
 	}
-	todos, err := s.todoRepository.List(ctx, req.Category)
+	todos, err := s.repository.GetTodos(ctx, req.Category)
 	if err != nil {
 		return []domain.Todo{}, err
 	}
@@ -170,7 +164,7 @@ func (s Service) ListRecurring(ctx context.Context, r *http.Request) ([]domain.T
 	if err != nil {
 		return []domain.Todo{}, err
 	}
-	todos, err := s.todoRepository.ListRecurring(ctx, categoryIds)
+	todos, err := s.repository.GetTodos(ctx, categoryIds)
 	if err != nil {
 		return []domain.Todo{}, err
 	}
@@ -183,7 +177,7 @@ func (s Service) ListCompleted(ctx context.Context, r *http.Request) ([]domain.T
 	if err != nil {
 		return []domain.Todo{}, err
 	}
-	todos, err := s.todoRepository.ListCompleted(ctx, categoryIds)
+	todos, err := s.repository.GetTodos(ctx, categoryIds)
 	if err != nil {
 		return []domain.Todo{}, err
 	}
@@ -192,7 +186,7 @@ func (s Service) ListCompleted(ctx context.Context, r *http.Request) ([]domain.T
 
 func (s Service) ListSuggested(ctx context.Context, r *http.Request) ([]domain.TodoInfo, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
-	todos, err := s.todoRepository.ListSuggested(ctx, int(userId))
+	todos, err := s.repository.GetTodos(ctx, int(userId))
 	if err != nil {
 		return []domain.TodoInfo{}, err
 	}
@@ -201,7 +195,7 @@ func (s Service) ListSuggested(ctx context.Context, r *http.Request) ([]domain.T
 
 func (s Service) Suggest(ctx context.Context, r *http.Request) error {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
-	err := s.todoRepository.Suggest(ctx, int(userId))
+	err := s.repository.Suggest(ctx, int(userId))
 	if err != nil {
 		return err
 	}
@@ -214,7 +208,7 @@ func (s Service) Delete(ctx context.Context, r *http.Request, req ports.DeleteTo
 	if err != nil {
 		return err
 	}
-	err = s.todoRepository.Delete(ctx, int(req.TodoId))
+	err = s.repository.DeleteTodo(ctx, int(req.TodoId))
 	if err != nil {
 		return err
 	}
@@ -223,7 +217,7 @@ func (s Service) Delete(ctx context.Context, r *http.Request, req ports.DeleteTo
 
 func (s Service) Summary(ctx context.Context, r *http.Request) ([]domain.CategorySummary, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
-	summary, err := s.todoRepository.GetSummary(ctx, int(userId))
+	summary, err := s.repository.GetSummary(ctx, int(userId))
 	if err != nil {
 		return []domain.CategorySummary{}, err
 	}
@@ -232,13 +226,13 @@ func (s Service) Summary(ctx context.Context, r *http.Request) ([]domain.Categor
 
 func (s Service) Remind(ctx context.Context) error {
 	fmt.Println("Reminding users...")
-	users, err := s.userRepository.List(ctx)
+	users, err := s.repository.GetUsers(ctx)
 	if err != nil {
 		return err
 	}
 
 	for _, u := range users {
-		rs, err := s.todoRepository.GetRemindSummary(ctx, u.Id)
+		rs, err := s.repository.GetRemindSummary(ctx, u.Id)
 		fmt.Printf("Remind summary for user %d: %+v", u.Id, rs)
 		if err != nil {
 			return err
@@ -266,7 +260,7 @@ func (s Service) Remind(ctx context.Context) error {
 			fmt.Printf("Error sending email: %+v", err)
 			ne.Error = err.Error()
 			ne.Sent = false
-			_, errz := s.emailRepository.Create(ctx, ne)
+			_, errz := s.repository.CreateEmail(ctx, ne)
 			if errz != nil {
 				fmt.Printf("Error saving email: %+v", errz)
 				return errz
@@ -275,7 +269,7 @@ func (s Service) Remind(ctx context.Context) error {
 		}
 
 		ne.Sent = true
-		_, err = s.emailRepository.Create(ctx, ne)
+		_, err = s.repository.CreateEmail(ctx, ne)
 		if err != nil {
 			return err
 		}
@@ -284,12 +278,9 @@ func (s Service) Remind(ctx context.Context) error {
 	return nil
 }
 
-func NewTodoService(tr *todo.GormRepository, rr *relationship.GormRepository, er *email.GormRepository, ur *user.GormRepository, logger *log.Logger) Service {
+func NewTodoService(r *repository.GormRepository, logger *log.Logger) Service {
 	return Service{
-		logger:                 logger,
-		todoRepository:         tr,
-		relationshipRepository: rr,
-		emailRepository:        er,
-		userRepository:         ur,
+		logger:     logger,
+		repository: r,
 	}
 }

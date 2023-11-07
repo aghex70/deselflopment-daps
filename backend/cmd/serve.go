@@ -42,9 +42,9 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			es := emailService.NewEmailService(r, &logger)
 			eh := emailHandler.NewEmailHandler(es)
 
-			rh := root.NewRootHandler(cs, tds, us)
+			rh := root.NewRootHandler(cs, ts, us)
 
-			s := server.NewRestServer(cfg.Server.Rest, ch, tdh, uh, rh, &logger)
+			s := server.NewRestServer(cfg.Server.Rest, ch, th, uh, rh, &logger)
 			err = s.StartServer()
 			if err != nil {
 				log.Fatal("error starting server", err.Error())

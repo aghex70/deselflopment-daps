@@ -7,17 +7,13 @@ import (
 
 	"github.com/aghex70/daps/internal/core/domain"
 	"github.com/aghex70/daps/internal/core/ports"
-	"github.com/aghex70/daps/internal/repositories/gorm/category"
-	"github.com/aghex70/daps/internal/repositories/gorm/email"
-	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
+	repository "github.com/aghex70/daps/internal/repositories/gorm"
 	"github.com/aghex70/daps/server"
 )
 
 type Service struct {
-	logger                 *log.Logger
-	categoryRepository     *category.GormRepository
-	relationshipRepository *relationship.GormRepository
-	emailRepository        *email.GormRepository
+	logger     *log.Logger
+	repository *repository.GormRepository
 }
 
 func (s Service) Create(ctx context.Context, r *http.Request, req ports.CreateCategoryRequest) error {
@@ -35,7 +31,7 @@ func (s Service) Create(ctx context.Context, r *http.Request, req ports.CreateCa
 		Notifiable:  req.Notifiable,
 		Users:       []domain.User{u},
 	}
-	_, err = s.categoryRepository.Create(ctx, cat, int(userId))
+	_, err = s.repository.CreateCategory(ctx, cat, int(userId))
 	if err != nil {
 		return err
 	}
@@ -58,7 +54,7 @@ func (s Service) Update(ctx context.Context, r *http.Request, req ports.UpdateCa
 			Notifiable:  req.Notifiable,
 			Name:        req.Name,
 		}
-		err = s.categoryRepository.Update(ctx, cat)
+		err = s.repository.UpdateCategory(ctx, cat)
 		if err != nil {
 			return err
 		}
@@ -72,7 +68,7 @@ func (s Service) Update(ctx context.Context, r *http.Request, req ports.UpdateCa
 			Id:     int(req.CategoryId),
 			Shared: req.Shared,
 		}
-		err = s.categoryRepository.Share(ctx, cat, req.Email)
+		err = s.repository.Share(ctx, cat, req.Email)
 		if err != nil {
 			return err
 		}
@@ -86,7 +82,7 @@ func (s Service) Update(ctx context.Context, r *http.Request, req ports.UpdateCa
 			Id:     int(req.CategoryId),
 			Shared: req.Shared,
 		}
-		err = s.categoryRepository.Unshare(ctx, cat, int(userId))
+		err = s.repository.Unshare(ctx, cat, int(userId))
 		if err != nil {
 			return err
 		}
@@ -100,7 +96,7 @@ func (s Service) Get(ctx context.Context, r *http.Request, req ports.GetCategory
 	if err != nil {
 		return domain.Category{}, err
 	}
-	cat, err := s.categoryRepository.GetById(ctx, int(req.CategoryId))
+	cat, err := s.repository.GetCategory(ctx, int(req.CategoryId))
 	if err != nil {
 		return domain.Category{}, err
 	}
@@ -113,7 +109,7 @@ func (s Service) Delete(ctx context.Context, r *http.Request, req ports.DeleteCa
 	if err != nil {
 		return err
 	}
-	err = s.categoryRepository.Delete(ctx, int(req.CategoryId), int(userId))
+	err = s.repository.DeleteCategory(ctx, int(req.CategoryId), int(userId))
 	if err != nil {
 		return err
 	}
@@ -122,18 +118,16 @@ func (s Service) Delete(ctx context.Context, r *http.Request, req ports.DeleteCa
 
 func (s Service) List(ctx context.Context, r *http.Request) ([]domain.Category, error) {
 	userId, _ := server.RetrieveJWTClaims(r, nil)
-	categories, err := s.categoryRepository.List(ctx, int(userId))
+	categories, err := s.repository.GetCategories(ctx, int(userId))
 	if err != nil {
 		return []domain.Category{}, err
 	}
 	return categories, nil
 }
 
-func NewCategoryService(cr *category.GormRepository, rr *relationship.GormRepository, er *email.GormRepository, logger *log.Logger) Service {
+func NewCategoryService(r *repository.GormRepository, logger *log.Logger) Service {
 	return Service{
-		logger:                 logger,
-		categoryRepository:     cr,
-		relationshipRepository: rr,
-		emailRepository:        er,
+		logger:     logger,
+		repository: r,
 	}
 }
