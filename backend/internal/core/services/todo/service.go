@@ -284,7 +284,7 @@ func (s Service) Remind(ctx context.Context) error {
 	return nil
 }
 
-func NewtodoService(tr *todo.GormRepository, rr *relationship.GormRepository, er *email.GormRepository, ur *user.GormRepository, logger *log.Logger) Service {
+func NewTodoService(tr *todo.GormRepository, rr *relationship.GormRepository, er *email.GormRepository, ur *user.GormRepository, logger *log.Logger) Service {
 	return Service{
 		logger:                 logger,
 		todoRepository:         tr,

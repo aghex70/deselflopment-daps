@@ -1,17 +1,32 @@
 package domain
 
-import "time"
+import (
+	repository "github.com/aghex70/daps/internal/repositories/gorm"
+	"time"
+)
 
 type Email struct {
-	Id           int       `json:"id"`
-	From         string    `json:"from"`
-	To           string    `json:"to"`
-	Recipient    string    `json:"recipient"`
-	Subject      string    `json:"subject"`
-	Body         string    `json:"body"`
-	User         int       `json:"user"`
-	CreationDate time.Time `json:"creation_date"`
-	Sent         bool      `json:"sent"`
-	Error        string    `json:"error"`
-	Source       string    `json:"source"`
+	ID        uint
+	CreatedAt time.Time
+	From      string
+	To        string
+	Subject   string
+	Body      string
+	UserID    uint
+	Sent      bool
+	Source    string
+	Error     *string
+}
+
+func (e Email) FromDto() repository.Email {
+	return repository.Email{
+		From:    e.From,
+		To:      e.To,
+		Subject: e.Subject,
+		Body:    e.Body,
+		UserID:  e.UserID,
+		Sent:    e.Sent,
+		Source:  e.Source,
+		Error:   e.Error,
+	}
 }

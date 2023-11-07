@@ -1,12 +1,32 @@
 package domain
 
+import (
+	repository "github.com/aghex70/daps/internal/repositories/gorm"
+	"time"
+)
+
 type Category struct {
-	Id          int    `json:"id"`
-	OwnerId     int    `json:"owner_id"`
-	Name        string `json:"name"`
-	Shared      *bool  `json:"shared"`
-	Notifiable  bool   `json:"notifiable"`
-	Custom      bool   `json:"custom"`
-	Description string `json:"description"`
-	Users       []User `json:"users"`
+	ID          uint
+	CreatedAt   time.Time
+	Name        string
+	Description *string
+	OwnerID     *uint
+	Users       *[]User
+	Todos       *[]Todo
+	Shared      bool
+	Notifiable  bool
+	Custom      bool
+}
+
+func (c Category) FromDto() repository.Category {
+	return repository.Category{
+		Name:        c.Name,
+		Description: c.Description,
+		OwnerID:     c.OwnerID,
+		//Users:       c.Users,
+		//Todos:       c.Todos,
+		Shared:     c.Shared,
+		Notifiable: c.Notifiable,
+		Custom:     c.Custom,
+	}
 }

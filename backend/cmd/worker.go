@@ -30,7 +30,7 @@ func WorkerServerCommand(cfg *config.Config) *cobra.Command {
 			tr, _ := todo.NewTodoGormRepository(gdb)
 			er, _ := email.NewEmailGormRepository(gdb)
 
-			tds := todoService.NewtodoService(tr, rr, er, ur, &logger)
+			tds := todoService.NewTodoService(tr, rr, er, ur, &logger)
 
 			s := queues.NewWorkerServer(cfg.Broker, tds, &logger)
 			err = s.StartServer()

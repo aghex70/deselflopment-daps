@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	repository "github.com/aghex70/daps/internal/repositories/gorm"
+	"time"
+)
 
 type Priority int
 
@@ -13,22 +16,41 @@ const (
 )
 
 type Todo struct {
-	Active         bool       `json:"active"`
-	Category       int        `json:"category_id"`
-	KategoryName   string     `json:"category_name"`
-	Completed      bool       `json:"completed"`
-	CreationDate   time.Time  `json:"creation_date"`
-	Description    string     `json:"description"`
-	EndDate        *time.Time `json:"end_date"`
-	Id             int        `json:"id"`
-	Link           string     `json:"link"`
-	Name           string     `json:"name"`
-	Priority       Priority   `json:"priority"`
-	Recurring      bool       `json:"recurring"`
-	Recurrency     string     `json:"recurrency"`
-	StartDate      *time.Time `json:"start_date"`
-	Suggestable    bool       `json:"suggestable"`
-	SuggestionDate *time.Time `json:"suggestion_date"`
+	ID          uint
+	CreatedAt   time.Time
+	Name        string
+	Description *string
+	Completed   bool
+	CompletedAt *time.Time
+	Active      bool
+	Priority    Priority
+	CategoryID  uint
+	Link        string
+	Recurring   bool
+	Recurrency  string
+	StartedAt   *time.Time
+	Suggestable bool
+	SuggestedAt *time.Time
+	UserID      uint
+}
+
+func (t Todo) fromDto() repository.Todo {
+	return repository.Todo{
+		Name:        t.Name,
+		Description: t.Description,
+		Completed:   t.Completed,
+		CompletedAt: t.CompletedAt,
+		Active:      t.Active,
+		Priority:    int(t.Priority),
+		CategoryID:  t.CategoryID,
+		Link:        t.Link,
+		Recurring:   t.Recurring,
+		Recurrency:  t.Recurrency,
+		StartedAt:   t.StartedAt,
+		Suggestable: t.Suggestable,
+		SuggestedAt: t.SuggestedAt,
+		UserID:      t.UserID,
+	}
 }
 
 type Summmary struct {
