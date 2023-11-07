@@ -42,6 +42,10 @@ func (u User) ToDto() domain.User {
 	}
 }
 
+func (User) TableName() string {
+	return "deselflopment_users"
+}
+
 func (gr *GormRepository) GetUser(id int) (domain.User, error) {
 	return domain.User{}, nil
 }

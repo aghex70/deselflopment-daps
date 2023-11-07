@@ -26,25 +26,29 @@ type Todo struct {
 	UserID      uint
 }
 
-func (td Todo) ToDto() domain.Todo {
+func (t Todo) ToDto() domain.Todo {
 	return domain.Todo{
-		ID:          td.ID,
-		CreatedAt:   td.CreatedAt,
-		Name:        td.Name,
-		Description: td.Description,
-		Completed:   td.Completed,
-		CompletedAt: td.CompletedAt,
-		Active:      td.Active,
-		Priority:    domain.Priority(td.Priority),
-		CategoryID:  td.CategoryID,
-		Link:        td.Link,
-		Recurring:   td.Recurring,
-		Recurrency:  td.Recurrency,
-		StartedAt:   td.StartedAt,
-		Suggestable: td.Suggestable,
-		SuggestedAt: td.SuggestedAt,
-		UserID:      td.UserID,
+		ID:          t.ID,
+		CreatedAt:   t.CreatedAt,
+		Name:        t.Name,
+		Description: t.Description,
+		Completed:   t.Completed,
+		CompletedAt: t.CompletedAt,
+		Active:      t.Active,
+		Priority:    domain.Priority(t.Priority),
+		CategoryID:  t.CategoryID,
+		Link:        t.Link,
+		Recurring:   t.Recurring,
+		Recurrency:  t.Recurrency,
+		StartedAt:   t.StartedAt,
+		Suggestable: t.Suggestable,
+		SuggestedAt: t.SuggestedAt,
+		UserID:      t.UserID,
 	}
+}
+
+func (Todo) TableName() string {
+	return "daps_todos"
 }
 
 func (gr *GormRepository) GetTodo(ctx context.Context, id int) (domain.Todo, error) {

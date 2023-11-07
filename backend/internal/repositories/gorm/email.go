@@ -18,10 +18,6 @@ type Email struct {
 	Error   *string
 }
 
-func (Email) TableName() string {
-	return "daps_emails"
-}
-
 func (e Email) ToDto() domain.Email {
 	return domain.Email{
 		ID:        e.ID,
@@ -35,6 +31,10 @@ func (e Email) ToDto() domain.Email {
 		Source:    e.Source,
 		Error:     e.Error,
 	}
+}
+
+func (Email) TableName() string {
+	return "daps_emails"
 }
 
 func (gr *GormRepository) GetEmail(ctx context.Context, id int) (domain.Email, error) {
