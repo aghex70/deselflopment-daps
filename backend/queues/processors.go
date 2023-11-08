@@ -5,15 +5,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	customErrors "github.com/aghex70/daps/internal/common/errors"
+	"github.com/aghex70/daps/internal/ports/services/todo"
 
-	"github.com/aghex70/daps/internal/core/ports"
-	customErrors "github.com/aghex70/daps/internal/errors"
 	"github.com/hibiken/asynq"
 	"gorm.io/gorm"
 )
 
 type ReminderTodosProcessor struct {
-	todoService ports.TodoServicer
+	todoService todo.Servicer
 }
 
 func (processor *ReminderTodosProcessor) ProcessTask(ctx context.Context, t *asynq.Task) error {
@@ -32,7 +32,7 @@ func (processor *ReminderTodosProcessor) ProcessTask(ctx context.Context, t *asy
 	return nil
 }
 
-func NewReminderTodosProcessor(ts ports.TodoServicer) *ReminderTodosProcessor {
+func NewReminderTodosProcessor(ts todo.Servicer) *ReminderTodosProcessor {
 	return &ReminderTodosProcessor{
 		todoService: ts,
 	}

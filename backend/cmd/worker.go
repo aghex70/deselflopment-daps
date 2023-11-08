@@ -1,14 +1,11 @@
 package cmd
 
 import (
+	repository "github.com/aghex70/daps/internal/infrastructure/persistence/repositories/gorm"
 	"log"
 
 	"github.com/aghex70/daps/config"
-	todoService "github.com/aghex70/daps/internal/core/services/todo"
-	"github.com/aghex70/daps/internal/repositories/gorm/email"
-	"github.com/aghex70/daps/internal/repositories/gorm/relationship"
-	"github.com/aghex70/daps/internal/repositories/gorm/todo"
-	"github.com/aghex70/daps/internal/repositories/gorm/user"
+	todoService "github.com/aghex70/daps/internal/core/usecases/todo"
 	"github.com/aghex70/daps/persistence/database"
 	"github.com/aghex70/daps/queues"
 	"github.com/spf13/cobra"
@@ -25,12 +22,9 @@ func WorkerServerCommand(cfg *config.Config) *cobra.Command {
 				log.Fatal("error starting database", err.Error())
 			}
 
-			ur, _ := user.NewUserGormRepository(gdb)
-			rr, _ := relationship.NewRelationshipGormRepository(gdb)
-			tr, _ := todo.NewTodoGormRepository(gdb)
-			er, _ := email.NewEmailGormRepository(gdb)
+			r := repository.NewGormTodoRepository(gdb)
 
-			tds := todoService.NewTodoService(tr, rr, er, ur, &logger)
+			tds := todoService.NewTodoService(r, &logger)
 
 			s := queues.NewWorkerServer(cfg.Broker, tds, &logger)
 			err = s.StartServer()

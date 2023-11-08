@@ -2,6 +2,13 @@ package server
 
 import (
 	"fmt"
+	pkg2 "github.com/aghex70/daps/internal/common/pkg"
+	"github.com/aghex70/daps/internal/ports/handlers"
+	"github.com/aghex70/daps/internal/ports/handlers/category"
+	"github.com/aghex70/daps/internal/ports/handlers/email"
+	"github.com/aghex70/daps/internal/ports/handlers/root"
+	"github.com/aghex70/daps/internal/ports/handlers/todo"
+	"github.com/aghex70/daps/internal/ports/handlers/user"
 	"log"
 	"net/http"
 	"reflect"
@@ -9,29 +16,22 @@ import (
 	"time"
 
 	"github.com/aghex70/daps/config"
-	"github.com/aghex70/daps/internal/handlers"
-	"github.com/aghex70/daps/internal/handlers/category"
-	"github.com/aghex70/daps/internal/handlers/root"
-	"github.com/aghex70/daps/internal/handlers/todo"
-	"github.com/aghex70/daps/internal/handlers/user"
-	"github.com/aghex70/daps/internal/handlers/userconfig"
-	"github.com/aghex70/daps/pkg"
 	"github.com/golang-jwt/jwt/v4"
 )
 
 type RestServer struct {
-	logger            *log.Logger
-	cfg               config.RestConfig
-	categoryHandler   category.Handler
-	toDoHandler       todo.Handler
-	userHandler       user.Handler
-	rootHandler       root.Handler
-	userConfigHandler userconfig.Handler
+	logger          *log.Logger
+	cfg             config.RestConfig
+	categoryHandler category.Handler
+	toDoHandler     todo.Handler
+	userHandler     user.Handler
+	rootHandler     root.Handler
+	emailHandler    email.Handler
 }
 
 func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+		w.Header().Add("Access-Control-Allow-Origin", pkg2.GetOrigin())
 		w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, PUT, OPTIONS")
 		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		if r.Method == "OPTIONS" {
@@ -51,7 +51,7 @@ func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 				w.WriteHeader(http.StatusUnauthorized)
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
-			return pkg.HmacSampleSecret, nil
+			return pkg2.HmacSampleSecret, nil
 		})
 
 		if err != nil {
@@ -78,7 +78,7 @@ func RetrieveBodyJWT(payload interface{}) string {
 	return bodyToken
 }
 
-func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
+func RetrieveJWTClaims(r *http.Request, payload interface{}) (uint, error) {
 	var tokenString string
 	if r.Header["Authorization"] != nil {
 		tokenString = RetrieveHeaderJWT(r)
@@ -87,12 +87,12 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (float64, error) {
 	}
 
 	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return pkg.HmacSampleSecret, nil
+		return pkg2.HmacSampleSecret, nil
 	})
 
 	claims := token.Claims.(jwt.MapClaims)
-	userId := claims["user_id"].(float64)
-	return userId, nil
+	userID := claims["user_id"].(uint)
+	return userID, nil
 }
 
 func (s *RestServer) StartServer() error {
@@ -117,8 +117,8 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/recurring-todos", JWTAuthMiddleware(s.toDoHandler.ListRecurringTodos))
 	http.HandleFunc("/api/completed-todos", JWTAuthMiddleware(s.toDoHandler.ListCompletedTodos))
 	http.HandleFunc("/api/suggest", JWTAuthMiddleware(s.toDoHandler.SuggestTodos))
-	http.HandleFunc("/api/suggested-todos", JWTAuthMiddleware(s.toDoHandler.ListSuggestedTodos))
-	http.HandleFunc("/api/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
+	//http.HandleFunc("/api/suggested-todos", JWTAuthMiddleware(s.toDoHandler.ListSuggestedTodos))
+	//http.HandleFunc("/api/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
 
 	//UserConfiguration
 	//http.HandleFunc("	/api/user-configuration/", JWTAuthMiddleware(s.userConfigHandler.HandleUserConfig))
@@ -146,14 +146,14 @@ func (s *RestServer) StartServer() error {
 	return nil
 }
 
-func NewRestServer(cfg *config.RestConfig, ch category.Handler, tdh todo.Handler, uh user.Handler, rh root.Handler, uch userconfig.Handler, logger *log.Logger) *RestServer {
+func NewRestServer(cfg *config.RestConfig, ch category.Handler, tdh todo.Handler, uh user.Handler, rh root.Handler, eh email.Handler, logger *log.Logger) *RestServer {
 	return &RestServer{
-		cfg:               *cfg,
-		logger:            logger,
-		categoryHandler:   ch,
-		toDoHandler:       tdh,
-		userHandler:       uh,
-		rootHandler:       rh,
-		userConfigHandler: uch,
+		cfg:             *cfg,
+		logger:          logger,
+		categoryHandler: ch,
+		toDoHandler:     tdh,
+		userHandler:     uh,
+		rootHandler:     rh,
+		emailHandler:    eh,
 	}
 }
