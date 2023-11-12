@@ -5,17 +5,17 @@ import (
 )
 
 type Email struct {
-	ID        uint
-	CreatedAt time.Time
-	Source    string
-	From      string
-	Recipient string
-	To        string
-	Subject   string
-	Body      string
-	UserID    uint
-	Sent      bool
-	Error     *string
+	ID           uint
+	CreatedAt    time.Time
+	Subject      string
+	Body         string
+	From         string
+	Source       string
+	To           string
+	Recipient    string
+	Sent         bool
+	ErrorMessage *string
+	UserID       uint
 }
 
 //func (e Email) FromDto() repository.Email {

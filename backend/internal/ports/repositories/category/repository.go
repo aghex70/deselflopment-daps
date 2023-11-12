@@ -8,6 +8,7 @@ import (
 type Repository interface {
 	Get(ctx context.Context, id uint) (domain.Category, error)
 	List(ctx context.Context, filters *map[string]interface{}) ([]domain.Category, error)
+	ListByIds(ctx context.Context, ids []uint) ([]domain.Category, error)
 	Create(ctx context.Context, c domain.Category) (domain.Category, error)
 	Update(ctx context.Context, c domain.Category) error
 	Delete(ctx context.Context, c domain.Category, email string) error

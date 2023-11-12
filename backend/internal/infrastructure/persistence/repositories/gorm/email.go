@@ -8,28 +8,30 @@ import (
 
 type Email struct {
 	gorm.Model
-	From    string
-	To      string
-	Subject string
-	Body    string
-	UserID  uint
-	Sent    bool
-	Source  string
-	Error   *string
+	Subject      string
+	Body         string
+	From         string `gorm:"column:from_email"`
+	Source       string
+	To           string `gorm:"column:to_email"`
+	Recipient    string
+	Sent         bool
+	ErrorMessage *string
+	UserID       uint
 }
 
 func (e Email) ToDto() domain.Email {
 	return domain.Email{
-		//ID:        e.ID,
-		//CreatedAt: e.CreatedAt,
-		From:    e.From,
-		To:      e.To,
-		Subject: e.Subject,
-		Body:    e.Body,
-		UserID:  e.UserID,
-		Sent:    e.Sent,
-		Source:  e.Source,
-		Error:   e.Error,
+		ID:           e.ID,
+		CreatedAt:    e.CreatedAt,
+		From:         e.From,
+		To:           e.To,
+		Subject:      e.Subject,
+		Body:         e.Body,
+		UserID:       e.UserID,
+		Sent:         e.Sent,
+		Source:       e.Source,
+		ErrorMessage: e.ErrorMessage,
+		Recipient:    e.Recipient,
 	}
 }
 

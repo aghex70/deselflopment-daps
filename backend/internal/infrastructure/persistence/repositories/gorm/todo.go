@@ -17,19 +17,20 @@ type Todo struct {
 	Active      bool
 	Priority    int
 	CategoryID  uint
-	Link        string
+	Link        *string
 	Recurring   bool
-	Recurrency  string
+	Recurrency  *string
 	StartedAt   *time.Time
 	Suggestable bool
+	Suggested   bool
 	SuggestedAt *time.Time
 	UserID      uint
 }
 
 func (t Todo) ToDto() domain.Todo {
 	return domain.Todo{
-		//ID:          t.ID,
-		//CreatedAt:   t.CreatedAt,
+		ID:          t.ID,
+		CreatedAt:   t.CreatedAt,
 		Name:        t.Name,
 		Description: t.Description,
 		Completed:   t.Completed,
@@ -42,6 +43,7 @@ func (t Todo) ToDto() domain.Todo {
 		Recurrency:  t.Recurrency,
 		StartedAt:   t.StartedAt,
 		Suggestable: t.Suggestable,
+		Suggested:   t.Suggested,
 		SuggestedAt: t.SuggestedAt,
 		UserID:      t.UserID,
 	}

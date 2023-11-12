@@ -24,11 +24,12 @@ type Todo struct {
 	Active      bool
 	Priority    Priority
 	CategoryID  uint
-	Link        string
+	Link        *string
 	Recurring   bool
-	Recurrency  string
+	Recurrency  *string
 	StartedAt   *time.Time
 	Suggestable bool
+	Suggested   bool
 	SuggestedAt *time.Time
 	UserID      uint
 }

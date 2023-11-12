@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/aghex70/daps/internal/common/pkg"
+	"github.com/aghex70/daps/internal/pkg"
 	handlers2 "github.com/aghex70/daps/internal/ports/handlers"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
 	"github.com/aghex70/daps/internal/ports/services/user"

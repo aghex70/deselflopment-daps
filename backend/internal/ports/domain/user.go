@@ -22,24 +22,6 @@ type User struct {
 	OwnedCategories   *[]Category
 }
 
-//func (u User) FromDto() repository.User {
-//	return repository.User{
-//		Name:              u.Name,
-//		Email:             u.Email,
-//		Password:          u.Password,
-//		Admin:             u.Admin,
-//		Active:            u.Active,
-//		ActivationCode:    u.ActivationCode,
-//		ResetPasswordCode: u.ResetPasswordCode,
-//		Language:          u.Language,
-//		AutoSuggest:       u.AutoSuggest,
-//		//Categories:        u.Categories,
-//		//Emails:            u.Emails,
-//		//Todos:             u.Todos,
-//		//OwnedCategories:   u.OwnedCategories,
-//	}
-//}
-//
 //type FilteredUser struct {
 //	ID               int       `json:"id"`
 //	Email            string    `json:"email"`

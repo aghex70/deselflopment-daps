@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	customErrors "github.com/aghex70/daps/internal/common/errors"
+	customErrors "github.com/aghex70/daps/internal/errors"
 	"github.com/aghex70/daps/internal/ports/services/todo"
 
 	"github.com/hibiken/asynq"

@@ -2,7 +2,7 @@ package server
 
 import (
 	"fmt"
-	pkg2 "github.com/aghex70/daps/internal/common/pkg"
+	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/handlers/category"
 	"github.com/aghex70/daps/internal/ports/handlers/email"
@@ -31,7 +31,7 @@ type RestServer struct {
 
 func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Access-Control-Allow-Origin", pkg2.GetOrigin())
+		w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 		w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, PUT, OPTIONS")
 		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		if r.Method == "OPTIONS" {
@@ -51,7 +51,7 @@ func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 				w.WriteHeader(http.StatusUnauthorized)
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
-			return pkg2.HmacSampleSecret, nil
+			return pkg.HmacSampleSecret, nil
 		})
 
 		if err != nil {
@@ -87,7 +87,7 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (uint, error) {
 	}
 
 	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return pkg2.HmacSampleSecret, nil
+		return pkg.HmacSampleSecret, nil
 	})
 
 	claims := token.Claims.(jwt.MapClaims)
@@ -100,7 +100,7 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/user/admin", JWTAuthMiddleware(s.userHandler.CheckAdmin))
 	http.HandleFunc("/api/users", JWTAuthMiddleware(s.userHandler.ListUsers))
 	http.HandleFunc("/api/user/provision", JWTAuthMiddleware(s.userHandler.ProvisionDemoUser))
-	// http.HandleFunc("/api/register", s.userHandler.Register)
+	http.HandleFunc("/api/register", s.userHandler.Register)
 	// http.HandleFunc("/api/login", s.userHandler.Login)
 	// http.HandleFunc("/api/refresh-token", JWTAuthMiddleware(s.userHandler.RefreshToken))
 	// http.HandleFunc("/api/reset-link", s.userHandler.ResetLink)
@@ -131,18 +131,18 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/", JWTAuthMiddleware(s.rootHandler.Root))
 
 	address := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
-	fmt.Printf("Starting server on address %s", address)
+	log.Printf("Starting server on address %s", address)
 	server := &http.Server{
 		Addr:              address,
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 	err := server.ListenAndServe()
 	if err != nil {
-		fmt.Printf("Error starting HTTP server %+v", err.Error())
+		log.Printf("Error starting HTTP server %+v", err.Error())
 		return err
 	}
 
-	fmt.Println("Server started")
+	log.Println("Server started")
 	return nil
 }
 

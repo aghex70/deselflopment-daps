@@ -77,6 +77,22 @@ func (gr *GormCategoryRepository) List(ctx context.Context, filters *map[string]
 	return cats, nil
 }
 
+func (gr *GormCategoryRepository) ListByIds(ctx context.Context, ids []uint) ([]domain.Category, error) {
+	var cs []Category
+	var cats []domain.Category
+
+	result := gr.DB.Find(&cs, ids)
+	if result.Error != nil {
+		return []domain.Category{}, result.Error
+	}
+
+	for _, c := range cs {
+		cs := c.ToDto()
+		cats = append(cats, cs)
+	}
+	return cats, nil
+}
+
 func (gr *GormCategoryRepository) Create(ctx context.Context, c domain.Category) (domain.Category, error) {
 	result := gr.DB.Create(&c)
 	if result.Error != nil {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/aghex70/daps/internal/ports/domain"
 	"gorm.io/gorm"
+	"log"
 )
 
 type User struct {
@@ -20,13 +21,31 @@ type User struct {
 	Categories        *[]Category `gorm:"many2many:daps_category_users"`
 	Emails            *[]Email
 	Todos             *[]Todo
-	OwnedCategories   *[]Category
+	OwnedCategories   *[]Category `gorm:"foreignKey:OwnerID"`
 }
 
 func (u User) ToDto() domain.User {
 	return domain.User{
-		//ID:                u.ID,
-		//CreatedAt:         u.CreatedAt,
+		ID:                u.ID,
+		CreatedAt:         u.CreatedAt,
+		Name:              u.Name,
+		Email:             u.Email,
+		Password:          u.Password,
+		Admin:             u.Admin,
+		Active:            u.Active,
+		ActivationCode:    u.ActivationCode,
+		ResetPasswordCode: u.ResetPasswordCode,
+		Language:          u.Language,
+		AutoSuggest:       u.AutoSuggest,
+		//Categories:        u.Categories,
+		//Emails:            u.Emails,
+		//Todos:             u.Todos,
+		//OwnedCategories:   u.OwnedCategories,
+	}
+}
+
+func UserFromDto(u domain.User) User {
+	return User{
 		Name:              u.Name,
 		Email:             u.Email,
 		Password:          u.Password,
@@ -61,6 +80,7 @@ func (gr *GormUserRepository) Get(ctx context.Context, id uint) (domain.User, er
 	if result.Error != nil {
 		return domain.User{}, result.Error
 	}
+	log.Printf("User: %+v", u)
 	return u.ToDto(), nil
 }
 
@@ -78,7 +98,12 @@ func (gr *GormUserRepository) List(ctx context.Context, filters *map[string]inte
 }
 
 func (gr *GormUserRepository) Create(ctx context.Context, u domain.User) (domain.User, error) {
-	return domain.User{}, nil
+	nu := UserFromDto(u)
+	result := gr.DB.Create(&nu)
+	if result.Error != nil {
+		return domain.User{}, result.Error
+	}
+	return u, nil
 }
 
 func (gr *GormUserRepository) Update(ctx context.Context, u domain.User) error {
