@@ -4,7 +4,6 @@ import (
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/handlers/category"
 	"github.com/aghex70/daps/internal/ports/handlers/todo"
-	"github.com/aghex70/daps/internal/ports/handlers/user"
 	category2 "github.com/aghex70/daps/internal/ports/services/category"
 	todo2 "github.com/aghex70/daps/internal/ports/services/todo"
 	user2 "github.com/aghex70/daps/internal/ports/services/user"
@@ -26,9 +25,9 @@ func (h Handler) Root(w http.ResponseWriter, r *http.Request) {
 	case strings.Contains(r.RequestURI, handlers.CATEGORY_STRING):
 		ch := category.NewCategoryHandler(h.categoryService)
 		ch.HandleCategory(w, r)
-	case strings.Contains(r.RequestURI, handlers.USER_STRING):
-		uh := user.NewUserHandler(h.userService)
-		uh.HandleUser(w, r)
+	//case strings.Contains(r.RequestURI, handlers.USER_STRING):
+	//	uh := user.NewUserHandler(h.userService)
+	//	uh.HandleUser(w, r)
 	default:
 		w.WriteHeader(http.StatusNotFound)
 	}

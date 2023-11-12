@@ -106,11 +106,25 @@ func (gr *GormUserRepository) Create(ctx context.Context, u domain.User) (domain
 	return u, nil
 }
 
-func (gr *GormUserRepository) Update(ctx context.Context, u domain.User) error {
+func (gr *GormUserRepository) Activate(ctx context.Context, activationCode string) error {
+	var u User
+	result := gr.DB.Where("activation_code = ?", activationCode).First(&u)
+	if result.Error != nil {
+		return result.Error
+	}
+	u.Active = true
+	result = gr.DB.Save(&u)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
 
-func (gr *GormUserRepository) Delete(ctx context.Context, uid uint) error {
+func (gr *GormUserRepository) Update(ctx context.Context, u domain.User, filters *map[string]interface{}) error {
+	return nil
+}
+
+func (gr *GormUserRepository) Delete(ctx context.Context, id uint) error {
 	return nil
 }
 

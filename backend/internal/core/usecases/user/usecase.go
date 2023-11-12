@@ -3,22 +3,10 @@ package user
 import (
 	"context"
 	"github.com/aghex70/daps/internal/ports/repositories/user"
-	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"mime/multipart"
 	"net/http"
 )
-
-type Service struct {
-	logger         *log.Logger
-	userRepository user.Repository
-}
-
-type MyCustomClaims struct {
-	UserID uint `json:"user_id"`
-	Admin  bool `json:"admin"`
-	jwt.RegisteredClaims
-}
 
 func (s Service) ImportCSV(ctx context.Context, r *http.Request, f multipart.File) error {
 	//_, err := s.CheckAdmin(ctx, r)

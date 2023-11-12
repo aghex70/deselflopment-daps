@@ -97,7 +97,7 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (uint, error) {
 
 func (s *RestServer) StartServer() error {
 	// User
-	http.HandleFunc("/api/user/admin", JWTAuthMiddleware(s.userHandler.CheckAdmin))
+	//http.HandleFunc("/api/user/admin", JWTAuthMiddleware(s.userHandler.CheckAdmin))
 	http.HandleFunc("/api/users", JWTAuthMiddleware(s.userHandler.ListUsers))
 	http.HandleFunc("/api/user/provision", JWTAuthMiddleware(s.userHandler.ProvisionDemoUser))
 	http.HandleFunc("/api/register", s.userHandler.Register)

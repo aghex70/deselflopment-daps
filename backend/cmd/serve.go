@@ -10,10 +10,12 @@ import (
 	"log"
 
 	"github.com/aghex70/daps/config"
-	categoryService "github.com/aghex70/daps/internal/core/usecases/category"
-	emailService "github.com/aghex70/daps/internal/core/usecases/email"
-	todoService "github.com/aghex70/daps/internal/core/usecases/todo"
-	userService "github.com/aghex70/daps/internal/core/usecases/user"
+	categoryService "github.com/aghex70/daps/internal/core/services/category"
+	emailService "github.com/aghex70/daps/internal/core/services/email"
+	todoService "github.com/aghex70/daps/internal/core/services/todo"
+	userService "github.com/aghex70/daps/internal/core/services/user"
+	userUseCase "github.com/aghex70/daps/internal/core/usecases/user"
+
 	"github.com/aghex70/daps/persistence/database"
 	"github.com/aghex70/daps/server"
 	"github.com/spf13/cobra"
@@ -30,21 +32,25 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 				log.Fatal("error starting database", err.Error())
 			}
 
-			catr := repository.NewGormCategoryRepository(gdb)
-			emailr := repository.NewGormEmailRepository(gdb)
-			todor := repository.NewGormTodoRepository(gdb)
+			// Repositories
 			userr := repository.NewGormUserRepository(gdb)
+			emailr := repository.NewGormEmailRepository(gdb)
+			catr := repository.NewGormCategoryRepository(gdb)
+			todor := repository.NewGormTodoRepository(gdb)
 
+			// Services
 			us := userService.NewUserService(userr, &logger)
-			uh := userHandler.NewUserHandler(us)
-
-			cs := categoryService.NewCategoryService(catr, &logger)
-			ch := categoryHandler.NewCategoryHandler(cs)
-
-			ts := todoService.NewTodoService(todor, &logger)
-			th := todoHandler.NewTodoHandler(ts)
-
 			es := emailService.NewEmailService(emailr, &logger)
+			cs := categoryService.NewCategoryService(catr, &logger)
+			ts := todoService.NewTodoService(todor, &logger)
+
+			// UseCases
+			ruuc := userUseCase.NewRegisterUserUseCase(us, cs, es, &logger)
+
+			// Handlers
+			uh := userHandler.NewUserHandler(ruuc, &logger)
+			ch := categoryHandler.NewCategoryHandler(cs)
+			th := todoHandler.NewTodoHandler(ts)
 			eh := emailHandler.NewEmailHandler(es)
 
 			rh := root.NewRootHandler(cs, ts, us)

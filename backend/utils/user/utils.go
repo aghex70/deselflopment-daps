@@ -5,18 +5,18 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/hex"
+	"github.com/aghex70/daps/internal/pkg"
+	domain2 "github.com/aghex70/daps/internal/ports/domain"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"os"
+	"time"
 )
 
-func PasswordsMatch(ctx context.Context, hashedPassword, password string) bool {
-	//err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-	//return err == nil
-	return false
-}
-
-func PasswordMatchesRepeatPassword(ctx context.Context, password, repeatPassword string) bool {
-	return password == repeatPassword
+type MyCustomClaims struct {
+	UserID uint `json:"user_id"`
+	Admin  bool `json:"admin"`
+	jwt.RegisteredClaims
 }
 
 func EncryptPassword(ctx context.Context, password string) string {
@@ -88,4 +88,36 @@ func DecryptPassword(ctx context.Context, cipheredPassword string) (string, erro
 	}
 
 	return password, nil
+}
+
+func PasswordsMatch(ctx context.Context, hashedPassword, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	return err == nil
+}
+
+func GenerateJWT(ctx context.Context, u domain2.User) (string, int, error) {
+	claims := NewCustomClaims(ctx, u)
+	mySigningKey := pkg.HmacSampleSecret
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	ss, err := token.SignedString(mySigningKey)
+	if err != nil {
+		return "", 0, err
+	}
+
+	return ss, int(u.ID), nil
+}
+
+func NewCustomClaims(ctx context.Context, u domain2.User) MyCustomClaims {
+	return MyCustomClaims{
+		UserID: u.ID,
+		Admin:  u.Admin,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   u.Email,
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),
+		},
+	}
+}
+
+func PasswordMatchesRepeatPassword(ctx context.Context, password, repeatPassword string) bool {
+	return password == repeatPassword
 }

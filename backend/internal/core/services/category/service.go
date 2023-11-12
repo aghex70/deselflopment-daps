@@ -115,7 +115,7 @@ func (s Service) Delete(ctx context.Context, r *http.Request, req requests.Delet
 	return nil
 }
 
-func (s Service) List(ctx context.Context, ids []int) ([]domain.Category, error) {
+func (s Service) List(ctx context.Context, ids []uint) ([]domain.Category, error) {
 	//userID, _ := server.RetrieveJWTClaims(r, nil)
 	//categories, err := s.repository.GetCategories(ctx, userID)
 	//if err != nil {
