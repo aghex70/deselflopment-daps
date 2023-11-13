@@ -35,4 +35,5 @@ var (
 	UserAlreadyRegisteredError = errors.New("user already registered")
 	InvalidCredentialsError    = errors.New("invalid credentials")
 	UnauthorizedError          = errors.New("unauthorized")
+	PasswordsDoNotMatchError   = errors.New("passwords do not match")
 )

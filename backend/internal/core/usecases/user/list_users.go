@@ -2,21 +2,26 @@ package user
 
 import (
 	"context"
-	domain2 "github.com/aghex70/daps/internal/ports/domain"
-	"net/http"
+	"github.com/aghex70/daps/internal/core/services/user"
+	"log"
 )
 
-func (s Service) List(ctx context.Context, r *http.Request) ([]domain2.User, error) {
-	//_, err := s.CheckAdmin(ctx, r)
-	//if err != nil {
-	//	return []domain2.User{}, err
-	//}
-	//
-	//users, err := s.repository.GetUsers(ctx)
-	//if err != nil {
-	//	return []domain2.User{}, err
-	//}
-	//
-	//return users, nil
-	return []domain2.User{}, nil
+type ListUsersUseCase struct {
+	UserService user.Service
+	logger      *log.Logger
+}
+
+func (uc *ListUsersUseCase) Execute(ctx context.Context) error {
+	_, err := uc.UserService.List(ctx, nil)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func NewListUsersUseCase(userService user.Service, logger *log.Logger) *ListUsersUseCase {
+	return &ListUsersUseCase{
+		UserService: userService,
+		logger:      logger,
+	}
 }

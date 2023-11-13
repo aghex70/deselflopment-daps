@@ -63,15 +63,3 @@ func (s Service) ValidateRetrieval(ctx context.Context, categoryID, userID uint)
 	//}
 	return nil
 }
-
-func (s Service) ValidateRemoval(ctx context.Context, categoryID, userID uint) error {
-	//conditions := fmt.Sprintf("daps_category_users.user_id = %d AND daps_category_users.category_id = %d AND daps_categories.owner_id = %d", userID, categoryID, userID)
-	//catID, err := s.categoryRepository.UserCategoryExists(ctx, conditions)
-	//if err != nil {
-	//	return err
-	//}
-	//if catID == 0 {
-	//	return errors.New("cannot remove category")
-	//}
-	return nil
-}

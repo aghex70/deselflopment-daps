@@ -12,6 +12,7 @@ type LoginUserRequest struct {
 }
 
 type RefreshTokenRequest struct {
+	UserID uint `json:"user_id"`
 }
 
 type UpdateUserConfigRequest struct {
@@ -21,6 +22,7 @@ type UpdateUserConfigRequest struct {
 }
 
 type ProvisionDemoUserRequest struct {
+	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
 	Language string `json:"language"`
 	Password string `json:"password" validate:"required,min=13"`

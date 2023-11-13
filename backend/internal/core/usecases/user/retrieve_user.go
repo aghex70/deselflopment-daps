@@ -2,22 +2,32 @@ package user
 
 import (
 	"context"
-	domain2 "github.com/aghex70/daps/internal/ports/domain"
-	requests "github.com/aghex70/daps/internal/ports/requests/user"
-	"net/http"
+	"github.com/aghex70/daps/internal/core/services/user"
+	"github.com/aghex70/daps/internal/ports/domain"
+	"log"
 )
 
-func (s Service) Get(ctx context.Context, r *http.Request, req requests.GetUserRequest) (domain2.User, error) {
+type GetUserUseCase struct {
+	UserService user.Service
+	logger      *log.Logger
+}
+
+func (uc *GetUserUseCase) Execute(ctx context.Context, id uint) (domain.User, error) {
 	//_, err := s.CheckAdmin(ctx, r)
 	//if err != nil {
 	//	return domain2.User{}, err
 	//}
 	//
-	//u, err := s.repository.GetUser(ctx, uint(int(req.UserID)))
-	//if err != nil {
-	//	return domain2.User{}, err
-	//}
-	//
-	//return u, nil
-	return domain2.User{}, nil
+	u, err := uc.UserService.Get(ctx, id)
+	if err != nil {
+		return domain.User{}, err
+	}
+	return u, nil
+}
+
+func NewGetUserUseCase(userService user.Service, logger *log.Logger) *GetUserUseCase {
+	return &GetUserUseCase{
+		UserService: userService,
+		logger:      logger,
+	}
 }

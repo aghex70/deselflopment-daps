@@ -2,35 +2,38 @@ package user
 
 import (
 	"context"
-	"net/http"
+	"github.com/aghex70/daps/internal/core/services/user"
+	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	utils "github.com/aghex70/daps/utils/user"
+	"log"
 )
 
-func (s Service) RefreshToken(ctx context.Context, r *http.Request) (string, error) {
+type RefreshTokenUseCase struct {
+	UserService user.Service
+	logger      *log.Logger
+}
+
+func (uc *RefreshTokenUseCase) Execute(ctx context.Context, r requests.RefreshTokenRequest) (string, int, error) {
 	//userID, err := server.RetrieveJWTClaims(r, nil)
 	//if err != nil {
 	//	return "", errors.New("invalid token")
 	//}
-	//u, err := s.repository.GetUser(ctx, uint(int(userID)))
-	//if err != nil {
-	//	return "", errors.New("invalid token")
-	//}
-	//
-	//newClaims := MyCustomClaims{
-	//	UserID: u.ID,
-	//	Admin:  u.Admin,
-	//	RegisteredClaims: jwt.RegisteredClaims{
-	//		Subject:   u.Email,
-	//		ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),
-	//	},
-	//}
-	//
-	//mySigningKey := pkg2.HmacSampleSecret
-	//newToken := jwt.NewWithClaims(jwt.SigningMethodHS256, newClaims)
-	//ss, err := newToken.SignedString(mySigningKey)
-	//if err != nil {
-	//	return "", err
-	//}
-	//
-	//return ss, nil
-	return "", nil
+	u, err := uc.UserService.Get(ctx, r.UserID)
+	if err != nil {
+		return "", 0, err
+	}
+
+	token, userID, err := utils.GenerateJWT(ctx, u)
+	if err != nil {
+		return "", 0, err
+	}
+
+	return token, userID, nil
+}
+
+func NewRefreshTokenUseCase(userService user.Service, logger *log.Logger) *RefreshTokenUseCase {
+	return &RefreshTokenUseCase{
+		UserService: userService,
+		logger:      logger,
+	}
 }

@@ -37,12 +37,12 @@ func (uc *RegisterUserUseCase) Execute(ctx context.Context, r requests.CreateUse
 	}
 	log.Printf("Categories: %+v", categories)
 
-	cipheredPassword := utils.EncryptPassword(ctx, r.Password)
+	encryptedPassword := utils.EncryptPassword(ctx, r.Password)
 
 	u := domain.User{
 		Name:              r.Name,
 		Email:             r.Email,
-		Password:          cipheredPassword,
+		Password:          encryptedPassword,
 		ActivationCode:    common.GenerateUUID(),
 		ResetPasswordCode: common.GenerateUUID(),
 		Categories:        &categories,

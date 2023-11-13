@@ -2,41 +2,48 @@ package user
 
 import (
 	"context"
+	"github.com/aghex70/daps/internal/core/services/email"
+	"github.com/aghex70/daps/internal/core/services/user"
+	"github.com/aghex70/daps/internal/pkg"
+	"github.com/aghex70/daps/internal/ports/domain"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	"log"
 )
 
-func (s Service) SendResetLink(ctx context.Context, r requests.ResetLinkRequest) error {
-	//u, err := s.repository.CreateResetLink(ctx, r.Email)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//e := domain.Email{
-	//	From:      pkg.FromEmail,
-	//	To:        u.Email,
-	//	Recipient: u.Name,
-	//	Subject:   "📣 DAPS - Password reset request 📣",
-	//	Body:      "In order to reset your password, please follow this link: " + pkg.ResetPasswordLink + u.ResetPasswordCode,
-	//	User:      u.ID,
-	//}
-	//
-	//err = pkg.SendEmail(e)
-	//if err != nil {
-	//	fmt.Printf("Error sending email: %+v", err)
-	//	e.Error = err.Error()
-	//	e.Sent = false
-	//	_, errz := s.repository.CreateEmail(ctx, e)
-	//	if errz != nil {
-	//		fmt.Printf("Error saving email: %+v", errz)
-	//		return errz
-	//	}
-	//	return err
-	//}
-	//
-	//e.Sent = true
-	//_, err = s.repository.CreateEmail(ctx, e)
-	//if err != nil {
-	//	return err
-	//}
+type SendResetLinkUseCase struct {
+	UserService  user.Service
+	EmailService email.Service
+	logger       *log.Logger
+}
+
+func (uc *SendResetLinkUseCase) Execute(ctx context.Context, r requests.ResetLinkRequest) error {
+	u, err := uc.UserService.GetByEmail(ctx, r.Email)
+	if err != nil {
+		return err
+	}
+
+	e := domain.Email{
+		Subject:   "📣 DAPS - Activate your account 📣",
+		Body:      "In order to reset your password, please follow this link: " + pkg.ResetPasswordLink + u.ResetPasswordCode,
+		From:      pkg.FromEmail,
+		Source:    pkg.ProjectName,
+		To:        u.Name,
+		Recipient: u.Email,
+		UserID:    u.ID,
+	}
+
+	s, err := uc.EmailService.Send(ctx, e)
+	if !s && err != nil {
+		return err
+	}
+
 	return nil
+}
+
+func NewSendResetLinkUseCase(userService user.Service, emailService email.Service, logger *log.Logger) *SendResetLinkUseCase {
+	return &SendResetLinkUseCase{
+		UserService:  userService,
+		EmailService: emailService,
+		logger:       logger,
+	}
 }

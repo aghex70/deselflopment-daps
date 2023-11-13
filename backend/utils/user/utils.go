@@ -47,9 +47,9 @@ func EncryptPassword(ctx context.Context, password string) string {
 	return hex.EncodeToString(encrypted)
 }
 
-func DecryptPassword(ctx context.Context, cipheredPassword string) (string, error) {
+func DecryptPassword(ctx context.Context, encryptedPassword string) (string, error) {
 	// Convert the ciphertext from a hexadecimal string to a byte slice
-	encrypted, err := hex.DecodeString(cipheredPassword)
+	encrypted, err := hex.DecodeString(encryptedPassword)
 	if err != nil {
 		return "", err
 	}
@@ -81,7 +81,7 @@ func DecryptPassword(ctx context.Context, cipheredPassword string) (string, erro
 	password := string(decrypted)
 
 	// Now you can use bcrypt to compare the decrypted password with a hashed password
-	err = bcrypt.CompareHashAndPassword([]byte(cipheredPassword), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(encryptedPassword), []byte(password))
 	if err != nil {
 		// Passwords do not match
 		return "", err
@@ -107,6 +107,10 @@ func GenerateJWT(ctx context.Context, u domain2.User) (string, int, error) {
 	return ss, int(u.ID), nil
 }
 
+func PasswordMatchesRepeatPassword(ctx context.Context, password, repeatPassword string) bool {
+	return password == repeatPassword
+}
+
 func NewCustomClaims(ctx context.Context, u domain2.User) MyCustomClaims {
 	return MyCustomClaims{
 		UserID: u.ID,
@@ -116,8 +120,4 @@ func NewCustomClaims(ctx context.Context, u domain2.User) MyCustomClaims {
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(96 * time.Hour)),
 		},
 	}
-}
-
-func PasswordMatchesRepeatPassword(ctx context.Context, password, repeatPassword string) bool {
-	return password == repeatPassword
 }

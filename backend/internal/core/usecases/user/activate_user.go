@@ -19,3 +19,10 @@ func (uc *ActivateUserUseCase) Execute(ctx context.Context, r requests.ActivateU
 	}
 	return nil
 }
+
+func NewActivateUserUseCase(userService user.Service, logger *log.Logger) *ActivateUserUseCase {
+	return &ActivateUserUseCase{
+		UserService: userService,
+		logger:      logger,
+	}
+}

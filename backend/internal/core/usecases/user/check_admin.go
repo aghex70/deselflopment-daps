@@ -2,23 +2,29 @@ package user
 
 import (
 	"context"
-	"net/http"
+	"github.com/aghex70/daps/internal/core/services/user"
+	"github.com/aghex70/daps/internal/pkg"
+	"log"
 )
 
-func (s Service) CheckAdmin(ctx context.Context, r *http.Request) (int, error) {
+type CheckAdminUseCase struct {
+	UserService user.Service
+	logger      *log.Logger
+}
+
+func (uc *CheckAdminUseCase) Execute(ctx context.Context, id uint) (bool, error) {
 	//userID, err := server.RetrieveJWTClaims(r, nil)
 	//if err != nil {
 	//	return 0, errors.New("invalid token")
 	//}
-	//u, err := s.repository.GetUser(ctx, uint(int(userID)))
-	//if err != nil {
-	//	return 0, errors.New("invalid token")
-	//}
-	//
-	//if !u.Admin {
-	//	return 0, errors.New("unauthorized")
-	//}
-	//
-	//return int(userID), nil
-	return 0, nil
+	u, err := uc.UserService.Get(ctx, id)
+	if err != nil {
+		return false, err
+	}
+
+	if !u.Admin {
+		return false, pkg.UnauthorizedError
+	}
+
+	return true, nil
 }

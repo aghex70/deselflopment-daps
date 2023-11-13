@@ -33,7 +33,8 @@ CREATE TABLE daps_categories (
      notifiable TINYINT NOT NULL DEFAULT 0,
      custom TINYINT NOT NULL DEFAULT 0,
      owner_id INT UNSIGNED NULL DEFAULT NULL,
-     FOREIGN KEY(owner_id) REFERENCES deselflopment_users(id) ON DELETE CASCADE
+     FOREIGN KEY(owner_id) REFERENCES deselflopment_users(id) ON DELETE CASCADE,
+     ADD UNIQUE KEY (name, owner_id)
 );
 
 CREATE TABLE daps_category_users (
@@ -64,7 +65,8 @@ CREATE TABLE daps_todos (
     suggested_at TIMESTAMP NULL DEFAULT NULL,
     user_id INT UNSIGNED NOT NULL,
     FOREIGN KEY(category_id) REFERENCES daps_categories(id) ON DELETE CASCADE,
-    FOREIGN KEY(user_id) REFERENCES deselflopment_users(id) ON DELETE CASCADE
+    FOREIGN KEY(user_id) REFERENCES deselflopment_users(id) ON DELETE CASCADE,
+    ADD UNIQUE KEY (name, category_id, user_id)
 );
 
 CREATE TABLE daps_emails (
