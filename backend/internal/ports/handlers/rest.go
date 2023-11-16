@@ -95,6 +95,13 @@ func RetrieveJWTClaims(r *http.Request, payload interface{}) (uint, error) {
 	return userID, nil
 }
 
+func CheckJWTClaims(userID, JWTUserID uint) error {
+	if userID != JWTUserID {
+		return pkg.UnauthorizedError
+	}
+	return nil
+}
+
 func JWTAuthMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
