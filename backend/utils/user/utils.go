@@ -6,9 +6,8 @@ import (
 	"crypto/cipher"
 	"encoding/hex"
 	"github.com/aghex70/daps/internal/pkg"
-	domain2 "github.com/aghex70/daps/internal/ports/domain"
+	"github.com/aghex70/daps/internal/ports/domain"
 	"github.com/golang-jwt/jwt/v4"
-	"golang.org/x/crypto/bcrypt"
 	"os"
 	"time"
 )
@@ -75,27 +74,21 @@ func DecryptPassword(ctx context.Context, encryptedPassword string) (string, err
 	mode.CryptBlocks(decrypted, encrypted)
 
 	// Remove the padding from the decrypted password
-	padding := decrypted[len(decrypted)-1]
-	decrypted = decrypted[:len(decrypted)-int(padding)]
+	var paddingLength int
+	for paddingLength = len(decrypted) - 1; paddingLength >= 0; paddingLength-- {
+		if decrypted[paddingLength] != 0 {
+			break
+		}
+	}
+
+	decrypted = decrypted[:paddingLength+1]
 
 	password := string(decrypted)
-
-	// Now you can use bcrypt to compare the decrypted password with a hashed password
-	err = bcrypt.CompareHashAndPassword([]byte(encryptedPassword), []byte(password))
-	if err != nil {
-		// Passwords do not match
-		return "", err
-	}
 
 	return password, nil
 }
 
-func PasswordsMatch(ctx context.Context, hashedPassword, password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-	return err == nil
-}
-
-func GenerateJWT(ctx context.Context, u domain2.User) (string, int, error) {
+func GenerateJWT(ctx context.Context, u domain.User) (string, int, error) {
 	claims := NewCustomClaims(ctx, u)
 	mySigningKey := pkg.HmacSampleSecret
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -107,11 +100,11 @@ func GenerateJWT(ctx context.Context, u domain2.User) (string, int, error) {
 	return ss, int(u.ID), nil
 }
 
-func PasswordMatchesRepeatPassword(ctx context.Context, password, repeatPassword string) bool {
+func PasswordsMatch(ctx context.Context, password, repeatPassword string) bool {
 	return password == repeatPassword
 }
 
-func NewCustomClaims(ctx context.Context, u domain2.User) MyCustomClaims {
+func NewCustomClaims(ctx context.Context, u domain.User) MyCustomClaims {
 	return MyCustomClaims{
 		UserID: u.ID,
 		Admin:  u.Admin,

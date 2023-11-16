@@ -31,7 +31,7 @@ func (uc *RegisterUserUseCase) Execute(ctx context.Context, r requests.CreateUse
 		return err
 	}
 
-	categories, err := uc.CategoryService.List(ctx, pkg.BaseCategoriesIds)
+	categories, err := uc.CategoryService.List(ctx, &pkg.BaseCategoriesIds, nil)
 	if err != nil {
 		return err
 	}
