@@ -3,6 +3,7 @@ package gorm
 import (
 	"context"
 	"github.com/aghex70/daps/internal/ports/domain"
+	common "github.com/aghex70/daps/utils"
 	"gorm.io/gorm"
 )
 
@@ -143,6 +144,7 @@ func (gr *UserRepository) ResetPassword(ctx context.Context, id uint, password, 
 	}
 
 	u.Password = password
+	u.ResetPasswordCode = common.GenerateUUID()
 	result = gr.DB.Save(&u)
 	if result.Error != nil {
 		return result.Error
