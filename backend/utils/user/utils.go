@@ -88,7 +88,7 @@ func DecryptPassword(ctx context.Context, encryptedPassword string) (string, err
 	return password, nil
 }
 
-func GenerateJWT(ctx context.Context, u domain.User) (string, int, error) {
+func GenerateJWT(ctx context.Context, u domain.User) (string, uint, error) {
 	claims := NewCustomClaims(ctx, u)
 	mySigningKey := pkg.HmacSampleSecret
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -97,7 +97,7 @@ func GenerateJWT(ctx context.Context, u domain.User) (string, int, error) {
 		return "", 0, err
 	}
 
-	return ss, int(u.ID), nil
+	return ss, u.ID, nil
 }
 
 func PasswordsMatch(ctx context.Context, password, repeatPassword string) bool {

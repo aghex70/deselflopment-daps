@@ -53,30 +53,82 @@ func (Todo) TableName() string {
 	return "daps_todos"
 }
 
-type GormTodoRepository struct {
+type TodoRepository struct {
 	*gorm.DB
 }
 
-func NewGormTodoRepository(db *gorm.DB) *GormTodoRepository {
-	return &GormTodoRepository{DB: db}
+func NewGormTodoRepository(db *gorm.DB) *TodoRepository {
+	return &TodoRepository{DB: db}
 }
 
-func (gr *GormTodoRepository) Get(ctx context.Context, id uint) (domain.Todo, error) {
-	return domain.Todo{}, nil
+func (gr *TodoRepository) Create(ctx context.Context, t domain.Todo) (domain.Todo, error) {
+	result := gr.DB.Create(&t)
+	if result.Error != nil {
+		return domain.Todo{}, result.Error
+	}
+	return t, nil
 }
 
-func (gr *GormTodoRepository) List(ctx context.Context, filters *map[string]interface{}) ([]domain.Todo, error) {
-	return []domain.Todo{}, nil
+func (gr *TodoRepository) Get(ctx context.Context, id uint) (domain.Todo, error) {
+	var t Todo
+	result := gr.DB.First(&t, id)
+	if result.Error != nil {
+		return domain.Todo{}, result.Error
+	}
+	return t.ToDto(), nil
 }
 
-func (gr *GormTodoRepository) Create(ctx context.Context, t domain.Todo) (domain.Todo, error) {
-	return domain.Todo{}, nil
-}
-
-func (gr *GormTodoRepository) Update(ctx context.Context, t domain.Todo) error {
+func (gr *TodoRepository) Delete(ctx context.Context, id uint) error {
+	result := gr.DB.Delete(&Todo{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
 
-func (gr *GormTodoRepository) Delete(ctx context.Context, id uint) error {
-	return nil
+func (gr *TodoRepository) List(ctx context.Context, ids *[]uint, filters *map[string]interface{}) ([]domain.Todo, error) {
+	var ts []Todo
+	var todos []domain.Todo
+
+	if filters != nil {
+		result := gr.DB.Where(filters).Find(&ts)
+		if result.Error != nil {
+			return []domain.Todo{}, result.Error
+		}
+	} else {
+		result := gr.DB.Find(&ts)
+		if result.Error != nil {
+			return []domain.Todo{}, result.Error
+		}
+	}
+
+	for _, c := range ts {
+		ts := c.ToDto()
+		todos = append(todos, ts)
+	}
+	return todos, nil
+}
+
+func (gr *TodoRepository) Update(ctx context.Context, id uint, t domain.Todo) (domain.Todo, error) {
+	result := gr.DB.Model(&Todo{}).Where("id = ?", id).Updates(Todo{
+		Name:        t.Name,
+		Description: t.Description,
+		Completed:   t.Completed,
+		CompletedAt: t.CompletedAt,
+		Active:      t.Active,
+		//Priority:    Priority(t.Priority),
+		CategoryID:  t.CategoryID,
+		Link:        t.Link,
+		Recurring:   t.Recurring,
+		Recurrency:  t.Recurrency,
+		StartedAt:   t.StartedAt,
+		Suggestable: t.Suggestable,
+		Suggested:   t.Suggested,
+		SuggestedAt: t.SuggestedAt,
+		UserID:      t.UserID,
+	})
+	if result.Error != nil {
+		return domain.Todo{}, result.Error
+	}
+	return t, nil
 }

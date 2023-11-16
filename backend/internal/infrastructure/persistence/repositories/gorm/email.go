@@ -35,34 +35,74 @@ func (e Email) ToDto() domain.Email {
 	}
 }
 
-func (Email) TableName() string {
-	return "daps_emails"
+func EmailFromDto(e domain.Email) Email {
+	return Email{
+		From:         e.From,
+		To:           e.To,
+		Subject:      e.Subject,
+		Body:         e.Body,
+		UserID:       e.UserID,
+		Sent:         e.Sent,
+		Source:       e.Source,
+		ErrorMessage: e.ErrorMessage,
+	}
 }
 
-type GormEmailRepository struct {
+func (Email) TableName() string {
+	return "deselflopment_emails"
+}
+
+type EmailRepository struct {
 	*gorm.DB
 }
 
-func NewGormEmailRepository(db *gorm.DB) *GormEmailRepository {
-	return &GormEmailRepository{DB: db}
+func NewGormEmailRepository(db *gorm.DB) *EmailRepository {
+	return &EmailRepository{db}
 }
 
-func (gr *GormEmailRepository) Get(ctx context.Context, id uint) (domain.Email, error) {
-	return domain.Email{}, nil
+func (gr *EmailRepository) Create(ctx context.Context, e domain.Email) (domain.Email, error) {
+	email := EmailFromDto(e)
+	result := gr.DB.Create(&email)
+	if result.Error != nil {
+		return domain.Email{}, result.Error
+	}
+	return e, nil
 }
 
-func (gr *GormEmailRepository) List(ctx context.Context, filters *map[string]interface{}) ([]domain.Email, error) {
-	return []domain.Email{}, nil
+func (gr *EmailRepository) Get(ctx context.Context, id uint) (domain.Email, error) {
+	var e Email
+	result := gr.DB.First(&e, id)
+	if result.Error != nil {
+		return domain.Email{}, result.Error
+	}
+	return e.ToDto(), nil
 }
 
-func (gr *GormEmailRepository) Create(ctx context.Context, e domain.Email) (domain.Email, error) {
-	return domain.Email{}, nil
-}
-
-func (gr *GormEmailRepository) Update(ctx context.Context, e domain.Email) error {
+func (gr *EmailRepository) Delete(ctx context.Context, id uint) error {
+	result := gr.DB.Delete(&Email{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
 
-func (gr *GormEmailRepository) Delete(ctx context.Context, id uint) error {
+func (gr *EmailRepository) List(ctx context.Context, filters *map[string]interface{}) ([]domain.Email, error) {
+	var es []Email
+	result := gr.DB.Find(&es, filters)
+	if result.Error != nil {
+		return []domain.Email{}, result.Error
+	}
+	var emails []domain.Email
+	for _, e := range es {
+		emails = append(emails, e.ToDto())
+	}
+	return emails, nil
+}
+
+func (gr *EmailRepository) Update(ctx context.Context, e domain.Email) error {
+	result := gr.DB.Save(&e)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }

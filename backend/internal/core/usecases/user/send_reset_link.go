@@ -5,8 +5,8 @@ import (
 	"github.com/aghex70/daps/internal/core/services/email"
 	"github.com/aghex70/daps/internal/core/services/user"
 	"github.com/aghex70/daps/internal/pkg"
-	"github.com/aghex70/daps/internal/ports/domain"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	utils "github.com/aghex70/daps/utils/email"
 	"log"
 )
 
@@ -16,22 +16,18 @@ type SendResetLinkUseCase struct {
 	logger       *log.Logger
 }
 
-func (uc *SendResetLinkUseCase) Execute(ctx context.Context, r requests.ResetLinkRequest) error {
+func (uc *SendResetLinkUseCase) Execute(ctx context.Context, r requests.ResetLinkRequest, userID uint) error {
 	u, err := uc.UserService.GetByEmail(ctx, r.Email)
 	if err != nil {
 		return err
 	}
 
-	e := domain.Email{
-		Subject:   "📣 DAPS - Activate your account 📣",
-		Body:      "In order to reset your password, please follow this link: " + pkg.ResetPasswordLink + u.ResetPasswordCode,
-		From:      pkg.FromEmail,
-		Source:    pkg.ProjectName,
-		To:        u.Name,
-		Recipient: u.Email,
-		UserID:    u.ID,
+	// Check if the user is the same as the one requesting the reset link
+	if u.ID != userID {
+		return pkg.UnauthorizedError
 	}
 
+	e := utils.GenerateResetPasswordEmail(u)
 	s, err := uc.EmailService.Send(ctx, e)
 	if !s && err != nil {
 		return err

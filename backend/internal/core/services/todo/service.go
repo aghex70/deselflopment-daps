@@ -1,97 +1,125 @@
 package todo
 
 import (
+	"bufio"
 	"context"
-	domain2 "github.com/aghex70/daps/internal/ports/domain"
+	"encoding/csv"
+	"github.com/aghex70/daps/internal/ports/domain"
 	"github.com/aghex70/daps/internal/ports/repositories/todo"
-	"github.com/aghex70/daps/internal/ports/requests/todo"
+	//"github.com/aghex70/daps/server"
+	"io"
 	"log"
-	"net/http"
+	"mime/multipart"
+	"strconv"
 )
 
 type Service struct {
-	logger     *log.Logger
-	repository todo.Repository
+	logger         *log.Logger
+	todoRepository todo.Repository
 }
 
-func (s Service) Create(ctx context.Context, r *http.Request, req requests.CreateTodoRequest) error {
-	//TODO implement me
-	panic("implement me")
+func (s Service) Create(ctx context.Context, t domain.Todo) (domain.Todo, error) {
+	t, err := s.todoRepository.Create(ctx, t)
+	if err != nil {
+		return t, err
+	}
+	return t, nil
 }
 
-func (s Service) Complete(ctx context.Context, r *http.Request, req requests.CompleteTodoRequest) error {
-	//TODO implement me
-	panic("implement me")
+func (s Service) Get(ctx context.Context, id uint) (domain.Todo, error) {
+	t, err := s.todoRepository.Get(ctx, id)
+	if err != nil {
+		return domain.Todo{}, err
+	}
+	return t, nil
 }
 
-func (s Service) Activate(ctx context.Context, r *http.Request, req requests.ActivateTodoRequest) error {
-	//TODO implement me
-	panic("implement me")
+func (s Service) Delete(ctx context.Context, id uint) error {
+	err := s.todoRepository.Delete(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (s Service) Delete(ctx context.Context, r *http.Request, req requests.DeleteTodoRequest) error {
-	//TODO implement me
-	panic("implement me")
+func (s Service) List(ctx context.Context, ids *[]uint, fields *map[string]interface{}) ([]domain.Todo, error) {
+	todos, err := s.todoRepository.List(ctx, ids, fields)
+	if err != nil {
+		return []domain.Todo{}, err
+	}
+	return todos, nil
 }
 
-func (s Service) Get(ctx context.Context, r *http.Request, req requests.GetTodoRequest) (interface{}, error) {
-	//TODO implement me
-	panic("implement me")
+func (s Service) Update(ctx context.Context, id uint, t domain.Todo) (domain.Todo, error) {
+	td, err := s.todoRepository.Update(ctx, id, t)
+	if err != nil {
+		return domain.Todo{}, err
+	}
+	return td, nil
 }
 
-func (s Service) List(ctx context.Context, r *http.Request, req requests.ListTodosRequest) ([]domain2.Todo, error) {
-	//TODO implement me
-	panic("implement me")
+func (s Service) Import(ctx context.Context, f multipart.File) error {
+	// Create a buffer to read the file line by line
+	buf := bufio.NewReader(f)
+
+	// Parse the CSV file
+	rr := csv.NewReader(buf)
+
+	// Read and discard the first line
+	_, err := rr.Read()
+	if err != nil {
+		return err
+	}
+
+	// Iterate over the lines of the CSV file
+	for {
+		// Read the next line
+		record, err := rr.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		name := record[0]
+		link := record[1]
+		categoryID, _ := strconv.Atoi(record[2])
+
+		_, err = s.todoRepository.Create(ctx, domain.Todo{
+			Name:       name,
+			Link:       &link,
+			CategoryID: uint(categoryID),
+			Priority:   domain.Priority(3),
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
-func (s Service) ListCompleted(ctx context.Context, r *http.Request) ([]domain2.Todo, error) {
-	//TODO implement me
-	panic("implement me")
-}
+//func (s Service) GetSummary(ctx context.Context, r *http.Request) ([]domain.CategorySummary, error) {
+//	//userId, _ := server.RetrieveJWTClaims(r, nil)
+//	summary, err := s.todoRepository.GetSummary(ctx, int(userId))
+//	if err != nil {
+//		return []domain.CategorySummary{}, err
+//	}
+//	return summary, nil
+//}
 
-func (s Service) ListRecurring(ctx context.Context, r *http.Request) ([]domain2.Todo, error) {
-	//TODO implement me
-	panic("implement me")
-}
+//func (s Service) Suggest(ctx context.Context, r *http.Request) error {
+//	//userId, _ := server.RetrieveJWTClaims(r, nil)
+//	err := s.todoRepository.Suggest(ctx, int(userId))
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
 
-func (s Service) ListSuggested(ctx context.Context, r *http.Request) ([]interface{}, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s Service) Suggest(ctx context.Context, r *http.Request) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s Service) Update(ctx context.Context, r *http.Request, req requests.UpdateTodoRequest) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s Service) Start(ctx context.Context, r *http.Request, req requests.StartTodoRequest) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s Service) Restart(ctx context.Context, r *http.Request, req requests.StartTodoRequest) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s Service) Summary(ctx context.Context, r *http.Request) ([]interface{}, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s Service) Remind(ctx context.Context) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func NewTodoService(r todo.Repository, logger *log.Logger) Service {
+func NewTodoService(tr todo.Repository, logger *log.Logger) Service {
 	return Service{
-		logger:     logger,
-		repository: r,
+		logger:         logger,
+		todoRepository: tr,
 	}
 }

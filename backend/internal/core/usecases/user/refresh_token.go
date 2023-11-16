@@ -13,11 +13,7 @@ type RefreshTokenUseCase struct {
 	logger      *log.Logger
 }
 
-func (uc *RefreshTokenUseCase) Execute(ctx context.Context, r requests.RefreshTokenRequest) (string, int, error) {
-	//userID, err := server.RetrieveJWTClaims(r, nil)
-	//if err != nil {
-	//	return "", errors.New("invalid token")
-	//}
+func (uc *RefreshTokenUseCase) Execute(ctx context.Context, r requests.RefreshTokenRequest) (string, uint, error) {
 	u, err := uc.UserService.Get(ctx, r.UserID)
 	if err != nil {
 		return "", 0, err

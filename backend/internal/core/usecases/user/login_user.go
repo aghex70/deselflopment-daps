@@ -14,7 +14,7 @@ type LoginUserUseCase struct {
 	logger      *log.Logger
 }
 
-func (uc *LoginUserUseCase) Execute(ctx context.Context, r requests.LoginUserRequest) (string, int, error) {
+func (uc *LoginUserUseCase) Execute(ctx context.Context, r requests.LoginUserRequest) (string, uint, error) {
 	u, err := uc.UserService.GetByEmail(ctx, r.Email)
 	if err != nil {
 		return "", 0, err
@@ -24,7 +24,6 @@ func (uc *LoginUserUseCase) Execute(ctx context.Context, r requests.LoginUserReq
 	if err != nil {
 		return "", 0, err
 	}
-
 	match := utils.PasswordsMatch(ctx, decryptedPassword, r.Password)
 	if !match {
 		return "", 0, pkg.InvalidCredentialsError

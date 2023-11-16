@@ -2,22 +2,20 @@ package category
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/category"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/domain"
-	"github.com/aghex70/daps/server"
+	"github.com/aghex70/daps/internal/ports/services/category"
 	utils "github.com/aghex70/daps/utils/category"
 	"log"
 )
 
 type GetCategoryUseCase struct {
-	CategoryService category.Service
+	CategoryService category.Servicer
 	logger          *log.Logger
 }
 
 func (uc *GetCategoryUseCase) Execute(ctx context.Context, id uint) (domain.Category, error) {
-	userID, _ := server.RetrieveJWTClaims(r, req)
-	cs, err := uc.CategoryService.List(ctx, nil)
+	cs, err := uc.CategoryService.List(ctx, nil, nil)
 	if err != nil {
 		return domain.Category{}, err
 	}
@@ -30,7 +28,7 @@ func (uc *GetCategoryUseCase) Execute(ctx context.Context, id uint) (domain.Cate
 	return c, nil
 }
 
-func NewGetCategoryUseCase(s category.Service, logger *log.Logger) *GetCategoryUseCase {
+func NewGetCategoryUseCase(s category.Servicer, logger *log.Logger) *GetCategoryUseCase {
 	return &GetCategoryUseCase{
 		CategoryService: s,
 		logger:          logger,

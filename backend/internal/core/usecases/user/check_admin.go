@@ -13,10 +13,6 @@ type CheckAdminUseCase struct {
 }
 
 func (uc *CheckAdminUseCase) Execute(ctx context.Context, id uint) (bool, error) {
-	//userID, err := server.RetrieveJWTClaims(r, nil)
-	//if err != nil {
-	//	return 0, errors.New("invalid token")
-	//}
 	u, err := uc.UserService.Get(ctx, id)
 	if err != nil {
 		return false, err
@@ -27,4 +23,11 @@ func (uc *CheckAdminUseCase) Execute(ctx context.Context, id uint) (bool, error)
 	}
 
 	return true, nil
+}
+
+func NewCheckAdminUseCase(userService user.Service, logger *log.Logger) *CheckAdminUseCase {
+	return &CheckAdminUseCase{
+		UserService: userService,
+		logger:      logger,
+	}
 }

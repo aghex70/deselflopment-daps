@@ -6,7 +6,7 @@ import (
 
 type TokenResponse struct {
 	AccessToken string `json:"access_token"`
-	UserID      int    `json:"user_id"`
+	UserID      uint   `json:"user_id"`
 }
 
 type ListCategoriesResponse struct {

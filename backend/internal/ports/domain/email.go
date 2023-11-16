@@ -17,16 +17,3 @@ type Email struct {
 	ErrorMessage *string
 	UserID       uint
 }
-
-//func (e Email) FromDto() repository.Email {
-//	return repository.Email{
-//		From:    e.From,
-//		To:      e.To,
-//		Subject: e.Subject,
-//		Body:    e.Body,
-//		UserID:  e.UserID,
-//		Sent:    e.Sent,
-//		Source:  e.Source,
-//		Error:   e.Error,
-//	}
-//}

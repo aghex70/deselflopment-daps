@@ -37,3 +37,14 @@ var (
 	UnauthorizedError          = errors.New("unauthorized")
 	PasswordsDoNotMatchError   = errors.New("passwords do not match")
 )
+
+// Email
+var (
+	SendEmailError = errors.New("error sending email")
+	SaveEmailError = errors.New("error saving email in the database")
+)
+
+// Auth
+var (
+	InvalidTokenError = errors.New("invalid token")
+)

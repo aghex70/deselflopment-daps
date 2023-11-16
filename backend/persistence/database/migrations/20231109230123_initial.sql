@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS daps_todos;
 DROP TABLE IF EXISTS daps_categories;
 DROP TABLE IF EXISTS deselflopment_users;
 DROP TABLE IF EXISTS daps_category_users;
-DROP TABLE IF EXISTS daps_emails;
+DROP TABLE IF EXISTS deselflopment_emails;
 
 CREATE TABLE deselflopment_users (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -12,7 +12,7 @@ CREATE TABLE deselflopment_users (
     deleted_at TIMESTAMP NULL DEFAULT NULL,
     name VARCHAR(128) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     admin TINYINT NOT NULL DEFAULT 0,
     active TINYINT NOT NULL DEFAULT 0,
     activation_code VARCHAR(50) UNIQUE,
@@ -34,14 +34,13 @@ CREATE TABLE daps_categories (
      custom TINYINT NOT NULL DEFAULT 0,
      owner_id INT UNSIGNED NULL DEFAULT NULL,
      FOREIGN KEY(owner_id) REFERENCES deselflopment_users(id) ON DELETE CASCADE,
-     ADD UNIQUE KEY (name, owner_id)
+     UNIQUE KEY (name, owner_id)
 );
 
 CREATE TABLE daps_category_users (
      id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
      category_id INT UNSIGNED NOT NULL REFERENCES daps_categories(id) ON DELETE CASCADE,
      user_id INT UNSIGNED NOT NULL REFERENCES deselflopment_users(id) ON DELETE CASCADE
---      PRIMARY KEY (category_id, user_id)
 );
 
 CREATE TABLE daps_todos (
@@ -66,10 +65,10 @@ CREATE TABLE daps_todos (
     user_id INT UNSIGNED NOT NULL,
     FOREIGN KEY(category_id) REFERENCES daps_categories(id) ON DELETE CASCADE,
     FOREIGN KEY(user_id) REFERENCES deselflopment_users(id) ON DELETE CASCADE,
-    ADD UNIQUE KEY (name, category_id, user_id)
+    UNIQUE KEY (name, category_id, user_id)
 );
 
-CREATE TABLE daps_emails (
+CREATE TABLE deselflopment_emails (
     id int UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,

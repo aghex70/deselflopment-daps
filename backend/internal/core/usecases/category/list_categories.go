@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/aghex70/daps/internal/core/services/category"
 	"github.com/aghex70/daps/internal/ports/domain"
-	"github.com/aghex70/daps/server"
+	//"github.com/aghex70/daps/server"
 	"log"
 )
 
@@ -13,9 +13,8 @@ type ListCategoriesUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *ListCategoriesUseCase) Execute(ctx context.Context, ids []uint) ([]domain.Category, error) {
-	userID, _ := server.RetrieveJWTClaims(r, nil)
-	categories, err := uc.CategoryService.List(ctx, userID)
+func (uc *ListCategoriesUseCase) Execute(ctx context.Context, ids *[]uint, filters *map[string]interface{}) ([]domain.Category, error) {
+	categories, err := uc.CategoryService.List(ctx, ids, filters)
 	if err != nil {
 		return []domain.Category{}, err
 	}

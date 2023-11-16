@@ -10,6 +10,7 @@ import (
 	"github.com/aghex70/daps/internal/ports/domain"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
 	common "github.com/aghex70/daps/utils"
+	emailUtils "github.com/aghex70/daps/utils/email"
 	utils "github.com/aghex70/daps/utils/user"
 	"gorm.io/gorm"
 	"log"
@@ -24,10 +25,7 @@ type RegisterUserUseCase struct {
 
 func (uc *RegisterUserUseCase) Execute(ctx context.Context, r requests.CreateUserRequest) error {
 	_, err := uc.UserService.GetByEmail(ctx, r.Email)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return pkg.UserAlreadyRegisteredError
-		}
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return err
 	}
 
@@ -35,10 +33,8 @@ func (uc *RegisterUserUseCase) Execute(ctx context.Context, r requests.CreateUse
 	if err != nil {
 		return err
 	}
-	log.Printf("Categories: %+v", categories)
 
 	encryptedPassword := utils.EncryptPassword(ctx, r.Password)
-
 	u := domain.User{
 		Name:              r.Name,
 		Email:             r.Email,
@@ -48,22 +44,12 @@ func (uc *RegisterUserUseCase) Execute(ctx context.Context, r requests.CreateUse
 		Categories:        &categories,
 	}
 
-	log.Printf("User: %+v", u)
 	nu, err := uc.UserService.Create(ctx, u)
 	if err != nil {
 		return err
 	}
 
-	e := domain.Email{
-		Subject:   "📣 DAPS - Activate your account 📣",
-		Body:      "In order to complete your registration, please click on the following link: " + pkg.ActivationCodeLink + nu.ActivationCode,
-		From:      pkg.FromEmail,
-		Source:    pkg.ProjectName,
-		To:        r.Name,
-		Recipient: r.Email,
-		UserID:    nu.ID,
-	}
-
+	e := emailUtils.GenerateActivationEmail(r.Name, r.Email, nu)
 	s, err := uc.EmailService.Send(ctx, e)
 	if !s && err != nil {
 		uerr := uc.UserService.Delete(ctx, nu.ID)
@@ -72,17 +58,11 @@ func (uc *RegisterUserUseCase) Execute(ctx context.Context, r requests.CreateUse
 		}
 		return err
 	}
-	log.Println("Registering!!!!!")
-	log.Println("Registering!!!!!")
-	log.Println("Registering!!!!!")
-	log.Println("Registering!!!!!")
-	log.Println("Registering!!!!!")
-	log.Println("Registering!!!!!")
 	return nil
 }
 
-func NewRegisterUserUseCase(us user.Service, cs category.Service, es email.Service, logger *log.Logger) RegisterUserUseCase {
-	return RegisterUserUseCase{
+func NewRegisterUserUseCase(us user.Service, cs category.Service, es email.Service, logger *log.Logger) *RegisterUserUseCase {
+	return &RegisterUserUseCase{
 		UserService:     us,
 		CategoryService: cs,
 		EmailService:    es,

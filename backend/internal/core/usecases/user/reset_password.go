@@ -14,14 +14,14 @@ type ResetPasswordUseCase struct {
 	logger      *log.Logger
 }
 
-func (uc *ResetPasswordUseCase) Execute(ctx context.Context, r requests.ResetPasswordRequest) error {
-	match := utils.PasswordMatchesRepeatPassword(ctx, r.Password, r.RepeatPassword)
+func (uc *ResetPasswordUseCase) Execute(ctx context.Context, r requests.ResetPasswordRequest, userID uint) error {
+	match := utils.PasswordsMatch(ctx, r.Password, r.RepeatPassword)
 	if !match {
 		return pkg.PasswordsDoNotMatchError
 	}
 
 	encryptedPassword := utils.EncryptPassword(ctx, r.Password)
-	err := uc.UserService.ResetPassword(ctx, encryptedPassword, r.ResetPasswordCode)
+	err := uc.UserService.ResetPassword(ctx, userID, encryptedPassword, r.ResetPasswordCode)
 	if err != nil {
 		return err
 	}

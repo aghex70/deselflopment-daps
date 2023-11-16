@@ -81,10 +81,10 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 		return err
 	}
 
-	todos := categoryUtils.GenerateDemoTodos(c.ID, ac.ID, yac.ID, req.Language)
+	todos := categoryUtils.GenerateDemoTodos(c.ID, ac.ID, yac.ID, r.Language)
 
 	for _, t := range todos {
-		_ = uc.TodoService.Create(ctx, t)
+		_, err = uc.TodoService.Create(ctx, t)
 		if err != nil {
 			return err
 		}

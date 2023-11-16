@@ -1,14 +1,8 @@
 package pkg
 
 import (
-	"errors"
 	domain2 "github.com/aghex70/daps/internal/ports/domain"
-	"time"
-
-	uuid "github.com/satori/go.uuid"
-
-	"github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	"net/http"
 )
 
 func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, language string) []domain2.Todo {
@@ -248,27 +242,11 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, 
 //	}
 //}
 
-func SendEmail(e domain2.Email) error {
-	from := mail.NewEmail(FromName, FromEmail)
-	subject := e.Subject
-	to := mail.NewEmail(e.Recipient, e.To)
-	message := mail.NewSingleEmail(from, subject, to, e.Body+time.Now().Format("2006-01-02 15:04:05"), e.Body)
-	client := sendgrid.NewSendClient(SendGridApiKey)
-	response, err := client.Send(message)
-	if err != nil {
-		return err
-	}
-	if response.StatusCode != 202 {
-		return errors.New("error sending email")
-	}
-	return nil
+func SetCORSHeaders(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 }
-
-func GenerateUUID() string {
-	u := uuid.NewV4()
-	return u.String()
-}
-
 func GetOrigin() string {
 	if Environment == "local" {
 		return DapsLocalUrl

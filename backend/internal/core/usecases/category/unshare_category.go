@@ -9,12 +9,12 @@ import (
 	"log"
 )
 
-type UpdateCategoryUseCase struct {
+type UnshareCategoryUseCase struct {
 	CategoryService category.Servicer
 	logger          *log.Logger
 }
 
-func (uc *UpdateCategoryUseCase) Execute(ctx context.Context, fields map[string]interface{}, id, userID uint) (domain.Category, error) {
+func (uc *UnshareCategoryUseCase) Execute(ctx context.Context, fields map[string]interface{}, id, userID uint) (domain.Category, error) {
 	c, err := uc.CategoryService.Get(ctx, id)
 	if err != nil {
 		return domain.Category{}, err
@@ -32,8 +32,8 @@ func (uc *UpdateCategoryUseCase) Execute(ctx context.Context, fields map[string]
 	return cat, nil
 }
 
-func NewUpdateCategoryUseCase(s category.Servicer, logger *log.Logger) *UpdateCategoryUseCase {
-	return &UpdateCategoryUseCase{
+func NewUnshareCategoryUseCase(s category.Servicer, logger *log.Logger) *UnshareCategoryUseCase {
+	return &UnshareCategoryUseCase{
 		CategoryService: s,
 		logger:          logger,
 	}

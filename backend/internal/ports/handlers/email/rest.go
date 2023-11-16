@@ -1,15 +1,13 @@
 package email
 
 import (
-	"context"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/requests/email"
-	"github.com/aghex70/daps/internal/ports/services/email"
 	"net/http"
 )
 
 type Handler struct {
-	emailService email.Servicer
+	//emailService email.Servicer
 }
 
 func (h Handler) CreateEmail(w http.ResponseWriter, r *http.Request) {
@@ -23,17 +21,17 @@ func (h Handler) CreateEmail(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = h.emailService.Send(context.TODO(), r, payload)
-		if err != nil {
-			handlers.ThrowError(err, http.StatusBadRequest, w)
-			return
-		}
+		//err = h.emailService.Send(context.TODO(), r, payload)
+		//if err != nil {
+		//	handlers.ThrowError(err, http.StatusBadRequest, w)
+		//	return
+		//}
 		w.WriteHeader(http.StatusCreated)
 	}
 }
 
-func NewEmailHandler(es email.Servicer) Handler {
-	return Handler{
-		emailService: es,
-	}
-}
+//func NewEmailHandler(es email.Servicer) Handler {
+//	return Handler{
+//emailService: es,
+//}
+//}

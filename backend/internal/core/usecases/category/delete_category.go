@@ -2,38 +2,35 @@ package category
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/category"
 	"github.com/aghex70/daps/internal/pkg"
-	"github.com/aghex70/daps/internal/ports/domain"
-	"github.com/aghex70/daps/server"
+	"github.com/aghex70/daps/internal/ports/services/category"
 	utils "github.com/aghex70/daps/utils/category"
 	"log"
 )
 
 type DeleteCategoryUseCase struct {
-	CategoryService category.Service
+	CategoryService category.Servicer
 	logger          *log.Logger
 }
 
-func (uc *DeleteCategoryUseCase) Execute(ctx context.Context, id uint) (domain.Category, error) {
-	userID, _ := server.RetrieveJWTClaims(r, req)
-	u, err := uc.CategoryService.GetOwner(ctx, id)
+func (uc *DeleteCategoryUseCase) Execute(ctx context.Context, id, userID uint) error {
+	c, err := uc.CategoryService.Get(ctx, id)
 	if err != nil {
-		return domain.Category{}, err
+		return err
 	}
-	owner := utils.IsCategoryOwner(u.OwnerID, userID)
+	owner := utils.IsCategoryOwner(c.OwnerID, userID)
 	if !owner {
-		return domain.Category{}, pkg.UnauthorizedError
+		return pkg.UnauthorizedError
 	}
 
 	err = uc.CategoryService.Delete(ctx, id)
 	if err != nil {
-		return domain.Category{}, err
+		return err
 	}
-	return domain.Category{}, nil
+	return nil
 }
 
-func NewDeleteCategoryUseCase(s category.Service, logger *log.Logger) *DeleteCategoryUseCase {
+func NewDeleteCategoryUseCase(s category.Servicer, logger *log.Logger) *DeleteCategoryUseCase {
 	return &DeleteCategoryUseCase{
 		CategoryService: s,
 		logger:          logger,

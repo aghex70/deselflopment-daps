@@ -12,8 +12,8 @@ type ActivateUserUseCase struct {
 	logger      *log.Logger
 }
 
-func (uc *ActivateUserUseCase) Execute(ctx context.Context, r requests.ActivateUserRequest) error {
-	err := uc.UserService.Activate(ctx, r.ActivationCode)
+func (uc *ActivateUserUseCase) Execute(ctx context.Context, r requests.ActivateUserRequest, userID uint) error {
+	err := uc.UserService.Activate(ctx, userID, r.ActivationCode)
 	if err != nil {
 		return err
 	}

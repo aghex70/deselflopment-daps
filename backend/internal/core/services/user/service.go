@@ -14,7 +14,11 @@ type Service struct {
 }
 
 func (s Service) GetByEmail(ctx context.Context, email string) (domain.User, error) {
-	return s.userRepository.GetByEmail(ctx, email)
+	u, err := s.userRepository.GetByEmail(ctx, email)
+	if err != nil {
+		return domain.User{}, err
+	}
+	return u, nil
 }
 
 func (s Service) Create(ctx context.Context, u domain.User) (domain.User, error) {
@@ -38,8 +42,8 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 	return nil
 }
 
-func (s Service) Activate(ctx context.Context, activationCode string) error {
-	return s.userRepository.Activate(ctx, activationCode)
+func (s Service) Activate(ctx context.Context, id uint, activationCode string) error {
+	return s.userRepository.Activate(ctx, id, activationCode)
 }
 
 func (s Service) List(ctx context.Context, r *http.Request) ([]domain.User, error) {
@@ -70,11 +74,12 @@ func (s Service) Get(ctx context.Context, id uint) (domain.User, error) {
 	return u, nil
 }
 
-func (s Service) ResetPassword(ctx context.Context, password, resetPasswordCode string) error {
-	err := s.userRepository.ResetPassword(ctx, password, resetPasswordCode)
+func (s Service) ResetPassword(ctx context.Context, userID uint, password, resetPasswordCode string) error {
+	err := s.userRepository.ResetPassword(ctx, userID, password, resetPasswordCode)
 	if err != nil {
 		return err
 	}
+	return nil
 }
 
 func (s Service) Update(ctx context.Context, id uint, fields map[string]interface{}) error {

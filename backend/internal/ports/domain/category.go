@@ -16,16 +16,3 @@ type Category struct {
 	Notifiable  bool
 	Custom      bool
 }
-
-//func (c Category) FromDto() repository.Category {
-//	return repository.Category{
-//		Name:        c.Name,
-//		Description: c.Description,
-//		OwnerID:     c.OwnerID,
-//		//Users:       c.Users,
-//		//Todos:       c.Todos,
-//		Shared:     c.Shared,
-//		Notifiable: c.Notifiable,
-//		Custom:     c.Custom,
-//	}
-//}

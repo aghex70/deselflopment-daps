@@ -1,18 +1,15 @@
 package todo
 
 import (
-	"context"
-	"encoding/json"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/requests/todo"
-	"github.com/aghex70/daps/internal/ports/services/todo"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
 type Handler struct {
-	todoService todo.Servicer
+	//todoService todo.Servicer
 }
 
 func (h Handler) HandleTodo(w http.ResponseWriter, r *http.Request) {
@@ -128,11 +125,11 @@ func (h Handler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.todoService.Create(context.TODO(), r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
+	//err = h.todoService.Create(context.TODO(), r, payload)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -144,11 +141,12 @@ func (h Handler) UpdateTodo(w http.ResponseWriter, r *http.Request, id uint) {
 		return
 	}
 
-	err = h.todoService.Update(context.TODO(), r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
+	//err = h.todoService.Update(context.TODO(), r, payload)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
+	return
 }
 
 func (h Handler) CompleteTodo(w http.ResponseWriter, r *http.Request, id, categoryID uint) {
@@ -158,14 +156,15 @@ func (h Handler) CompleteTodo(w http.ResponseWriter, r *http.Request, id, catego
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	err = h.todoService.Complete(context.TODO(), r, payload)
-	if err != nil {
-		return
-	}
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
+	//err = h.todoService.Complete(context.TODO(), r, payload)
+	//if err != nil {
+	//	return
+	//}
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
+	return
 }
 
 func (h Handler) ActivateTodo(w http.ResponseWriter, r *http.Request, id, categoryID uint) {
@@ -175,11 +174,12 @@ func (h Handler) ActivateTodo(w http.ResponseWriter, r *http.Request, id, catego
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	err = h.todoService.Activate(context.TODO(), r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
+	//err = h.todoService.Activate(context.TODO(), r, payload)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
+	return
 }
 
 func (h Handler) StartTodo(w http.ResponseWriter, r *http.Request, id, categoryID uint) {
@@ -190,11 +190,12 @@ func (h Handler) StartTodo(w http.ResponseWriter, r *http.Request, id, categoryI
 		return
 	}
 
-	err = h.todoService.Start(context.TODO(), r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
+	//err = h.todoService.Start(context.TODO(), r, payload)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
+	return
 }
 
 func (h Handler) RestartTodo(w http.ResponseWriter, r *http.Request, id, categoryID uint) {
@@ -205,11 +206,12 @@ func (h Handler) RestartTodo(w http.ResponseWriter, r *http.Request, id, categor
 		return
 	}
 
-	err = h.todoService.Restart(context.TODO(), r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
+	//err = h.todoService.Restart(context.TODO(), r, payload)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
+	return
 }
 
 //func (h Handler) GetTodo(w http.ResponseWriter, r *http.Request, id, categoryID uint) {
@@ -247,54 +249,57 @@ func (h Handler) ListTodos(w http.ResponseWriter, r *http.Request) {
 	}
 	payload := requests.ListTodosRequest{}
 	payload.Category = uint(categoryID)
-	todos, err := h.todoService.List(context.TODO(), r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	b, err := json.Marshal(todos)
-	if err != nil {
-		return
-	}
-	_, err = w.Write(b)
-	if err != nil {
-		return
-	}
+	//todos, err := h.todoService.List(context.TODO(), r, payload)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
+	//
+	//b, err := json.Marshal(todos)
+	//if err != nil {
+	//	return
+	//}
+	//_, err = w.Write(b)
+	//if err != nil {
+	//	return
+	//}
+	return
 }
 
 func (h Handler) ListRecurringTodos(w http.ResponseWriter, r *http.Request) {
-	todos, err := h.todoService.ListRecurring(context.TODO(), r)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	b, err := json.Marshal(todos)
-	if err != nil {
-		return
-	}
-	_, err = w.Write(b)
-	if err != nil {
-		return
-	}
+	//todos, err := h.todoService.ListRecurring(context.TODO(), r)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
+	//
+	//b, err := json.Marshal(todos)
+	//if err != nil {
+	//	return
+	//}
+	//_, err = w.Write(b)
+	//if err != nil {
+	//	return
+	//}
+	return
 }
 
 func (h Handler) ListCompletedTodos(w http.ResponseWriter, r *http.Request) {
-	todos, err := h.todoService.ListCompleted(context.TODO(), r)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	b, err := json.Marshal(todos)
-	if err != nil {
-		return
-	}
-	_, err = w.Write(b)
-	if err != nil {
-		return
-	}
+	//todos, err := h.todoService.ListCompleted(context.TODO(), r)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
+	//
+	//b, err := json.Marshal(todos)
+	//if err != nil {
+	//	return
+	//}
+	//_, err = w.Write(b)
+	//if err != nil {
+	//	return
+	//}
+	return
 }
 
 //func (h Handler) ListSuggestedTodos(w http.ResponseWriter, r *http.Request) {
@@ -315,11 +320,11 @@ func (h Handler) ListCompletedTodos(w http.ResponseWriter, r *http.Request) {
 //}
 
 func (h Handler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
-	err := h.todoService.Suggest(context.TODO(), r)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
+	//err := h.todoService.Suggest(context.TODO(), r)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
 
 	w.WriteHeader(http.StatusOK)
 }
@@ -337,11 +342,11 @@ func (h Handler) DeleteTodo(w http.ResponseWriter, r *http.Request, id uint) {
 		return
 	}
 
-	err = h.todoService.Delete(context.TODO(), r, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
+	//err = h.todoService.Delete(context.TODO(), r, payload)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -362,8 +367,8 @@ func (h Handler) DeleteTodo(w http.ResponseWriter, r *http.Request, id uint) {
 //	}
 //}
 
-func NewTodoHandler(ts todo.Servicer) Handler {
-	return Handler{
-		todoService: ts,
-	}
-}
+//func NewTodoHandler(ts todo.Servicer) Handler {
+//	return Handler{
+//		todoService: ts,
+//	}
+//}

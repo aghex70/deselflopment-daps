@@ -20,8 +20,8 @@ type Category struct {
 
 func (c Category) ToDto() domain.Category {
 	return domain.Category{
-		//ID:          c.ID,
-		//CreatedAt:   c.CreatedAt,
+		ID:          c.ID,
+		CreatedAt:   c.CreatedAt,
 		Name:        c.Name,
 		Description: c.Description,
 		OwnerID:     c.OwnerID,
@@ -37,15 +37,23 @@ func (Category) TableName() string {
 	return "daps_categories"
 }
 
-type GormCategoryRepository struct {
+type CategoryRepository struct {
 	*gorm.DB
 }
 
-func NewGormCategoryRepository(db *gorm.DB) *GormCategoryRepository {
-	return &GormCategoryRepository{db}
+func NewGormCategoryRepository(db *gorm.DB) *CategoryRepository {
+	return &CategoryRepository{db}
 }
 
-func (gr *GormCategoryRepository) Get(ctx context.Context, id uint) (domain.Category, error) {
+func (gr *CategoryRepository) Create(ctx context.Context, c domain.Category) (domain.Category, error) {
+	result := gr.DB.Create(&c)
+	if result.Error != nil {
+		return domain.Category{}, result.Error
+	}
+	return c, nil
+}
+
+func (gr *CategoryRepository) Get(ctx context.Context, id uint) (domain.Category, error) {
 	var c Category
 	result := gr.DB.First(&c, id)
 	if result.Error != nil {
@@ -54,7 +62,15 @@ func (gr *GormCategoryRepository) Get(ctx context.Context, id uint) (domain.Cate
 	return domain.Category{}, nil
 }
 
-func (gr *GormCategoryRepository) List(ctx context.Context, filters *map[string]interface{}) ([]domain.Category, error) {
+func (gr *CategoryRepository) Delete(ctx context.Context, id uint) error {
+	result := gr.DB.Delete(&Category{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (gr *CategoryRepository) List(ctx context.Context, ids *[]uint, filters *map[string]interface{}) ([]domain.Category, error) {
 	var cs []Category
 	var cats []domain.Category
 
@@ -77,34 +93,21 @@ func (gr *GormCategoryRepository) List(ctx context.Context, filters *map[string]
 	return cats, nil
 }
 
-func (gr *GormCategoryRepository) ListByIds(ctx context.Context, ids []uint) ([]domain.Category, error) {
-	var cs []Category
-	var cats []domain.Category
-
-	result := gr.DB.Find(&cs, ids)
-	if result.Error != nil {
-		return []domain.Category{}, result.Error
-	}
-
-	for _, c := range cs {
-		cs := c.ToDto()
-		cats = append(cats, cs)
-	}
-	return cats, nil
-}
-
-func (gr *GormCategoryRepository) Create(ctx context.Context, c domain.Category) (domain.Category, error) {
-	result := gr.DB.Create(&c)
+func (gr *CategoryRepository) Update(ctx context.Context, id uint, c domain.Category) (domain.Category, error) {
+	var cat Category
+	result := gr.DB.First(&cat, id)
 	if result.Error != nil {
 		return domain.Category{}, result.Error
 	}
-	return c, nil
-}
-
-func (gr *GormCategoryRepository) Update(ctx context.Context, c domain.Category) error {
-	return nil
-}
-
-func (gr *GormCategoryRepository) Delete(ctx context.Context, c domain.Category, email string) error {
-	return nil
+	cat.Name = c.Name
+	cat.Description = c.Description
+	cat.OwnerID = c.OwnerID
+	cat.Shared = c.Shared
+	cat.Notifiable = c.Notifiable
+	cat.Custom = c.Custom
+	result = gr.DB.Save(&cat)
+	if result.Error != nil {
+		return domain.Category{}, result.Error
+	}
+	return cat.ToDto(), nil
 }
