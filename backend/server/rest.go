@@ -27,7 +27,6 @@ type RestServer struct {
 
 func (s *RestServer) StartServer() error {
 	// User
-	//http.HandleFunc("/api/user/admin", handlers.JWTAuthMiddleware(s.userHandler.CheckAdmin))
 	http.HandleFunc("/api/users", handlers.JWTAuthMiddleware(s.userHandler.List))
 	http.HandleFunc("/api/users/provision", handlers.JWTAuthMiddleware(s.userHandler.ProvisionDemoUser))
 	http.HandleFunc("/api/register", s.userHandler.Register)
@@ -36,8 +35,6 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/reset-link", handlers.JWTAuthMiddleware(s.userHandler.ResetLink))
 	http.HandleFunc("/api/reset-password", handlers.JWTAuthMiddleware(s.userHandler.ResetPassword))
 	http.HandleFunc("/api/activate", handlers.JWTAuthMiddleware(s.userHandler.Activate))
-	// TEMPORARY!!!!!
-	//http.HandleFunc("/api/users/update", handlers.JWTAuthMiddleware(s.userHandler.Update))
 	http.HandleFunc("/api/users/", handlers.JWTAuthMiddleware(s.userHandler.HandleUser))
 
 	// Categories
