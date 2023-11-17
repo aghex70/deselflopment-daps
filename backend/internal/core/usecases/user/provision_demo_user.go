@@ -5,6 +5,7 @@ import (
 	"github.com/aghex70/daps/internal/core/services/category"
 	"github.com/aghex70/daps/internal/core/services/todo"
 	"github.com/aghex70/daps/internal/core/services/user"
+	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/domain"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
 	common "github.com/aghex70/daps/utils"
@@ -20,23 +21,25 @@ type ProvisionDemoUserUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.ProvisionDemoUserRequest) error {
-	//_, err := s.CheckAdmin(ctx, r)
-	//if err != nil {
-	//	return err
-	//}
-
+func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.ProvisionDemoUserRequest, userID uint) error {
+	ru, err := uc.UserService.Get(ctx, userID)
+	if err != nil {
+		return err
+	}
+	if !ru.Admin {
+		return pkg.UnauthorizedError
+	}
 	encryptedPassword := userUtils.EncryptPassword(ctx, r.Password)
 
 	u := domain.User{
 		Name:              r.Name,
 		Email:             r.Email,
 		Password:          encryptedPassword,
-		Active:            true,
+		Active:            false,
+		ActivationCode:    common.GenerateUUID(),
 		ResetPasswordCode: common.GenerateUUID(),
 	}
 
-	log.Printf("User: %+v", u)
 	nu, err := uc.UserService.Create(ctx, u)
 	if err != nil {
 		return err
@@ -47,7 +50,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 		//Description: "Home tasks",
 		Custom: true,
 		Name:   "Home",
-		//Users:       []domain.User{u},
+		Users:  &[]domain.User{u},
 	}
 
 	c, err := uc.CategoryService.Create(ctx, demoCategory)
@@ -60,7 +63,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 		//Description: "Work stuff",
 		Custom: true,
 		Name:   "Work",
-		//Users:       []domain.User{u},
+		Users:  &[]domain.User{u},
 	}
 
 	ac, err := uc.CategoryService.Create(ctx, anotherDemoCategory)
@@ -73,7 +76,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 		//Description: "Purchase list",
 		Custom: true,
 		Name:   "Purchases",
-		//Users:       []domain.User{u},
+		Users:  &[]domain.User{u},
 	}
 
 	yac, err := uc.CategoryService.Create(ctx, yetAnotherDemoCategory)
@@ -81,7 +84,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 		return err
 	}
 
-	todos := categoryUtils.GenerateDemoTodos(c.ID, ac.ID, yac.ID, r.Language)
+	todos := categoryUtils.GenerateDemoTodos(c.ID, ac.ID, yac.ID, nu.ID, "es")
 
 	for _, t := range todos {
 		_, err = uc.TodoService.Create(ctx, t)

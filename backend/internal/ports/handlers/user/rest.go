@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/usecases/user"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
@@ -15,7 +16,6 @@ import (
 
 type Handler struct {
 	ActivateUserUseCase      user.ActivateUserUseCase
-	CheckAdminUseCase        user.CheckAdminUseCase
 	DeleteUserUseCase        user.DeleteUserUseCase
 	GetUserUseCase           user.GetUserUseCase
 	ListUsersUseCase         user.ListUsersUseCase
@@ -25,10 +25,20 @@ type Handler struct {
 	RegisterUserUseCase      user.RegisterUserUseCase
 	ResetPasswordUseCase     user.ResetPasswordUseCase
 	SendResetLinkUseCase     user.SendResetLinkUseCase
+	UpdateUserUseCase        user.UpdateUserUseCase
 	logger                   *log.Logger
 }
 
 func (h Handler) HandleUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, PUT, GET, OPTIONS")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	path := strings.Split(r.RequestURI, handlers.USER_STRING)[1]
 	userID, err := strconv.Atoi(path)
 	if err != nil {
@@ -37,10 +47,12 @@ func (h Handler) HandleUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch r.Method {
-	//case http.MethodGet:
-	//	h.GetUser(w, r, userID)
+	case http.MethodGet:
+		h.Get(w, r, uint(userID))
 	case http.MethodDelete:
-		h.DeleteUser(w, r, userID)
+		h.Delete(w, r, uint(userID))
+	case http.MethodPut:
+		h.Update(w, r, uint(userID))
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
@@ -264,9 +276,11 @@ func (h Handler) Activate(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h Handler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
-	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
+func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.UpdateUserRequest{}
+	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
@@ -276,105 +290,142 @@ func (h Handler) CheckAdmin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.CheckAdminUseCase.Execute(context.TODO(), userID)
+	payload.UserID = id
+	err = h.UpdateUserUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h Handler) List(w http.ResponseWriter, r *http.Request) {
+	pkg.SetCORSHeaders(w, r)
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	err := handlers.CheckHttpMethod(http.MethodGet, w, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	users, err := h.ListUsersUseCase.Execute(context.TODO(), nil, userID)
+	fmt.Println("users", users)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
 	//return
-}
-
-func (h Handler) DeleteUser(w http.ResponseWriter, r *http.Request, id int) {
-	//	payload := requests.DeleteUserRequest{UserID: uint(int64(id))}
-	//	err := handlers.ValidateRequest(r, &payload)
-	//	if err != nil {
-	//		handlers.ThrowError(err, http.StatusBadRequest, w)
-	//		return
-	//	}
-	//
-	//	err = h.userService.Delete(context.TODO(), r, payload)
-	//	if err != nil {
-	//		handlers.ThrowError(err, http.StatusBadRequest, w)
-	//		return
-	//	}
-	//	w.WriteHeader(http.StatusNoContent)
-	//}
-	//
-	//func (h Handler) GetUser(w http.ResponseWriter, r *http.Request, id int) {
-	//	payload := requests.GetUserRequest{UserID: uint(int64(id))}
-	//	err := handlers.ValidateRequest(r, &payload)
-	//	if err != nil {
-	//		handlers.ThrowError(err, http.StatusBadRequest, w)
-	//		return
-	//	}
-	//
-	//	//user, err := h.userService.Get(context.TODO(), r, payload)
-	//	_, err = h.userService.Get(context.TODO(), r, payload)
-	//	if err != nil {
-	//		if errors.Is(err, gorm.ErrRecordNotFound) {
-	//			w.WriteHeader(http.StatusNotFound)
-	//			return
-	//		}
-	//		handlers.ThrowError(err, http.StatusBadRequest, w)
-	//		return
-	//	}
-	//	return
-	//	//filteredUser := pkg.FilterUser(user)
-	//	//b, err := json.Marshal(filteredUser)
-	//	//if err != nil {
-	//	//	return
-	//	//}
-	//	//_, err = w.Write(b)
-	//	//if err != nil {
-	//	//	return
-	//	//}
+	//filteredUsers := pkg.FilterUsers(users)
+	//b, err := json.Marshal(handlers.ListUsersResponse{Users: filteredUsers})
+	b, err := json.Marshal(handlers.ListUsersResponse{Users: users})
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 }
 
 func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
-	//payload := requests.ProvisionDemoUserRequest{}
-	//err := handlers.ValidateRequest(r, &payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//
-	//err = handlers.CheckHttpMethod(http.MethodPost, w, r)
-	//if err != nil {
-	//	return
-	//}
-	//
-	//err = h.userService.ProvisionDemoUser(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//w.WriteHeader(http.StatusCreated)
+	pkg.SetCORSHeaders(w, r)
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
+		return
+	}
+
+	payload := requests.ProvisionDemoUserRequest{}
+	err = handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.ProvisionDemoUserUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+	return
 }
 
-func (h Handler) ListUsers(w http.ResponseWriter, r *http.Request) {
-	//err := handlers.CheckHttpMethod(http.MethodGet, w, r)
-	//if err != nil {
-	//	return
-	//}
-	//
-	////users, err := h.userService.List(context.TODO(), r)
-	//_, err = h.userService.List(context.TODO(), r)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//return
-	////filteredUsers := pkg.FilterUsers(users)
-	////b, err := json.Marshal(handlers.ListUsersResponse{Users: filteredUsers})
-	////if err != nil {
-	////	return
-	////}
-	////_, err = w.Write(b)
-	////if err != nil {
-	////	return
-	////}
+func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.DeleteUserRequest{}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	payload.UserID = id
+	err = h.DeleteUserUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.GetUserRequest{}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	payload.UserID = id
+	u, err := h.GetUserUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(handlers.GetUserResponse{User: u})
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 }
 
 func (h Handler) ImportCSV(w http.ResponseWriter, r *http.Request) {
@@ -402,30 +453,30 @@ func (h Handler) ImportCSV(w http.ResponseWriter, r *http.Request) {
 
 func NewUserHandler(
 	activateUserUseCase *user.ActivateUserUseCase,
-	//checkAdminUseCase *user.CheckAdminUseCase,
-	//deleteUserUseCase *user.DeleteUserUseCase,
-	//getUserUseCase *user.GetUserUseCase,
-	//listUsersUseCase *user.ListUsersUseCase,
+	deleteUserUseCase *user.DeleteUserUseCase,
+	getUserUseCase *user.GetUserUseCase,
+	listUsersUseCase *user.ListUsersUseCase,
 	loginUserUseCase *user.LoginUserUseCase,
-	//provisionDemoUserUseCase *user.ProvisionDemoUserUseCase,
+	provisionDemoUserUseCase *user.ProvisionDemoUserUseCase,
 	refreshTokenUseCase *user.RefreshTokenUseCase,
 	registerUserUseCase *user.RegisterUserUseCase,
 	resetPasswordUseCase *user.ResetPasswordUseCase,
 	sendResetLinkUseCase *user.SendResetLinkUseCase,
+	updateUserUseCase *user.UpdateUserUseCase,
 	logger *log.Logger,
 ) *Handler {
 	return &Handler{
-		ActivateUserUseCase: *activateUserUseCase,
-		//CheckAdminUseCase:        checkAdminUseCase,
-		//DeleteUserUseCase:        deleteUserUseCase,
-		//GetUserUseCase:           getUserUseCase,
-		//ListUsersUseCase:         listUsersUseCase,
-		LoginUserUseCase: *loginUserUseCase,
-		//ProvisionDemoUserUseCase: provisionDemoUserUseCase,
-		RefreshTokenUseCase:  *refreshTokenUseCase,
-		RegisterUserUseCase:  *registerUserUseCase,
-		ResetPasswordUseCase: *resetPasswordUseCase,
-		SendResetLinkUseCase: *sendResetLinkUseCase,
-		logger:               logger,
+		ActivateUserUseCase:      *activateUserUseCase,
+		DeleteUserUseCase:        *deleteUserUseCase,
+		GetUserUseCase:           *getUserUseCase,
+		ListUsersUseCase:         *listUsersUseCase,
+		LoginUserUseCase:         *loginUserUseCase,
+		ProvisionDemoUserUseCase: *provisionDemoUserUseCase,
+		RefreshTokenUseCase:      *refreshTokenUseCase,
+		RegisterUserUseCase:      *registerUserUseCase,
+		ResetPasswordUseCase:     *resetPasswordUseCase,
+		SendResetLinkUseCase:     *sendResetLinkUseCase,
+		UpdateUserUseCase:        *updateUserUseCase,
+		logger:                   logger,
 	}
 }

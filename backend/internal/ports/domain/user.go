@@ -5,26 +5,27 @@ import (
 )
 
 type User struct {
-	ID                uint
-	CreatedAt         time.Time
-	Name              string
-	Email             string
-	Password          string
-	Admin             bool
-	Active            bool
-	ActivationCode    string
-	ResetPasswordCode string
-	Language          string
-	AutoSuggest       bool
-	Categories        *[]Category
-	Emails            *[]Email
-	Todos             *[]Todo
-	OwnedCategories   *[]Category
+	ID                uint        `json:"id"`
+	CreatedAt         time.Time   `json:"created_at"`
+	Name              string      `json:"name"`
+	Email             string      `json:"email"`
+	Password          string      `json:"password"`
+	Admin             bool        `json:"admin"`
+	Active            bool        `json:"active"`
+	ActivationCode    string      `json:"activation_code"`
+	ResetPasswordCode string      `json:"reset_password_code"`
+	Language          string      `json:"language"`
+	AutoSuggest       bool        `json:"auto_suggest"`
+	Categories        *[]Category `json:"categories"`
+	Emails            *[]Email    `json:"emails"`
+	Todos             *[]Todo     `json:"todos"`
+	OwnedCategories   *[]Category `json:"owned_categories"`
 }
 
-//type FilteredUser struct {
-//	ID               int       `json:"id"`
-//	Email            string    `json:"email"`
-//	Name             string    `json:"name"`
-//	RegistrationDate time.Time `json:"registration_date"`
-//}
+type FilteredUser struct {
+	ID        int       `json:"id"`
+	Email     string    `json:"email"`
+	Name      string    `json:"name"`
+	Active    bool      `json:"active"`
+	CreatedAt time.Time `json:"created_at"`
+}

@@ -34,30 +34,6 @@ type Todo struct {
 	UserID      uint
 }
 
-//func (t Todo) Error() string {
-//	//TODO implement me
-//	panic("implement me")
-//}
-//
-//func (t Todo) fromDto() repository.Todo {
-//	return repository.Todo{
-//		Name:        t.Name,
-//		Description: t.Description,
-//		Completed:   t.Completed,
-//		CompletedAt: t.CompletedAt,
-//		Active:      t.Active,
-//		Priority:    int(t.Priority),
-//		CategoryID:  t.CategoryID,
-//		Link:        t.Link,
-//		Recurring:   t.Recurring,
-//		Recurrency:  t.Recurrency,
-//		StartedAt:   t.StartedAt,
-//		Suggestable: t.Suggestable,
-//		SuggestedAt: t.SuggestedAt,
-//		UserID:      t.UserID,
-//	}
-//}
-//
 //type Summmary struct {
 //	Summary []CategorySummary `json:"summary"`
 //}

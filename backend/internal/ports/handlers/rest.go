@@ -14,10 +14,9 @@ import (
 )
 
 const (
-	TODO_STRING            string = "todo/"
-	CATEGORY_STRING        string = "category/"
-	USER_STRING            string = "user/"
-	USER_ACTIVATION_STRING string = "activate/"
+	TODO_STRING     string = "todos/"
+	CATEGORY_STRING string = "categories/"
+	USER_STRING     string = "users/"
 )
 
 type APIErrorResponse struct {

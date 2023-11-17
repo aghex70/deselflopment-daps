@@ -15,16 +15,15 @@ type RefreshTokenRequest struct {
 	UserID uint `json:"user_id"`
 }
 
-type UpdateUserConfigRequest struct {
+type UpdateUserRequest struct {
 	AutoSuggest bool   `json:"auto_suggest"`
-	AutoRemind  bool   `json:"auto_remind"`
 	Language    string `json:"language"`
+	UserID      uint   `json:"user_id"`
 }
 
 type ProvisionDemoUserRequest struct {
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
-	Language string `json:"language"`
 	Password string `json:"password" validate:"required,min=13"`
 }
 
@@ -42,7 +41,6 @@ type ActivateUserRequest struct {
 
 type ResetPasswordRequest struct {
 	Password          string `json:"password" validate:"required,min=13"`
-	RepeatPassword    string `json:"repeat_password" validate:"required,min=13"`
 	ResetPasswordCode string `json:"reset_password_code"`
 }
 

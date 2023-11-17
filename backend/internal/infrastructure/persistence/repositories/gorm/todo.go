@@ -36,7 +36,7 @@ func (t Todo) ToDto() domain.Todo {
 		Completed:   t.Completed,
 		CompletedAt: t.CompletedAt,
 		Active:      t.Active,
-		//Priority:    Priority(t.Priority),
+		Priority:    domain.Priority(t.Priority),
 		CategoryID:  t.CategoryID,
 		Link:        t.Link,
 		Recurring:   t.Recurring,
@@ -44,6 +44,25 @@ func (t Todo) ToDto() domain.Todo {
 		StartedAt:   t.StartedAt,
 		Suggestable: t.Suggestable,
 		Suggested:   t.Suggested,
+		SuggestedAt: t.SuggestedAt,
+		UserID:      t.UserID,
+	}
+}
+
+func TodoFromDto(t domain.Todo) Todo {
+	return Todo{
+		Name:        t.Name,
+		Description: t.Description,
+		Completed:   t.Completed,
+		CompletedAt: t.CompletedAt,
+		Active:      t.Active,
+		Priority:    int(t.Priority),
+		CategoryID:  t.CategoryID,
+		Link:        t.Link,
+		Recurring:   t.Recurring,
+		Recurrency:  t.Recurrency,
+		StartedAt:   t.StartedAt,
+		Suggestable: t.Suggestable,
 		SuggestedAt: t.SuggestedAt,
 		UserID:      t.UserID,
 	}
@@ -62,11 +81,12 @@ func NewGormTodoRepository(db *gorm.DB) *TodoRepository {
 }
 
 func (gr *TodoRepository) Create(ctx context.Context, t domain.Todo) (domain.Todo, error) {
-	result := gr.DB.Create(&t)
+	td := TodoFromDto(t)
+	result := gr.DB.Create(&td)
 	if result.Error != nil {
 		return domain.Todo{}, result.Error
 	}
-	return t, nil
+	return td.ToDto(), nil
 }
 
 func (gr *TodoRepository) Get(ctx context.Context, id uint) (domain.Todo, error) {

@@ -28,14 +28,17 @@ type RestServer struct {
 func (s *RestServer) StartServer() error {
 	// User
 	//http.HandleFunc("/api/user/admin", handlers.JWTAuthMiddleware(s.userHandler.CheckAdmin))
-	//http.HandleFunc("/api/users", JWTAuthMiddleware(s.userHandler.ListUsers))
-	//http.HandleFunc("/api/user/provision", JWTAuthMiddleware(s.userHandler.ProvisionDemoUser))
+	http.HandleFunc("/api/users", handlers.JWTAuthMiddleware(s.userHandler.List))
+	http.HandleFunc("/api/users/provision", handlers.JWTAuthMiddleware(s.userHandler.ProvisionDemoUser))
 	http.HandleFunc("/api/register", s.userHandler.Register)
 	http.HandleFunc("/api/login", s.userHandler.Login)
 	http.HandleFunc("/api/refresh-token", handlers.JWTAuthMiddleware(s.userHandler.RefreshToken))
-	http.HandleFunc("/api/reset-link", s.userHandler.ResetLink)
-	http.HandleFunc("/api/reset-password", s.userHandler.ResetPassword)
-	http.HandleFunc("/api/activate", s.userHandler.Activate)
+	http.HandleFunc("/api/reset-link", handlers.JWTAuthMiddleware(s.userHandler.ResetLink))
+	http.HandleFunc("/api/reset-password", handlers.JWTAuthMiddleware(s.userHandler.ResetPassword))
+	http.HandleFunc("/api/activate", handlers.JWTAuthMiddleware(s.userHandler.Activate))
+	// TEMPORARY!!!!!
+	//http.HandleFunc("/api/users/update", handlers.JWTAuthMiddleware(s.userHandler.Update))
+	http.HandleFunc("/api/users/", handlers.JWTAuthMiddleware(s.userHandler.HandleUser))
 
 	// Categories
 	//http.HandleFunc("/api/categories", JWTAuthMiddleware(s.categoryHandler.ListCategories))

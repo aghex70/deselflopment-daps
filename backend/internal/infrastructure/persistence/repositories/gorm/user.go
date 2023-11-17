@@ -2,6 +2,7 @@ package gorm
 
 import (
 	"context"
+	"fmt"
 	"github.com/aghex70/daps/internal/ports/domain"
 	common "github.com/aghex70/daps/utils"
 	"gorm.io/gorm"
@@ -92,17 +93,13 @@ func (gr *UserRepository) GetByEmail(ctx context.Context, email string) (domain.
 	return u.ToDto(), nil
 }
 
-func (gr *UserRepository) List(ctx context.Context, filters *map[string]interface{}) ([]domain.User, error) {
-	return []domain.User{}, nil
-}
-
 func (gr *UserRepository) Create(ctx context.Context, u domain.User) (domain.User, error) {
 	nu := UserFromDto(u)
 	result := gr.DB.Create(&nu)
 	if result.Error != nil {
 		return domain.User{}, result.Error
 	}
-	return u, nil
+	return nu.ToDto(), nil
 }
 
 func (gr *UserRepository) Activate(ctx context.Context, id uint, activationCode string) error {
@@ -124,11 +121,42 @@ func (gr *UserRepository) Activate(ctx context.Context, id uint, activationCode 
 	return nil
 }
 
-func (gr *UserRepository) Update(ctx context.Context, u domain.User, filters *map[string]interface{}) (domain.User, error) {
-	return domain.User{}, nil
+func (gr *UserRepository) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
+	var u User
+	u.ID = id
+	result := gr.DB.Model(&u).Updates(*filters)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (gr *UserRepository) List(ctx context.Context, filters *map[string]interface{}) ([]domain.User, error) {
+	var users []User
+	if filters != nil {
+		result := gr.DB.Where(filters).Find(&users)
+		if result.Error != nil {
+			return []domain.User{}, result.Error
+		}
+	} else {
+		result := gr.DB.Find(&users)
+		if result.Error != nil {
+			return []domain.User{}, result.Error
+		}
+	}
+	var us []domain.User
+	for _, u := range users {
+		us = append(us, u.ToDto())
+	}
+	return us, nil
 }
 
 func (gr *UserRepository) Delete(ctx context.Context, id uint) error {
+	result := gr.DB.Delete(&User{}, id)
+	fmt.Printf("result: %+v\n", result)
+	if result.Error != nil {
+		return result.Error
+	}
 	return nil
 }
 

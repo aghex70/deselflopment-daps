@@ -11,7 +11,7 @@ type Repository interface {
 	List(ctx context.Context, filters *map[string]interface{}) ([]domain.User, error)
 	Create(ctx context.Context, u domain.User) (domain.User, error)
 	Activate(ctx context.Context, id uint, activationCode string) error
-	Update(ctx context.Context, u domain.User, filters *map[string]interface{}) (domain.User, error)
+	Update(ctx context.Context, id uint, filters *map[string]interface{}) error
 	Delete(ctx context.Context, id uint) error
 	ResetPassword(ctx context.Context, id uint, password, resetPasswordCode string) error
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/aghex70/daps/internal/ports/domain"
 )
 
-func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint, language string) []domain.Todo {
+func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID, userID uint, language string) []domain.Todo {
 	if language == "en" {
 		return []domain.Todo{
 			{
@@ -123,18 +123,21 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint,
 			Name:      "Pañales",
 			Priority:  domain.Priority(5),
 			Recurring: true,
+			UserID:    userID,
 		},
 		{
 			CategoryID: categoryID,
 			Name:       "Colada",
 			Priority:   domain.Priority(3),
 			Recurring:  true,
+			UserID:     userID,
 		},
 		{
 			CategoryID: categoryID,
 			Name:       "Planchar la ropa",
 			Priority:   domain.Priority(1),
 			Recurring:  true,
+			UserID:     userID,
 		},
 		{
 			CategoryID: categoryID,
@@ -142,18 +145,21 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint,
 			//Description: "Comprar un adaptador",
 			Priority:  domain.Priority(2),
 			Recurring: false,
+			UserID:    userID,
 		},
 		{
 			CategoryID: categoryID,
 			Name:       "Sacar a pasear a Jara",
 			Priority:   domain.Priority(4),
 			Recurring:  true,
+			UserID:     userID,
 		},
 		{
 			CategoryID: categoryID,
 			Name:       "Ir al veterinario",
 			Priority:   domain.Priority(4),
 			Recurring:  false,
+			UserID:     userID,
 		},
 		{
 			CategoryID: anotherCategoryID,
@@ -161,6 +167,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint,
 			//Description: "Hablar respecto a los requisitos del nuevo proyecto",
 			Priority:  domain.Priority(3),
 			Recurring: false,
+			UserID:    userID,
 		},
 		{
 			CategoryID: anotherCategoryID,
@@ -168,12 +175,14 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint,
 			//Description: "Determinar por qué el proyecto va con retraso",
 			Priority:  domain.Priority(5),
 			Recurring: false,
+			UserID:    userID,
 		},
 		{
 			CategoryID: anotherCategoryID,
 			Name:       "Pedir un aumento",
 			Priority:   domain.Priority(3),
 			Recurring:  false,
+			UserID:     userID,
 		},
 		{
 			CategoryID: anotherCategoryID,
@@ -182,6 +191,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint,
 			Priority:  domain.Priority(5),
 			Recurring: false,
 			Active:    true,
+			UserID:    userID,
 		},
 		{
 			CategoryID: yetAnotherCategoryID,
@@ -190,6 +200,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint,
 			Priority:  domain.Priority(3),
 			Recurring: false,
 			Active:    true,
+			UserID:    userID,
 		},
 		{
 			CategoryID: yetAnotherCategoryID,
@@ -198,6 +209,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint,
 			Priority:  domain.Priority(5),
 			Recurring: false,
 			Active:    false,
+			UserID:    userID,
 		},
 		{
 			CategoryID: yetAnotherCategoryID,
@@ -206,6 +218,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint,
 			Priority:  domain.Priority(5),
 			Recurring: false,
 			Active:    false,
+			UserID:    userID,
 		},
 		{
 			CategoryID: yetAnotherCategoryID,
@@ -213,6 +226,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint,
 			Priority:   domain.Priority(5),
 			Recurring:  false,
 			Active:     false,
+			UserID:     userID,
 		},
 		{
 			CategoryID: yetAnotherCategoryID,
@@ -221,6 +235,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID uint,
 			Priority:  domain.Priority(1),
 			Recurring: false,
 			Active:    false,
+			UserID:    userID,
 		},
 	}
 }

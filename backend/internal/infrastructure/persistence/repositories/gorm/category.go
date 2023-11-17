@@ -33,6 +33,19 @@ func (c Category) ToDto() domain.Category {
 	}
 }
 
+func CategoryFromDto(c domain.Category) Category {
+	return Category{
+		Name:        c.Name,
+		Description: c.Description,
+		OwnerID:     c.OwnerID,
+		//Users:       c.Users,
+		//Todos:       c.Todos,
+		Shared:     c.Shared,
+		Notifiable: c.Notifiable,
+		Custom:     c.Custom,
+	}
+}
+
 func (Category) TableName() string {
 	return "daps_categories"
 }
@@ -46,11 +59,12 @@ func NewGormCategoryRepository(db *gorm.DB) *CategoryRepository {
 }
 
 func (gr *CategoryRepository) Create(ctx context.Context, c domain.Category) (domain.Category, error) {
-	result := gr.DB.Create(&c)
+	nc := CategoryFromDto(c)
+	result := gr.DB.Create(&nc)
 	if result.Error != nil {
 		return domain.Category{}, result.Error
 	}
-	return c, nil
+	return nc.ToDto(), nil
 }
 
 func (gr *CategoryRepository) Get(ctx context.Context, id uint) (domain.Category, error) {
@@ -59,7 +73,7 @@ func (gr *CategoryRepository) Get(ctx context.Context, id uint) (domain.Category
 	if result.Error != nil {
 		return domain.Category{}, result.Error
 	}
-	return domain.Category{}, nil
+	return c.ToDto(), nil
 }
 
 func (gr *CategoryRepository) Delete(ctx context.Context, id uint) error {

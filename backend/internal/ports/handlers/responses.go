@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	domain2 "github.com/aghex70/daps/internal/ports/domain"
+	"github.com/aghex70/daps/internal/ports/domain"
 )
 
 type TokenResponse struct {
@@ -10,9 +10,14 @@ type TokenResponse struct {
 }
 
 type ListCategoriesResponse struct {
-	Categories []domain2.Category `json:"categories"`
+	Categories []domain.Category `json:"categories"`
 }
 
 type ListUsersResponse struct {
+	Users []domain.User `json:"users"`
 	//Users []domain2.FilteredUser `json:"users"`
+}
+
+type GetUserResponse struct {
+	User domain.User `json:"user"`
 }
