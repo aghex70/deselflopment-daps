@@ -2,10 +2,9 @@ package category
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/domain"
+	requests "github.com/aghex70/daps/internal/ports/requests/category"
 	"github.com/aghex70/daps/internal/ports/services/category"
-	utils "github.com/aghex70/daps/utils/category"
 	"log"
 )
 
@@ -14,18 +13,18 @@ type GetCategoryUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *GetCategoryUseCase) Execute(ctx context.Context, id uint) (domain.Category, error) {
-	cs, err := uc.CategoryService.List(ctx, nil, nil)
+func (uc *GetCategoryUseCase) Execute(ctx context.Context, r requests.GetCategoryRequest, userID uint) (domain.Category, error) {
+	cs, err := uc.CategoryService.Get(ctx, r.CategoryID)
 	if err != nil {
 		return domain.Category{}, err
 	}
 
-	c, err := utils.CanRetrieveCategory(cs, id)
-	if err != nil {
-		return domain.Category{}, pkg.UnauthorizedError
-	}
+	//c, err := utils.CanRetrieveCategory([]domain.Category{cs}, userID)
+	//if err != nil {
+	//	return domain.Category{}, pkg.UnauthorizedError
+	//}
 
-	return c, nil
+	return cs, nil
 }
 
 func NewGetCategoryUseCase(s category.Servicer, logger *log.Logger) *GetCategoryUseCase {

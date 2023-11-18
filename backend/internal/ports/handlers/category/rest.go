@@ -1,56 +1,125 @@
 package category
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/aghex70/daps/internal/core/usecases/category"
+	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/requests/category"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
 type Handler struct {
-	//categoryService category.Servicer
+	CreateCategoryUseCase  category.CreateCategoryUseCase
+	DeleteCategoryUseCase  category.DeleteCategoryUseCase
+	GetCategoryUseCase     category.GetCategoryUseCase
+	ListCategoriesUseCase  category.ListCategoriesUseCase
+	ShareCategoryUseCase   category.ShareCategoryUseCase
+	UnshareCategoryUseCase category.UnshareCategoryUseCase
+	UpdateCategoryUseCase  category.UpdateCategoryUseCase
+	logger                 *log.Logger
 }
 
 func (h Handler) HandleCategory(w http.ResponseWriter, r *http.Request) {
-	path := strings.Split(r.RequestURI, handlers.CATEGORY_STRING)[1]
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, PUT, GET, OPTIONS")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 
-	categoryID, err := strconv.Atoi(path)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
 		return
 	}
-	categoryIDUint := uint(categoryID)
 
-	switch r.Method {
-	case http.MethodGet:
-		h.GetCategory(w, r, categoryIDUint)
-	case http.MethodDelete:
-		h.DeleteCategory(w, r, categoryIDUint)
-	case http.MethodPut:
-		h.UpdateCategory(w, r, categoryIDUint)
-	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
-	}
-}
-
-func (h Handler) CreateCategory(w http.ResponseWriter, r *http.Request) {
-	payload := requests.CreateCategoryRequest{}
-	err := handlers.ValidateRequest(r, &payload)
+	path := strings.Split(r.RequestURI, handlers.CATEGORY_STRING)[1]
+	categoryID, err := strconv.Atoi(path)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	//err = h.categoryService.Create(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	w.WriteHeader(http.StatusCreated)
+	switch r.Method {
+	case http.MethodGet:
+		h.Get(w, r, uint(categoryID))
+	case http.MethodDelete:
+		h.Delete(w, r, uint(categoryID))
+	case http.MethodPut:
+		h.Update(w, r, uint(categoryID))
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
 }
 
-func (h Handler) UpdateCategory(w http.ResponseWriter, r *http.Request, id uint) {
+func (h Handler) HandleCategories(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	switch r.Method {
+	case http.MethodGet:
+		h.List(w, r)
+	case http.MethodPost:
+		h.Create(w, r)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
+	pkg.SetCORSHeaders(w, r)
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
+	if err != nil {
+		return
+	}
+
+	payload := requests.CreateCategoryRequest{}
+	err = handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	c, err := h.CreateCategoryUseCase.Execute(context.TODO(), userID, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	fmt.Printf("Categories: %+v\n", c)
+	b, err := json.Marshal(c)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+	return
+}
+
+func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.UpdateCategoryRequest{CategoryID: id}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -58,14 +127,21 @@ func (h Handler) UpdateCategory(w http.ResponseWriter, r *http.Request, id uint)
 		return
 	}
 
-	//err = h.categoryService.Update(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.UpdateCategoryUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
-func (h Handler) DeleteCategory(w http.ResponseWriter, r *http.Request, id uint) {
+func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.DeleteCategoryRequest{CategoryID: id}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -73,15 +149,21 @@ func (h Handler) DeleteCategory(w http.ResponseWriter, r *http.Request, id uint)
 		return
 	}
 
-	//err = h.categoryService.Delete(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.DeleteCategoryUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (h Handler) GetCategory(w http.ResponseWriter, r *http.Request, id uint) {
+func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.GetCategoryRequest{CategoryID: id}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -89,51 +171,74 @@ func (h Handler) GetCategory(w http.ResponseWriter, r *http.Request, id uint) {
 		return
 	}
 
-	//c, err := h.categoryService.Get(context.TODO(), r, payload)
-	//if err != nil {
-	//	if errors.Is(err, gorm.ErrRecordNotFound) {
-	//		w.WriteHeader(http.StatusNotFound)
-	//		return
-	//	}
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//b, err := json.Marshal(c)
-	//if err != nil {
-	//	return
-	//}
-	//_, err = w.Write(b)
-	//if err != nil {
-	//	return
-	//}
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	c, err := h.GetCategoryUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	b, err := json.Marshal(c)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 	return
 }
 
-func (h Handler) ListCategories(w http.ResponseWriter, r *http.Request) {
+func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		http.Error(w, "No Content", http.StatusNoContent)
 		return
 	}
 
-	//categories, err := h.categoryService.List(context.TODO(), r)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//
-	//b, err := json.Marshal(handlers.ListCategoriesResponse{Categories: categories})
-	//if err != nil {
-	//	return
-	//}
-	//_, err = w.Write(b)
-	//if err != nil {
-	//	return
-	//}
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	categories, err := h.ListCategoriesUseCase.Execute(context.TODO(), nil, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	b, err := json.Marshal(handlers.ListCategoriesResponse{Categories: categories})
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 	return
 }
 
-//func NewCategoryHandler(cs category.Servicer) Handler {
-//	return Handler{
-//categoryService: cs,
-//}
-//}
+func NewCategoryHandler(
+	createCategoryUseCase *category.CreateCategoryUseCase,
+	deleteCategoryUseCase *category.DeleteCategoryUseCase,
+	getCategoryUseCase *category.GetCategoryUseCase,
+	listCategoriesUseCase *category.ListCategoriesUseCase,
+	shareCategoryUseCase *category.ShareCategoryUseCase,
+	unshareCategoryUseCase *category.UnshareCategoryUseCase,
+	updateCategoryUseCase *category.UpdateCategoryUseCase,
+	logger *log.Logger,
+) *Handler {
+	return &Handler{
+		CreateCategoryUseCase:  *createCategoryUseCase,
+		DeleteCategoryUseCase:  *deleteCategoryUseCase,
+		GetCategoryUseCase:     *getCategoryUseCase,
+		ListCategoriesUseCase:  *listCategoriesUseCase,
+		ShareCategoryUseCase:   *shareCategoryUseCase,
+		UnshareCategoryUseCase: *unshareCategoryUseCase,
+		UpdateCategoryUseCase:  *updateCategoryUseCase,
+		logger:                 logger,
+	}
+}

@@ -3,6 +3,7 @@ package category
 import (
 	"context"
 	"github.com/aghex70/daps/internal/pkg"
+	requests "github.com/aghex70/daps/internal/ports/requests/category"
 	"github.com/aghex70/daps/internal/ports/services/category"
 	utils "github.com/aghex70/daps/utils/category"
 	"log"
@@ -13,8 +14,8 @@ type DeleteCategoryUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *DeleteCategoryUseCase) Execute(ctx context.Context, id, userID uint) error {
-	c, err := uc.CategoryService.Get(ctx, id)
+func (uc *DeleteCategoryUseCase) Execute(ctx context.Context, r requests.DeleteCategoryRequest, userID uint) error {
+	c, err := uc.CategoryService.Get(ctx, r.CategoryID)
 	if err != nil {
 		return err
 	}
@@ -23,7 +24,7 @@ func (uc *DeleteCategoryUseCase) Execute(ctx context.Context, id, userID uint) e
 		return pkg.UnauthorizedError
 	}
 
-	err = uc.CategoryService.Delete(ctx, id)
+	err = uc.CategoryService.Delete(ctx, r.CategoryID)
 	if err != nil {
 		return err
 	}

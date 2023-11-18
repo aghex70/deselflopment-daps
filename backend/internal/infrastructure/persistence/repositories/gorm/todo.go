@@ -68,6 +68,14 @@ func TodoFromDto(t domain.Todo) Todo {
 	}
 }
 
+func TodosFromDto(ts []domain.Todo) []Todo {
+	var todos []Todo
+	for _, t := range ts {
+		todos = append(todos, TodoFromDto(t))
+	}
+	return todos
+}
+
 func (Todo) TableName() string {
 	return "daps_todos"
 }

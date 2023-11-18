@@ -20,18 +20,18 @@ func (uc *GetUserUseCase) Execute(ctx context.Context, r requests.GetUserRequest
 		return domain.User{}, err
 	}
 
-	user, err := uc.UserService.Get(ctx, r.UserID)
+	ur, err := uc.UserService.Get(ctx, r.UserID)
 	if err != nil {
 		return domain.User{}, err
 	}
 
-	if !u.Admin || user.ID != r.UserID {
+	if !u.Admin || ur.ID != r.UserID {
 		return domain.User{}, pkg.UnauthorizedError
 	}
 	if err != nil {
 		return domain.User{}, err
 	}
-	return user, nil
+	return ur, nil
 }
 
 func NewGetUserUseCase(userService user.Service, logger *log.Logger) *GetUserUseCase {

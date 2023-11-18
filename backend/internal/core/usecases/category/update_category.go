@@ -3,7 +3,7 @@ package category
 import (
 	"context"
 	"github.com/aghex70/daps/internal/pkg"
-	"github.com/aghex70/daps/internal/ports/domain"
+	requests "github.com/aghex70/daps/internal/ports/requests/category"
 	"github.com/aghex70/daps/internal/ports/services/category"
 	utils "github.com/aghex70/daps/utils/category"
 	"log"
@@ -14,22 +14,22 @@ type UpdateCategoryUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *UpdateCategoryUseCase) Execute(ctx context.Context, fields map[string]interface{}, id, userID uint) (domain.Category, error) {
-	c, err := uc.CategoryService.Get(ctx, id)
+func (uc *UpdateCategoryUseCase) Execute(ctx context.Context, r requests.UpdateCategoryRequest, userID uint) error {
+	c, err := uc.CategoryService.Get(ctx, r.CategoryID)
 	if err != nil {
-		return domain.Category{}, err
+		return err
 	}
 	owner := utils.IsCategoryOwner(c.OwnerID, userID)
 	if !owner {
-		return domain.Category{}, pkg.UnauthorizedError
+		return pkg.UnauthorizedError
 	}
 
-	c.Shared = false
-	cat, err := uc.CategoryService.Update(ctx, id, c)
+	fields := map[string]interface{}{"name": r.Name, "notifiable": r.Notifiable, "description": r.Description}
+	err = uc.CategoryService.Update(ctx, c.ID, &fields)
 	if err != nil {
-		return domain.Category{}, err
+		return err
 	}
-	return cat, nil
+	return nil
 }
 
 func NewUpdateCategoryUseCase(s category.Servicer, logger *log.Logger) *UpdateCategoryUseCase {

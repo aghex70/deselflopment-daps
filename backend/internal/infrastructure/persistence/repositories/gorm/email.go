@@ -48,6 +48,14 @@ func EmailFromDto(e domain.Email) Email {
 	}
 }
 
+func EmailsFromDto(es []domain.Email) []Email {
+	var emails []Email
+	for _, e := range es {
+		emails = append(emails, EmailFromDto(e))
+	}
+	return emails
+}
+
 func (Email) TableName() string {
 	return "deselflopment_emails"
 }

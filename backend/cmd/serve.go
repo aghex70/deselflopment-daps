@@ -5,8 +5,10 @@ import (
 	emailService "github.com/aghex70/daps/internal/core/services/email"
 	todoService "github.com/aghex70/daps/internal/core/services/todo"
 	userService "github.com/aghex70/daps/internal/core/services/user"
+	categoryUsecases "github.com/aghex70/daps/internal/core/usecases/category"
 	userUsecases "github.com/aghex70/daps/internal/core/usecases/user"
 	repository "github.com/aghex70/daps/internal/infrastructure/persistence/repositories/gorm"
+	categoryHandler "github.com/aghex70/daps/internal/ports/handlers/category"
 	userHandler "github.com/aghex70/daps/internal/ports/handlers/user"
 	"log"
 
@@ -39,7 +41,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			cs := categoryService.NewCategoryService(catr, &logger)
 			ts := todoService.NewTodoService(todor, &logger)
 
-			//UseCases
+			// User usecases
 			auuc := userUsecases.NewActivateUserUseCase(us, &logger)
 			duuc := userUsecases.NewDeleteUserUseCase(us, &logger)
 			guuc := userUsecases.NewGetUserUseCase(us, &logger)
@@ -52,15 +54,24 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			sruuc := userUsecases.NewSendResetLinkUseCase(us, es, &logger)
 			uuuuc := userUsecases.NewUpdateUserUseCase(us, &logger)
 
+			// Category usecases
+			cauuc := categoryUsecases.NewCreateCategoryUseCase(cs, &logger)
+			cduuc := categoryUsecases.NewDeleteCategoryUseCase(cs, &logger)
+			gcuuc := categoryUsecases.NewGetCategoryUseCase(cs, &logger)
+			lcuuc := categoryUsecases.NewListCategoriesUseCase(cs, &logger)
+			scauuc := categoryUsecases.NewShareCategoryUseCase(cs, &logger)
+			usauuc := categoryUsecases.NewUnshareCategoryUseCase(cs, &logger)
+			ucauuc := categoryUsecases.NewUpdateCategoryUseCase(cs, &logger)
+
 			//Handlers
 			uh := userHandler.NewUserHandler(auuc, duuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, uuuuc, &logger)
-			//ch := categoryHandler.NewCategoryHandler(cs)
+			ch := categoryHandler.NewCategoryHandler(cauuc, cduuc, gcuuc, lcuuc, scauuc, usauuc, ucauuc, &logger)
 			//th := todoHandler.NewTodoHandler(ts)
 			//eh := emailHandler.NewEmailHandler(es)
 			//
 			//rh := root.NewRootHandler(cs, ts, us)
 
-			s := server.NewRestServer(cfg.Server.Rest, nil, nil, *uh, nil, nil, &logger)
+			s := server.NewRestServer(cfg.Server.Rest, *ch, nil, *uh, nil, nil, &logger)
 			err = s.StartServer()
 			if err != nil {
 				log.Fatal("error starting server", err.Error())

@@ -38,9 +38,9 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/users/", handlers.JWTAuthMiddleware(s.userHandler.HandleUser))
 
 	// Categories
-	//http.HandleFunc("/api/categories", JWTAuthMiddleware(s.categoryHandler.ListCategories))
-	//http.HandleFunc("/api/category", JWTAuthMiddleware(s.categoryHandler.CreateCategory))
-	//
+	http.HandleFunc("/api/categories/", handlers.JWTAuthMiddleware(s.categoryHandler.HandleCategory))
+	http.HandleFunc("/api/categories", handlers.JWTAuthMiddleware(s.categoryHandler.HandleCategories))
+
 	//// Todos
 	//http.HandleFunc("/api/todo", JWTAuthMiddleware(s.toDoHandler.CreateTodo))
 	//http.HandleFunc("/api/todos", JWTAuthMiddleware(s.toDoHandler.ListTodos))
@@ -76,11 +76,11 @@ func (s *RestServer) StartServer() error {
 	return nil
 }
 
-func NewRestServer(cfg *config.RestConfig, ch *category.Handler, tdh *todo.Handler, uh user.Handler, rh *root.Handler, eh *email.Handler, logger *log.Logger) *RestServer {
+func NewRestServer(cfg *config.RestConfig, ch category.Handler, tdh *todo.Handler, uh user.Handler, rh *root.Handler, eh *email.Handler, logger *log.Logger) *RestServer {
 	return &RestServer{
-		cfg:    *cfg,
-		logger: logger,
-		//categoryHandler: ch,
+		cfg:             *cfg,
+		logger:          logger,
+		categoryHandler: ch,
 		//toDoHandler:     tdh,
 		userHandler: uh,
 		//rootHandler:     rh,

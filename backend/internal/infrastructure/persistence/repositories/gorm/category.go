@@ -2,8 +2,10 @@ package gorm
 
 import (
 	"context"
+	"fmt"
 	"github.com/aghex70/daps/internal/ports/domain"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type Category struct {
@@ -34,16 +36,35 @@ func (c Category) ToDto() domain.Category {
 }
 
 func CategoryFromDto(c domain.Category) Category {
+	//fmt.Printf("domain category: %+v\n", c)
+	//
+	//var users []User
+	//for _, u := range *c.Users {
+	//	fmt.Printf("domain category user: %+v\n", u)
+	//	user := UserFromDto(u)
+	//	users = append(users, user)
+	//}
+	//fmt.Printf("gorm users: %+v\n", users)
+	//
+	//todos := TodosFromDto(*c.Todos)
 	return Category{
 		Name:        c.Name,
 		Description: c.Description,
 		OwnerID:     c.OwnerID,
-		//Users:       c.Users,
-		//Todos:       c.Todos,
+		//Users:       uz,
+		//Todos:      &todos,
 		Shared:     c.Shared,
 		Notifiable: c.Notifiable,
 		Custom:     c.Custom,
 	}
+}
+
+func CategoriesFromDto(cs []domain.Category) []Category {
+	var cats []Category
+	for _, c := range cs {
+		cats = append(cats, CategoryFromDto(c))
+	}
+	return cats
 }
 
 func (Category) TableName() string {
@@ -88,16 +109,21 @@ func (gr *CategoryRepository) List(ctx context.Context, ids *[]uint, filters *ma
 	var cs []Category
 	var cats []domain.Category
 
+	query := gr.DB
 	if filters != nil {
-		result := gr.DB.Where(filters).Find(&cs)
-		if result.Error != nil {
-			return []domain.Category{}, result.Error
+		// Convert map[string]interface{} to a slice of arguments
+		var args []interface{}
+		var conditions []string
+		for key, value := range *filters {
+			conditions = append(conditions, fmt.Sprintf("%s = ?", key))
+			args = append(args, value)
 		}
-	} else {
-		result := gr.DB.Find(&cs)
-		if result.Error != nil {
-			return []domain.Category{}, result.Error
-		}
+		query = query.Where(strings.Join(conditions, " AND "), args...)
+	}
+
+	result := query.Find(&cs)
+	if result.Error != nil {
+		return []domain.Category{}, result.Error
 	}
 
 	for _, c := range cs {
@@ -107,21 +133,12 @@ func (gr *CategoryRepository) List(ctx context.Context, ids *[]uint, filters *ma
 	return cats, nil
 }
 
-func (gr *CategoryRepository) Update(ctx context.Context, id uint, c domain.Category) (domain.Category, error) {
-	var cat Category
-	result := gr.DB.First(&cat, id)
+func (gr *CategoryRepository) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
+	var c Category
+	c.ID = id
+	result := gr.DB.Model(&c).Updates(*filters)
 	if result.Error != nil {
-		return domain.Category{}, result.Error
+		return result.Error
 	}
-	cat.Name = c.Name
-	cat.Description = c.Description
-	cat.OwnerID = c.OwnerID
-	cat.Shared = c.Shared
-	cat.Notifiable = c.Notifiable
-	cat.Custom = c.Custom
-	result = gr.DB.Save(&cat)
-	if result.Error != nil {
-		return domain.Category{}, result.Error
-	}
-	return cat.ToDto(), nil
+	return nil
 }

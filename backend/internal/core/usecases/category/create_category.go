@@ -20,7 +20,7 @@ func (uc *CreateCategoryUseCase) Execute(ctx context.Context, userID uint, r req
 		Description: &r.Description,
 		OwnerID:     userID,
 		Users:       &[]domain.User{u},
-		Notifiable:  true,
+		Notifiable:  r.Notifiable,
 		Custom:      true,
 	}
 	c, err := uc.CategoryService.Create(ctx, cat)

@@ -46,6 +46,15 @@ func (u User) ToDto() domain.User {
 }
 
 func UserFromDto(u domain.User) User {
+	//fmt.Println("1")
+	//categories := CategoriesFromDto(*u.Categories)
+	//fmt.Println("2")
+	//emails := EmailsFromDto(*u.Emails)
+	//fmt.Println("3")
+	//todos := TodosFromDto(*u.Todos)
+	//fmt.Println("4")
+	//ownedCategories := CategoriesFromDto(*u.OwnedCategories)
+	//fmt.Println("5")
 	return User{
 		Name:              u.Name,
 		Email:             u.Email,
@@ -56,11 +65,21 @@ func UserFromDto(u domain.User) User {
 		ResetPasswordCode: u.ResetPasswordCode,
 		Language:          u.Language,
 		AutoSuggest:       u.AutoSuggest,
-		//Categories:        u.Categories,
-		//Emails:            u.Emails,
-		//Todos:             u.Todos,
-		//OwnedCategories:   u.OwnedCategories,
+		//Categories:        &categories,
+		//Emails:            &emails,
+		//Todos:             &todos,
+		//OwnedCategories:   &ownedCategories,
 	}
+}
+
+func UsersFromDto(us []domain.User) []User {
+	var users []User
+	fmt.Printf("domain users: %+v\n", us)
+	for _, u := range us {
+		users = append(users, UserFromDto(u))
+		fmt.Printf("users: %+v\n", u)
+	}
+	return users
 }
 
 func (User) TableName() string {
@@ -81,6 +100,7 @@ func (gr *UserRepository) Get(ctx context.Context, id uint) (domain.User, error)
 	if result.Error != nil {
 		return domain.User{}, result.Error
 	}
+	fmt.Printf("user: %+v\n", u)
 	return u.ToDto(), nil
 }
 

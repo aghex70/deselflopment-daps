@@ -16,9 +16,7 @@ type GetCategoryRequest struct {
 
 type UpdateCategoryRequest struct {
 	CategoryID  uint   `json:"category_id"`
-	Description string `json:"description"`
+	Description *string `json:"description"`
 	Name        string `json:"name"`
-	Shared      *bool  `json:"shared"`
 	Notifiable  bool   `json:"notifiable"`
-	Email       string `json:"email"`
 }

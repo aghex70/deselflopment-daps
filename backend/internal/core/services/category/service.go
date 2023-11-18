@@ -44,12 +44,12 @@ func (s Service) List(ctx context.Context, ids *[]uint, fields *map[string]inter
 	return categories, nil
 }
 
-func (s Service) Update(ctx context.Context, id uint, c domain.Category) (domain.Category, error) {
-	cat, err := s.categoryRepository.Update(ctx, id, c)
+func (s Service) Update(ctx context.Context, id uint, fields *map[string]interface{}) error {
+	err := s.categoryRepository.Update(ctx, id, fields)
 	if err != nil {
-		return domain.Category{}, err
+		return err
 	}
-	return cat, nil
+	return nil
 }
 
 func NewCategoryService(r category.Repository, logger *log.Logger) Service {

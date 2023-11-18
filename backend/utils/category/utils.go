@@ -244,10 +244,12 @@ func IsCategoryOwner(ownerID, userID uint) bool {
 	return ownerID == userID
 }
 
-func CanRetrieveCategory(cs []domain.Category, id uint) (domain.Category, error) {
+func CanRetrieveCategory(cs []domain.Category, userID uint) (domain.Category, error) {
 	for _, c := range cs {
-		if c.ID == id {
-			return c, nil
+		for _, u := range *c.Users {
+			if u.ID == userID {
+				return c, nil
+			}
 		}
 	}
 	return domain.Category{}, pkg.UnauthorizedError

@@ -13,8 +13,15 @@ type ListCategoriesUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *ListCategoriesUseCase) Execute(ctx context.Context, ids *[]uint, filters *map[string]interface{}) ([]domain.Category, error) {
-	categories, err := uc.CategoryService.List(ctx, ids, filters)
+func (uc *ListCategoriesUseCase) Execute(ctx context.Context, fields *map[string]interface{}, userID uint) ([]domain.Category, error) {
+	// Set the user ID into the fields map
+	if fields == nil {
+		fields = &map[string]interface{}{}
+		(*fields)["owner_id"] = userID
+	} else {
+		(*fields)["owner_id"] = userID
+	}
+	categories, err := uc.CategoryService.List(ctx, nil, fields)
 	if err != nil {
 		return []domain.Category{}, err
 	}
