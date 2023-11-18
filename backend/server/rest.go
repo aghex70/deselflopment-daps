@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/handlers/category"
-	"github.com/aghex70/daps/internal/ports/handlers/email"
-	"github.com/aghex70/daps/internal/ports/handlers/root"
 	"github.com/aghex70/daps/internal/ports/handlers/todo"
 	"github.com/aghex70/daps/internal/ports/handlers/user"
 	"log"
@@ -21,8 +19,6 @@ type RestServer struct {
 	categoryHandler category.Handler
 	toDoHandler     todo.Handler
 	userHandler     user.Handler
-	rootHandler     root.Handler
-	emailHandler    email.Handler
 }
 
 func (s *RestServer) StartServer() error {
@@ -38,27 +34,15 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/users/", handlers.JWTAuthMiddleware(s.userHandler.HandleUser))
 
 	// Categories
-	http.HandleFunc("/api/categories/", handlers.JWTAuthMiddleware(s.categoryHandler.HandleCategory))
 	http.HandleFunc("/api/categories", handlers.JWTAuthMiddleware(s.categoryHandler.HandleCategories))
+	http.HandleFunc("/api/categories/", handlers.JWTAuthMiddleware(s.categoryHandler.HandleCategory))
 
 	//// Todos
-	//http.HandleFunc("/api/todo", JWTAuthMiddleware(s.toDoHandler.CreateTodo))
 	//http.HandleFunc("/api/todos", JWTAuthMiddleware(s.toDoHandler.ListTodos))
-	//http.HandleFunc("/api/recurring-todos", JWTAuthMiddleware(s.toDoHandler.ListRecurringTodos))
-	//http.HandleFunc("/api/completed-todos", JWTAuthMiddleware(s.toDoHandler.ListCompletedTodos))
+	//http.HandleFunc("/api/todos/", JWTAuthMiddleware(s.toDoHandler.CreateTodo))
+	//http.HandleFunc("/api/todos/import", JWTAuthMiddleware(s.toDoHandler.ImportCSV))
 	//http.HandleFunc("/api/suggest", JWTAuthMiddleware(s.toDoHandler.SuggestTodos))
-	////http.HandleFunc("/api/suggested-todos", JWTAuthMiddleware(s.toDoHandler.ListSuggestedTodos))
 	////http.HandleFunc("/api/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
-	//
-	////UserConfiguration
-	////http.HandleFunc("	/api/user-configuration/", JWTAuthMiddleware(s.userConfigHandler.HandleUserConfig))
-	//
-	//// CSV Import
-	//http.HandleFunc("/api/import", JWTAuthMiddleware(s.userHandler.ImportCSV))
-	//
-	//// CAREFUL!!!!
-	//// Root (not included out of the box damn!)
-	//http.HandleFunc("/api/", JWTAuthMiddleware(s.rootHandler.Root))
 
 	address := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 	log.Printf("Starting server on address %s", address)
@@ -76,14 +60,12 @@ func (s *RestServer) StartServer() error {
 	return nil
 }
 
-func NewRestServer(cfg *config.RestConfig, ch category.Handler, tdh *todo.Handler, uh user.Handler, rh *root.Handler, eh *email.Handler, logger *log.Logger) *RestServer {
+func NewRestServer(cfg *config.RestConfig, ch category.Handler, tdh *todo.Handler, uh user.Handler, logger *log.Logger) *RestServer {
 	return &RestServer{
 		cfg:             *cfg,
 		logger:          logger,
 		categoryHandler: ch,
 		//toDoHandler:     tdh,
 		userHandler: uh,
-		//rootHandler:     rh,
-		//emailHandler:    eh,
 	}
 }

@@ -67,11 +67,8 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			uh := userHandler.NewUserHandler(auuc, duuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, uuuuc, &logger)
 			ch := categoryHandler.NewCategoryHandler(cauuc, cduuc, gcuuc, lcuuc, scauuc, usauuc, ucauuc, &logger)
 			//th := todoHandler.NewTodoHandler(ts)
-			//eh := emailHandler.NewEmailHandler(es)
-			//
-			//rh := root.NewRootHandler(cs, ts, us)
 
-			s := server.NewRestServer(cfg.Server.Rest, *ch, nil, *uh, nil, nil, &logger)
+			s := server.NewRestServer(cfg.Server.Rest, *ch, nil, *uh, &logger)
 			err = s.StartServer()
 			if err != nil {
 				log.Fatal("error starting server", err.Error())
