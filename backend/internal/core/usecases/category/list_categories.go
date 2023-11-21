@@ -3,17 +3,30 @@ package category
 import (
 	"context"
 	"github.com/aghex70/daps/internal/core/services/category"
+	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/domain"
+	"github.com/aghex70/daps/internal/ports/services/user"
+
 	//"github.com/aghex70/daps/server"
 	"log"
 )
 
 type ListCategoriesUseCase struct {
 	CategoryService category.Service
+	UserService     user.Servicer
 	logger          *log.Logger
 }
 
 func (uc *ListCategoriesUseCase) Execute(ctx context.Context, fields *map[string]interface{}, userID uint) ([]domain.Category, error) {
+	u, err := uc.UserService.Get(ctx, userID)
+	if err != nil {
+		return []domain.Category{}, err
+	}
+
+	if !u.Active {
+		return []domain.Category{}, pkg.InactiveUserError
+	}
+
 	// Set the user ID into the fields map
 	if fields == nil {
 		fields = &map[string]interface{}{}
@@ -28,9 +41,10 @@ func (uc *ListCategoriesUseCase) Execute(ctx context.Context, fields *map[string
 	return categories, nil
 }
 
-func NewListCategoriesUseCase(s category.Service, logger *log.Logger) *ListCategoriesUseCase {
+func NewListCategoriesUseCase(s category.Service, u user.Servicer, logger *log.Logger) *ListCategoriesUseCase {
 	return &ListCategoriesUseCase{
 		CategoryService: s,
+		UserService:     u,
 		logger:          logger,
 	}
 }

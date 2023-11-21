@@ -20,12 +20,20 @@ func (uc *GetUserUseCase) Execute(ctx context.Context, r requests.GetUserRequest
 		return domain.User{}, err
 	}
 
+	if !u.Active {
+		return domain.User{}, pkg.InactiveUserError
+	}
+
+	if !u.Admin {
+		return domain.User{}, pkg.UnauthorizedError
+	}
+
 	ur, err := uc.UserService.Get(ctx, r.UserID)
 	if err != nil {
 		return domain.User{}, err
 	}
 
-	if !u.Admin || ur.ID != r.UserID {
+	if ur.ID != r.UserID {
 		return domain.User{}, pkg.UnauthorizedError
 	}
 	if err != nil {

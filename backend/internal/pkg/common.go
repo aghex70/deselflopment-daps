@@ -35,7 +35,12 @@ var (
 	UserAlreadyRegisteredError = errors.New("user already registered")
 	InvalidCredentialsError    = errors.New("invalid credentials")
 	UnauthorizedError          = errors.New("unauthorized")
+	InactiveUserError          = errors.New("inactive user")
 	PasswordsDoNotMatchError   = errors.New("passwords do not match")
+)
+
+var (
+	ParseFileError = errors.New("error parsing file")
 )
 
 // Email

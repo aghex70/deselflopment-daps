@@ -1,123 +1,49 @@
 package todo
 
 import (
+	"context"
+	"encoding/json"
+	"github.com/aghex70/daps/internal/core/usecases/todo"
+	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/requests/todo"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
 type Handler struct {
-	//todoService todo.Servicer
+	CreateTodoUseCase  todo.CreateTodoUseCase
+	DeleteTodoUseCase  todo.DeleteTodoUseCase
+	GetTodoUseCase     todo.GetTodoUseCase
+	ImportTodosUseCase todo.ImportTodosUseCase
+	ListTodosUseCase   todo.ListTodosUseCase
+	UpdateTodoUseCase  todo.UpdateTodoUseCase
+	logger             *log.Logger
 }
 
-func (h Handler) HandleTodo(w http.ResponseWriter, r *http.Request) {
-	path := strings.Split(r.RequestURI, handlers.TODO_STRING)[1]
-	if startString := "/start"; strings.Contains(path, startString) {
-		todoIDString := strings.Split(path, startString)[0]
-		todoID, err := strconv.Atoi(todoIDString)
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-		if r.Method != http.MethodPut {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			return
-		}
-		// TODO PENDING
-		h.StartTodo(w, r, uint(todoID), 0)
+func (h Handler) HandleTodos(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
 		return
 	}
 
-	if restartString := "/restart"; strings.Contains(path, restartString) {
-		todoIDString := strings.Split(path, restartString)[0]
-		todoID, err := strconv.Atoi(todoIDString)
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-		if r.Method != http.MethodPut {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			return
-		}
-		// TODO PENDING
-		h.RestartTodo(w, r, uint(todoID), 0)
-		return
+	switch r.Method {
+	case http.MethodGet:
+		h.List(w, r)
+	case http.MethodPost:
+		h.Create(w, r)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
-
-	if completeString := "/complete"; strings.Contains(path, completeString) {
-		todoIDString := strings.Split(path, completeString)[0]
-		todoID, err := strconv.Atoi(todoIDString)
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-		if r.Method != http.MethodPut {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			return
-		}
-		// TODO PENDING
-		h.CompleteTodo(w, r, uint(todoID), 0)
-		return
-	}
-
-	if activateString := "/activate"; strings.Contains(path, activateString) {
-		todoIDString := strings.Split(path, activateString)[0]
-		todoID, err := strconv.Atoi(todoIDString)
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-		if r.Method != http.MethodPut {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			return
-		}
-		// TODO PENDING
-		h.ActivateTodo(w, r, uint(todoID), 0)
-		return
-	}
-
-	queryParams := strings.Split(path, "?")
-	todoID, err := strconv.Atoi(queryParams[0])
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	if len(queryParams) == 1 {
-		if r.Method == http.MethodPut {
-			h.UpdateTodo(w, r, uint(todoID))
-			return
-		}
-
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	// TodoID and CategoryID
-	cID := strings.Split(queryParams[1], "=")[1]
-	//categoryID, err := strconv.Atoi(cID)
-	_, err = strconv.Atoi(cID)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	if r.Method == http.MethodGet {
-		//h.GetTodo(w, r, uint(todoID), uint(categoryID))
-		return
-	}
-
-	if r.Method == http.MethodDelete {
-		h.DeleteTodo(w, r, uint(todoID))
-		return
-	}
-
-	w.WriteHeader(http.StatusMethodNotAllowed)
 }
 
-func (h Handler) CreateTodo(w http.ResponseWriter, r *http.Request) {
+func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	payload := requests.CreateTodoRequest{}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
@@ -125,250 +51,202 @@ func (h Handler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//err = h.todoService.Create(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	c, err := h.CreateTodoUseCase.Execute(context.TODO(), userID, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(c)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 	w.WriteHeader(http.StatusCreated)
+	return
 }
 
-func (h Handler) UpdateTodo(w http.ResponseWriter, r *http.Request, id uint) {
-	payload := requests.UpdateTodoRequest{TodoID: uint(int64(id))}
+func (h Handler) List(w http.ResponseWriter, r *http.Request) {
+	//q := r.URL.Query()
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	todos, err := h.ListTodosUseCase.Execute(context.TODO(), nil, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	b, err := json.Marshal(handlers.ListTodosResponse{Todos: todos})
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (h Handler) HandleTodo(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "DELETE, PUT, GET, OPTIONS")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	path := strings.Split(r.RequestURI, handlers.CATEGORY_STRING)[1]
+	categoryID, err := strconv.Atoi(path)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	switch r.Method {
+	case http.MethodGet:
+		h.Get(w, r, uint(categoryID))
+	case http.MethodDelete:
+		h.Delete(w, r, uint(categoryID))
+	case http.MethodPut:
+		h.Update(w, r, uint(categoryID))
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+	//queryParams := strings.Split(path, "?")
+}
+
+func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.GetTodoRequest{TodoID: id}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	//err = h.todoService.Update(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	return
-}
-
-func (h Handler) CompleteTodo(w http.ResponseWriter, r *http.Request, id, categoryID uint) {
-	payload := requests.CompleteTodoRequest{TodoID: uint(int64(id)), Category: uint(categoryID)}
-	err := handlers.ValidateRequest(r, &payload)
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	//err = h.todoService.Complete(context.TODO(), r, payload)
-	//if err != nil {
-	//	return
-	//}
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	return
-}
 
-func (h Handler) ActivateTodo(w http.ResponseWriter, r *http.Request, id, categoryID uint) {
-	payload := requests.ActivateTodoRequest{TodoID: uint(int64(id)), Category: uint(categoryID)}
-	err := handlers.ValidateRequest(r, &payload)
+	t, err := h.GetTodoUseCase.Execute(context.TODO(), payload, userID)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	//err = h.todoService.Activate(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
+	b, err := json.Marshal(t)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 	return
 }
 
-func (h Handler) StartTodo(w http.ResponseWriter, r *http.Request, id, categoryID uint) {
-	payload := requests.StartTodoRequest{TodoID: uint(int64(id)), Category: uint(categoryID)}
+func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.DeleteTodoRequest{TodoID: id}
 	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	//err = h.todoService.Start(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	return
-}
-
-func (h Handler) RestartTodo(w http.ResponseWriter, r *http.Request, id, categoryID uint) {
-	payload := requests.StartTodoRequest{TodoID: uint(int64(id)), Category: uint(categoryID)}
-	err := handlers.ValidateRequest(r, &payload)
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	//err = h.todoService.Restart(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	return
-}
-
-//func (h Handler) GetTodo(w http.ResponseWriter, r *http.Request, id, categoryID uint) {
-//	payload := requests.GetTodoRequest{TodoID: uint(int64(id)), Category: uint(categoryID)}
-//	err := handlers.ValidateRequest(r, &payload)
-//	if err != nil {
-//		handlers.ThrowError(err, http.StatusBadRequest, w)
-//		return
-//	}
-//
-//	todo, err := h.todoService.Get(context.TODO(), r, payload)
-//	if err != nil {
-//		if errors.Is(err, gorm.ErrRecordNotFound) {
-//			w.WriteHeader(http.StatusNotFound)
-//			return
-//		}
-//		handlers.ThrowError(err, http.StatusBadRequest, w)
-//		return
-//	}
-//	b, err := json.Marshal(todo)
-//	if err != nil {
-//		return
-//	}
-//	_, err = w.Write(b)
-//	if err != nil {
-//		return
-//	}
-//}
-
-func (h Handler) ListTodos(w http.ResponseWriter, r *http.Request) {
-	q := r.URL.Query()
-	categoryID, err := strconv.Atoi(q.Get("category_id"))
-	if err != nil {
-		return
-	}
-	payload := requests.ListTodosRequest{}
-	payload.Category = uint(categoryID)
-	//todos, err := h.todoService.List(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//
-	//b, err := json.Marshal(todos)
-	//if err != nil {
-	//	return
-	//}
-	//_, err = w.Write(b)
-	//if err != nil {
-	//	return
-	//}
-	return
-}
-
-func (h Handler) ListRecurringTodos(w http.ResponseWriter, r *http.Request) {
-	//todos, err := h.todoService.ListRecurring(context.TODO(), r)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//
-	//b, err := json.Marshal(todos)
-	//if err != nil {
-	//	return
-	//}
-	//_, err = w.Write(b)
-	//if err != nil {
-	//	return
-	//}
-	return
-}
-
-func (h Handler) ListCompletedTodos(w http.ResponseWriter, r *http.Request) {
-	//todos, err := h.todoService.ListCompleted(context.TODO(), r)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//
-	//b, err := json.Marshal(todos)
-	//if err != nil {
-	//	return
-	//}
-	//_, err = w.Write(b)
-	//if err != nil {
-	//	return
-	//}
-	return
-}
-
-//func (h Handler) ListSuggestedTodos(w http.ResponseWriter, r *http.Request) {
-//	todos, err := h.todoService.ListSuggested(context.TODO(), r)
-//	if err != nil {
-//		handlers.ThrowError(err, http.StatusBadRequest, w)
-//		return
-//	}
-//
-//	b, err := json.Marshal(todos)
-//	if err != nil {
-//		return
-//	}
-//	_, err = w.Write(b)
-//	if err != nil {
-//		return
-//	}
-//}
-
-func (h Handler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
-	//err := h.todoService.Suggest(context.TODO(), r)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-
-	w.WriteHeader(http.StatusOK)
-}
-
-func (h Handler) DeleteTodo(w http.ResponseWriter, r *http.Request, id uint) {
-	q := r.URL.Query()
-	categoryID, err := strconv.Atoi(q.Get("category_id"))
-	if err != nil {
-		return
-	}
-	payload := requests.DeleteTodoRequest{TodoID: uint(int64(id)), Category: uint(categoryID)}
-	err = handlers.ValidateRequest(r, &payload)
+	err = h.DeleteTodoUseCase.Execute(context.TODO(), payload, userID)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-
-	//err = h.todoService.Delete(context.TODO(), r, payload)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
 	w.WriteHeader(http.StatusNoContent)
 }
 
-//func (h Handler) Summary(w http.ResponseWriter, r *http.Request) {
-//	summary, err := h.todoService.Summary(context.TODO(), r)
-//	if err != nil {
-//		handlers.ThrowError(err, http.StatusBadRequest, w)
-//		return
-//	}
-//
-//	b, err := json.Marshal(summary)
-//	if err != nil {
-//		return
-//	}
-//	_, err = w.Write(b)
-//	if err != nil {
-//		return
-//	}
-//}
+func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.UpdateTodoRequest{TodoID: id}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
 
-//func NewTodoHandler(ts todo.Servicer) Handler {
-//	return Handler{
-//		todoService: ts,
-//	}
-//}
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.UpdateTodoUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h Handler) Import(w http.ResponseWriter, r *http.Request) {
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		// Handle the error
+		handlers.ThrowError(pkg.ParseFileError, http.StatusBadRequest, w)
+		return
+	}
+
+	err = h.ImportTodosUseCase.Execute(context.Background(), userID, file)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+//func (h Handler) ListRecurringTodos(w http.ResponseWriter, r *http.Request) {
+//func (h Handler) ListSuggestedTodos(w http.ResponseWriter, r *http.Request) {
+//func (h Handler) ListCompletedTodos(w http.ResponseWriter, r *http.Request) {
+//func (h Handler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
+//func (h Handler) Summary(w http.ResponseWriter, r *http.Request) {
+
+func NewTodoHandler(
+	createTodoUseCase *todo.CreateTodoUseCase,
+	deleteTodoUseCase *todo.DeleteTodoUseCase,
+	getTodoUseCase *todo.GetTodoUseCase,
+	importTodosUseCase *todo.ImportTodosUseCase,
+	listTodosUseCase *todo.ListTodosUseCase,
+	updateTodoUseCase *todo.UpdateTodoUseCase,
+	logger *log.Logger,
+) *Handler {
+	return &Handler{
+		CreateTodoUseCase:  *createTodoUseCase,
+		DeleteTodoUseCase:  *deleteTodoUseCase,
+		GetTodoUseCase:     *getTodoUseCase,
+		ImportTodosUseCase: *importTodosUseCase,
+		ListTodosUseCase:   *listTodosUseCase,
+		UpdateTodoUseCase:  *updateTodoUseCase,
+		logger:             logger,
+	}
+}

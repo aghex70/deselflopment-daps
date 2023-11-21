@@ -6,7 +6,6 @@ import (
 	"encoding/csv"
 	"github.com/aghex70/daps/internal/ports/domain"
 	"github.com/aghex70/daps/internal/ports/repositories/todo"
-	//"github.com/aghex70/daps/server"
 	"io"
 	"log"
 	"mime/multipart"
@@ -50,12 +49,12 @@ func (s Service) List(ctx context.Context, ids *[]uint, fields *map[string]inter
 	return todos, nil
 }
 
-func (s Service) Update(ctx context.Context, id uint, t domain.Todo) (domain.Todo, error) {
-	td, err := s.todoRepository.Update(ctx, id, t)
+func (s Service) Update(ctx context.Context, id uint, fields *map[string]interface{}) error {
+	err := s.todoRepository.Update(ctx, id, fields)
 	if err != nil {
-		return domain.Todo{}, err
+		return err
 	}
-	return td, nil
+	return nil
 }
 
 func (s Service) Import(ctx context.Context, f multipart.File) error {

@@ -6,9 +6,11 @@ import (
 	todoService "github.com/aghex70/daps/internal/core/services/todo"
 	userService "github.com/aghex70/daps/internal/core/services/user"
 	categoryUsecases "github.com/aghex70/daps/internal/core/usecases/category"
+	todoUsecases "github.com/aghex70/daps/internal/core/usecases/todo"
 	userUsecases "github.com/aghex70/daps/internal/core/usecases/user"
 	repository "github.com/aghex70/daps/internal/infrastructure/persistence/repositories/gorm"
 	categoryHandler "github.com/aghex70/daps/internal/ports/handlers/category"
+	todoHandler "github.com/aghex70/daps/internal/ports/handlers/todo"
 	userHandler "github.com/aghex70/daps/internal/ports/handlers/user"
 	"log"
 
@@ -55,20 +57,28 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			uuuuc := userUsecases.NewUpdateUserUseCase(us, &logger)
 
 			// Category usecases
-			cauuc := categoryUsecases.NewCreateCategoryUseCase(cs, &logger)
-			cduuc := categoryUsecases.NewDeleteCategoryUseCase(cs, &logger)
-			gcuuc := categoryUsecases.NewGetCategoryUseCase(cs, &logger)
-			lcuuc := categoryUsecases.NewListCategoriesUseCase(cs, &logger)
-			scauuc := categoryUsecases.NewShareCategoryUseCase(cs, &logger)
-			usauuc := categoryUsecases.NewUnshareCategoryUseCase(cs, &logger)
-			ucauuc := categoryUsecases.NewUpdateCategoryUseCase(cs, &logger)
+			cauuc := categoryUsecases.NewCreateCategoryUseCase(cs, us, &logger)
+			cduuc := categoryUsecases.NewDeleteCategoryUseCase(cs, us, &logger)
+			gcuuc := categoryUsecases.NewGetCategoryUseCase(cs, us, &logger)
+			lcuuc := categoryUsecases.NewListCategoriesUseCase(cs, us, &logger)
+			scauuc := categoryUsecases.NewShareCategoryUseCase(cs, us, &logger)
+			usauuc := categoryUsecases.NewUnshareCategoryUseCase(cs, us, &logger)
+			ucauuc := categoryUsecases.NewUpdateCategoryUseCase(cs, us, &logger)
+
+			// Todo usecases
+			ctuuc := todoUsecases.NewCreateTodoUseCase(ts, us, &logger)
+			dtuuc := todoUsecases.NewDeleteTodoUseCase(ts, us, &logger)
+			gtuuc := todoUsecases.NewGetTodoUseCase(ts, us, &logger)
+			ituuc := todoUsecases.NewImportTodosUseCase(ts, us, &logger)
+			ltuuc := todoUsecases.NewListTodosUseCase(ts, us, &logger)
+			utuuc := todoUsecases.NewUpdateTodoUseCase(ts, us, &logger)
 
 			//Handlers
 			uh := userHandler.NewUserHandler(auuc, duuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, uuuuc, &logger)
 			ch := categoryHandler.NewCategoryHandler(cauuc, cduuc, gcuuc, lcuuc, scauuc, usauuc, ucauuc, &logger)
-			//th := todoHandler.NewTodoHandler(ts)
+			th := todoHandler.NewTodoHandler(ctuuc, dtuuc, gtuuc, ituuc, ltuuc, utuuc, &logger)
 
-			s := server.NewRestServer(cfg.Server.Rest, *ch, nil, *uh, &logger)
+			s := server.NewRestServer(cfg.Server.Rest, *ch, *th, *uh, &logger)
 			err = s.StartServer()
 			if err != nil {
 				log.Fatal("error starting server", err.Error())

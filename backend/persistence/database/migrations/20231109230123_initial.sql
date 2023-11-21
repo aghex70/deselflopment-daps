@@ -62,10 +62,10 @@ CREATE TABLE daps_todos (
     suggestable TINYINT NOT NULL DEFAULT 1,
     suggested TINYINT NOT NULL DEFAULT 0,
     suggested_at TIMESTAMP NULL DEFAULT NULL,
-    user_id INT UNSIGNED NOT NULL,
+    owner_id INT UNSIGNED NOT NULL,
     FOREIGN KEY(category_id) REFERENCES daps_categories(id) ON DELETE CASCADE,
-    FOREIGN KEY(user_id) REFERENCES deselflopment_users(id) ON DELETE CASCADE,
-    UNIQUE KEY (name, category_id, user_id)
+    FOREIGN KEY(owner_id) REFERENCES deselflopment_users(id) ON DELETE CASCADE,
+    UNIQUE KEY (name, category_id, owner_id)
 );
 
 CREATE TABLE deselflopment_emails (

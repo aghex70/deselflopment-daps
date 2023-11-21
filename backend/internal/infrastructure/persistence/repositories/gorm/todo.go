@@ -2,7 +2,9 @@ package gorm
 
 import (
 	"context"
+	"fmt"
 	"github.com/aghex70/daps/internal/ports/domain"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -24,7 +26,7 @@ type Todo struct {
 	Suggestable bool
 	Suggested   bool
 	SuggestedAt *time.Time
-	UserID      uint
+	OwnerID     uint
 }
 
 func (t Todo) ToDto() domain.Todo {
@@ -45,7 +47,7 @@ func (t Todo) ToDto() domain.Todo {
 		Suggestable: t.Suggestable,
 		Suggested:   t.Suggested,
 		SuggestedAt: t.SuggestedAt,
-		UserID:      t.UserID,
+		OwnerID:     t.OwnerID,
 	}
 }
 
@@ -64,7 +66,7 @@ func TodoFromDto(t domain.Todo) Todo {
 		StartedAt:   t.StartedAt,
 		Suggestable: t.Suggestable,
 		SuggestedAt: t.SuggestedAt,
-		UserID:      t.UserID,
+		OwnerID:     t.OwnerID,
 	}
 }
 
@@ -118,16 +120,21 @@ func (gr *TodoRepository) List(ctx context.Context, ids *[]uint, filters *map[st
 	var ts []Todo
 	var todos []domain.Todo
 
+	query := gr.DB
 	if filters != nil {
-		result := gr.DB.Where(filters).Find(&ts)
-		if result.Error != nil {
-			return []domain.Todo{}, result.Error
+		// Convert map[string]interface{} to a slice of arguments
+		var args []interface{}
+		var conditions []string
+		for key, value := range *filters {
+			conditions = append(conditions, fmt.Sprintf("%s = ?", key))
+			args = append(args, value)
 		}
-	} else {
-		result := gr.DB.Find(&ts)
-		if result.Error != nil {
-			return []domain.Todo{}, result.Error
-		}
+		query = query.Where(strings.Join(conditions, " AND "), args...)
+	}
+
+	result := query.Find(&ts)
+	if result.Error != nil {
+		return []domain.Todo{}, result.Error
 	}
 
 	for _, c := range ts {
@@ -137,26 +144,12 @@ func (gr *TodoRepository) List(ctx context.Context, ids *[]uint, filters *map[st
 	return todos, nil
 }
 
-func (gr *TodoRepository) Update(ctx context.Context, id uint, t domain.Todo) (domain.Todo, error) {
-	result := gr.DB.Model(&Todo{}).Where("id = ?", id).Updates(Todo{
-		Name:        t.Name,
-		Description: t.Description,
-		Completed:   t.Completed,
-		CompletedAt: t.CompletedAt,
-		Active:      t.Active,
-		//Priority:    Priority(t.Priority),
-		CategoryID:  t.CategoryID,
-		Link:        t.Link,
-		Recurring:   t.Recurring,
-		Recurrency:  t.Recurrency,
-		StartedAt:   t.StartedAt,
-		Suggestable: t.Suggestable,
-		Suggested:   t.Suggested,
-		SuggestedAt: t.SuggestedAt,
-		UserID:      t.UserID,
-	})
+func (gr *TodoRepository) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
+	var t Todo
+	t.ID = id
+	result := gr.DB.Model(&t).Updates(*filters)
 	if result.Error != nil {
-		return domain.Todo{}, result.Error
+		return result.Error
 	}
-	return t, nil
+	return nil
 }

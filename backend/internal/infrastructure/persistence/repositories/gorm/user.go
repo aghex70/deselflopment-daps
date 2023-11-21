@@ -21,8 +21,8 @@ type User struct {
 	AutoSuggest       bool
 	Categories        *[]Category `gorm:"many2many:daps_category_users"`
 	Emails            *[]Email
-	Todos             *[]Todo
-	OwnedCategories   *[]Category `gorm:"foreignKey:OwnerID"`
+	//Todos             *[]Todo
+	OwnedCategories *[]Category `gorm:"foreignKey:OwnerID"`
 }
 
 func (u User) ToDto() domain.User {
@@ -100,7 +100,6 @@ func (gr *UserRepository) Get(ctx context.Context, id uint) (domain.User, error)
 	if result.Error != nil {
 		return domain.User{}, result.Error
 	}
-	fmt.Printf("user: %+v\n", u)
 	return u.ToDto(), nil
 }
 
@@ -173,7 +172,6 @@ func (gr *UserRepository) List(ctx context.Context, filters *map[string]interfac
 
 func (gr *UserRepository) Delete(ctx context.Context, id uint) error {
 	result := gr.DB.Delete(&User{}, id)
-	fmt.Printf("result: %+v\n", result)
 	if result.Error != nil {
 		return result.Error
 	}

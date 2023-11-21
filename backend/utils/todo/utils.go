@@ -7,3 +7,7 @@ import (
 func HasWritePermissions(todo domain.Todo, categoryId uint) bool {
 	return true
 }
+
+func IsTodoOwner(ownerID, userID uint) bool {
+	return ownerID == userID
+}

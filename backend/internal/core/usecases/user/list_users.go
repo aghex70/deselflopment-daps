@@ -18,6 +18,10 @@ func (uc *ListUsersUseCase) Execute(ctx context.Context, fields *map[string]inte
 	if err != nil {
 		return []domain.User{}, err
 	}
+	if !u.Active {
+		return []domain.User{}, pkg.InactiveUserError
+	}
+
 	if !u.Admin {
 		return []domain.User{}, pkg.UnauthorizedError
 	}

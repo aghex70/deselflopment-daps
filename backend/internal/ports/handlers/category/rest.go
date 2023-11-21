@@ -3,7 +3,6 @@ package category
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/usecases/category"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
@@ -23,6 +22,81 @@ type Handler struct {
 	UnshareCategoryUseCase category.UnshareCategoryUseCase
 	UpdateCategoryUseCase  category.UpdateCategoryUseCase
 	logger                 *log.Logger
+}
+
+func (h Handler) HandleCategories(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	switch r.Method {
+	case http.MethodGet:
+		h.List(w, r)
+	case http.MethodPost:
+		h.Create(w, r)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
+	payload := requests.CreateCategoryRequest{}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	c, err := h.CreateCategoryUseCase.Execute(context.TODO(), userID, payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(c)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+	return
+}
+
+func (h Handler) List(w http.ResponseWriter, r *http.Request) {
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	categories, err := h.ListCategoriesUseCase.Execute(context.TODO(), nil, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	b, err := json.Marshal(handlers.ListCategoriesResponse{Categories: categories})
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
+	return
 }
 
 func (h Handler) HandleCategory(w http.ResponseWriter, r *http.Request) {
@@ -52,115 +126,6 @@ func (h Handler) HandleCategory(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
-}
-
-func (h Handler) HandleCategories(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
-	w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
-	switch r.Method {
-	case http.MethodGet:
-		h.List(w, r)
-	case http.MethodPost:
-		h.Create(w, r)
-	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
-	}
-}
-
-func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
-	pkg.SetCORSHeaders(w, r)
-
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
-	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
-	if err != nil {
-		return
-	}
-
-	payload := requests.CreateCategoryRequest{}
-	err = handlers.ValidateRequest(r, &payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	userID, err := handlers.RetrieveJWTClaims(r, nil)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	c, err := h.CreateCategoryUseCase.Execute(context.TODO(), userID, payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	fmt.Printf("Categories: %+v\n", c)
-	b, err := json.Marshal(c)
-	if err != nil {
-		return
-	}
-	_, err = w.Write(b)
-	if err != nil {
-		return
-	}
-	w.WriteHeader(http.StatusCreated)
-	return
-}
-
-func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
-	payload := requests.UpdateCategoryRequest{CategoryID: id}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	userID, err := handlers.RetrieveJWTClaims(r, nil)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	err = h.UpdateCategoryUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-}
-
-func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
-	payload := requests.DeleteCategoryRequest{CategoryID: id}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	userID, err := handlers.RetrieveJWTClaims(r, nil)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	err = h.DeleteCategoryUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
@@ -193,9 +158,11 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 	return
 }
 
-func (h Handler) List(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "OPTIONS" {
-		http.Error(w, "No Content", http.StatusNoContent)
+func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.DeleteCategoryRequest{CategoryID: id}
+	err := handlers.ValidateRequest(r, &payload)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
@@ -205,20 +172,34 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	categories, err := h.ListCategoriesUseCase.Execute(context.TODO(), nil, userID)
+	err = h.DeleteCategoryUseCase.Execute(context.TODO(), payload, userID)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	b, err := json.Marshal(handlers.ListCategoriesResponse{Categories: categories})
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.UpdateCategoryRequest{CategoryID: id}
+	err := handlers.ValidateRequest(r, &payload)
 	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	_, err = w.Write(b)
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	return
+
+	err = h.UpdateCategoryUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func NewCategoryHandler(

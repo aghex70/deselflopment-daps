@@ -20,6 +20,10 @@ func (uc *UpdateUserUseCase) Execute(ctx context.Context, r requests.UpdateUserR
 	if err != nil {
 		return err
 	}
+	if !u.Active {
+		return pkg.InactiveUserError
+	}
+
 	if u.ID != userID {
 		return pkg.UnauthorizedError
 	}

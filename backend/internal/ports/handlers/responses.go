@@ -18,6 +18,10 @@ type ListUsersResponse struct {
 	//Users []domain2.FilteredUser `json:"users"`
 }
 
+type ListTodosResponse struct {
+	Todos []domain.Todo `json:"todos"`
+}
+
 type GetUserResponse struct {
 	User domain.User `json:"user"`
 }
