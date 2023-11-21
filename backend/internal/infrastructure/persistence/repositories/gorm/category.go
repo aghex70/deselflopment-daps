@@ -90,38 +90,46 @@ func (Category) TableName() string {
 
 func (gr *CategoryRepository) Create(ctx context.Context, c domain.Category) (domain.Category, error) {
 	nc := CategoryFromDto(c)
-	result := gr.DB.Create(&nc)
-	if result.Error != nil {
+	if result := gr.DB.Create(&nc); result.Error != nil {
 		return domain.Category{}, result.Error
 	}
 
 	// Hack to get around the fact that GORM doesn't support many-to-many relationships
-	if nc.Users != nil {
-		err := gr.DB.Association("Users").Append(*nc.Users)
-		if err != nil {
+	if nc.Users == nil {
+		if err := gr.DB.Association("Users").Append(*nc.Users); err != nil {
 			return domain.Category{}, err
 		}
-	}
-	if result.Error != nil {
-		return domain.Category{}, result.Error
 	}
 	return nc.ToDto(), nil
 }
 
 func (gr *CategoryRepository) Get(ctx context.Context, id uint) (domain.Category, error) {
 	var c Category
-	result := gr.DB.First(&c, id)
-	if result.Error != nil {
+
+	if result := gr.DB.First(&c, id); result.Error != nil {
 		return domain.Category{}, result.Error
+	}
+
+	// Retrieve users associated with the category if they exist
+	if c.Users == nil {
+		if err := gr.DB.Model(&c).Association("Users").Find(&c.Users); err != nil {
+			return domain.Category{}, err
+		}
 	}
 	return c.ToDto(), nil
 }
 
 func (gr *CategoryRepository) Delete(ctx context.Context, id uint) error {
-	result := gr.DB.Delete(&Category{}, id)
-	if result.Error != nil {
+	// Fetch the category along with its associations
+	var category Category
+	if result := gr.DB.Preload("Users").First(&category, id); result.Error != nil {
 		return result.Error
 	}
+
+	if result := gr.DB.Delete(&category, id); result.Error != nil {
+		return result.Error
+	}
+
 	return nil
 }
 
@@ -141,8 +149,7 @@ func (gr *CategoryRepository) List(ctx context.Context, ids *[]uint, filters *ma
 		query = query.Where(strings.Join(conditions, " AND "), args...)
 	}
 
-	result := query.Find(&cs)
-	if result.Error != nil {
+	if result := query.Find(&cs); result.Error != nil {
 		return []domain.Category{}, result.Error
 	}
 
@@ -156,8 +163,7 @@ func (gr *CategoryRepository) List(ctx context.Context, ids *[]uint, filters *ma
 func (gr *CategoryRepository) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
 	var c Category
 	c.ID = id
-	result := gr.DB.Model(&c).Updates(*filters)
-	if result.Error != nil {
+	if result := gr.DB.Model(&c).Updates(*filters); result.Error != nil {
 		return result.Error
 	}
 	return nil
