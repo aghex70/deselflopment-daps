@@ -46,16 +46,7 @@ func (u User) ToDto() domain.User {
 }
 
 func UserFromDto(u domain.User) User {
-	//fmt.Println("1")
-	//categories := CategoriesFromDto(*u.Categories)
-	//fmt.Println("2")
-	//emails := EmailsFromDto(*u.Emails)
-	//fmt.Println("3")
-	//todos := TodosFromDto(*u.Todos)
-	//fmt.Println("4")
-	//ownedCategories := CategoriesFromDto(*u.OwnedCategories)
-	//fmt.Println("5")
-	return User{
+	user := User{
 		Name:              u.Name,
 		Email:             u.Email,
 		Password:          u.Password,
@@ -70,6 +61,8 @@ func UserFromDto(u domain.User) User {
 		//Todos:             &todos,
 		//OwnedCategories:   &ownedCategories,
 	}
+	user.ID = u.ID
+	return user
 }
 
 func UsersFromDto(us []domain.User) []User {

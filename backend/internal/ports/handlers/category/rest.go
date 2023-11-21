@@ -72,7 +72,6 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
 	return
 }
 

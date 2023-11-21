@@ -6,6 +6,7 @@ import (
 	"github.com/aghex70/daps/internal/ports/domain"
 	"gorm.io/gorm"
 	"strings"
+	"time"
 )
 
 type Category struct {
@@ -21,67 +22,86 @@ type Category struct {
 }
 
 func (c Category) ToDto() domain.Category {
+	var createdAt time.Time
+	if !c.CreatedAt.IsZero() {
+		createdAt = c.CreatedAt
+	}
+
+	var todos []domain.Todo
+	if c.Todos != nil {
+		for _, todo := range *c.Todos {
+			todos = append(todos, todo.ToDto())
+		}
+	}
+
+	var users []domain.User
+	if c.Users != nil {
+		for _, user := range *c.Users {
+			users = append(users, user.ToDto())
+		}
+	}
+
 	return domain.Category{
 		ID:          c.ID,
-		CreatedAt:   c.CreatedAt,
+		CreatedAt:   createdAt,
 		Name:        c.Name,
 		Description: c.Description,
 		OwnerID:     c.OwnerID,
-		//Users:       c.Users,
-		//Todos:       c.Todos,
-		Shared:     c.Shared,
-		Notifiable: c.Notifiable,
-		Custom:     c.Custom,
+		Users:       &users,
+		Todos:       &todos,
+		Shared:      c.Shared,
+		Notifiable:  c.Notifiable,
+		Custom:      c.Custom,
 	}
 }
 
 func CategoryFromDto(c domain.Category) Category {
-	//fmt.Printf("domain category: %+v\n", c)
-	//
-	//var users []User
-	//for _, u := range *c.Users {
-	//	fmt.Printf("domain category user: %+v\n", u)
-	//	user := UserFromDto(u)
-	//	users = append(users, user)
-	//}
-	//fmt.Printf("gorm users: %+v\n", users)
-	//
-	//todos := TodosFromDto(*c.Todos)
+	var users []User
+	if c.Users != nil {
+		for _, userDTO := range *c.Users {
+			user := UserFromDto(userDTO)
+			users = append(users, user)
+		}
+	}
+
+	var todos []Todo
+	if c.Todos != nil {
+		for _, todoDTO := range *c.Todos {
+			todo := TodoFromDto(todoDTO)
+			todos = append(todos, todo)
+		}
+	}
+
 	return Category{
 		Name:        c.Name,
 		Description: c.Description,
 		OwnerID:     c.OwnerID,
-		//Users:       uz,
-		//Todos:      &todos,
-		Shared:     c.Shared,
-		Notifiable: c.Notifiable,
-		Custom:     c.Custom,
+		Users:       &users,
+		Todos:       &todos,
+		Shared:      c.Shared,
+		Notifiable:  c.Notifiable,
+		Custom:      c.Custom,
 	}
-}
-
-func CategoriesFromDto(cs []domain.Category) []Category {
-	var cats []Category
-	for _, c := range cs {
-		cats = append(cats, CategoryFromDto(c))
-	}
-	return cats
 }
 
 func (Category) TableName() string {
 	return "daps_categories"
 }
 
-type CategoryRepository struct {
-	*gorm.DB
-}
-
-func NewGormCategoryRepository(db *gorm.DB) *CategoryRepository {
-	return &CategoryRepository{db}
-}
-
 func (gr *CategoryRepository) Create(ctx context.Context, c domain.Category) (domain.Category, error) {
 	nc := CategoryFromDto(c)
 	result := gr.DB.Create(&nc)
+	if result.Error != nil {
+		return domain.Category{}, result.Error
+	}
+
+	// Hack to get around the fact that GORM doesn't support many-to-many relationships
+	if nc.Users != nil {
+		err := gr.DB.Association("Users").Append(*nc.Users)
+		if err != nil {
+			return domain.Category{}, err
+		}
+	}
 	if result.Error != nil {
 		return domain.Category{}, result.Error
 	}
@@ -141,4 +161,12 @@ func (gr *CategoryRepository) Update(ctx context.Context, id uint, filters *map[
 		return result.Error
 	}
 	return nil
+}
+
+type CategoryRepository struct {
+	*gorm.DB
+}
+
+func NewGormCategoryRepository(db *gorm.DB) *CategoryRepository {
+	return &CategoryRepository{db}
 }
