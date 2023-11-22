@@ -3,15 +3,15 @@ package user
 import (
 	"context"
 	"errors"
-	"github.com/aghex70/daps/internal/core/services/user"
 	"github.com/aghex70/daps/internal/pkg"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	"github.com/aghex70/daps/internal/ports/services/user"
 	"gorm.io/gorm"
 	"log"
 )
 
 type UpdateUserUseCase struct {
-	UserService user.Service
+	UserService user.Servicer
 	logger      *log.Logger
 }
 
@@ -37,7 +37,7 @@ func (uc *UpdateUserUseCase) Execute(ctx context.Context, r requests.UpdateUserR
 	return nil
 }
 
-func NewUpdateUserUseCase(us user.Service, logger *log.Logger) *UpdateUserUseCase {
+func NewUpdateUserUseCase(us user.Servicer, logger *log.Logger) *UpdateUserUseCase {
 	return &UpdateUserUseCase{
 		UserService: us,
 		logger:      logger,

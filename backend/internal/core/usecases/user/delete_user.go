@@ -2,14 +2,14 @@ package user
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/user"
 	"github.com/aghex70/daps/internal/pkg"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	"github.com/aghex70/daps/internal/ports/services/user"
 	"log"
 )
 
 type DeleteUserUseCase struct {
-	UserService user.Service
+	UserService user.Servicer
 	logger      *log.Logger
 }
 
@@ -28,7 +28,7 @@ func (uc *DeleteUserUseCase) Execute(ctx context.Context, r requests.DeleteUserR
 	return nil
 }
 
-func NewDeleteUserUseCase(userService user.Service, logger *log.Logger) *DeleteUserUseCase {
+func NewDeleteUserUseCase(userService user.Servicer, logger *log.Logger) *DeleteUserUseCase {
 	return &DeleteUserUseCase{
 		UserService: userService,
 		logger:      logger,

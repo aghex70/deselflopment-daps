@@ -2,14 +2,14 @@ package user
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/user"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	"github.com/aghex70/daps/internal/ports/services/user"
 	utils "github.com/aghex70/daps/utils/user"
 	"log"
 )
 
 type ResetPasswordUseCase struct {
-	UserService user.Service
+	UserService user.Servicer
 	logger      *log.Logger
 }
 
@@ -21,7 +21,7 @@ func (uc *ResetPasswordUseCase) Execute(ctx context.Context, r requests.ResetPas
 	return nil
 }
 
-func NewResetPasswordUseCase(userService user.Service, logger *log.Logger) *ResetPasswordUseCase {
+func NewResetPasswordUseCase(userService user.Servicer, logger *log.Logger) *ResetPasswordUseCase {
 	return &ResetPasswordUseCase{
 		UserService: userService,
 		logger:      logger,

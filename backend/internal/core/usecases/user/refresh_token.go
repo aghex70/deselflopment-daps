@@ -2,14 +2,14 @@ package user
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/user"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	"github.com/aghex70/daps/internal/ports/services/user"
 	utils "github.com/aghex70/daps/utils/user"
 	"log"
 )
 
 type RefreshTokenUseCase struct {
-	UserService user.Service
+	UserService user.Servicer
 	logger      *log.Logger
 }
 
@@ -27,7 +27,7 @@ func (uc *RefreshTokenUseCase) Execute(ctx context.Context, r requests.RefreshTo
 	return token, userID, nil
 }
 
-func NewRefreshTokenUseCase(userService user.Service, logger *log.Logger) *RefreshTokenUseCase {
+func NewRefreshTokenUseCase(userService user.Servicer, logger *log.Logger) *RefreshTokenUseCase {
 	return &RefreshTokenUseCase{
 		UserService: userService,
 		logger:      logger,

@@ -2,10 +2,9 @@ package email
 
 import (
 	"context"
-	requests "github.com/aghex70/daps/internal/ports/requests/email"
-	"net/http"
+	"github.com/aghex70/daps/internal/ports/domain"
 )
 
 type Servicer interface {
-	Send(ctx context.Context, r *http.Request, req requests.SendEmailRequest) error
+	Send(ctx context.Context, e domain.Email) (bool, error)
 }

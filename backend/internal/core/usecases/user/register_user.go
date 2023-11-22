@@ -3,12 +3,12 @@ package user
 import (
 	"context"
 	"errors"
-	"github.com/aghex70/daps/internal/core/services/category"
-	"github.com/aghex70/daps/internal/core/services/email"
-	"github.com/aghex70/daps/internal/core/services/user"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/domain"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	"github.com/aghex70/daps/internal/ports/services/category"
+	"github.com/aghex70/daps/internal/ports/services/email"
+	"github.com/aghex70/daps/internal/ports/services/user"
 	common "github.com/aghex70/daps/utils"
 	emailUtils "github.com/aghex70/daps/utils/email"
 	utils "github.com/aghex70/daps/utils/user"
@@ -17,9 +17,9 @@ import (
 )
 
 type RegisterUserUseCase struct {
-	UserService     user.Service
-	CategoryService category.Service
-	EmailService    email.Service
+	UserService     user.Servicer
+	CategoryService category.Servicer
+	EmailService    email.Servicer
 	logger          *log.Logger
 }
 
@@ -60,7 +60,7 @@ func (uc *RegisterUserUseCase) Execute(ctx context.Context, r requests.CreateUse
 	return nil
 }
 
-func NewRegisterUserUseCase(us user.Service, cs category.Service, es email.Service, logger *log.Logger) *RegisterUserUseCase {
+func NewRegisterUserUseCase(us user.Servicer, cs category.Servicer, es email.Servicer, logger *log.Logger) *RegisterUserUseCase {
 	return &RegisterUserUseCase{
 		UserService:     us,
 		CategoryService: cs,

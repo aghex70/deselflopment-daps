@@ -2,12 +2,12 @@ package user
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/category"
-	"github.com/aghex70/daps/internal/core/services/todo"
-	"github.com/aghex70/daps/internal/core/services/user"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/domain"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	"github.com/aghex70/daps/internal/ports/services/category"
+	"github.com/aghex70/daps/internal/ports/services/todo"
+	"github.com/aghex70/daps/internal/ports/services/user"
 	common "github.com/aghex70/daps/utils"
 	categoryUtils "github.com/aghex70/daps/utils/category"
 	userUtils "github.com/aghex70/daps/utils/user"
@@ -15,9 +15,9 @@ import (
 )
 
 type ProvisionDemoUserUseCase struct {
-	UserService     user.Service
-	CategoryService category.Service
-	TodoService     todo.Service
+	UserService     user.Servicer
+	CategoryService category.Servicer
+	TodoService     todo.Servicer
 	logger          *log.Logger
 }
 
@@ -95,7 +95,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 	return nil
 }
 
-func NewProvisionDemoUserUseCase(userService user.Service, categoryService category.Service, todoService todo.Service, logger *log.Logger) *ProvisionDemoUserUseCase {
+func NewProvisionDemoUserUseCase(userService user.Servicer, categoryService category.Servicer, todoService todo.Servicer, logger *log.Logger) *ProvisionDemoUserUseCase {
 	return &ProvisionDemoUserUseCase{
 		UserService:     userService,
 		CategoryService: categoryService,

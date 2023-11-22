@@ -2,17 +2,17 @@ package user
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/email"
-	"github.com/aghex70/daps/internal/core/services/user"
 	"github.com/aghex70/daps/internal/pkg"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	"github.com/aghex70/daps/internal/ports/services/email"
+	"github.com/aghex70/daps/internal/ports/services/user"
 	utils "github.com/aghex70/daps/utils/email"
 	"log"
 )
 
 type SendResetLinkUseCase struct {
-	UserService  user.Service
-	EmailService email.Service
+	UserService  user.Servicer
+	EmailService email.Servicer
 	logger       *log.Logger
 }
 
@@ -36,7 +36,7 @@ func (uc *SendResetLinkUseCase) Execute(ctx context.Context, r requests.ResetLin
 	return nil
 }
 
-func NewSendResetLinkUseCase(userService user.Service, emailService email.Service, logger *log.Logger) *SendResetLinkUseCase {
+func NewSendResetLinkUseCase(userService user.Servicer, emailService email.Servicer, logger *log.Logger) *SendResetLinkUseCase {
 	return &SendResetLinkUseCase{
 		UserService:  userService,
 		EmailService: emailService,

@@ -2,15 +2,15 @@ package user
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/user"
 	"github.com/aghex70/daps/internal/pkg"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	"github.com/aghex70/daps/internal/ports/services/user"
 	utils "github.com/aghex70/daps/utils/user"
 	"log"
 )
 
 type LoginUserUseCase struct {
-	UserService user.Service
+	UserService user.Servicer
 	logger      *log.Logger
 }
 
@@ -37,7 +37,7 @@ func (uc *LoginUserUseCase) Execute(ctx context.Context, r requests.LoginUserReq
 	return token, userID, nil
 }
 
-func NewLoginUserUseCase(userService user.Service, logger *log.Logger) *LoginUserUseCase {
+func NewLoginUserUseCase(userService user.Servicer, logger *log.Logger) *LoginUserUseCase {
 	return &LoginUserUseCase{
 		UserService: userService,
 		logger:      logger,
