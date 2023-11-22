@@ -36,9 +36,6 @@ func (uc *GetUserUseCase) Execute(ctx context.Context, r requests.GetUserRequest
 	if ur.ID != r.UserID {
 		return domain.User{}, pkg.UnauthorizedError
 	}
-	if err != nil {
-		return domain.User{}, err
-	}
 	return ur, nil
 }
 

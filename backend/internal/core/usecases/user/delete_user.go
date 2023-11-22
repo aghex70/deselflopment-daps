@@ -22,8 +22,7 @@ func (uc *DeleteUserUseCase) Execute(ctx context.Context, r requests.DeleteUserR
 		return pkg.UnauthorizedError
 	}
 
-	err = uc.UserService.Delete(ctx, r.UserID)
-	if err != nil {
+	if err = uc.UserService.Delete(ctx, r.UserID); err != nil {
 		return err
 	}
 	return nil

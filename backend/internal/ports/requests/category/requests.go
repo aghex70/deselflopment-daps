@@ -15,8 +15,18 @@ type GetCategoryRequest struct {
 }
 
 type UpdateCategoryRequest struct {
-	CategoryID  uint   `json:"category_id"`
+	CategoryID  uint    `json:"category_id"`
 	Description *string `json:"description"`
-	Name        string `json:"name"`
-	Notifiable  bool   `json:"notifiable"`
+	Name        string  `json:"name"`
+	Notifiable  bool    `json:"notifiable"`
+}
+
+type ShareCategoryRequest struct {
+	CategoryID uint   `json:"category_id"`
+	Email      string `json:"email"`
+}
+
+type UnshareCategoryRequest struct {
+	CategoryID uint   `json:"category_id"`
+	UserID     string `json:"user_id"`
 }

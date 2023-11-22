@@ -50,7 +50,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 		//Description: "Home tasks",
 		Custom: true,
 		Name:   "Home",
-		Users:  &[]domain.User{u},
+		Users:  []domain.User{u},
 	}
 
 	c, err := uc.CategoryService.Create(ctx, demoCategory)
@@ -63,7 +63,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 		//Description: "Work stuff",
 		Custom: true,
 		Name:   "Work",
-		Users:  &[]domain.User{u},
+		Users:  []domain.User{u},
 	}
 
 	ac, err := uc.CategoryService.Create(ctx, anotherDemoCategory)
@@ -76,7 +76,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 		//Description: "Purchase list",
 		Custom: true,
 		Name:   "Purchases",
-		Users:  &[]domain.User{u},
+		Users:  []domain.User{u},
 	}
 
 	yac, err := uc.CategoryService.Create(ctx, yetAnotherDemoCategory)

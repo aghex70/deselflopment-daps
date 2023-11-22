@@ -36,8 +36,7 @@ func (uc *UnshareCategoryUseCase) Execute(ctx context.Context, r requests.Update
 	}
 
 	fields := map[string]interface{}{"shared": false}
-	err = uc.CategoryService.Update(ctx, c.ID, &fields)
-	if err != nil {
+	if err = uc.CategoryService.Update(ctx, c.ID, &fields); err != nil {
 		return err
 	}
 	return nil

@@ -41,7 +41,7 @@ func (uc *RegisterUserUseCase) Execute(ctx context.Context, r requests.CreateUse
 		Password:          encryptedPassword,
 		ActivationCode:    common.GenerateUUID(),
 		ResetPasswordCode: common.GenerateUUID(),
-		Categories:        &categories,
+		Categories:        categories,
 	}
 
 	nu, err := uc.UserService.Create(ctx, u)
@@ -52,8 +52,7 @@ func (uc *RegisterUserUseCase) Execute(ctx context.Context, r requests.CreateUse
 	e := emailUtils.GenerateActivationEmail(r.Name, r.Email, nu)
 	s, err := uc.EmailService.Send(ctx, e)
 	if !s && err != nil {
-		uerr := uc.UserService.Delete(ctx, nu.ID)
-		if uerr != nil {
+		if uerr := uc.UserService.Delete(ctx, nu.ID); uerr != nil {
 			return uerr
 		}
 		return err

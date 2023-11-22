@@ -2,11 +2,13 @@ package category
 
 import (
 	"context"
+	"errors"
 	"github.com/aghex70/daps/internal/pkg"
 	requests "github.com/aghex70/daps/internal/ports/requests/category"
 	"github.com/aghex70/daps/internal/ports/services/category"
 	"github.com/aghex70/daps/internal/ports/services/user"
 	utils "github.com/aghex70/daps/utils/category"
+	"gorm.io/gorm"
 	"log"
 )
 
@@ -16,7 +18,7 @@ type ShareCategoryUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *ShareCategoryUseCase) Execute(ctx context.Context, r requests.UpdateCategoryRequest, userID uint) error {
+func (uc *ShareCategoryUseCase) Execute(ctx context.Context, r requests.ShareCategoryRequest, userID uint) error {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return err
@@ -26,18 +28,20 @@ func (uc *ShareCategoryUseCase) Execute(ctx context.Context, r requests.UpdateCa
 		return pkg.InactiveUserError
 	}
 
+	nu, err := uc.UserService.GetByEmail(ctx, r.Email)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+
 	c, err := uc.CategoryService.Get(ctx, r.CategoryID)
 	if err != nil {
 		return err
 	}
-	owner := utils.IsCategoryOwner(c.OwnerID, userID)
-	if !owner {
+	if owner := utils.IsCategoryOwner(c.OwnerID, userID); !owner {
 		return pkg.UnauthorizedError
 	}
 
-	fields := map[string]interface{}{"shared": true}
-	err = uc.CategoryService.Update(ctx, c.ID, &fields)
-	if err != nil {
+	if err = uc.CategoryService.Share(ctx, c.ID, nu); err != nil {
 		return err
 	}
 	return nil

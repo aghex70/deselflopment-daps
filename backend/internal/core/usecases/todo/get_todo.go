@@ -32,8 +32,7 @@ func (uc *GetTodoUseCase) Execute(ctx context.Context, r requests.GetTodoRequest
 	if err != nil {
 		return domain.Todo{}, err
 	}
-	owner := utils.IsTodoOwner(t.OwnerID, u.ID)
-	if !owner {
+	if owner := utils.IsTodoOwner(t.OwnerID, u.ID); !owner {
 		return domain.Todo{}, pkg.UnauthorizedError
 	}
 

@@ -17,8 +17,7 @@ func MakeMigrationsCommand(db *sql.DB) *cobra.Command {
 				log.Fatalf("fooooooooooo")
 			}
 			filename := args[0]
-			err := database.MakeMigrations(db, filename)
-			if err != nil {
+			if err := database.MakeMigrations(db, filename); err != nil {
 				log.Fatalf("foooooooooooooo migrations")
 			}
 		},

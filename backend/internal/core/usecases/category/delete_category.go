@@ -35,8 +35,7 @@ func (uc *DeleteCategoryUseCase) Execute(ctx context.Context, r requests.DeleteC
 		return pkg.UnauthorizedError
 	}
 
-	err = uc.CategoryService.Delete(ctx, r.CategoryID)
-	if err != nil {
+	if err = uc.CategoryService.Delete(ctx, r.CategoryID); err != nil {
 		return err
 	}
 	return nil

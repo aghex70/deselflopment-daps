@@ -50,8 +50,7 @@ func (s *RestServer) StartServer() error {
 		Addr:              address,
 		ReadHeaderTimeout: 10 * time.Second,
 	}
-	err := server.ListenAndServe()
-	if err != nil {
+	if err := server.ListenAndServe(); err != nil {
 		log.Printf("Error starting HTTP server %+v", err.Error())
 		return err
 	}

@@ -29,8 +29,7 @@ func (s Service) Create(ctx context.Context, u domain.User) (domain.User, error)
 }
 
 func (s Service) Delete(ctx context.Context, id uint) error {
-	err := s.userRepository.Delete(ctx, id)
-	if err != nil {
+	if err := s.userRepository.Delete(ctx, id); err != nil {
 		return err
 	}
 	return nil
@@ -59,16 +58,14 @@ func (s Service) Get(ctx context.Context, id uint) (domain.User, error) {
 }
 
 func (s Service) ResetPassword(ctx context.Context, userID uint, password, resetPasswordCode string) error {
-	err := s.userRepository.ResetPassword(ctx, userID, password, resetPasswordCode)
-	if err != nil {
+	if err := s.userRepository.ResetPassword(ctx, userID, password, resetPasswordCode); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (s Service) Update(ctx context.Context, id uint, fields *map[string]interface{}) error {
-	err := s.userRepository.Update(ctx, id, fields)
-	if err != nil {
+	if err := s.userRepository.Update(ctx, id, fields); err != nil {
 		return err
 	}
 	return nil

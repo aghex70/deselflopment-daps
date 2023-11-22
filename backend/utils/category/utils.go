@@ -246,7 +246,7 @@ func IsCategoryOwner(ownerID, userID uint) bool {
 
 func CanRetrieveCategory(cs []domain.Category, userID uint) (domain.Category, error) {
 	for _, c := range cs {
-		for _, u := range *c.Users {
+		for _, u := range c.Users {
 			if u.ID == userID {
 				return c, nil
 			}

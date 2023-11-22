@@ -36,8 +36,7 @@ func (uc *DeleteTodoUseCase) Execute(ctx context.Context, r requests.DeleteTodoR
 		return pkg.UnauthorizedError
 	}
 
-	err = uc.TodoService.Delete(ctx, r.TodoID)
-	if err != nil {
+	if err = uc.TodoService.Delete(ctx, r.TodoID); err != nil {
 		return err
 	}
 	return nil

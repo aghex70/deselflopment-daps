@@ -79,8 +79,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			th := todoHandler.NewTodoHandler(ctuuc, dtuuc, gtuuc, ituuc, ltuuc, utuuc, &logger)
 
 			s := server.NewRestServer(cfg.Server.Rest, *ch, *th, *uh, &logger)
-			err = s.StartServer()
-			if err != nil {
+			if err = s.StartServer(); err != nil {
 				log.Fatal("error starting server", err.Error())
 			}
 		},

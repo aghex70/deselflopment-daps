@@ -46,8 +46,7 @@ func (h Handler) HandleCategories(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	payload := requests.CreateCategoryRequest{}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -129,8 +128,7 @@ func (h Handler) HandleCategory(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.GetCategoryRequest{CategoryID: id}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -159,8 +157,7 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 
 func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.DeleteCategoryRequest{CategoryID: id}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -171,8 +168,7 @@ func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 		return
 	}
 
-	err = h.DeleteCategoryUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
+	if err = h.DeleteCategoryUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -181,8 +177,7 @@ func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 
 func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.UpdateCategoryRequest{CategoryID: id}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -193,8 +188,7 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 		return
 	}
 
-	err = h.UpdateCategoryUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
+	if err = h.UpdateCategoryUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}

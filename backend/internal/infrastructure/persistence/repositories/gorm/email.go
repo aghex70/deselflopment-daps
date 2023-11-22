@@ -48,30 +48,13 @@ func EmailFromDto(e domain.Email) Email {
 	}
 }
 
-func EmailsFromDto(es []domain.Email) []Email {
-	var emails []Email
-	for _, e := range es {
-		emails = append(emails, EmailFromDto(e))
-	}
-	return emails
-}
-
 func (Email) TableName() string {
 	return "deselflopment_emails"
 }
 
-type EmailRepository struct {
-	*gorm.DB
-}
-
-func NewGormEmailRepository(db *gorm.DB) *EmailRepository {
-	return &EmailRepository{db}
-}
-
 func (gr *EmailRepository) Create(ctx context.Context, e domain.Email) (domain.Email, error) {
 	email := EmailFromDto(e)
-	result := gr.DB.Create(&email)
-	if result.Error != nil {
+	if result := gr.DB.Create(&email); result.Error != nil {
 		return domain.Email{}, result.Error
 	}
 	return e, nil
@@ -79,16 +62,14 @@ func (gr *EmailRepository) Create(ctx context.Context, e domain.Email) (domain.E
 
 func (gr *EmailRepository) Get(ctx context.Context, id uint) (domain.Email, error) {
 	var e Email
-	result := gr.DB.First(&e, id)
-	if result.Error != nil {
+	if result := gr.DB.First(&e, id); result.Error != nil {
 		return domain.Email{}, result.Error
 	}
 	return e.ToDto(), nil
 }
 
 func (gr *EmailRepository) Delete(ctx context.Context, id uint) error {
-	result := gr.DB.Delete(&Email{}, id)
-	if result.Error != nil {
+	if result := gr.DB.Delete(&Email{}, id); result.Error != nil {
 		return result.Error
 	}
 	return nil
@@ -96,8 +77,7 @@ func (gr *EmailRepository) Delete(ctx context.Context, id uint) error {
 
 func (gr *EmailRepository) List(ctx context.Context, filters *map[string]interface{}) ([]domain.Email, error) {
 	var es []Email
-	result := gr.DB.Find(&es, filters)
-	if result.Error != nil {
+	if result := gr.DB.Find(&es, filters); result.Error != nil {
 		return []domain.Email{}, result.Error
 	}
 	var emails []domain.Email
@@ -108,9 +88,16 @@ func (gr *EmailRepository) List(ctx context.Context, filters *map[string]interfa
 }
 
 func (gr *EmailRepository) Update(ctx context.Context, e domain.Email) error {
-	result := gr.DB.Save(&e)
-	if result.Error != nil {
+	if result := gr.DB.Save(&e); result.Error != nil {
 		return result.Error
 	}
 	return nil
+}
+
+type EmailRepository struct {
+	*gorm.DB
+}
+
+func NewGormEmailRepository(db *gorm.DB) *EmailRepository {
+	return &EmailRepository{db}
 }

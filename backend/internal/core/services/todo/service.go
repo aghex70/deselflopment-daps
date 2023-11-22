@@ -34,8 +34,7 @@ func (s Service) Get(ctx context.Context, id uint) (domain.Todo, error) {
 }
 
 func (s Service) Delete(ctx context.Context, id uint) error {
-	err := s.todoRepository.Delete(ctx, id)
-	if err != nil {
+	if err := s.todoRepository.Delete(ctx, id); err != nil {
 		return err
 	}
 	return nil
@@ -50,8 +49,7 @@ func (s Service) List(ctx context.Context, ids *[]uint, fields *map[string]inter
 }
 
 func (s Service) Update(ctx context.Context, id uint, fields *map[string]interface{}) error {
-	err := s.todoRepository.Update(ctx, id, fields)
-	if err != nil {
+	if err := s.todoRepository.Update(ctx, id, fields); err != nil {
 		return err
 	}
 	return nil

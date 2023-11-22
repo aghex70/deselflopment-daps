@@ -29,8 +29,7 @@ func (uc *ImportTodosUseCase) Execute(ctx context.Context, userID uint, f multip
 		return pkg.UnauthorizedError
 	}
 
-	err = uc.TodoService.Import(ctx, f)
-	if err != nil {
+	if err = uc.TodoService.Import(ctx, f); err != nil {
 		return err
 	}
 	return nil

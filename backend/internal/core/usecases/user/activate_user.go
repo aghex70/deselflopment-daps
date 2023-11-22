@@ -13,8 +13,7 @@ type ActivateUserUseCase struct {
 }
 
 func (uc *ActivateUserUseCase) Execute(ctx context.Context, r requests.ActivateUserRequest, userID uint) error {
-	err := uc.UserService.Activate(ctx, userID, r.ActivationCode)
-	if err != nil {
+	if err := uc.UserService.Activate(ctx, userID, r.ActivationCode); err != nil {
 		return err
 	}
 	return nil

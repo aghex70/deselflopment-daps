@@ -72,14 +72,12 @@ func (h Handler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	payload := requests.CreateUserRequest{}
-	err = handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err = handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	err = h.RegisterUserUseCase.Execute(context.TODO(), payload)
-	if err != nil {
+	if err = h.RegisterUserUseCase.Execute(context.TODO(), payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -93,14 +91,12 @@ func (h Handler) Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
-	if err != nil {
+	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		return
 	}
 
 	payload := requests.LoginUserRequest{}
-	err = handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -127,14 +123,12 @@ func (h Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
-	if err != nil {
+	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		return
 	}
 
 	payload := requests.RefreshTokenRequest{}
-	err = handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -146,8 +140,7 @@ func (h Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check if user_id from the payload matches the user_id from the token
-	err = handlers.CheckJWTClaims(userID, payload.UserID)
-	if err != nil {
+	if err = handlers.CheckJWTClaims(userID, payload.UserID); err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -179,15 +172,13 @@ func (h Handler) ResetLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
-	if err != nil {
+	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 
 	payload := requests.ResetLinkRequest{}
-	err = handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -198,8 +189,7 @@ func (h Handler) ResetLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.SendResetLinkUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
+	if err := h.SendResetLinkUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -214,15 +204,13 @@ func (h Handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
-	if err != nil {
+	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 
 	payload := requests.ResetPasswordRequest{}
-	err = handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -233,8 +221,7 @@ func (h Handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.ResetPasswordUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
+	if err = h.ResetPasswordUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -249,15 +236,13 @@ func (h Handler) Activate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
-	if err != nil {
+	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 
 	payload := requests.ActivateUserRequest{}
-	err = handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -268,8 +253,7 @@ func (h Handler) Activate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.ActivateUserUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
+	if err = h.ActivateUserUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -278,8 +262,7 @@ func (h Handler) Activate(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.UpdateUserRequest{}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -291,8 +274,7 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 	}
 
 	payload.UserID = id
-	err = h.UpdateUserUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
+	if err = h.UpdateUserUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -307,8 +289,7 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := handlers.CheckHttpMethod(http.MethodGet, w, r)
-	if err != nil {
+	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
@@ -346,15 +327,13 @@ func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := handlers.CheckHttpMethod(http.MethodPost, w, r)
-	if err != nil {
+	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 
 	payload := requests.ProvisionDemoUserRequest{}
-	err = handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -365,8 +344,7 @@ func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.ProvisionDemoUserUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
+	if err = h.ProvisionDemoUserUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -376,8 +354,7 @@ func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.DeleteUserRequest{}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -389,8 +366,7 @@ func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 	}
 
 	payload.UserID = id
-	err = h.DeleteUserUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
+	if err = h.DeleteUserUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -399,8 +375,7 @@ func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 
 func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.GetUserRequest{}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -426,29 +401,6 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 	if err != nil {
 		return
 	}
-}
-
-func (h Handler) ImportCSV(w http.ResponseWriter, r *http.Request) {
-	//w.Header().Add("Accept", "multipart/form-data")
-	//err := handlers.CheckHttpMethod(http.MethodPost, w, r)
-	//if err != nil {
-	//	return
-	//}
-	//
-	//// Parse the CSV file from the request
-	//f, _, err := r.FormFile("todos.csv")
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//defer f.Close()
-	//
-	//err = h.userService.ImportCSV(context.TODO(), r, f)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//w.WriteHeader(http.StatusCreated)
 }
 
 func NewUserHandler(

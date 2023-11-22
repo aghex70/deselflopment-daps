@@ -30,7 +30,7 @@ func (uc *CreateCategoryUseCase) Execute(ctx context.Context, userID uint, r req
 		Name:        r.Name,
 		Description: &r.Description,
 		OwnerID:     userID,
-		Users:       &[]domain.User{u},
+		Users:       []domain.User{u},
 		Notifiable:  r.Notifiable,
 		Custom:      true,
 	}

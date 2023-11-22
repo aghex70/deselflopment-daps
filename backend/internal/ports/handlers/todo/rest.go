@@ -45,8 +45,7 @@ func (h Handler) HandleTodos(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	payload := requests.CreateTodoRequest{}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -131,8 +130,7 @@ func (h Handler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.GetTodoRequest{TodoID: id}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -161,8 +159,7 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 
 func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.DeleteTodoRequest{TodoID: id}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -173,8 +170,7 @@ func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 		return
 	}
 
-	err = h.DeleteTodoUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
+	if err = h.DeleteTodoUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -183,8 +179,7 @@ func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 
 func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.UpdateTodoRequest{TodoID: id}
-	err := handlers.ValidateRequest(r, &payload)
-	if err != nil {
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -195,8 +190,7 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 		return
 	}
 
-	err = h.UpdateTodoUseCase.Execute(context.TODO(), payload, userID)
-	if err != nil {
+	if err = h.UpdateTodoUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -217,8 +211,7 @@ func (h Handler) Import(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.ImportTodosUseCase.Execute(context.Background(), userID, file)
-	if err != nil {
+	if err = h.ImportTodosUseCase.Execute(context.Background(), userID, file); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}

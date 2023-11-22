@@ -36,8 +36,7 @@ func (uc *UpdateCategoryUseCase) Execute(ctx context.Context, r requests.UpdateC
 	}
 
 	fields := map[string]interface{}{"name": r.Name, "notifiable": r.Notifiable, "description": r.Description}
-	err = uc.CategoryService.Update(ctx, c.ID, &fields)
-	if err != nil {
+	if err = uc.CategoryService.Update(ctx, c.ID, &fields); err != nil {
 		return err
 	}
 	return nil

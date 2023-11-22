@@ -27,8 +27,7 @@ func NewConfig() (*Config, error) {
 	viper.SetConfigType(CONFIG_TYPE)
 	viper.AutomaticEnv()
 
-	err := viper.ReadInConfig()
-	if err != nil {
+	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("%+v", err.Error())
 	}
 

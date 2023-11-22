@@ -37,8 +37,7 @@ func (uc *UpdateTodoUseCase) Execute(ctx context.Context, r requests.UpdateTodoR
 	}
 
 	fields := map[string]interface{}{"name": r.Name, "description": r.Description}
-	err = uc.TodoService.Update(ctx, t.ID, &fields)
-	if err != nil {
+	if err = uc.TodoService.Update(ctx, t.ID, &fields); err != nil {
 		return err
 	}
 	return nil

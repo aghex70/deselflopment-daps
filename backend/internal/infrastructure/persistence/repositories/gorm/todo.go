@@ -70,30 +70,13 @@ func TodoFromDto(t domain.Todo) Todo {
 	}
 }
 
-func TodosFromDto(ts []domain.Todo) []Todo {
-	var todos []Todo
-	for _, t := range ts {
-		todos = append(todos, TodoFromDto(t))
-	}
-	return todos
-}
-
 func (Todo) TableName() string {
 	return "daps_todos"
 }
 
-type TodoRepository struct {
-	*gorm.DB
-}
-
-func NewGormTodoRepository(db *gorm.DB) *TodoRepository {
-	return &TodoRepository{DB: db}
-}
-
 func (gr *TodoRepository) Create(ctx context.Context, t domain.Todo) (domain.Todo, error) {
 	td := TodoFromDto(t)
-	result := gr.DB.Create(&td)
-	if result.Error != nil {
+	if result := gr.DB.Create(&td); result.Error != nil {
 		return domain.Todo{}, result.Error
 	}
 	return td.ToDto(), nil
@@ -101,16 +84,14 @@ func (gr *TodoRepository) Create(ctx context.Context, t domain.Todo) (domain.Tod
 
 func (gr *TodoRepository) Get(ctx context.Context, id uint) (domain.Todo, error) {
 	var t Todo
-	result := gr.DB.First(&t, id)
-	if result.Error != nil {
+	if result := gr.DB.First(&t, id); result.Error != nil {
 		return domain.Todo{}, result.Error
 	}
 	return t.ToDto(), nil
 }
 
 func (gr *TodoRepository) Delete(ctx context.Context, id uint) error {
-	result := gr.DB.Delete(&Todo{}, id)
-	if result.Error != nil {
+	if result := gr.DB.Delete(&Todo{}, id); result.Error != nil {
 		return result.Error
 	}
 	return nil
@@ -132,8 +113,7 @@ func (gr *TodoRepository) List(ctx context.Context, ids *[]uint, filters *map[st
 		query = query.Where(strings.Join(conditions, " AND "), args...)
 	}
 
-	result := query.Find(&ts)
-	if result.Error != nil {
+	if result := query.Find(&ts); result.Error != nil {
 		return []domain.Todo{}, result.Error
 	}
 
@@ -147,9 +127,16 @@ func (gr *TodoRepository) List(ctx context.Context, ids *[]uint, filters *map[st
 func (gr *TodoRepository) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
 	var t Todo
 	t.ID = id
-	result := gr.DB.Model(&t).Updates(*filters)
-	if result.Error != nil {
+	if result := gr.DB.Model(&t).Updates(*filters); result.Error != nil {
 		return result.Error
 	}
 	return nil
+}
+
+type TodoRepository struct {
+	*gorm.DB
+}
+
+func NewGormTodoRepository(db *gorm.DB) *TodoRepository {
+	return &TodoRepository{DB: db}
 }

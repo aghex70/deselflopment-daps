@@ -14,7 +14,6 @@ import (
 )
 
 const (
-	TODO_STRING     string = "todos/"
 	CATEGORY_STRING string = "categories/"
 	USER_STRING     string = "users/"
 )
@@ -26,16 +25,12 @@ type APIErrorResponse struct {
 func ValidateRequest(r *http.Request, payload interface{}) error {
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-	err := decoder.Decode(&payload)
-	if err != nil {
-		if err != io.EOF {
-			return err
-		}
+	if err := decoder.Decode(&payload); err != nil && err != io.EOF {
+		return err
 	}
 
 	validate := validator.New()
-	err = validate.Struct(payload)
-	if err != nil {
+	if err := validate.Struct(payload); err != nil {
 		return err
 	}
 

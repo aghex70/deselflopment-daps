@@ -15,8 +15,7 @@ type ResetPasswordUseCase struct {
 
 func (uc *ResetPasswordUseCase) Execute(ctx context.Context, r requests.ResetPasswordRequest, userID uint) error {
 	encryptedPassword := utils.EncryptPassword(ctx, r.Password)
-	err := uc.UserService.ResetPassword(ctx, userID, encryptedPassword, r.ResetPasswordCode)
-	if err != nil {
+	if err := uc.UserService.ResetPassword(ctx, userID, encryptedPassword, r.ResetPasswordCode); err != nil {
 		return err
 	}
 	return nil

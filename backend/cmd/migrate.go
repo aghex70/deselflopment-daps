@@ -13,8 +13,7 @@ func MigrateCommand(db *sql.DB) *cobra.Command {
 		Use:   "migrate",
 		Short: "Apply database migrations",
 		Run: func(cmd *cobra.Command, args []string) {
-			err := database.Migrate(db)
-			if err != nil {
+			if err := database.Migrate(db); err != nil {
 				log.Fatalf("error applying migrations %+v", err.Error())
 			}
 		},

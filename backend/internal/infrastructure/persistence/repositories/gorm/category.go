@@ -14,8 +14,8 @@ type Category struct {
 	Name        string
 	Description *string
 	OwnerID     uint
-	Users       *[]User `gorm:"many2many:daps_category_users"`
-	Todos       *[]Todo
+	Users       []User `gorm:"many2many:daps_category_users"`
+	Todos       []Todo
 	Shared      bool
 	Notifiable  bool
 	Custom      bool
@@ -29,14 +29,14 @@ func (c Category) ToDto() domain.Category {
 
 	var todos []domain.Todo
 	if c.Todos != nil {
-		for _, todo := range *c.Todos {
+		for _, todo := range c.Todos {
 			todos = append(todos, todo.ToDto())
 		}
 	}
 
 	var users []domain.User
 	if c.Users != nil {
-		for _, user := range *c.Users {
+		for _, user := range c.Users {
 			users = append(users, user.ToDto())
 		}
 	}
@@ -47,8 +47,8 @@ func (c Category) ToDto() domain.Category {
 		Name:        c.Name,
 		Description: c.Description,
 		OwnerID:     c.OwnerID,
-		Users:       &users,
-		Todos:       &todos,
+		Users:       users,
+		Todos:       todos,
 		Shared:      c.Shared,
 		Notifiable:  c.Notifiable,
 		Custom:      c.Custom,
@@ -58,7 +58,7 @@ func (c Category) ToDto() domain.Category {
 func CategoryFromDto(c domain.Category) Category {
 	var users []User
 	if c.Users != nil {
-		for _, userDTO := range *c.Users {
+		for _, userDTO := range c.Users {
 			user := UserFromDto(userDTO)
 			users = append(users, user)
 		}
@@ -66,7 +66,7 @@ func CategoryFromDto(c domain.Category) Category {
 
 	var todos []Todo
 	if c.Todos != nil {
-		for _, todoDTO := range *c.Todos {
+		for _, todoDTO := range c.Todos {
 			todo := TodoFromDto(todoDTO)
 			todos = append(todos, todo)
 		}
@@ -76,8 +76,8 @@ func CategoryFromDto(c domain.Category) Category {
 		Name:        c.Name,
 		Description: c.Description,
 		OwnerID:     c.OwnerID,
-		Users:       &users,
-		Todos:       &todos,
+		Users:       users,
+		Todos:       todos,
 		Shared:      c.Shared,
 		Notifiable:  c.Notifiable,
 		Custom:      c.Custom,
@@ -96,7 +96,7 @@ func (gr *CategoryRepository) Create(ctx context.Context, c domain.Category) (do
 
 	// Hack to get around the fact that GORM doesn't support many-to-many relationships
 	if nc.Users == nil {
-		if err := gr.DB.Association("Users").Append(*nc.Users); err != nil {
+		if err := gr.DB.Association("Users").Append(nc.Users); err != nil {
 			return domain.Category{}, err
 		}
 	}
@@ -105,7 +105,6 @@ func (gr *CategoryRepository) Create(ctx context.Context, c domain.Category) (do
 
 func (gr *CategoryRepository) Get(ctx context.Context, id uint) (domain.Category, error) {
 	var c Category
-
 	if result := gr.DB.First(&c, id); result.Error != nil {
 		return domain.Category{}, result.Error
 	}
@@ -166,6 +165,39 @@ func (gr *CategoryRepository) Update(ctx context.Context, id uint, filters *map[
 	if result := gr.DB.Model(&c).Updates(*filters); result.Error != nil {
 		return result.Error
 	}
+	return nil
+}
+
+func (gr *CategoryRepository) Share(ctx context.Context, id uint, u domain.User) error {
+	var c Category
+	if result := gr.DB.First(&c, id); result.Error != nil {
+		return result.Error
+	}
+
+	// Retrieve users associated with the category if they exist
+	if c.Users == nil {
+		if err := gr.DB.Model(&c).Association("Users").Find(&c.Users); err != nil {
+			return err
+		}
+	}
+
+	user := UserFromDto(u)
+	c.Shared = true
+	c.Users = append(c.Users, user)
+
+	// Save the updated category
+	if result := gr.DB.Save(&c); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (gr *CategoryRepository) Unshare(ctx context.Context, id uint, u domain.User) error {
+	//var c Category
+	//c.ID = id
+	//if result := gr.DB.Model(&c).Updates(*filters); result.Error != nil {
+	//	return result.Error
+	//}
 	return nil
 }
 

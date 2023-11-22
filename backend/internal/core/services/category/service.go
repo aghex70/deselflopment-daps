@@ -29,8 +29,7 @@ func (s Service) Get(ctx context.Context, id uint) (domain.Category, error) {
 }
 
 func (s Service) Delete(ctx context.Context, id uint) error {
-	err := s.categoryRepository.Delete(ctx, id)
-	if err != nil {
+	if err := s.categoryRepository.Delete(ctx, id); err != nil {
 		return err
 	}
 	return nil
@@ -45,8 +44,21 @@ func (s Service) List(ctx context.Context, ids *[]uint, fields *map[string]inter
 }
 
 func (s Service) Update(ctx context.Context, id uint, fields *map[string]interface{}) error {
-	err := s.categoryRepository.Update(ctx, id, fields)
-	if err != nil {
+	if err := s.categoryRepository.Update(ctx, id, fields); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s Service) Share(ctx context.Context, id uint, u domain.User) error {
+	if err := s.categoryRepository.Share(ctx, id, u); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s Service) Unshare(ctx context.Context, id uint, u domain.User) error {
+	if err := s.categoryRepository.Unshare(ctx, id, u); err != nil {
 		return err
 	}
 	return nil
