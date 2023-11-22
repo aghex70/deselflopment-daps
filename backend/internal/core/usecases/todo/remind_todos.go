@@ -2,16 +2,16 @@ package todo
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/email"
-	"github.com/aghex70/daps/internal/core/services/todo"
-	"github.com/aghex70/daps/internal/core/services/user"
+	"github.com/aghex70/daps/internal/ports/services/email"
+	"github.com/aghex70/daps/internal/ports/services/todo"
+	"github.com/aghex70/daps/internal/ports/services/user"
 	"log"
 )
 
 type RemindTodosUseCase struct {
-	TodoService  todo.Service
-	UserService  user.Service
-	EmailService email.Service
+	TodoService  todo.Servicer
+	UserService  user.Servicer
+	EmailService email.Servicer
 	logger       *log.Logger
 }
 

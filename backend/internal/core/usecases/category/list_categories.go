@@ -2,9 +2,9 @@ package category
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/category"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/domain"
+	"github.com/aghex70/daps/internal/ports/services/category"
 	"github.com/aghex70/daps/internal/ports/services/user"
 
 	//"github.com/aghex70/daps/server"
@@ -12,7 +12,7 @@ import (
 )
 
 type ListCategoriesUseCase struct {
-	CategoryService category.Service
+	CategoryService category.Servicer
 	UserService     user.Servicer
 	logger          *log.Logger
 }
@@ -41,7 +41,7 @@ func (uc *ListCategoriesUseCase) Execute(ctx context.Context, fields *map[string
 	return categories, nil
 }
 
-func NewListCategoriesUseCase(s category.Service, u user.Servicer, logger *log.Logger) *ListCategoriesUseCase {
+func NewListCategoriesUseCase(s category.Servicer, u user.Servicer, logger *log.Logger) *ListCategoriesUseCase {
 	return &ListCategoriesUseCase{
 		CategoryService: s,
 		UserService:     u,

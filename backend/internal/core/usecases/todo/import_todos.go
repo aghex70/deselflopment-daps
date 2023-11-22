@@ -2,15 +2,15 @@ package todo
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/todo"
 	"github.com/aghex70/daps/internal/pkg"
+	"github.com/aghex70/daps/internal/ports/services/todo"
 	"github.com/aghex70/daps/internal/ports/services/user"
 	"log"
 	"mime/multipart"
 )
 
 type ImportTodosUseCase struct {
-	TodoService todo.Service
+	TodoService todo.Servicer
 	UserService user.Servicer
 	logger      *log.Logger
 }
@@ -35,7 +35,7 @@ func (uc *ImportTodosUseCase) Execute(ctx context.Context, userID uint, f multip
 	return nil
 }
 
-func NewImportTodosUseCase(s todo.Service, u user.Servicer, logger *log.Logger) *ImportTodosUseCase {
+func NewImportTodosUseCase(s todo.Servicer, u user.Servicer, logger *log.Logger) *ImportTodosUseCase {
 	return &ImportTodosUseCase{
 		TodoService: s,
 		UserService: u,

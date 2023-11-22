@@ -2,9 +2,9 @@ package todo
 
 import (
 	"context"
-	"github.com/aghex70/daps/internal/core/services/todo"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/domain"
+	"github.com/aghex70/daps/internal/ports/services/todo"
 	"github.com/aghex70/daps/internal/ports/services/user"
 
 	//"github.com/aghex70/daps/server"
@@ -12,7 +12,7 @@ import (
 )
 
 type ListTodosUseCase struct {
-	TodoService todo.Service
+	TodoService todo.Servicer
 	UserService user.Servicer
 	logger      *log.Logger
 }
@@ -41,7 +41,7 @@ func (uc *ListTodosUseCase) Execute(ctx context.Context, fields *map[string]inte
 	return todos, nil
 }
 
-func NewListTodosUseCase(s todo.Service, u user.Servicer, logger *log.Logger) *ListTodosUseCase {
+func NewListTodosUseCase(s todo.Servicer, u user.Servicer, logger *log.Logger) *ListTodosUseCase {
 	return &ListTodosUseCase{
 		TodoService: s,
 		UserService: u,
