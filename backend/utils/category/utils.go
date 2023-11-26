@@ -262,4 +262,5 @@ func CanEditCategory(cs []domain.Category, id uint) (domain.Category, error) {
 		}
 	}
 	return domain.Category{}, pkg.UnauthorizedError
+
 }

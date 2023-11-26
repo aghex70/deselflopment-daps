@@ -107,22 +107,30 @@ func (h Handler) HandleCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get category id & action (if present) from request URI
 	path := strings.Split(r.RequestURI, handlers.CATEGORY_STRING)[1]
-	categoryID, err := strconv.Atoi(path)
+	c := strings.Split(path, "/")[0]
+	categoryID, err := strconv.Atoi(c)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	switch r.Method {
-	case http.MethodGet:
-		h.Get(w, r, uint(categoryID))
-	case http.MethodDelete:
-		h.Delete(w, r, uint(categoryID))
-	case http.MethodPut:
-		h.Update(w, r, uint(categoryID))
-	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
+	if strings.Contains(r.RequestURI, handlers.SHARE_STRING) {
+		h.Share(w, r, uint(categoryID))
+	} else if strings.Contains(r.RequestURI, handlers.UNSHARE_STRING) {
+		h.Unshare(w, r, uint(categoryID))
+	} else {
+		switch r.Method {
+		case http.MethodGet:
+			h.Get(w, r, uint(categoryID))
+		case http.MethodDelete:
+			h.Delete(w, r, uint(categoryID))
+		case http.MethodPut:
+			h.Update(w, r, uint(categoryID))
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
 	}
 }
 
@@ -192,6 +200,46 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h Handler) Share(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.ShareCategoryRequest{CategoryID: id}
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	if err = h.ShareCategoryUseCase.Execute(context.TODO(), payload, userID); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h Handler) Unshare(w http.ResponseWriter, r *http.Request, id uint) {
+	//payload := requests.ShareCategoryRequest{CategoryID: id}
+	//if err := handlers.ValidateRequest(r, &payload); err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
+	//
+	//userID, err := handlers.RetrieveJWTClaims(r, nil)
+	//if err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
+	//
+	//if err = h.UnshareCategoryUseCase.Execute(context.TODO(), payload, userID); err != nil {
+	//	handlers.ThrowError(err, http.StatusBadRequest, w)
+	//	return
+	//}
 	w.WriteHeader(http.StatusOK)
 }
 

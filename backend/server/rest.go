@@ -37,12 +37,12 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/categories", handlers.JWTAuthMiddleware(s.categoryHandler.HandleCategories))
 	http.HandleFunc("/api/categories/", handlers.JWTAuthMiddleware(s.categoryHandler.HandleCategory))
 
-	//// Todos
+	// Todos
 	http.HandleFunc("/api/todos", handlers.JWTAuthMiddleware(s.toDoHandler.HandleTodos))
 	http.HandleFunc("/api/todos/", handlers.JWTAuthMiddleware(s.toDoHandler.HandleTodo))
 	http.HandleFunc("/api/todos/import", handlers.JWTAuthMiddleware(s.toDoHandler.Import))
 	//http.HandleFunc("/api/suggest", JWTAuthMiddleware(s.toDoHandler.SuggestTodos))
-	////http.HandleFunc("/api/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
+	//http.HandleFunc("/api/summary", JWTAuthMiddleware(s.toDoHandler.Summary))
 
 	address := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 	log.Printf("Starting server on address %s", address)

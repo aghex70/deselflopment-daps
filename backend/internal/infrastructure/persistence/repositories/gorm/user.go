@@ -18,7 +18,7 @@ type User struct {
 	ResetPasswordCode string
 	Language          string
 	AutoSuggest       bool
-	Categories        []Category `gorm:"many2many:daps_category_users"`
+	Categories        []Category `gorm:"many2many:daps_category_users;save_association:true"`
 	Emails            []Email
 	//Todos             []Todo
 	OwnedCategories []Category `gorm:"foreignKey:OwnerID"`

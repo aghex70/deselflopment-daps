@@ -2,13 +2,12 @@ package category
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"github.com/aghex70/daps/internal/pkg"
 	requests "github.com/aghex70/daps/internal/ports/requests/category"
 	"github.com/aghex70/daps/internal/ports/services/category"
 	"github.com/aghex70/daps/internal/ports/services/user"
 	utils "github.com/aghex70/daps/utils/category"
-	"gorm.io/gorm"
 	"log"
 )
 
@@ -29,7 +28,8 @@ func (uc *ShareCategoryUseCase) Execute(ctx context.Context, r requests.ShareCat
 	}
 
 	nu, err := uc.UserService.GetByEmail(ctx, r.Email)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil {
+		fmt.Printf("Error getting user by email: %v\n", err)
 		return err
 	}
 
@@ -41,6 +41,7 @@ func (uc *ShareCategoryUseCase) Execute(ctx context.Context, r requests.ShareCat
 		return pkg.UnauthorizedError
 	}
 
+	fmt.Println("Calling share service")
 	if err = uc.CategoryService.Share(ctx, c.ID, nu); err != nil {
 		return err
 	}

@@ -16,7 +16,7 @@ type UnshareCategoryUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *UnshareCategoryUseCase) Execute(ctx context.Context, r requests.UpdateCategoryRequest, userID uint) error {
+func (uc *UnshareCategoryUseCase) Execute(ctx context.Context, r requests.UnshareCategoryRequest, userID uint) error {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return err
@@ -26,17 +26,20 @@ func (uc *UnshareCategoryUseCase) Execute(ctx context.Context, r requests.Update
 		return pkg.InactiveUserError
 	}
 
+	du, err := uc.UserService.GetByEmail(ctx, r.UserID)
+	if err != nil {
+		return err
+	}
+
 	c, err := uc.CategoryService.Get(ctx, r.CategoryID)
 	if err != nil {
 		return err
 	}
-	owner := utils.IsCategoryOwner(c.OwnerID, userID)
-	if !owner {
+	if owner := utils.IsCategoryOwner(c.OwnerID, userID); !owner {
 		return pkg.UnauthorizedError
 	}
 
-	fields := map[string]interface{}{"shared": false}
-	if err = uc.CategoryService.Update(ctx, c.ID, &fields); err != nil {
+	if err = uc.CategoryService.Unshare(ctx, c.ID, du); err != nil {
 		return err
 	}
 	return nil
