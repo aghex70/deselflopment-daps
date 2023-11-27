@@ -34,11 +34,6 @@ func (h Handler) HandleUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, PUT, GET, OPTIONS")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
 	path := strings.Split(r.RequestURI, handlers.USER_STRING)[1]
 	userID, err := strconv.Atoi(path)
 	if err != nil {
@@ -119,10 +114,6 @@ func (h Handler) Login(w http.ResponseWriter, r *http.Request) {
 func (h Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
 
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		return
 	}
@@ -167,11 +158,6 @@ func (h Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 func (h Handler) ResetLink(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
 
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
 	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
@@ -199,11 +185,6 @@ func (h Handler) ResetLink(w http.ResponseWriter, r *http.Request) {
 func (h Handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
 
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
 	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
@@ -230,11 +211,6 @@ func (h Handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) Activate(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
-
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 
 	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
@@ -284,11 +260,6 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
 
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
 	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
@@ -321,11 +292,6 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
-
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 
 	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
 		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)

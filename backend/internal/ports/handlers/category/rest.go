@@ -29,11 +29,6 @@ func (h Handler) HandleCategories(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
 	switch r.Method {
 	case http.MethodGet:
 		h.List(w, r)
@@ -101,11 +96,6 @@ func (h Handler) HandleCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, PUT, GET, OPTIONS")
 	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 
 	// Get category id & action (if present) from request URI
 	path := strings.Split(r.RequestURI, handlers.CATEGORY_STRING)[1]
