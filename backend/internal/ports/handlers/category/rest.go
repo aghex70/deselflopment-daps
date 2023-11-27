@@ -224,22 +224,22 @@ func (h Handler) Share(w http.ResponseWriter, r *http.Request, id uint) {
 }
 
 func (h Handler) Unshare(w http.ResponseWriter, r *http.Request, id uint) {
-	//payload := requests.ShareCategoryRequest{CategoryID: id}
-	//if err := handlers.ValidateRequest(r, &payload); err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//
-	//userID, err := handlers.RetrieveJWTClaims(r, nil)
-	//if err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
-	//
-	//if err = h.UnshareCategoryUseCase.Execute(context.TODO(), payload, userID); err != nil {
-	//	handlers.ThrowError(err, http.StatusBadRequest, w)
-	//	return
-	//}
+	payload := requests.UnshareCategoryRequest{CategoryID: id}
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	if err = h.UnshareCategoryUseCase.Execute(context.TODO(), payload, userID); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 }
 

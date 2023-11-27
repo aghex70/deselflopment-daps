@@ -26,7 +26,7 @@ func (uc *UnshareCategoryUseCase) Execute(ctx context.Context, r requests.Unshar
 		return pkg.InactiveUserError
 	}
 
-	du, err := uc.UserService.GetByEmail(ctx, r.UserID)
+	du, err := uc.UserService.Get(ctx, r.UserID)
 	if err != nil {
 		return err
 	}

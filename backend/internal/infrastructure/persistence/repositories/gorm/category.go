@@ -169,114 +169,25 @@ func (gr *CategoryRepository) Update(ctx context.Context, id uint, filters *map[
 }
 
 func (gr *CategoryRepository) Share(ctx context.Context, id uint, u domain.User) error {
-	//var c Category
-	//if result := gr.DB.Preload("Users").First(&c, id); result.Error != nil {
-	//	return result.Error
-	//}
-	//
-	//for _, user := range c.Users {
-	//	fmt.Printf("User: %+v\n", user)
-	//}
-	//// User is not in the category, so add them
-	//if !isUserInCategory(c.Users, u) {
-	//	c.Shared = true
-	//	c.Users = append(c.Users, UserFromDto(u))
-	//	if err := gr.DB.Association("Users").Replace(c.Users); err != nil {
-	//		return err
-	//	}
-	//}
-	//
-	////fmt.Printf("New user list: %+v\n", c.Users)
-	////
-	////	Save the updated category, including the many-to-many association
-	////if result := gr.DB.Save(&c); result.Error != nil {
-	////	return result.Error
-	////}
-	////}
-	//
-	//return nil
-	//var c Category
-	//if result := gr.DB.Preload("Users").First(&c, id); result.Error != nil {
-	//	return result.Error
-	//}
-	//
-	//fmt.Printf("Category: %+v\n", c)
-	//fmt.Printf("Category users: %+v\n", c.Users)
-	//
-	//if c.Users == nil {
-	//	c.Users = make([]User, 0)
-	//}
-	//// Check if the user is already in the category
-	//if !isUserInCategory(c.Users, u) {
-	//	// Initialize the Users slice if it's nil
-	//
-	//	// User is not in the category, so add them
-	//	//c.Users = append(c.Users, UserFromDto(u))
-	//
-	//	// Set the shared flag to true
-	//	c.Shared = true
-	//	c.Users = append(c.Users, UserFromDto(u))
-	//	fmt.Println("Category users length:", len(c.Users))
-	//	fmt.Printf("New Category users: %+v\n", c.Users)
-	//
-	//	// Replace the users association with the updated slice
-	//	gr.DB.Session(&gorm.Session{FullSaveAssociations: false})
-	//	if err := gr.DB.Model(&c).Association("Users").Replace(c.Users); err != nil {
-	//		return err
-	//	}
-	//
-	//	fmt.Printf("New user list: %+v\n", c.Users)
-	//	////Save the updated category
-	//	//if result := gr.DB.Save(&c); result.Error != nil {
-	//	//	return result.Error
-	//	//}
-	//}
-	////}
-	//
-	//return nil
 	var c Category
 	if result := gr.DB.Preload("Users").First(&c, id); result.Error != nil {
 		return result.Error
 	}
 
-	fmt.Printf("c.Users: %+v\n", c.Users)
-	users := append(c.Users, UserFromDto(u))
-	fmt.Printf("Users: %+v\n", users)
-	// Initialize the Users slice if it's nil
 	if c.Users == nil {
 		c.Users = make([]User, 0)
 	}
 
-	// Remove existing associations
-	if err := gr.DB.Model(&c).Association("Users").Replace(nil); err != nil {
-		return err
+	// Check if the user is already in the category
+	if !isUserInCategory(c.Users, u) {
+		c.Shared = true
+		c.Users = append(c.Users, UserFromDto(u))
+
+		// Replace the users association with the updated slice
+		if err := gr.DB.Model(&c).Association("Users").Replace(c.Users); err != nil {
+			return err
+		}
 	}
-
-	// Add new users
-	fmt.Println("Length users:", len(users))
-	for _, u := range users {
-		//user := UserFromDto(u)
-		c.Users = append(c.Users, u)
-	}
-
-	// Set the shared flag to true
-	c.Shared = true
-
-	// Save the updated category
-	if result := gr.DB.Save(&c); result.Error != nil {
-		return result.Error
-	}
-
-	// Replace the users association with the updated slice
-	if err := gr.DB.Model(&c).Association("Users").Replace(c.Users); err != nil {
-		return err
-	}
-
-	//// Save the updated category
-	//if result := gr.DB.Save(&c); result.Error != nil {
-	//	return result.Error
-	//}
-
 	return nil
 }
 
@@ -290,37 +201,24 @@ func isUserInCategory(users []User, u domain.User) bool {
 }
 
 func (gr *CategoryRepository) Unshare(ctx context.Context, id uint, u domain.User) error {
+	if err := gr.DB.Exec(
+		"DELETE FROM daps_category_users WHERE user_id = ? AND category_id = ?", u.ID, id).Error; err != nil {
+		return err
+	}
+
 	var c Category
 	if result := gr.DB.Preload("Users").First(&c, id); result.Error != nil {
 		return result.Error
 	}
 
-	// Check if the user is associated with the category
-	index := findUserIndex(c.Users, u)
-	if index != -1 {
-		// User is in the category, so remove them
-		c.Users = append(c.Users[:index], c.Users[index+1:]...)
-
-		// If the Users slice is empty, set the Shared flag to false
-		if len(c.Users) == 0 {
-			c.Shared = false
-		}
-
+	if c.Users == nil || len(c.Users) == 0 {
+		c.Shared = false
 		if result := gr.DB.Save(&c); result.Error != nil {
 			return result.Error
 		}
 	}
 
 	return nil
-}
-
-func findUserIndex(users []User, u domain.User) int {
-	for i, user := range users {
-		if user.ID == u.ID {
-			return i
-		}
-	}
-	return -1
 }
 
 type CategoryRepository struct {
