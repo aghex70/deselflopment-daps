@@ -48,7 +48,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -72,7 +72,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -133,7 +133,7 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -162,7 +162,7 @@ func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -182,7 +182,7 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -202,7 +202,7 @@ func (h Handler) Share(w http.ResponseWriter, r *http.Request, id uint) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -222,7 +222,7 @@ func (h Handler) Unshare(w http.ResponseWriter, r *http.Request, id uint) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 

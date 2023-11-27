@@ -37,7 +37,7 @@ type UpdateTodoRequest struct {
 	Name        *string `json:"name"`
 	Recurring   *bool   `json:"recurring"`
 	Recurrency  *string `json:"recurrency"`
-	Priority    *uint   `json:"priority" validate:"required,gte=1,lte=5"`
+	Priority    *uint   `json:"priority"`
 	Suggestable *bool   `json:"suggestable"`
 	TodoID      uint    `json:"todo_id"`
 }

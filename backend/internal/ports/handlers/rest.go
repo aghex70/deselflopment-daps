@@ -14,6 +14,7 @@ import (
 
 const (
 	CATEGORY_STRING string = "categories/"
+	TODO_STRING     string = "todos/"
 	SHARE_STRING    string = "/share"
 	UNSHARE_STRING  string = "/unshare"
 	USER_STRING     string = "users/"

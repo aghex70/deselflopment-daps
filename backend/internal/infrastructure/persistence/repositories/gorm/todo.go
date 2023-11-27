@@ -97,7 +97,7 @@ func (gr *TodoRepository) Delete(ctx context.Context, id uint) error {
 	return nil
 }
 
-func (gr *TodoRepository) List(ctx context.Context, ids *[]uint, filters *map[string]interface{}) ([]domain.Todo, error) {
+func (gr *TodoRepository) List(ctx context.Context, filters *map[string]interface{}) ([]domain.Todo, error) {
 	var ts []Todo
 	var todos []domain.Todo
 

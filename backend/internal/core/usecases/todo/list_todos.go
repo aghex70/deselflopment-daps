@@ -17,7 +17,7 @@ type ListTodosUseCase struct {
 	logger      *log.Logger
 }
 
-func (uc *ListTodosUseCase) Execute(ctx context.Context, fields *map[string]interface{}, userID uint) ([]domain.Todo, error) {
+func (uc *ListTodosUseCase) Execute(ctx context.Context, filters *map[string]interface{}, userID uint) ([]domain.Todo, error) {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return []domain.Todo{}, err
@@ -27,14 +27,10 @@ func (uc *ListTodosUseCase) Execute(ctx context.Context, fields *map[string]inte
 		return []domain.Todo{}, pkg.InactiveUserError
 	}
 
-	// Set the user ID into the fields map
-	if fields == nil {
-		fields = &map[string]interface{}{}
-		(*fields)["owner_id"] = userID
-	} else {
-		(*fields)["owner_id"] = userID
-	}
-	todos, err := uc.TodoService.List(ctx, nil, fields)
+	// Set the user ID into the fields map (retrieve only own todos)
+	(*filters)["owner_id"] = userID
+
+	todos, err := uc.TodoService.List(ctx, filters)
 	if err != nil {
 		return []domain.Todo{}, err
 	}

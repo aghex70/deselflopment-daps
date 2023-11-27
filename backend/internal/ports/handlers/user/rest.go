@@ -125,7 +125,7 @@ func (h Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -169,7 +169,7 @@ func (h Handler) ResetLink(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -195,7 +195,7 @@ func (h Handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -221,7 +221,7 @@ func (h Handler) Activate(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -241,7 +241,7 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -262,7 +262,7 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -299,7 +299,7 @@ func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -320,7 +320,7 @@ func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 
@@ -341,7 +341,7 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
 		return
 	}
 

@@ -40,8 +40,8 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 	return nil
 }
 
-func (s Service) List(ctx context.Context, ids *[]uint, fields *map[string]interface{}) ([]domain.Todo, error) {
-	todos, err := s.todoRepository.List(ctx, ids, fields)
+func (s Service) List(ctx context.Context, filters *map[string]interface{}) ([]domain.Todo, error) {
+	todos, err := s.todoRepository.List(ctx, filters)
 	if err != nil {
 		return []domain.Todo{}, err
 	}
