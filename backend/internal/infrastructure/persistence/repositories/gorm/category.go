@@ -120,11 +120,12 @@ func (gr *CategoryRepository) Get(ctx context.Context, id uint) (domain.Category
 
 func (gr *CategoryRepository) Delete(ctx context.Context, id uint) error {
 	// Fetch the category along with its associations
-	var category Category
-	if result := gr.DB.Preload("Users").First(&category, id); result.Error != nil {
-		return result.Error
+	if err := gr.DB.Exec(
+		"DELETE FROM daps_category_users WHERE category_id = ?", id).Error; err != nil {
+		return err
 	}
 
+	var category Category
 	if result := gr.DB.Delete(&category, id); result.Error != nil {
 		return result.Error
 	}
