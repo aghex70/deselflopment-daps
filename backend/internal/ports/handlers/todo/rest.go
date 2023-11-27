@@ -216,9 +216,6 @@ func (h Handler) Import(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-//func (h Handler) ListRecurringTodos(w http.ResponseWriter, r *http.Request) {
-//func (h Handler) ListSuggestedTodos(w http.ResponseWriter, r *http.Request) {
-//func (h Handler) ListCompletedTodos(w http.ResponseWriter, r *http.Request) {
 //func (h Handler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
 //func (h Handler) Summary(w http.ResponseWriter, r *http.Request) {
 
