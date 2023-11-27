@@ -183,6 +183,7 @@ func (gr *CategoryRepository) Share(ctx context.Context, id uint, u domain.User)
 		c.Shared = true
 		c.Users = append(c.Users, UserFromDto(u))
 
+		// TODO: Associations are being created twice (GORM bug?)
 		// Replace the users association with the updated slice
 		if err := gr.DB.Model(&c).Association("Users").Replace(c.Users); err != nil {
 			return err
