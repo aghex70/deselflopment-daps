@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/aghex70/daps/internal/core/usecases/user"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
@@ -159,7 +158,6 @@ func (h Handler) ResetLink(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
 
 	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
-		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 
@@ -186,7 +184,6 @@ func (h Handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
 
 	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
-		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 
@@ -213,7 +210,6 @@ func (h Handler) Activate(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
 
 	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
-		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 
@@ -261,7 +257,6 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
 
 	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
-		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 
@@ -272,7 +267,6 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	users, err := h.ListUsersUseCase.Execute(context.TODO(), nil, userID)
-	fmt.Println("users", users)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -294,7 +288,6 @@ func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 	pkg.SetCORSHeaders(w, r)
 
 	if err := handlers.CheckHttpMethod(http.MethodPost, w, r); err != nil {
-		handlers.ThrowError(err, http.StatusMethodNotAllowed, w)
 		return
 	}
 

@@ -53,3 +53,8 @@ var (
 var (
 	InvalidTokenError = errors.New("invalid token")
 )
+
+// Handlers
+var (
+	MethodNotAllowedError = errors.New("method not allowed")
+)

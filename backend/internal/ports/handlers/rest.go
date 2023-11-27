@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/go-playground/validator/v10"
@@ -54,7 +53,7 @@ func ThrowError(err error, status int, w http.ResponseWriter) {
 func CheckHttpMethod(status string, w http.ResponseWriter, r *http.Request) error {
 	if r.Method != status {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		return errors.New("method not allowed")
+		return pkg.MethodNotAllowedError
 	}
 	return nil
 }
