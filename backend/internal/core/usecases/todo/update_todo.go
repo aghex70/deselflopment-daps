@@ -6,6 +6,7 @@ import (
 	requests "github.com/aghex70/daps/internal/ports/requests/todo"
 	"github.com/aghex70/daps/internal/ports/services/todo"
 	"github.com/aghex70/daps/internal/ports/services/user"
+	common "github.com/aghex70/daps/utils"
 	utils "github.com/aghex70/daps/utils/todo"
 
 	"log"
@@ -36,7 +37,7 @@ func (uc *UpdateTodoUseCase) Execute(ctx context.Context, r requests.UpdateTodoR
 		return pkg.UnauthorizedError
 	}
 
-	fields := map[string]interface{}{"name": r.Name, "description": r.Description}
+	fields := common.StructToMap(r, "todo_id")
 	if err = uc.TodoService.Update(ctx, t.ID, &fields); err != nil {
 		return err
 	}

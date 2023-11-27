@@ -16,9 +16,9 @@ type RefreshTokenRequest struct {
 }
 
 type UpdateUserRequest struct {
-	AutoSuggest bool   `json:"auto_suggest"`
-	Language    string `json:"language"`
-	UserID      uint   `json:"user_id"`
+	AutoSuggest *bool   `json:"auto_suggest"`
+	Language    *string `json:"language"`
+	UserID      uint    `json:"user_id"`
 }
 
 type ProvisionDemoUserRequest struct {

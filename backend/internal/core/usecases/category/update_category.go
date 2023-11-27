@@ -6,6 +6,7 @@ import (
 	requests "github.com/aghex70/daps/internal/ports/requests/category"
 	"github.com/aghex70/daps/internal/ports/services/category"
 	"github.com/aghex70/daps/internal/ports/services/user"
+	common "github.com/aghex70/daps/utils"
 	utils "github.com/aghex70/daps/utils/category"
 	"log"
 )
@@ -35,7 +36,7 @@ func (uc *UpdateCategoryUseCase) Execute(ctx context.Context, r requests.UpdateC
 		return pkg.UnauthorizedError
 	}
 
-	fields := map[string]interface{}{"name": r.Name, "notifiable": r.Notifiable, "description": r.Description}
+	fields := common.StructToMap(r, "category_id")
 	if err = uc.CategoryService.Update(ctx, c.ID, &fields); err != nil {
 		return err
 	}

@@ -6,6 +6,7 @@ import (
 	"github.com/aghex70/daps/internal/pkg"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
 	"github.com/aghex70/daps/internal/ports/services/user"
+	common "github.com/aghex70/daps/utils"
 	"gorm.io/gorm"
 	"log"
 )
@@ -28,7 +29,7 @@ func (uc *UpdateUserUseCase) Execute(ctx context.Context, r requests.UpdateUserR
 		return pkg.UnauthorizedError
 	}
 
-	fields := map[string]interface{}{"auto_suggest": r.AutoSuggest, "language": r.Language}
+	fields := common.StructToMap(r, "user_id")
 	err = uc.UserService.Update(ctx, u.ID, &fields)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return err

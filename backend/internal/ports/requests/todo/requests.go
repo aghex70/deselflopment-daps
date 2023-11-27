@@ -32,14 +32,14 @@ type GetTodoRequest struct {
 }
 
 type UpdateTodoRequest struct {
-	Description string `json:"description"`
-	Link        string `json:"link"`
-	Name        string `json:"name"`
-	Recurring   bool   `json:"recurring"`
-	Recurrency  string `json:"recurrency"`
-	Priority    uint   `json:"priority" validate:"required,gte=1,lte=5"`
-	Suggestable bool   `json:"suggestable"`
-	TodoID      uint   `json:"todo_id"`
+	Description *string `json:"description"`
+	Link        *string `json:"link"`
+	Name        *string `json:"name"`
+	Recurring   *bool   `json:"recurring"`
+	Recurrency  *string `json:"recurrency"`
+	Priority    *uint   `json:"priority" validate:"required,gte=1,lte=5"`
+	Suggestable *bool   `json:"suggestable"`
+	TodoID      uint    `json:"todo_id"`
 }
 
 type ListTodosRequest struct {
