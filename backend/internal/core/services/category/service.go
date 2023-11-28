@@ -64,6 +64,14 @@ func (s Service) Unshare(ctx context.Context, id uint, u domain.User) error {
 	return nil
 }
 
+func (s Service) GetSummary(ctx context.Context, id uint) ([]domain.CategorySummary, error) {
+	summary, err := s.categoryRepository.GetSummary(ctx, id)
+	if err != nil {
+		return []domain.CategorySummary{}, err
+	}
+	return summary, nil
+}
+
 func NewCategoryService(r category.Repository, logger *log.Logger) Service {
 	return Service{
 		logger:             logger,

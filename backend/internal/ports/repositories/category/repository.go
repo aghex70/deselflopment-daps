@@ -13,4 +13,5 @@ type Repository interface {
 	Update(ctx context.Context, id uint, filters *map[string]interface{}) error
 	Share(ctx context.Context, id uint, u domain.User) error
 	Unshare(ctx context.Context, id uint, u domain.User) error
+	GetSummary(ctx context.Context, id uint) ([]domain.CategorySummary, error)
 }

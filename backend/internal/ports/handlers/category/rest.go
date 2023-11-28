@@ -17,6 +17,7 @@ type Handler struct {
 	CreateCategoryUseCase  category.CreateCategoryUseCase
 	DeleteCategoryUseCase  category.DeleteCategoryUseCase
 	GetCategoryUseCase     category.GetCategoryUseCase
+	GetSummaryUseCase      category.GetSummaryUseCase
 	ListCategoriesUseCase  category.ListCategoriesUseCase
 	ShareCategoryUseCase   category.ShareCategoryUseCase
 	UnshareCategoryUseCase category.UnshareCategoryUseCase
@@ -233,10 +234,41 @@ func (h Handler) Unshare(w http.ResponseWriter, r *http.Request, id uint) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (h Handler) GetSummary(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
+	w.Header().Add("Access-Control-Allow-Methods", "GET, OPTIONS")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+
+	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	summary, err := h.GetSummaryUseCase.Execute(context.TODO(), userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	b, err := json.Marshal(summary)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
+}
+
 func NewCategoryHandler(
 	createCategoryUseCase *category.CreateCategoryUseCase,
 	deleteCategoryUseCase *category.DeleteCategoryUseCase,
 	getCategoryUseCase *category.GetCategoryUseCase,
+	getSummaryUseCase *category.GetSummaryUseCase,
 	listCategoriesUseCase *category.ListCategoriesUseCase,
 	shareCategoryUseCase *category.ShareCategoryUseCase,
 	unshareCategoryUseCase *category.UnshareCategoryUseCase,
@@ -247,6 +279,7 @@ func NewCategoryHandler(
 		CreateCategoryUseCase:  *createCategoryUseCase,
 		DeleteCategoryUseCase:  *deleteCategoryUseCase,
 		GetCategoryUseCase:     *getCategoryUseCase,
+		GetSummaryUseCase:      *getSummaryUseCase,
 		ListCategoriesUseCase:  *listCategoriesUseCase,
 		ShareCategoryUseCase:   *shareCategoryUseCase,
 		UnshareCategoryUseCase: *unshareCategoryUseCase,
