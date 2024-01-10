@@ -10,12 +10,11 @@ type TokenResponse struct {
 }
 
 type ListCategoriesResponse struct {
-	Categories []domain.Category `json:"categories"`
+	Categories []domain.FilteredCategory `json:"categories"`
 }
 
 type ListUsersResponse struct {
 	Users []domain.FilteredUser `json:"users"`
-	//Users []domain2.FilteredUser `json:"users"`
 }
 
 type ListTodosResponse struct {

@@ -244,6 +244,26 @@ func FilterUser(user domain.User) domain.FilteredUser {
 	}
 }
 
+func FilterCategories(categories []domain.Category) []domain.FilteredCategory {
+	filteredCategories := make([]domain.FilteredCategory, 0, len(categories))
+	for _, category := range categories {
+		filteredCategories = append(filteredCategories, FilterCategory(category))
+	}
+	return filteredCategories
+}
+
+func FilterCategory(category domain.Category) domain.FilteredCategory {
+	return domain.FilteredCategory{
+		ID:          category.ID,
+		CreatedAt:   category.CreatedAt,
+		Name:        category.Name,
+		Description: category.Description,
+		Shared:      category.Shared,
+		Notifiable:  category.Notifiable,
+		Custom:      category.Custom,
+	}
+}
+
 func SetCORSHeaders(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", GetOrigin())
 	w.Header().Add("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS")
