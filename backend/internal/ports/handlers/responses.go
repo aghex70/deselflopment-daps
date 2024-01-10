@@ -14,7 +14,7 @@ type ListCategoriesResponse struct {
 }
 
 type ListUsersResponse struct {
-	Users []domain.User `json:"users"`
+	Users []domain.FilteredUser `json:"users"`
 	//Users []domain2.FilteredUser `json:"users"`
 }
 
@@ -23,5 +23,5 @@ type ListTodosResponse struct {
 }
 
 type GetUserResponse struct {
-	User domain.User `json:"user"`
+	User domain.FilteredUser `json:"user"`
 }

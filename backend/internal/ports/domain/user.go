@@ -23,9 +23,10 @@ type User struct {
 }
 
 type FilteredUser struct {
-	ID        int       `json:"id"`
-	Email     string    `json:"email"`
-	Name      string    `json:"name"`
-	Active    bool      `json:"active"`
+	ID        uint      `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
+	Name      string    `json:"name"`
+	Email     string    `json:"email"`
+	Admin     bool      `json:"admin"`
+	Active    bool      `json:"active"`
 }

@@ -1,76 +1,76 @@
 package pkg
 
 import (
-	domain2 "github.com/aghex70/daps/internal/ports/domain"
+	"github.com/aghex70/daps/internal/ports/domain"
 	"net/http"
 )
 
-func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, language string) []domain2.Todo {
+func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, language string) []domain.Todo {
 	if language == "en" {
-		return []domain2.Todo{
+		return []domain.Todo{
 			{
 				CategoryID: uint(categoryID),
 				//Description: "Change Anna's diapers",
 				Name:      "Diapers",
-				Priority:  domain2.Priority(5),
+				Priority:  domain.Priority(5),
 				Recurring: true,
 			},
 			{
 				CategoryID: uint(categoryID),
 				Name:       "Laundry",
-				Priority:   domain2.Priority(3),
+				Priority:   domain.Priority(3),
 				Recurring:  true,
 			},
 			{
 				CategoryID: uint(categoryID),
 				Name:       "Iron clothes",
-				Priority:   domain2.Priority(1),
+				Priority:   domain.Priority(1),
 				Recurring:  true,
 			},
 			{
 				CategoryID: uint(categoryID),
 				Name:       "Repair TV",
 				//Description: "Need to purchase an adapter",
-				Priority:  domain2.Priority(2),
+				Priority:  domain.Priority(2),
 				Recurring: false,
 			},
 			{
 				CategoryID: uint(categoryID),
 				Name:       "Walk Barky",
-				Priority:   domain2.Priority(4),
+				Priority:   domain.Priority(4),
 				Recurring:  true,
 			},
 			{
 				CategoryID: uint(categoryID),
 				Name:       "Go to the veterynary",
-				Priority:   domain2.Priority(4),
+				Priority:   domain.Priority(4),
 				Recurring:  false,
 			},
 			{
 				CategoryID: uint(anotherCategoryID),
 				Name:       "Speak with Alberto",
 				//Description: "Talk about the requirements for the new project",
-				Priority:  domain2.Priority(3),
+				Priority:  domain.Priority(3),
 				Recurring: false,
 			},
 			{
 				CategoryID: uint(anotherCategoryID),
 				Name:       "Speak with Laura",
 				//Description: "Need to determine why the project is delayed",
-				Priority:  domain2.Priority(5),
+				Priority:  domain.Priority(5),
 				Recurring: false,
 			},
 			{
 				CategoryID: uint(anotherCategoryID),
 				Name:       "Ask for a raise",
-				Priority:   domain2.Priority(3),
+				Priority:   domain.Priority(3),
 				Recurring:  false,
 			},
 			{
 				CategoryID: uint(anotherCategoryID),
 				Name:       "Elaborate graphs",
 				//Description: "Need to elaborate some graphs for tomorrows' presentation",
-				Priority:  domain2.Priority(5),
+				Priority:  domain.Priority(5),
 				Recurring: false,
 				Active:    true,
 			},
@@ -78,7 +78,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, 
 				CategoryID: uint(yetAnotherCategoryID),
 				Name:       "Renew Amazon Prime",
 				//Description: "Need to renew Amazon Prime before the end of the month",
-				Priority:  domain2.Priority(3),
+				Priority:  domain.Priority(3),
 				Recurring: false,
 				Active:    true,
 			},
@@ -86,7 +86,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, 
 				CategoryID: uint(yetAnotherCategoryID),
 				Name:       "Cancel Disney+",
 				//Description: "Need to cancel Disney+ before the end of the month",
-				Priority:  domain2.Priority(5),
+				Priority:  domain.Priority(5),
 				Recurring: false,
 				Active:    false,
 			},
@@ -94,14 +94,14 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, 
 				CategoryID: uint(yetAnotherCategoryID),
 				Name:       "Cancel Netflix",
 				//Description: "Need to cancel Netflix before the end of the month",
-				Priority:  domain2.Priority(5),
+				Priority:  domain.Priority(5),
 				Recurring: false,
 				Active:    false,
 			},
 			{
 				CategoryID: uint(yetAnotherCategoryID),
 				Name:       "Diapers",
-				Priority:   domain2.Priority(5),
+				Priority:   domain.Priority(5),
 				Recurring:  false,
 				Active:     false,
 			},
@@ -109,77 +109,77 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, 
 				CategoryID: uint(yetAnotherCategoryID),
 				Name:       "Graphic card",
 				//Description: "Buy water cooled graphic card when there is a good deal",
-				Priority:  domain2.Priority(1),
+				Priority:  domain.Priority(1),
 				Recurring: false,
 				Active:    false,
 			},
 		}
 	}
 
-	return []domain2.Todo{
+	return []domain.Todo{
 		{
 			CategoryID: uint(categoryID),
 			//Description: "Cambiar los pañales de Ana",
 			Name:      "Pañales",
-			Priority:  domain2.Priority(5),
+			Priority:  domain.Priority(5),
 			Recurring: true,
 		},
 		{
 			CategoryID: uint(categoryID),
 			Name:       "Colada",
-			Priority:   domain2.Priority(3),
+			Priority:   domain.Priority(3),
 			Recurring:  true,
 		},
 		{
 			CategoryID: uint(categoryID),
 			Name:       "Planchar la ropa",
-			Priority:   domain2.Priority(1),
+			Priority:   domain.Priority(1),
 			Recurring:  true,
 		},
 		{
 			CategoryID: uint(categoryID),
 			Name:       "Arreglar la TV",
 			//Description: "Comprar un adaptador",
-			Priority:  domain2.Priority(2),
+			Priority:  domain.Priority(2),
 			Recurring: false,
 		},
 		{
 			CategoryID: uint(categoryID),
 			Name:       "Sacar a pasear a Jara",
-			Priority:   domain2.Priority(4),
+			Priority:   domain.Priority(4),
 			Recurring:  true,
 		},
 		{
 			CategoryID: uint(categoryID),
 			Name:       "Ir al veterinario",
-			Priority:   domain2.Priority(4),
+			Priority:   domain.Priority(4),
 			Recurring:  false,
 		},
 		{
 			CategoryID: uint(anotherCategoryID),
 			Name:       "Hablar con Laura",
 			//Description: "Hablar respecto a los requisitos del nuevo proyecto",
-			Priority:  domain2.Priority(3),
+			Priority:  domain.Priority(3),
 			Recurring: false,
 		},
 		{
 			CategoryID: uint(anotherCategoryID),
 			Name:       "Hablar con Alberto",
 			//Description: "Determinar por qué el proyecto va con retraso",
-			Priority:  domain2.Priority(5),
+			Priority:  domain.Priority(5),
 			Recurring: false,
 		},
 		{
 			CategoryID: uint(anotherCategoryID),
 			Name:       "Pedir un aumento",
-			Priority:   domain2.Priority(3),
+			Priority:   domain.Priority(3),
 			Recurring:  false,
 		},
 		{
 			CategoryID: uint(anotherCategoryID),
 			Name:       "Elaborar gráficos",
 			//Description: "Elaborar gráficos para la presentación de mañana",
-			Priority:  domain2.Priority(5),
+			Priority:  domain.Priority(5),
 			Recurring: false,
 			Active:    true,
 		},
@@ -187,7 +187,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, 
 			CategoryID: uint(yetAnotherCategoryID),
 			Name:       "Renovar Amazon Prime",
 			//Description: "Renovar Amazon Prime antes del final del mes",
-			Priority:  domain2.Priority(3),
+			Priority:  domain.Priority(3),
 			Recurring: false,
 			Active:    true,
 		},
@@ -195,7 +195,7 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, 
 			CategoryID: uint(yetAnotherCategoryID),
 			Name:       "Cancelar Disney+",
 			//Description: "Cancelar Disney+ antes del final del mes",
-			Priority:  domain2.Priority(5),
+			Priority:  domain.Priority(5),
 			Recurring: false,
 			Active:    false,
 		},
@@ -203,14 +203,14 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, 
 			CategoryID: uint(yetAnotherCategoryID),
 			Name:       "Cancelar Netflix",
 			//Description: "Cancelar Netflix antes del final del mes",
-			Priority:  domain2.Priority(5),
+			Priority:  domain.Priority(5),
 			Recurring: false,
 			Active:    false,
 		},
 		{
 			CategoryID: uint(yetAnotherCategoryID),
 			Name:       "Pañales",
-			Priority:   domain2.Priority(5),
+			Priority:   domain.Priority(5),
 			Recurring:  false,
 			Active:     false,
 		},
@@ -218,29 +218,31 @@ func GenerateDemoTodos(categoryID, anotherCategoryID, yetAnotherCategoryID int, 
 			CategoryID: uint(yetAnotherCategoryID),
 			Name:       "Tarjeta gráfica",
 			//Description: "Comprar tarjeta gráfica con refrigeración líquida cuando haya una buena oferta",
-			Priority:  domain2.Priority(1),
+			Priority:  domain.Priority(1),
 			Recurring: false,
 			Active:    false,
 		},
 	}
 }
 
-//func FilterUsers(users []domain.User) []domain.FilteredUser {
-//	filteredUsers := make([]domain.FilteredUser, 0, len(users))
-//	for _, user := range users {
-//		filteredUsers = append(filteredUsers, FilterUser(user))
-//	}
-//	return filteredUsers
-//}
-//
-//func FilterUser(user domain.User) domain.FilteredUser {
-//	return domain.FilteredUser{
-//		ID:               user.ID,
-//		Email:            user.Email,
-//		Name:             user.Name,
-//		RegistrationDate: user.RegistrationDate,
-//	}
-//}
+func FilterUsers(users []domain.User) []domain.FilteredUser {
+	filteredUsers := make([]domain.FilteredUser, 0, len(users))
+	for _, user := range users {
+		filteredUsers = append(filteredUsers, FilterUser(user))
+	}
+	return filteredUsers
+}
+
+func FilterUser(user domain.User) domain.FilteredUser {
+	return domain.FilteredUser{
+		ID:        user.ID,
+		CreatedAt: user.CreatedAt,
+		Name:      user.Name,
+		Email:     user.Email,
+		Admin:     user.Admin,
+		Active:    user.Active,
+	}
+}
 
 func SetCORSHeaders(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", GetOrigin())
@@ -254,12 +256,12 @@ func GetOrigin() string {
 	return DapsProductionUrl
 }
 
-//func GenerateRemindTodosHTMLContent(u domain2.User, rs []domain2.RemindSummary) (domain2.Email, error) {
-//	e := domain2.Email{}
-//	reminders := make(map[string][]domain2.RemindSummary)
+//func GenerateRemindTodosHTMLContent(u domain.User, rs []domain.RemindSummary) (domain.Email, error) {
+//	e := domain.Email{}
+//	reminders := make(map[string][]domain.RemindSummary)
 //	for _, r := range rs {
 //		if _, ok := reminders[r.CategoryName]; !ok {
-//			reminders[r.CategoryName] = []domain2.RemindSummary{r}
+//			reminders[r.CategoryName] = []domain.RemindSummary{r}
 //		} else {
 //			reminders[r.CategoryName] = append(reminders[r.CategoryName], r)
 //		}
@@ -336,7 +338,7 @@ func GetOrigin() string {
 //	data := struct {
 //		Name      string
 //		Header    string
-//		Reminders map[string][]domain2.RemindSummary
+//		Reminders map[string][]domain.RemindSummary
 //	}{
 //		Name:      u.Name,
 //		Header:    "Aquí tienes (algunas) de tus tareas pendientes a fecha de " + time.Now().Format("02/01/2006"+":"),

@@ -273,10 +273,10 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	//return
-	//filteredUsers := pkg.FilterUsers(users)
-	//b, err := json.Marshal(handlers.ListUsersResponse{Users: filteredUsers})
-	b, err := json.Marshal(handlers.ListUsersResponse{Users: users})
+
+	// Hide user data
+	filteredUsers := pkg.FilterUsers(users)
+	b, err := json.Marshal(handlers.ListUsersResponse{Users: filteredUsers})
 	if err != nil {
 		return
 	}
@@ -317,7 +317,9 @@ func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(handlers.GetUserResponse{User: du})
+	// Hide user data
+	filteredUser := pkg.FilterUser(du)
+	b, err := json.Marshal(handlers.GetUserResponse{User: filteredUser})
 	if err != nil {
 		return
 	}
@@ -368,7 +370,9 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 		return
 	}
 
-	b, err := json.Marshal(handlers.GetUserResponse{User: u})
+	// Hide user data
+	filteredUser := pkg.FilterUser(u)
+	b, err := json.Marshal(handlers.GetUserResponse{User: filteredUser})
 	if err != nil {
 		return
 	}
