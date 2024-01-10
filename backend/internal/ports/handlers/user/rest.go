@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/usecases/user"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
@@ -11,6 +12,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Handler struct {
@@ -303,12 +305,26 @@ func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = h.ProvisionDemoUserUseCase.Execute(context.TODO(), payload, userID); err != nil {
+	// Set the demo password and add offset to email
+	payload.Password = pkg.DemoUserPassword
+	ms := time.Now().UnixNano() / int64(time.Millisecond)
+	//
+	payload.Email = fmt.Sprintf("%d%s", ms, payload.Email)
+
+	du, err := h.ProvisionDemoUserUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	return
+
+	b, err := json.Marshal(handlers.GetUserResponse{User: du})
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
 }
 
 func (h Handler) Delete(w http.ResponseWriter, r *http.Request, id uint) {

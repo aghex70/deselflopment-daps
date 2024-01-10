@@ -11,6 +11,7 @@ var (
 	BaseCategoriesIds    = []uint{1, 2, 3, 4, 5}
 	BaseCategoryIdFilter = map[string]interface{}{"id": 1}
 	DemoUserName         = os.Getenv("DEMO_USER_NAME")
+	DemoUserPassword     = os.Getenv("DEMO_USER_PASSWORD")
 	ProjectName          = os.Getenv("PROJECT_NAME")
 )
 

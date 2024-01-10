@@ -21,13 +21,13 @@ type ProvisionDemoUserUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.ProvisionDemoUserRequest, userID uint) error {
+func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.ProvisionDemoUserRequest, userID uint) (domain.User, error) {
 	ru, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
-		return err
+		return domain.User{}, err
 	}
 	if !ru.Admin {
-		return pkg.UnauthorizedError
+		return domain.User{}, pkg.UnauthorizedError
 	}
 	encryptedPassword := userUtils.EncryptPassword(ctx, r.Password)
 
@@ -42,7 +42,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 
 	nu, err := uc.UserService.Create(ctx, u)
 	if err != nil {
-		return err
+		return domain.User{}, err
 	}
 
 	demoCategory := domain.Category{
@@ -55,7 +55,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 
 	c, err := uc.CategoryService.Create(ctx, demoCategory)
 	if err != nil {
-		return err
+		return domain.User{}, err
 	}
 
 	anotherDemoCategory := domain.Category{
@@ -68,7 +68,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 
 	ac, err := uc.CategoryService.Create(ctx, anotherDemoCategory)
 	if err != nil {
-		return err
+		return domain.User{}, err
 	}
 
 	yetAnotherDemoCategory := domain.Category{
@@ -81,7 +81,7 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 
 	yac, err := uc.CategoryService.Create(ctx, yetAnotherDemoCategory)
 	if err != nil {
-		return err
+		return domain.User{}, err
 	}
 
 	todos := categoryUtils.GenerateDemoTodos(c.ID, ac.ID, yac.ID, nu.ID, "es")
@@ -89,10 +89,10 @@ func (uc *ProvisionDemoUserUseCase) Execute(ctx context.Context, r requests.Prov
 	for _, t := range todos {
 		_, err = uc.TodoService.Create(ctx, t)
 		if err != nil {
-			return err
+			return domain.User{}, err
 		}
 	}
-	return nil
+	return nu, nil
 }
 
 func NewProvisionDemoUserUseCase(userService user.Servicer, categoryService category.Servicer, todoService todo.Servicer, logger *log.Logger) *ProvisionDemoUserUseCase {
