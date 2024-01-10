@@ -306,10 +306,10 @@ func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Set the demo password and add offset to email
+	payload.Name = pkg.DemoUserName
 	payload.Password = pkg.DemoUserPassword
 	ms := time.Now().UnixNano() / int64(time.Millisecond)
-	//
-	payload.Email = fmt.Sprintf("%d%s", ms, payload.Email)
+	payload.Email = fmt.Sprintf("%d%s", ms, pkg.DemoUserEmail)
 
 	du, err := h.ProvisionDemoUserUseCase.Execute(context.TODO(), payload, userID)
 	if err != nil {
