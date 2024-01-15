@@ -6,6 +6,7 @@ import (
 
 type TokenResponse struct {
 	AccessToken string `json:"access_token"`
+	Admin       bool   `json:"admin"`
 	UserID      uint   `json:"user_id"`
 }
 

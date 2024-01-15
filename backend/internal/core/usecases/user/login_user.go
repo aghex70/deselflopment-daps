@@ -14,27 +14,27 @@ type LoginUserUseCase struct {
 	logger      *log.Logger
 }
 
-func (uc *LoginUserUseCase) Execute(ctx context.Context, r requests.LoginUserRequest) (string, uint, error) {
+func (uc *LoginUserUseCase) Execute(ctx context.Context, r requests.LoginUserRequest) (string, uint, bool, error) {
 	u, err := uc.UserService.GetByEmail(ctx, r.Email)
 	if err != nil {
-		return "", 0, err
+		return "", 0, false, err
 	}
 
 	decryptedPassword, err := utils.DecryptPassword(ctx, u.Password)
 	if err != nil {
-		return "", 0, err
+		return "", 0, false, err
 	}
 	match := utils.PasswordsMatch(ctx, decryptedPassword, r.Password)
 	if !match {
-		return "", 0, pkg.InvalidCredentialsError
+		return "", 0, false, pkg.InvalidCredentialsError
 	}
 
 	token, userID, err := utils.GenerateJWT(ctx, u)
 	if err != nil {
-		return "", 0, err
+		return "", 0, false, err
 	}
 
-	return token, userID, nil
+	return token, userID, u.Admin, nil
 }
 
 func NewLoginUserUseCase(userService user.Servicer, logger *log.Logger) *LoginUserUseCase {
