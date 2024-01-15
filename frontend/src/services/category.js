@@ -3,7 +3,8 @@ import {userAccessToken} from "../utils/helpers";
 
 const DAPS_BASE_URL = process.env.REACT_APP_API_URL;
 
-const CATEGORIES_URL = `${DAPS_BASE_URL}api/summary`;
+const SUMMARY_URL = `${DAPS_BASE_URL}api/summary`;
+const CATEGORIES_URL = `${DAPS_BASE_URL}api/categories`;
 
 const options = {
   headers: {
@@ -27,7 +28,7 @@ const getCategory = (id) => {
 };
 
 const getCategories = () => {
-  return axios.get(CATEGORIES_URL, options);
+  return axios.get(SUMMARY_URL, options);
 };
 
 const deleteCategory = (id) => {
