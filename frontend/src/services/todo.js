@@ -1,8 +1,8 @@
 import axios from "axios";
+import {userAccessToken} from "../utils/helpers";
 
 const DAPS_BASE_URL = process.env.REACT_APP_API_URL;
 
-const TODO_URL = `${DAPS_BASE_URL}api/todo`;
 const TODOS_URL = `${DAPS_BASE_URL}api/todos`;
 const RECURRING_TODOS_URL = `${DAPS_BASE_URL}api/recurring-todos`;
 const COMPLETED_TODOS_URL = `${DAPS_BASE_URL}api/completed-todos`;
@@ -12,16 +12,16 @@ const SUGGEST_TODOS_URL = `${DAPS_BASE_URL}api/suggest`;
 const options = {
   headers: {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + localStorage.getItem("access_token"),
+    Authorization: "Bearer " + userAccessToken,
   },
 };
 
 const createTodo = (payload) => {
-  return axios.post(TODO_URL, payload, options);
+  return axios.post(TODOS_URL, payload, options);
 };
 
 const getTodo = (id, categoryId) => {
-  return axios.get(`${TODO_URL}/${id}?category_id=${categoryId}`, options);
+  return axios.get(`${TODOS_URL}/${id}?category_id=${categoryId}`, options);
 };
 
 const suggestTodos = () => {
@@ -50,16 +50,16 @@ const getSuggestedTodos = () => {
 };
 
 const deleteTodo = (id, categoryId) => {
-  return axios.delete(`${TODO_URL}/${id}?category_id=${categoryId}`, options);
+  return axios.delete(`${TODOS_URL}/${id}?category_id=${categoryId}`, options);
 };
 
 const updateTodo = (id, payload) => {
-  return axios.put(`${TODO_URL}/${id}`, payload, options);
+  return axios.put(`${TODOS_URL}/${id}`, payload, options);
 };
 
 const completeTodo = (id, categoryId) => {
   return axios.put(
-    `${TODO_URL}/${id}/complete`,
+    `${TODOS_URL}/${id}/complete`,
     {
       category_id: categoryId,
     },
@@ -69,7 +69,7 @@ const completeTodo = (id, categoryId) => {
 
 const activateTodo = (id, categoryId) => {
   return axios.put(
-    `${TODO_URL}/${id}/activate`,
+    `${TODOS_URL}/${id}/activate`,
     {
       category_id: categoryId,
     },
@@ -79,7 +79,7 @@ const activateTodo = (id, categoryId) => {
 
 const startTodo = (id, categoryId, payload) => {
   return axios.put(
-    `${TODO_URL}/${id}/start`,
+    `${TODOS_URL}/${id}/start`,
     {
       ...payload,
       category_id: categoryId,
@@ -90,7 +90,7 @@ const startTodo = (id, categoryId, payload) => {
 
 const restartTodo = (id, categoryId, payload) => {
   return axios.put(
-    `${TODO_URL}/${id}/restart`,
+    `${TODOS_URL}/${id}/restart`,
     {
       ...payload,
       category_id: categoryId,

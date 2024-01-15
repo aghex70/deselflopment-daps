@@ -1,14 +1,14 @@
 import axios from "axios";
+import {userAccessToken} from "../utils/helpers";
 
 const DAPS_BASE_URL = process.env.REACT_APP_API_URL;
 
-const CATEGORY_URL = `${DAPS_BASE_URL}api/category`;
 const CATEGORIES_URL = `${DAPS_BASE_URL}api/summary`;
 
 const options = {
   headers: {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + localStorage.getItem("access_token"),
+    Authorization: "Bearer " + userAccessToken,
   },
 };
 
@@ -19,11 +19,11 @@ const payload = {
 };
 
 const createCategory = (payload) => {
-  return axios.post(CATEGORY_URL, payload, options);
+  return axios.post(CATEGORIES_URL, payload, options);
 };
 
 const getCategory = (id) => {
-  return axios.get(`${CATEGORY_URL}/${id}`, payload);
+  return axios.get(`${CATEGORIES_URL}/${id}`, payload);
 };
 
 const getCategories = () => {
@@ -31,16 +31,16 @@ const getCategories = () => {
 };
 
 const deleteCategory = (id) => {
-  return axios.delete(`${CATEGORY_URL}/${id}`, options);
+  return axios.delete(`${CATEGORIES_URL}/${id}`, options);
 };
 
 const updateCategory = (id, payload) => {
-  return axios.put(`${CATEGORY_URL}/${id}`, payload, options);
+  return axios.put(`${CATEGORIES_URL}/${id}`, payload, options);
 };
 
 const shareCategory = (id, email) => {
   return axios.put(
-    `${CATEGORY_URL}/${id}`,
+    `${CATEGORIES_URL}/${id}`,
     {
       shared: true,
       email: email,
@@ -51,7 +51,7 @@ const shareCategory = (id, email) => {
 
 const unshareCategory = (id) => {
   return axios.put(
-    `${CATEGORY_URL}/${id}`,
+    `${CATEGORIES_URL}/${id}`,
     {
       shared: false,
     },
