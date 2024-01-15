@@ -2,6 +2,7 @@ package category
 
 import (
 	"context"
+	"fmt"
 	"github.com/aghex70/daps/internal/pkg"
 	requests "github.com/aghex70/daps/internal/ports/requests/category"
 	"github.com/aghex70/daps/internal/ports/services/category"
@@ -26,8 +27,9 @@ func (uc *UnshareCategoryUseCase) Execute(ctx context.Context, r requests.Unshar
 		return pkg.InactiveUserError
 	}
 
-	du, err := uc.UserService.Get(ctx, r.UserID)
+	du, err := uc.UserService.GetByEmail(ctx, r.Email)
 	if err != nil {
+		fmt.Printf("Error getting user by email: %v\n", err)
 		return err
 	}
 
