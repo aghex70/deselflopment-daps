@@ -26,6 +26,7 @@ import checkAccess, {
   clearLocalStorage,
   goToCreateCategory,
   sortCategoriesByField,
+  getUserId,
 } from "../utils/helpers";
 import {
   CancelButtonText,
@@ -83,7 +84,7 @@ const CategoriesList = () => {
     return language === "en" ? "(s) " : "(c) ";
   };
 
-  const userId = parseInt(localStorage.getItem("user_id"));
+  const userId = parseInt(getUserId());
   // Color code the todo based on its priority
   const rowTextColor = (cell, row) => {
     return (
