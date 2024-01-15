@@ -26,10 +26,6 @@ type Handler struct {
 }
 
 func (h Handler) HandleCategories(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
-	w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-
 	switch r.Method {
 	case http.MethodGet:
 		h.List(w, r)
@@ -97,10 +93,6 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handler) HandleCategory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
-	w.Header().Add("Access-Control-Allow-Methods", "DELETE, PUT, GET, OPTIONS")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-
 	// Get category id & action (if present) from request URI
 	path := strings.Split(r.RequestURI, handlers.CATEGORY_STRING)[1]
 	c := strings.Split(path, "/")[0]
@@ -239,10 +231,6 @@ func (h Handler) Unshare(w http.ResponseWriter, r *http.Request, id uint) {
 }
 
 func (h Handler) GetSummary(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", pkg.GetOrigin())
-	w.Header().Add("Access-Control-Allow-Methods", "GET, OPTIONS")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-
 	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
 		return
 	}
