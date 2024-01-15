@@ -27,6 +27,6 @@ type ShareCategoryRequest struct {
 }
 
 type UnshareCategoryRequest struct {
-	CategoryID uint `json:"category_id"`
-	UserID     uint `json:"user_id"`
+	CategoryID uint   `json:"category_id"`
+	Email      string `json:"email"`
 }
