@@ -123,7 +123,7 @@ const Todo = () => {
   };
 
   useEffect(() => {
-    TodoService.getTodo(id, categoryId)
+    TodoService.getTodo(id)
       .then((response) => {
         if (response.status === 200) {
           setTodoName(response.data.name);
