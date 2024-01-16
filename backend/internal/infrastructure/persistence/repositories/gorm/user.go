@@ -140,6 +140,13 @@ func (gr *UserRepository) Delete(ctx context.Context, id uint) error {
 	if result := gr.DB.Delete(&User{}, id); result.Error != nil {
 		return result.Error
 	}
+
+	// Delete all category associations
+	query := gr.DB.Exec(
+		"DELETE FROM daps_category_users WHERE user_id = ?", id)
+	if query.Error != nil {
+		return query.Error
+	}
 	return nil
 }
 
