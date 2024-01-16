@@ -19,6 +19,7 @@ type Handler struct {
 	GetTodoUseCase     todo.GetTodoUseCase
 	ImportTodosUseCase todo.ImportTodosUseCase
 	ListTodosUseCase   todo.ListTodosUseCase
+	StartTodoUseCase   todo.StartTodoUseCase
 	UpdateTodoUseCase  todo.UpdateTodoUseCase
 	logger             *log.Logger
 }
@@ -98,22 +99,28 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handler) HandleTodo(w http.ResponseWriter, r *http.Request) {
+	// Get todo id & action (if present) from request URI
 	path := strings.Split(r.RequestURI, handlers.TODO_STRING)[1]
-	categoryID, err := strconv.Atoi(path)
+	t := strings.Split(path, "/")[0]
+	todoID, err := strconv.Atoi(t)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	switch r.Method {
-	case http.MethodGet:
-		h.Get(w, r, uint(categoryID))
-	case http.MethodDelete:
-		h.Delete(w, r, uint(categoryID))
-	case http.MethodPut:
-		h.Update(w, r, uint(categoryID))
-	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
+	if strings.Contains(r.RequestURI, handlers.START_STRING) {
+		h.Start(w, r, uint(todoID))
+	} else {
+		switch r.Method {
+		case http.MethodGet:
+			h.Get(w, r, uint(todoID))
+		case http.MethodDelete:
+			h.Delete(w, r, uint(todoID))
+		case http.MethodPut:
+			h.Update(w, r, uint(todoID))
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
 	}
 	//queryParams := strings.Split(path, "?")
 }
@@ -187,6 +194,26 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (h Handler) Start(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.StartTodoRequest{TodoID: id}
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	if err = h.StartTodoUseCase.Execute(context.TODO(), payload, userID); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
 func (h Handler) Import(w http.ResponseWriter, r *http.Request) {
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
@@ -216,6 +243,7 @@ func NewTodoHandler(
 	getTodoUseCase *todo.GetTodoUseCase,
 	importTodosUseCase *todo.ImportTodosUseCase,
 	listTodosUseCase *todo.ListTodosUseCase,
+	startTodoUseCase *todo.StartTodoUseCase,
 	updateTodoUseCase *todo.UpdateTodoUseCase,
 	logger *log.Logger,
 ) *Handler {
@@ -225,6 +253,7 @@ func NewTodoHandler(
 		GetTodoUseCase:     *getTodoUseCase,
 		ImportTodosUseCase: *importTodosUseCase,
 		ListTodosUseCase:   *listTodosUseCase,
+		StartTodoUseCase:   *startTodoUseCase,
 		UpdateTodoUseCase:  *updateTodoUseCase,
 		logger:             logger,
 	}

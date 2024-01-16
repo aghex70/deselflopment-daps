@@ -11,4 +11,5 @@ type Repository interface {
 	Delete(ctx context.Context, id uint) error
 	List(ctx context.Context, filters *map[string]interface{}) ([]domain.Todo, error)
 	Update(ctx context.Context, id uint, filters *map[string]interface{}) error
+	Start(ctx context.Context, id uint) error
 }

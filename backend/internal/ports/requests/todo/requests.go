@@ -27,7 +27,6 @@ type DeleteTodoRequest struct {
 }
 
 type GetTodoRequest struct {
-	//CategoryID uint `json:"category_id" validate:"required"`
 	TodoID uint `json:"todo_id"`
 }
 

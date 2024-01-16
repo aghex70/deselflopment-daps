@@ -76,12 +76,13 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			gtuuc := todoUsecases.NewGetTodoUseCase(ts, us, &logger)
 			ituuc := todoUsecases.NewImportTodosUseCase(ts, us, &logger)
 			ltuuc := todoUsecases.NewListTodosUseCase(ts, us, &logger)
+			stuuc := todoUsecases.NewStartTodoUseCase(ts, us, &logger)
 			utuuc := todoUsecases.NewUpdateTodoUseCase(ts, us, &logger)
 
 			//Handlers
 			uh := userHandler.NewUserHandler(auuc, duuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, uuuuc, &logger)
 			ch := categoryHandler.NewCategoryHandler(cauuc, cduuc, gcuuc, gsuuc, lcuuc, lcusuc, scauuc, usauuc, usuuc, ucauuc, &logger)
-			th := todoHandler.NewTodoHandler(ctuuc, dtuuc, gtuuc, ituuc, ltuuc, utuuc, &logger)
+			th := todoHandler.NewTodoHandler(ctuuc, dtuuc, gtuuc, ituuc, ltuuc, stuuc, utuuc, &logger)
 
 			s := server.NewRestServer(cfg.Server.Rest, *ch, *th, *uh, &logger)
 			if err = s.StartServer(); err != nil {

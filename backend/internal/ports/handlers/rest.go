@@ -18,6 +18,8 @@ const (
 	SHARE_STRING       string = "/share"
 	UNSHARE_STRING     string = "/unshare"
 	UNSUBSCRIBE_STRING string = "/unsubscribe"
+	START_STRING       string = "/start"
+	COMPLETE_STRING    string = "/complete"
 	USER_STRING        string = "users/"
 )
 

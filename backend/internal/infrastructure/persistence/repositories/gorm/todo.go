@@ -133,6 +133,18 @@ func (gr *TodoRepository) Update(ctx context.Context, id uint, filters *map[stri
 	return nil
 }
 
+func (gr *TodoRepository) Start(ctx context.Context, id uint) error {
+	var t Todo
+	t.ID = id
+	if result := gr.DB.Model(&t).Updates(map[string]interface{}{
+		"started_at": time.Now(),
+		"active":     true,
+	}); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 type TodoRepository struct {
 	*gorm.DB
 }

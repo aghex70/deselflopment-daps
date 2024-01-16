@@ -55,6 +55,13 @@ func (s Service) Update(ctx context.Context, id uint, fields *map[string]interfa
 	return nil
 }
 
+func (s Service) Start(ctx context.Context, id uint) error {
+	if err := s.todoRepository.Start(ctx, id); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s Service) Import(ctx context.Context, f multipart.File) error {
 	// Create a buffer to read the file line by line
 	buf := bufio.NewReader(f)
