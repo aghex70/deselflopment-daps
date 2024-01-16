@@ -64,6 +64,14 @@ const unshareCategory = (id, email) => {
   );
 };
 
+const unsubscribeCategory = (id) => {
+  return axios.post(
+      `${CATEGORIES_URL}/${id}/unsubscribe`,
+      {},
+      options
+  );
+};
+
 const CategoryService = {
   createCategory,
   getCategory,
@@ -73,6 +81,7 @@ const CategoryService = {
   updateCategory,
   shareCategory,
   unshareCategory,
+  unsubscribeCategory,
 };
 
 export default CategoryService;
