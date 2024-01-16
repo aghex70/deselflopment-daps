@@ -14,6 +14,10 @@ type ListCategoriesResponse struct {
 	Categories []domain.FilteredCategory `json:"categories"`
 }
 
+type ListCategoryUsersResponse struct {
+	Users []domain.CategoryUser `json:"users"`
+}
+
 type ListUsersResponse struct {
 	Users []domain.FilteredUser `json:"users"`
 }

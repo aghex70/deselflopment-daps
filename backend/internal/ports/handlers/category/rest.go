@@ -276,12 +276,12 @@ func (h Handler) ListCategoryUsers(w http.ResponseWriter, r *http.Request, id ui
 		return
 	}
 
-	summary, err := h.ListCategoryUsersUseCase.Execute(context.TODO(), payload, userID)
+	users, err := h.ListCategoryUsersUseCase.Execute(context.TODO(), payload, userID)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	b, err := json.Marshal(summary)
+	b, err := json.Marshal(handlers.ListCategoryUsersResponse{Users: users})
 	if err != nil {
 		return
 	}
@@ -289,6 +289,7 @@ func (h Handler) ListCategoryUsers(w http.ResponseWriter, r *http.Request, id ui
 	if err != nil {
 		return
 	}
+	return
 }
 
 func NewCategoryHandler(
