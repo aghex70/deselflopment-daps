@@ -179,11 +179,11 @@ const TodosList = () => {
 
   const sortByDate = () => {
     if (ascendingDate === true) {
-      sortTodosByField("creation_date", true, setTodos, null);
+      sortTodosByField("created_at", true, setTodos, null);
       setAscendingDate(false);
       setAscendingDateIcon(faArrowDown91);
     } else {
-      sortTodosByField("creation_date", false, setTodos, null);
+      sortTodosByField("created_at", false, setTodos, null);
       setAscendingDate(true);
       setAscendingDateIcon(faArrowDown19);
     }

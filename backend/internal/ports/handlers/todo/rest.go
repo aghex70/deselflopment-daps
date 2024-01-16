@@ -86,7 +86,7 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	b, err := json.Marshal(handlers.ListTodosResponse{Todos: todos})
+	b, err := json.Marshal(todos)
 	if err != nil {
 		return
 	}
