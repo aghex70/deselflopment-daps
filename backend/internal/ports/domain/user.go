@@ -32,7 +32,7 @@ type FilteredUser struct {
 }
 
 type CategoryUser struct {
-	UserID uint   `json:"user_id"`
-	Email  string `json:"email"`
-	Owner  bool   `json:"is_owner"`
+	UserID  uint   `json:"user_id"`
+	Email   string `json:"email"`
+	IsOwner bool   `json:"is_owner"`
 }
