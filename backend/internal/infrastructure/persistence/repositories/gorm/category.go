@@ -235,7 +235,7 @@ func (gr *CategoryRepository) GetSummary(ctx context.Context, id uint) ([]domain
 
 func (gr *CategoryRepository) ListCategoryUsers(ctx context.Context, id uint) ([]domain.CategoryUser, error) {
 	var cu []domain.CategoryUser
-	query := fmt.Sprintf("SELECT DISTINCT daps_category_users.user_id, deselflopment_users.email FROM daps_category_users LEFT JOIN deselflopment_users ON daps_category_users.user_id = deselflopment_users.id WHERE daps_category_users.category_id = %d", id)
+	query := fmt.Sprintf("SELECT DISTINCT daps_category_users.user_id, deselflopment_users.email, CASE WHEN daps_category_users.user_id = daps_categories.owner_id THEN 1 ELSE 0 END AS is_owner FROM daps_category_users LEFT JOIN deselflopment_users ON daps_category_users.user_id = deselflopment_users.id LEFT JOIN daps_categories ON daps_category_users.category_id = daps_categories.id WHERE daps_category_users.category_id = %d", id)
 	result := gr.DB.Raw(query).Scan(&cu)
 	if result.Error != nil {
 		return cu, result.Error
