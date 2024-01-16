@@ -14,14 +14,17 @@ import (
 )
 
 type Handler struct {
-	CreateTodoUseCase  todo.CreateTodoUseCase
-	DeleteTodoUseCase  todo.DeleteTodoUseCase
-	GetTodoUseCase     todo.GetTodoUseCase
-	ImportTodosUseCase todo.ImportTodosUseCase
-	ListTodosUseCase   todo.ListTodosUseCase
-	StartTodoUseCase   todo.StartTodoUseCase
-	UpdateTodoUseCase  todo.UpdateTodoUseCase
-	logger             *log.Logger
+	ActivateTodoUseCase todo.ActivateTodoUseCase
+	CompleteTodoUseCase todo.CompleteTodoUseCase
+	CreateTodoUseCase   todo.CreateTodoUseCase
+	DeleteTodoUseCase   todo.DeleteTodoUseCase
+	GetTodoUseCase      todo.GetTodoUseCase
+	ImportTodosUseCase  todo.ImportTodosUseCase
+	ListTodosUseCase    todo.ListTodosUseCase
+	RestartTodoUseCase  todo.RestartTodoUseCase
+	StartTodoUseCase    todo.StartTodoUseCase
+	UpdateTodoUseCase   todo.UpdateTodoUseCase
+	logger              *log.Logger
 }
 
 func (h Handler) HandleTodos(w http.ResponseWriter, r *http.Request) {
@@ -110,6 +113,12 @@ func (h Handler) HandleTodo(w http.ResponseWriter, r *http.Request) {
 
 	if strings.Contains(r.RequestURI, handlers.START_STRING) {
 		h.Start(w, r, uint(todoID))
+	} else if strings.Contains(r.RequestURI, handlers.COMPLETE_STRING) {
+		h.Complete(w, r, uint(todoID))
+	} else if strings.Contains(r.RequestURI, handlers.RESTART_STRING) {
+		h.Restart(w, r, uint(todoID))
+	} else if strings.Contains(r.RequestURI, handlers.ACTIVATE_STRING) {
+		h.Activate(w, r, uint(todoID))
 	} else {
 		switch r.Method {
 		case http.MethodGet:
@@ -195,7 +204,7 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 }
 
 func (h Handler) Start(w http.ResponseWriter, r *http.Request, id uint) {
-	payload := requests.StartTodoRequest{TodoID: id}
+	payload := requests.GetTodoRequest{TodoID: id}
 	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -208,6 +217,66 @@ func (h Handler) Start(w http.ResponseWriter, r *http.Request, id uint) {
 	}
 
 	if err = h.StartTodoUseCase.Execute(context.TODO(), payload, userID); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h Handler) Complete(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.GetTodoRequest{TodoID: id}
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	if err = h.CompleteTodoUseCase.Execute(context.TODO(), payload, userID); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h Handler) Restart(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.GetTodoRequest{TodoID: id}
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	if err = h.RestartTodoUseCase.Execute(context.TODO(), payload, userID); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h Handler) Activate(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.GetTodoRequest{TodoID: id}
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	if err = h.ActivateTodoUseCase.Execute(context.TODO(), payload, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
@@ -238,23 +307,29 @@ func (h Handler) Import(w http.ResponseWriter, r *http.Request) {
 //func (h Handler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
 
 func NewTodoHandler(
+	activateTodoUseCase *todo.ActivateTodoUseCase,
+	completeTodoUseCase *todo.CompleteTodoUseCase,
 	createTodoUseCase *todo.CreateTodoUseCase,
 	deleteTodoUseCase *todo.DeleteTodoUseCase,
 	getTodoUseCase *todo.GetTodoUseCase,
 	importTodosUseCase *todo.ImportTodosUseCase,
 	listTodosUseCase *todo.ListTodosUseCase,
+	restartTodoUseCase *todo.RestartTodoUseCase,
 	startTodoUseCase *todo.StartTodoUseCase,
 	updateTodoUseCase *todo.UpdateTodoUseCase,
 	logger *log.Logger,
 ) *Handler {
 	return &Handler{
-		CreateTodoUseCase:  *createTodoUseCase,
-		DeleteTodoUseCase:  *deleteTodoUseCase,
-		GetTodoUseCase:     *getTodoUseCase,
-		ImportTodosUseCase: *importTodosUseCase,
-		ListTodosUseCase:   *listTodosUseCase,
-		StartTodoUseCase:   *startTodoUseCase,
-		UpdateTodoUseCase:  *updateTodoUseCase,
-		logger:             logger,
+		ActivateTodoUseCase: *activateTodoUseCase,
+		CompleteTodoUseCase: *completeTodoUseCase,
+		CreateTodoUseCase:   *createTodoUseCase,
+		DeleteTodoUseCase:   *deleteTodoUseCase,
+		GetTodoUseCase:      *getTodoUseCase,
+		ImportTodosUseCase:  *importTodosUseCase,
+		ListTodosUseCase:    *listTodosUseCase,
+		StartTodoUseCase:    *startTodoUseCase,
+		RestartTodoUseCase:  *restartTodoUseCase,
+		UpdateTodoUseCase:   *updateTodoUseCase,
+		logger:              logger,
 	}
 }

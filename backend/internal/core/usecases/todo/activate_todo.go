@@ -11,13 +11,13 @@ import (
 	"log"
 )
 
-type StartTodoUseCase struct {
+type ActivateTodoUseCase struct {
 	TodoService todo.Servicer
 	UserService user.Servicer
 	logger      *log.Logger
 }
 
-func (uc *StartTodoUseCase) Execute(ctx context.Context, r requests.GetTodoRequest, userID uint) error {
+func (uc *ActivateTodoUseCase) Execute(ctx context.Context, r requests.GetTodoRequest, userID uint) error {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return err
@@ -36,14 +36,14 @@ func (uc *StartTodoUseCase) Execute(ctx context.Context, r requests.GetTodoReque
 		return pkg.UnauthorizedError
 	}
 
-	if err = uc.TodoService.Start(ctx, t.ID); err != nil {
+	if err = uc.TodoService.Activate(ctx, t.ID); err != nil {
 		return err
 	}
 	return nil
 }
 
-func NewStartTodoUseCase(s todo.Servicer, u user.Servicer, logger *log.Logger) *StartTodoUseCase {
-	return &StartTodoUseCase{
+func NewActivateTodoUseCase(s todo.Servicer, u user.Servicer, logger *log.Logger) *ActivateTodoUseCase {
+	return &ActivateTodoUseCase{
 		TodoService: s,
 		UserService: u,
 		logger:      logger,

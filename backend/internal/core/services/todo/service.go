@@ -62,6 +62,27 @@ func (s Service) Start(ctx context.Context, id uint) error {
 	return nil
 }
 
+func (s Service) Complete(ctx context.Context, id uint) error {
+	if err := s.todoRepository.Complete(ctx, id); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s Service) Restart(ctx context.Context, id uint) error {
+	if err := s.todoRepository.Restart(ctx, id); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s Service) Activate(ctx context.Context, id uint) error {
+	if err := s.todoRepository.Activate(ctx, id); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s Service) Import(ctx context.Context, f multipart.File) error {
 	// Create a buffer to read the file line by line
 	buf := bufio.NewReader(f)

@@ -145,6 +145,46 @@ func (gr *TodoRepository) Start(ctx context.Context, id uint) error {
 	return nil
 }
 
+func (gr *TodoRepository) Complete(ctx context.Context, id uint) error {
+	var t Todo
+	t.ID = id
+	if result := gr.DB.Model(&t).Updates(map[string]interface{}{
+		"completed_at": time.Now(),
+		"completed":    true,
+	}); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (gr *TodoRepository) Restart(ctx context.Context, id uint) error {
+	var t Todo
+	t.ID = id
+	if result := gr.DB.Model(&t).Updates(map[string]interface{}{
+		"started_at":   time.Now(),
+		"active":       true,
+		"completed_at": nil,
+		"completed":    false,
+	}); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (gr *TodoRepository) Activate(ctx context.Context, id uint) error {
+	var t Todo
+	t.ID = id
+	if result := gr.DB.Model(&t).Updates(map[string]interface{}{
+		"started_at":   nil,
+		"active":       false,
+		"completed_at": nil,
+		"completed":    false,
+	}); result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 type TodoRepository struct {
 	*gorm.DB
 }

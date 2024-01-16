@@ -33,33 +33,3 @@ type Todo struct {
 	SuggestedAt *time.Time `json:"suggested_at"`
 	OwnerID     uint       `json:"owner_id"`
 }
-
-//type Summmary struct {
-//	Summary []CategorySummary `json:"summary"`
-//}
-//
-//type CategorySummary struct {
-//	ID                   int    `json:"id"`
-//	Name                 string `json:"name"`
-//	Tasks                int    `json:"tasks"`
-//	HighestPriorityTasks int    `json:"highest_priority_tasks"`
-//	OwnerID              int    `json:"owner_id"`
-//	Shared               int    `json:"shared"`
-//}
-//
-//type RemindSummary struct {
-//	TodoName        string `json:"todo_name"`
-//	TodoPriority    int    `json:"todo_priority"`
-//	TodoDescription string `json:"todo_description"`
-//	TodoLink        string `json:"todo_link"`
-//	CategoryName    string `json:"category_name"`
-//}
-//
-//type CategoryInfo struct {
-//	KategoryName string `json:"kategory_name"`
-//}
-//
-//type TodoInfo struct {
-//	CategoryInfo
-//	Todo
-//}

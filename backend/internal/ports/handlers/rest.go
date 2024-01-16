@@ -20,6 +20,8 @@ const (
 	UNSUBSCRIBE_STRING string = "/unsubscribe"
 	START_STRING       string = "/start"
 	COMPLETE_STRING    string = "/complete"
+	RESTART_STRING     string = "/restart"
+	ACTIVATE_STRING    string = "/activate"
 	USER_STRING        string = "users/"
 )
 

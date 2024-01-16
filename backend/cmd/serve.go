@@ -71,18 +71,21 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			gsuuc := categoryUsecases.NewGetSummaryUseCase(cs, us, &logger)
 
 			// Todo usecases
+			atuuc := todoUsecases.NewActivateTodoUseCase(ts, us, &logger)
+			cotuuc := todoUsecases.NewCompleteTodoUseCase(ts, us, &logger)
 			ctuuc := todoUsecases.NewCreateTodoUseCase(ts, us, &logger)
 			dtuuc := todoUsecases.NewDeleteTodoUseCase(ts, us, &logger)
 			gtuuc := todoUsecases.NewGetTodoUseCase(ts, us, &logger)
 			ituuc := todoUsecases.NewImportTodosUseCase(ts, us, &logger)
 			ltuuc := todoUsecases.NewListTodosUseCase(ts, us, &logger)
+			rtuuc := todoUsecases.NewRestartTodoUseCase(ts, us, &logger)
 			stuuc := todoUsecases.NewStartTodoUseCase(ts, us, &logger)
 			utuuc := todoUsecases.NewUpdateTodoUseCase(ts, us, &logger)
 
 			//Handlers
 			uh := userHandler.NewUserHandler(auuc, duuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, uuuuc, &logger)
 			ch := categoryHandler.NewCategoryHandler(cauuc, cduuc, gcuuc, gsuuc, lcuuc, lcusuc, scauuc, usauuc, usuuc, ucauuc, &logger)
-			th := todoHandler.NewTodoHandler(ctuuc, dtuuc, gtuuc, ituuc, ltuuc, stuuc, utuuc, &logger)
+			th := todoHandler.NewTodoHandler(atuuc, cotuuc, ctuuc, dtuuc, gtuuc, ituuc, ltuuc, rtuuc, stuuc, utuuc, &logger)
 
 			s := server.NewRestServer(cfg.Server.Rest, *ch, *th, *uh, &logger)
 			if err = s.StartServer(); err != nil {

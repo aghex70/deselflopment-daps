@@ -10,18 +10,6 @@ type CreateTodoRequest struct {
 	Priority    uint   `json:"priority" validate:"required,gte=1,lte=5"`
 }
 
-type CompleteTodoRequest struct {
-	TodoID uint `json:"todo_id"`
-}
-
-type ActivateTodoRequest struct {
-	TodoID uint `json:"todo_id"`
-}
-
-type StartTodoRequest struct {
-	TodoID uint `json:"todo_id"`
-}
-
 type DeleteTodoRequest struct {
 	TodoID uint `json:"todo_id"`
 }
