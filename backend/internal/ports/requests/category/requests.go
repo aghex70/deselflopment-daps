@@ -30,3 +30,7 @@ type UnshareCategoryRequest struct {
 	CategoryID uint   `json:"category_id"`
 	Email      string `json:"email"`
 }
+
+type UnsubscribeCategoryRequest struct {
+	CategoryID uint `json:"category_id"`
+}

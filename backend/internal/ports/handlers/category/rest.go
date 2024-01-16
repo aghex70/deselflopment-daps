@@ -14,16 +14,17 @@ import (
 )
 
 type Handler struct {
-	CreateCategoryUseCase    category.CreateCategoryUseCase
-	DeleteCategoryUseCase    category.DeleteCategoryUseCase
-	GetCategoryUseCase       category.GetCategoryUseCase
-	GetSummaryUseCase        category.GetSummaryUseCase
-	ListCategoriesUseCase    category.ListCategoriesUseCase
-	ListCategoryUsersUseCase category.ListCategoryUsersUseCase
-	ShareCategoryUseCase     category.ShareCategoryUseCase
-	UnshareCategoryUseCase   category.UnshareCategoryUseCase
-	UpdateCategoryUseCase    category.UpdateCategoryUseCase
-	logger                   *log.Logger
+	CreateCategoryUseCase      category.CreateCategoryUseCase
+	DeleteCategoryUseCase      category.DeleteCategoryUseCase
+	GetCategoryUseCase         category.GetCategoryUseCase
+	GetSummaryUseCase          category.GetSummaryUseCase
+	ListCategoriesUseCase      category.ListCategoriesUseCase
+	ListCategoryUsersUseCase   category.ListCategoryUsersUseCase
+	ShareCategoryUseCase       category.ShareCategoryUseCase
+	UnshareCategoryUseCase     category.UnshareCategoryUseCase
+	UnsubscribeCategoryUseCase category.UnsubscribeCategoryUseCase
+	UpdateCategoryUseCase      category.UpdateCategoryUseCase
+	logger                     *log.Logger
 }
 
 func (h Handler) HandleCategories(w http.ResponseWriter, r *http.Request) {
@@ -107,6 +108,8 @@ func (h Handler) HandleCategory(w http.ResponseWriter, r *http.Request) {
 		h.Share(w, r, uint(categoryID))
 	} else if strings.Contains(r.RequestURI, handlers.UNSHARE_STRING) {
 		h.Unshare(w, r, uint(categoryID))
+	} else if strings.Contains(r.RequestURI, handlers.UNSUBSCRIBE_STRING) {
+		h.Unsubscribe(w, r, uint(categoryID))
 	} else if strings.Contains(r.RequestURI, handlers.USER_STRING) {
 		h.ListCategoryUsers(w, r, uint(categoryID))
 	} else {
@@ -233,6 +236,26 @@ func (h Handler) Unshare(w http.ResponseWriter, r *http.Request, id uint) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (h Handler) Unsubscribe(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.UnsubscribeCategoryRequest{CategoryID: id}
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	if err = h.UnsubscribeCategoryUseCase.Execute(context.TODO(), payload, userID); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
 func (h Handler) GetSummary(w http.ResponseWriter, r *http.Request) {
 	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
 		return
@@ -301,19 +324,21 @@ func NewCategoryHandler(
 	listCategoryUsersUseCase *category.ListCategoryUsersUseCase,
 	shareCategoryUseCase *category.ShareCategoryUseCase,
 	unshareCategoryUseCase *category.UnshareCategoryUseCase,
+	unsubscribeCategoryUseCase *category.UnsubscribeCategoryUseCase,
 	updateCategoryUseCase *category.UpdateCategoryUseCase,
 	logger *log.Logger,
 ) *Handler {
 	return &Handler{
-		CreateCategoryUseCase:    *createCategoryUseCase,
-		DeleteCategoryUseCase:    *deleteCategoryUseCase,
-		GetCategoryUseCase:       *getCategoryUseCase,
-		GetSummaryUseCase:        *getSummaryUseCase,
-		ListCategoriesUseCase:    *listCategoriesUseCase,
-		ListCategoryUsersUseCase: *listCategoryUsersUseCase,
-		ShareCategoryUseCase:     *shareCategoryUseCase,
-		UnshareCategoryUseCase:   *unshareCategoryUseCase,
-		UpdateCategoryUseCase:    *updateCategoryUseCase,
-		logger:                   logger,
+		CreateCategoryUseCase:      *createCategoryUseCase,
+		DeleteCategoryUseCase:      *deleteCategoryUseCase,
+		GetCategoryUseCase:         *getCategoryUseCase,
+		GetSummaryUseCase:          *getSummaryUseCase,
+		ListCategoriesUseCase:      *listCategoriesUseCase,
+		ListCategoryUsersUseCase:   *listCategoryUsersUseCase,
+		ShareCategoryUseCase:       *shareCategoryUseCase,
+		UnshareCategoryUseCase:     *unshareCategoryUseCase,
+		UnsubscribeCategoryUseCase: *unsubscribeCategoryUseCase,
+		UpdateCategoryUseCase:      *updateCategoryUseCase,
+		logger:                     logger,
 	}
 }
