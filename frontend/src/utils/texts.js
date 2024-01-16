@@ -70,7 +70,7 @@ const OnlyOwnerCanEditCategoryText =
   language === "en"
     ? "Only owners can edit a shared category!"
     : "¡Solo los propietarios pueden editar una categoría compartida!";
-const ConfirmUnshareCategoryText =
+const ConfirmUnsubscribeCategoryText =
   language === "en"
     ? "Are you sure you want to unsubscribe from this category?"
     : "¿Estás segur@ de que quieres darte de baja de esta categoría?";
@@ -162,6 +162,7 @@ const CannotDeleteActiveTodoText =
 // Buttons
 const CancelButtonText = language === "en" ? "Cancel" : "Cancelar";
 const ShareButtonText = language === "en" ? "Share" : "Compartir";
+const UnsubscribeButtonText = language === "en" ? "Unsubscribe" : "Darse de baja";
 const CreateButtonText = language === "en" ? "Create" : "Crear";
 const LoginButtonText = language === "en" ? "Login" : "Iniciar sesión";
 const RegisterButtonText = language === "en" ? "Register" : "Registrarse";
@@ -284,7 +285,6 @@ export {
   UserAlreadySubscribedText,
   OnlyOwnersCanDeleteCategoryText,
   OnlyOwnerCanEditCategoryText,
-  ConfirmUnshareCategoryText,
   CategoryAlreadyExistsText,
   UserNotFoundText,
   EnterEmailText,
@@ -388,4 +388,6 @@ export {
   CannotDeleteActiveTodoText,
   AutoRemindLabelText,
   NotifiableLabelText,
+  ConfirmUnsubscribeCategoryText,
+  UnsubscribeButtonText,
 };
