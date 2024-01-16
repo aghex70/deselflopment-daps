@@ -18,13 +18,15 @@ func (uc *DeleteUserUseCase) Execute(ctx context.Context, r requests.DeleteUserR
 	if err != nil {
 		return err
 	}
-	if !u.Admin || u.ID != r.UserID {
+
+	if !u.Admin && u.ID != r.UserID {
 		return pkg.UnauthorizedError
 	}
 
-	if err = uc.UserService.Delete(ctx, r.UserID); err != nil {
+	if err := uc.UserService.Delete(ctx, r.UserID); err != nil {
 		return err
 	}
+
 	return nil
 }
 
