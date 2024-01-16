@@ -181,12 +181,13 @@ func (gr *CategoryRepository) Share(ctx context.Context, id uint, u domain.User)
 
 	// Check if the user is already in the category
 	if !isUserInCategory(c.Users, u) {
-		c.Shared = true
-		c.Users = append(c.Users, UserFromDto(u))
-
-		// TODO: Associations are being created twice (GORM bug?)
-		// Replace the users association with the updated slice
-		if err := gr.DB.Model(&c).Association("Users").Replace(c.Users); err != nil {
+		query := fmt.Sprintf("INSERT INTO daps_category_users (category_id, user_id) VALUES (%d, %d)", id, u.ID)
+		if err := gr.DB.Exec(query).Error; err != nil {
+			return err
+		}
+		// Update the category to be shared
+		query = fmt.Sprintf("UPDATE daps_categories SET shared = TRUE WHERE id = %d", id)
+		if err := gr.DB.Exec(query).Error; err != nil {
 			return err
 		}
 	}
@@ -213,10 +214,10 @@ func (gr *CategoryRepository) Unshare(ctx context.Context, id uint, u domain.Use
 		return result.Error
 	}
 
-	if c.Users == nil || len(c.Users) == 0 {
-		c.Shared = false
-		if result := gr.DB.Save(&c); result.Error != nil {
-			return result.Error
+	if c.Users == nil || len(c.Users) == 1 {
+		query := fmt.Sprintf("UPDATE daps_categories SET shared = FALSE WHERE id = %d", id)
+		if err := gr.DB.Exec(query).Error; err != nil {
+			return err
 		}
 	}
 
