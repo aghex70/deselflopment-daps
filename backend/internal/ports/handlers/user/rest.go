@@ -356,7 +356,7 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 
 	// Hide user data
 	filteredUser := pkg.FilterUser(u)
-	b, err := json.Marshal(handlers.GetUserResponse{User: filteredUser})
+	b, err := json.Marshal(filteredUser)
 	if err != nil {
 		return
 	}
