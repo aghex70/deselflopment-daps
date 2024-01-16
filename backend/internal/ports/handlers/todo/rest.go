@@ -209,7 +209,6 @@ func (h Handler) Import(w http.ResponseWriter, r *http.Request) {
 }
 
 //func (h Handler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
-//func (h Handler) Summary(w http.ResponseWriter, r *http.Request) {
 
 func NewTodoHandler(
 	createTodoUseCase *todo.CreateTodoUseCase,
