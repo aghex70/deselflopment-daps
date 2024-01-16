@@ -1,5 +1,6 @@
 import axios from "axios";
 import {userAccessToken} from "../utils/helpers";
+import {CancelButtonText, ShareButtonText, ShareCategoryHeaderText} from "../utils/texts";
 
 const DAPS_BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -27,6 +28,10 @@ const getCategory = (id) => {
   return axios.get(`${CATEGORIES_URL}/${id}`, payload);
 };
 
+const getCategoryUsers = (id) => {
+  return axios.get(`${CATEGORIES_URL}/${id}/users/`, payload);
+};
+
 const getCategories = () => {
   return axios.get(SUMMARY_URL, options);
 };
@@ -40,21 +45,20 @@ const updateCategory = (id, payload) => {
 };
 
 const shareCategory = (id, email) => {
-  return axios.put(
-    `${CATEGORIES_URL}/${id}`,
+  return axios.post(
+    `${CATEGORIES_URL}/${id}/share`,
     {
-      shared: true,
       email: email,
     },
     options
   );
 };
 
-const unshareCategory = (id) => {
-  return axios.put(
-    `${CATEGORIES_URL}/${id}`,
+const unshareCategory = (id, email) => {
+  return axios.post(
+    `${CATEGORIES_URL}/${id}/unshare`,
     {
-      shared: false,
+      email: email,
     },
     options
   );
@@ -63,6 +67,7 @@ const unshareCategory = (id) => {
 const CategoryService = {
   createCategory,
   getCategory,
+  getCategoryUsers,
   getCategories,
   deleteCategory,
   updateCategory,
