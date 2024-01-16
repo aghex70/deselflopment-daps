@@ -41,7 +41,6 @@ func (uc *ShareCategoryUseCase) Execute(ctx context.Context, r requests.ShareCat
 		return pkg.UnauthorizedError
 	}
 
-	fmt.Println("Calling share service")
 	if err = uc.CategoryService.Share(ctx, c.ID, nu); err != nil {
 		return err
 	}
