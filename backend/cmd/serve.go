@@ -61,6 +61,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			cduuc := categoryUsecases.NewDeleteCategoryUseCase(cs, us, &logger)
 			gcuuc := categoryUsecases.NewGetCategoryUseCase(cs, us, &logger)
 			lcuuc := categoryUsecases.NewListCategoriesUseCase(cs, us, &logger)
+			lcusuc := categoryUsecases.NewListCategoryUsersUseCase(cs, us, &logger)
 			scauuc := categoryUsecases.NewShareCategoryUseCase(cs, us, &logger)
 			usauuc := categoryUsecases.NewUnshareCategoryUseCase(cs, us, &logger)
 			ucauuc := categoryUsecases.NewUpdateCategoryUseCase(cs, us, &logger)
@@ -78,7 +79,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 
 			//Handlers
 			uh := userHandler.NewUserHandler(auuc, duuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, uuuuc, &logger)
-			ch := categoryHandler.NewCategoryHandler(cauuc, cduuc, gcuuc, gsuuc, lcuuc, scauuc, usauuc, ucauuc, &logger)
+			ch := categoryHandler.NewCategoryHandler(cauuc, cduuc, gcuuc, gsuuc, lcuuc, lcusuc, scauuc, usauuc, ucauuc, &logger)
 			th := todoHandler.NewTodoHandler(ctuuc, dtuuc, gtuuc, ituuc, ltuuc, utuuc, &logger)
 
 			s := server.NewRestServer(cfg.Server.Rest, *ch, *th, *uh, &logger)

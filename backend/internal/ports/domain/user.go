@@ -30,3 +30,8 @@ type FilteredUser struct {
 	Admin     bool      `json:"admin"`
 	Active    bool      `json:"active"`
 }
+
+type CategoryUser struct {
+	UserID uint   `json:"user_id"`
+	Email  string `json:"email"`
+}

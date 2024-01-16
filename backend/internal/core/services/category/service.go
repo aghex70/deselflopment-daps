@@ -72,6 +72,14 @@ func (s Service) GetSummary(ctx context.Context, id uint) ([]domain.CategorySumm
 	return summary, nil
 }
 
+func (s Service) ListCategoryUsers(ctx context.Context, id uint) ([]domain.CategoryUser, error) {
+	users, err := s.categoryRepository.ListCategoryUsers(ctx, id)
+	if err != nil {
+		return []domain.CategoryUser{}, err
+	}
+	return users, nil
+}
+
 func NewCategoryService(r category.Repository, logger *log.Logger) Service {
 	return Service{
 		logger:             logger,

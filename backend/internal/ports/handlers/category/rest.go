@@ -14,15 +14,16 @@ import (
 )
 
 type Handler struct {
-	CreateCategoryUseCase  category.CreateCategoryUseCase
-	DeleteCategoryUseCase  category.DeleteCategoryUseCase
-	GetCategoryUseCase     category.GetCategoryUseCase
-	GetSummaryUseCase      category.GetSummaryUseCase
-	ListCategoriesUseCase  category.ListCategoriesUseCase
-	ShareCategoryUseCase   category.ShareCategoryUseCase
-	UnshareCategoryUseCase category.UnshareCategoryUseCase
-	UpdateCategoryUseCase  category.UpdateCategoryUseCase
-	logger                 *log.Logger
+	CreateCategoryUseCase    category.CreateCategoryUseCase
+	DeleteCategoryUseCase    category.DeleteCategoryUseCase
+	GetCategoryUseCase       category.GetCategoryUseCase
+	GetSummaryUseCase        category.GetSummaryUseCase
+	ListCategoriesUseCase    category.ListCategoriesUseCase
+	ListCategoryUsersUseCase category.ListCategoryUsersUseCase
+	ShareCategoryUseCase     category.ShareCategoryUseCase
+	UnshareCategoryUseCase   category.UnshareCategoryUseCase
+	UpdateCategoryUseCase    category.UpdateCategoryUseCase
+	logger                   *log.Logger
 }
 
 func (h Handler) HandleCategories(w http.ResponseWriter, r *http.Request) {
@@ -106,6 +107,8 @@ func (h Handler) HandleCategory(w http.ResponseWriter, r *http.Request) {
 		h.Share(w, r, uint(categoryID))
 	} else if strings.Contains(r.RequestURI, handlers.UNSHARE_STRING) {
 		h.Unshare(w, r, uint(categoryID))
+	} else if strings.Contains(r.RequestURI, handlers.USER_STRING) {
+		h.ListCategoryUsers(w, r, uint(categoryID))
 	} else {
 		switch r.Method {
 		case http.MethodGet:
@@ -256,26 +259,60 @@ func (h Handler) GetSummary(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h Handler) ListCategoryUsers(w http.ResponseWriter, r *http.Request, id uint) {
+	payload := requests.GetCategoryRequest{CategoryID: id}
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	summary, err := h.ListCategoryUsersUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	b, err := json.Marshal(summary)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
+}
+
 func NewCategoryHandler(
 	createCategoryUseCase *category.CreateCategoryUseCase,
 	deleteCategoryUseCase *category.DeleteCategoryUseCase,
 	getCategoryUseCase *category.GetCategoryUseCase,
 	getSummaryUseCase *category.GetSummaryUseCase,
 	listCategoriesUseCase *category.ListCategoriesUseCase,
+	listCategoryUsersUseCase *category.ListCategoryUsersUseCase,
 	shareCategoryUseCase *category.ShareCategoryUseCase,
 	unshareCategoryUseCase *category.UnshareCategoryUseCase,
 	updateCategoryUseCase *category.UpdateCategoryUseCase,
 	logger *log.Logger,
 ) *Handler {
 	return &Handler{
-		CreateCategoryUseCase:  *createCategoryUseCase,
-		DeleteCategoryUseCase:  *deleteCategoryUseCase,
-		GetCategoryUseCase:     *getCategoryUseCase,
-		GetSummaryUseCase:      *getSummaryUseCase,
-		ListCategoriesUseCase:  *listCategoriesUseCase,
-		ShareCategoryUseCase:   *shareCategoryUseCase,
-		UnshareCategoryUseCase: *unshareCategoryUseCase,
-		UpdateCategoryUseCase:  *updateCategoryUseCase,
-		logger:                 logger,
+		CreateCategoryUseCase:    *createCategoryUseCase,
+		DeleteCategoryUseCase:    *deleteCategoryUseCase,
+		GetCategoryUseCase:       *getCategoryUseCase,
+		GetSummaryUseCase:        *getSummaryUseCase,
+		ListCategoriesUseCase:    *listCategoriesUseCase,
+		ListCategoryUsersUseCase: *listCategoryUsersUseCase,
+		ShareCategoryUseCase:     *shareCategoryUseCase,
+		UnshareCategoryUseCase:   *unshareCategoryUseCase,
+		UpdateCategoryUseCase:    *updateCategoryUseCase,
+		logger:                   logger,
 	}
 }

@@ -14,4 +14,5 @@ type Repository interface {
 	Share(ctx context.Context, id uint, u domain.User) error
 	Unshare(ctx context.Context, id uint, u domain.User) error
 	GetSummary(ctx context.Context, id uint) ([]domain.CategorySummary, error)
+	ListCategoryUsers(ctx context.Context, id uint) ([]domain.CategoryUser, error)
 }

@@ -233,6 +233,16 @@ func (gr *CategoryRepository) GetSummary(ctx context.Context, id uint) ([]domain
 	return cs, nil
 }
 
+func (gr *CategoryRepository) ListCategoryUsers(ctx context.Context, id uint) ([]domain.CategoryUser, error) {
+	var cu []domain.CategoryUser
+	query := fmt.Sprintf("SELECT DISTINCT daps_category_users.user_id, deselflopment_users.email FROM daps_category_users LEFT JOIN deselflopment_users ON daps_category_users.user_id = deselflopment_users.id WHERE daps_category_users.category_id = %d", id)
+	result := gr.DB.Raw(query).Scan(&cu)
+	if result.Error != nil {
+		return cu, result.Error
+	}
+	return cu, nil
+}
+
 type CategoryRepository struct {
 	*gorm.DB
 }
