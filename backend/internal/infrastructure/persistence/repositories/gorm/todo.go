@@ -161,7 +161,7 @@ func (gr *TodoRepository) Restart(ctx context.Context, id uint) error {
 	var t Todo
 	t.ID = id
 	if result := gr.DB.Model(&t).Updates(map[string]interface{}{
-		"started_at":   time.Now(),
+		"started_at":   nil,
 		"active":       true,
 		"completed_at": nil,
 		"completed":    false,
