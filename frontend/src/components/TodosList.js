@@ -116,7 +116,7 @@ const TodosList = () => {
   };
 
   const deleteTodo = (id) => {
-    TodoService.deleteTodo(id, categoryId)
+    TodoService.deleteTodo(id)
       .then((response) => {
         if (response.status === 204) {
           clearLocalStorage([]);
@@ -129,7 +129,7 @@ const TodosList = () => {
   };
 
   const completeTodo = (id) => {
-    TodoService.completeTodo(id, categoryId)
+    TodoService.completeTodo(id)
       .then((response) => {
         if (response.status === 200) {
           clearLocalStorage([]);
@@ -142,7 +142,7 @@ const TodosList = () => {
   };
 
   const startTodo = (id) => {
-    TodoService.startTodo(id, categoryId)
+    TodoService.startTodo(id)
       .then((response) => {
         if (response.status === 200) {
           clearLocalStorage([]);
@@ -155,7 +155,7 @@ const TodosList = () => {
   };
 
   const restartTodo = (id) => {
-    TodoService.restartTodo(id, categoryId)
+    TodoService.restartTodo(id)
       .then((response) => {
         if (response.status === 200) {
           clearLocalStorage([]);
@@ -204,7 +204,8 @@ const TodosList = () => {
   useEffect(() => {
     let todos = JSON.parse(localStorage.getItem("todos"));
     if (!todos) {
-      TodoService.getTodos(categoryId)
+      let fields = "completed=0"
+      TodoService.getTodos(categoryId, fields)
         .then((response) => {
           if (response.status === 200 && response.data) {
             localStorage.setItem("todos", JSON.stringify(response.data));
