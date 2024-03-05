@@ -28,11 +28,18 @@ const suggestTodos = () => {
   return axios.post(SUGGEST_TODOS_URL, {}, options);
 };
 
-const getTodos = (id) => {
+const getTodos = (id, fields) => {
   return axios.get(TODOS_URL, {
     ...options,
     params: {
       category_id: id,
+      ...(fields && fields.split('&').reduce((acc, field) => {
+        const [key, value] = field.split('=');
+        if (key && value) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {})),
     },
   });
 };
