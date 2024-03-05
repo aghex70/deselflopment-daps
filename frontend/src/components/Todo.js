@@ -94,7 +94,6 @@ const Todo = () => {
         typeof todoRecurring == "boolean"
           ? todoRecurring
           : toBoolean(todoRecurring),
-      category_id: todoCategoryId,
       recurrency: mapRecurrencyPeriod(),
       suggestable:
         typeof todoSuggestable == "boolean"
