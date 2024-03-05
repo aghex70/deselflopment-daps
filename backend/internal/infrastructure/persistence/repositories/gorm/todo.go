@@ -151,6 +151,7 @@ func (gr *TodoRepository) Complete(ctx context.Context, id uint) error {
 	if result := gr.DB.Model(&t).Updates(map[string]interface{}{
 		"completed_at": time.Now(),
 		"completed":    true,
+		"active":       false,
 	}); result.Error != nil {
 		return result.Error
 	}
@@ -162,7 +163,7 @@ func (gr *TodoRepository) Restart(ctx context.Context, id uint) error {
 	t.ID = id
 	if result := gr.DB.Model(&t).Updates(map[string]interface{}{
 		"started_at":   nil,
-		"active":       true,
+		"active":       false,
 		"completed_at": nil,
 		"completed":    false,
 	}); result.Error != nil {
