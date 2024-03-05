@@ -68,8 +68,8 @@ const CompletedTodosList = () => {
     });
   };
 
-  const deleteTodo = (id, categoryId) => {
-    TodoService.deleteTodo(id, categoryId)
+  const deleteTodo = (id) => {
+    TodoService.deleteTodo(id)
       .then((response) => {
         if (response.status === 204) {
           clearLocalStorage([]);
@@ -77,12 +77,12 @@ const CompletedTodosList = () => {
         }
       })
       .catch((error) => {
-        checkValidToken(error);
+        console.log("error", error); // checkValidToken(error);
       });
   };
 
-  const activateTodo = (id, categoryId) => {
-    TodoService.activateTodo(id, categoryId)
+  const activateTodo = (id) => {
+    TodoService.activateTodo(id)
       .then((response) => {
         if (response.status === 200) {
           clearLocalStorage([]);
@@ -90,7 +90,7 @@ const CompletedTodosList = () => {
         }
       })
       .catch((error) => {
-        checkValidToken(error);
+        console.log("error", error); // checkValidToken(error);
       });
   };
 
@@ -141,7 +141,8 @@ const CompletedTodosList = () => {
   useEffect(() => {
     let todos = JSON.parse(localStorage.getItem("todos"));
     if (!todos) {
-      TodoService.getCompletedTodos()
+      let fields = "completed=1"
+      TodoService.getTodos(fields)
         .then((response) => {
           if (response.status === 200 && response.data) {
             localStorage.setItem("todos", JSON.stringify(response.data));
@@ -149,7 +150,7 @@ const CompletedTodosList = () => {
           }
         })
         .catch((error) => {
-          checkValidToken(error);
+          console.log("error", error); // checkValidToken(error);
         });
     } else {
       sortTodosByField("end_date", false, setTodos, null);
