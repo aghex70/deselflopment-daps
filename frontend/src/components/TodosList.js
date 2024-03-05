@@ -204,8 +204,8 @@ const TodosList = () => {
   useEffect(() => {
     let todos = JSON.parse(localStorage.getItem("todos"));
     if (!todos) {
-      let fields = "completed=0"
-      TodoService.getTodos(categoryId, fields)
+      let fields = `$category_id{categoryId}&completed=0`
+      TodoService.getTodos(fields)
         .then((response) => {
           if (response.status === 200 && response.data) {
             localStorage.setItem("todos", JSON.stringify(response.data));
