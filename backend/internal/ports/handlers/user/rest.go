@@ -366,6 +366,40 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 	}
 }
 
+func (h Handler) GetProfile(w http.ResponseWriter, r *http.Request) {
+	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	payload := requests.GetUserRequest{}
+	payload.UserID = userID
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	u, err := h.GetUserUseCase.Execute(context.TODO(), payload, userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	b, err := json.Marshal(u)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
+}
+
 func NewUserHandler(
 	activateUserUseCase *user.ActivateUserUseCase,
 	deleteUserUseCase *user.DeleteUserUseCase,
