@@ -46,6 +46,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			// User usecases
 			auuc := userUsecases.NewActivateUserUseCase(us, &logger)
 			duuc := userUsecases.NewDeleteUserUseCase(us, &logger)
+			epuc := userUsecases.NewEditProfileUseCase(us, &logger)
 			guuc := userUsecases.NewGetUserUseCase(us, &logger)
 			liuuc := userUsecases.NewListUsersUseCase(us, &logger)
 			louuc := userUsecases.NewLoginUserUseCase(us, &logger)
@@ -54,7 +55,6 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			reguuc := userUsecases.NewRegisterUserUseCase(us, cs, es, &logger)
 			resuuc := userUsecases.NewResetPasswordUseCase(us, &logger)
 			sruuc := userUsecases.NewSendResetLinkUseCase(us, es, &logger)
-			uuuuc := userUsecases.NewUpdateUserUseCase(us, &logger)
 
 			// Category usecases
 			cauuc := categoryUsecases.NewCreateCategoryUseCase(cs, us, &logger)
@@ -83,7 +83,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			utuuc := todoUsecases.NewUpdateTodoUseCase(ts, us, &logger)
 
 			//Handlers
-			uh := userHandler.NewUserHandler(auuc, duuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, uuuuc, &logger)
+			uh := userHandler.NewUserHandler(auuc, duuc, epuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, &logger)
 			ch := categoryHandler.NewCategoryHandler(cauuc, cduuc, gcuuc, gsuuc, lcuuc, lcusuc, scauuc, usauuc, usuuc, ucauuc, &logger)
 			th := todoHandler.NewTodoHandler(atuuc, cotuuc, ctuuc, dtuuc, gtuuc, ituuc, ltuuc, rtuuc, stuuc, utuuc, &logger)
 

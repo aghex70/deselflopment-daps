@@ -32,7 +32,7 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/reset-password", handlers.JWTAuthMiddleware(s.userHandler.ResetPassword))
 	http.HandleFunc("/api/activate", handlers.JWTAuthMiddleware(s.userHandler.Activate))
 	http.HandleFunc("/api/users/", handlers.JWTAuthMiddleware(s.userHandler.HandleUser))
-	http.HandleFunc("/api/profile/", handlers.JWTAuthMiddleware(s.userHandler.GetProfile))
+	http.HandleFunc("/api/profile/", handlers.JWTAuthMiddleware(s.userHandler.HandleProfile))
 
 	// Categories
 	http.HandleFunc("/api/categories", handlers.JWTAuthMiddleware(s.categoryHandler.HandleCategories))

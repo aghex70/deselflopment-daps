@@ -18,6 +18,7 @@ import (
 type Handler struct {
 	ActivateUserUseCase      user.ActivateUserUseCase
 	DeleteUserUseCase        user.DeleteUserUseCase
+	EditProfileUseCase       user.EditProfileUseCase
 	GetUserUseCase           user.GetUserUseCase
 	ListUsersUseCase         user.ListUsersUseCase
 	LoginUserUseCase         user.LoginUserUseCase
@@ -26,7 +27,6 @@ type Handler struct {
 	RegisterUserUseCase      user.RegisterUserUseCase
 	ResetPasswordUseCase     user.ResetPasswordUseCase
 	SendResetLinkUseCase     user.SendResetLinkUseCase
-	UpdateUserUseCase        user.UpdateUserUseCase
 	logger                   *log.Logger
 }
 
@@ -43,8 +43,17 @@ func (h Handler) HandleUser(w http.ResponseWriter, r *http.Request) {
 		h.Get(w, r, uint(userID))
 	case http.MethodDelete:
 		h.Delete(w, r, uint(userID))
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+func (h Handler) HandleProfile(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		h.GetProfile(w, r)
 	case http.MethodPut:
-		h.Update(w, r, uint(userID))
+		h.UpdateProfile(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
@@ -222,27 +231,6 @@ func (h Handler) Activate(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
-	payload := requests.UpdateUserRequest{}
-	if err := handlers.ValidateRequest(r, &payload); err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-
-	userID, err := handlers.RetrieveJWTClaims(r, nil)
-	if err != nil {
-		handlers.ThrowError(err, http.StatusUnauthorized, w)
-		return
-	}
-
-	payload.UserID = id
-	if err = h.UpdateUserUseCase.Execute(context.TODO(), payload, userID); err != nil {
-		handlers.ThrowError(err, http.StatusBadRequest, w)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-}
-
 func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
 		return
@@ -402,9 +390,30 @@ func (h Handler) GetProfile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h Handler) UpdateProfile(w http.ResponseWriter, r *http.Request) {
+	payload := requests.EditProfileRequest{}
+	if err := handlers.ValidateRequest(r, &payload); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	if err = h.EditProfileUseCase.Execute(context.TODO(), payload, userID); err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
 func NewUserHandler(
 	activateUserUseCase *user.ActivateUserUseCase,
 	deleteUserUseCase *user.DeleteUserUseCase,
+	editProfileUseCase *user.EditProfileUseCase,
 	getUserUseCase *user.GetUserUseCase,
 	listUsersUseCase *user.ListUsersUseCase,
 	loginUserUseCase *user.LoginUserUseCase,
@@ -413,12 +422,12 @@ func NewUserHandler(
 	registerUserUseCase *user.RegisterUserUseCase,
 	resetPasswordUseCase *user.ResetPasswordUseCase,
 	sendResetLinkUseCase *user.SendResetLinkUseCase,
-	updateUserUseCase *user.UpdateUserUseCase,
 	logger *log.Logger,
 ) *Handler {
 	return &Handler{
 		ActivateUserUseCase:      *activateUserUseCase,
 		DeleteUserUseCase:        *deleteUserUseCase,
+		EditProfileUseCase:       *editProfileUseCase,
 		GetUserUseCase:           *getUserUseCase,
 		ListUsersUseCase:         *listUsersUseCase,
 		LoginUserUseCase:         *loginUserUseCase,
@@ -427,7 +436,6 @@ func NewUserHandler(
 		RegisterUserUseCase:      *registerUserUseCase,
 		ResetPasswordUseCase:     *resetPasswordUseCase,
 		SendResetLinkUseCase:     *sendResetLinkUseCase,
-		UpdateUserUseCase:        *updateUserUseCase,
 		logger:                   logger,
 	}
 }

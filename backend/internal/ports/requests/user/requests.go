@@ -15,12 +15,6 @@ type RefreshTokenRequest struct {
 	UserID uint `json:"user_id"`
 }
 
-type UpdateUserRequest struct {
-	AutoSuggest *bool   `json:"auto_suggest"`
-	Language    *string `json:"language"`
-	UserID      uint    `json:"user_id"`
-}
-
 type ProvisionDemoUserRequest struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
@@ -33,6 +27,13 @@ type DeleteUserRequest struct {
 
 type GetUserRequest struct {
 	UserID uint `json:"user_id"`
+}
+
+type EditProfileRequest struct {
+	UserID      uint   `json:"user_id"`
+	AutoSuggest bool   `json:"auto_suggest"`
+	Language    string `json:"language"`
+	//AutoRemind  bool   `json:"auto_remind"`
 }
 
 type ActivateUserRequest struct {

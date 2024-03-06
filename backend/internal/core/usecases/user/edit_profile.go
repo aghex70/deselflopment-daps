@@ -11,21 +11,22 @@ import (
 	"log"
 )
 
-type UpdateUserUseCase struct {
+type EditProfileUseCase struct {
 	UserService user.Servicer
 	logger      *log.Logger
 }
 
-func (uc *UpdateUserUseCase) Execute(ctx context.Context, r requests.UpdateUserRequest, userID uint) error {
-	u, err := uc.UserService.Get(ctx, r.UserID)
+func (uc *EditProfileUseCase) Execute(ctx context.Context, r requests.EditProfileRequest, userID uint) error {
+	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return err
 	}
+
 	if !u.Active {
 		return pkg.InactiveUserError
 	}
 
-	if u.ID != userID {
+	if !u.Admin {
 		return pkg.UnauthorizedError
 	}
 
@@ -38,9 +39,9 @@ func (uc *UpdateUserUseCase) Execute(ctx context.Context, r requests.UpdateUserR
 	return nil
 }
 
-func NewUpdateUserUseCase(us user.Servicer, logger *log.Logger) *UpdateUserUseCase {
-	return &UpdateUserUseCase{
-		UserService: us,
+func NewEditProfileUseCase(userService user.Servicer, logger *log.Logger) *EditProfileUseCase {
+	return &EditProfileUseCase{
+		UserService: userService,
 		logger:      logger,
 	}
 }
