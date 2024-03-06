@@ -244,6 +244,14 @@ func FilterUser(user domain.User) domain.FilteredUser {
 	}
 }
 
+func FilterProfile(user domain.User) domain.Profile {
+	return domain.Profile{
+		Email:       user.Email,
+		AutoSuggest: user.AutoSuggest,
+		Language:    user.Language,
+	}
+}
+
 func FilterCategories(categories []domain.Category) []domain.FilteredCategory {
 	filteredCategories := make([]domain.FilteredCategory, 0, len(categories))
 	for _, category := range categories {

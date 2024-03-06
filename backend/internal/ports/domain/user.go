@@ -31,6 +31,12 @@ type FilteredUser struct {
 	Active    bool      `json:"active"`
 }
 
+type Profile struct {
+	Email       string `json:"email"`
+	AutoSuggest bool   `json:"auto_suggest"`
+	Language    string `json:"language"`
+}
+
 type CategoryUser struct {
 	UserID  uint   `json:"user_id"`
 	Email   string `json:"email"`

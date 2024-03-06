@@ -390,7 +390,9 @@ func (h Handler) GetProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(u)
+	// Hide user data
+	profile := pkg.FilterProfile(u)
+	b, err := json.Marshal(profile)
 	if err != nil {
 		return
 	}
