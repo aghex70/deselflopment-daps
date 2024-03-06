@@ -190,6 +190,7 @@ const DapsHeader = () => {
               margin: "auto",
               padding: "0",
               textAlign: "center",
+              borderColor: "white",
             }}
             variant="dark"
             title={ImportTodosHeaderText}
@@ -207,6 +208,7 @@ const DapsHeader = () => {
               margin: "auto",
               padding: "0",
               textAlign: "center",
+              borderColor: "white",
             }}
             variant="dark"
             title={ProvisionDemoUserIconText}
@@ -224,6 +226,7 @@ const DapsHeader = () => {
               margin: "auto",
               padding: "0",
               textAlign: "center",
+              borderColor: "white",
             }}
             variant="dark"
             title={ListOfUsersIconText}
