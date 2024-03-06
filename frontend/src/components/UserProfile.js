@@ -28,7 +28,7 @@ import {
   YesText,
   AutoRemindLabelText,
 } from "../utils/texts";
-import UserConfigurationService from "../services/userconfiguration";
+import UserService from "../services/user";
 import toBoolean from "validator/es/lib/toBoolean";
 
 const Profile = () => {
@@ -48,18 +48,18 @@ const Profile = () => {
         typeof profileAutoSuggest == "boolean"
           ? profileAutoSuggest
           : toBoolean(profileAutoSuggest),
-      auto_remind:
-        typeof profileAutoRemind == "boolean"
-          ? profileAutoRemind
-          : toBoolean(profileAutoRemind),
+      // auto_remind:
+      //   typeof profileAutoRemind == "boolean"
+      //     ? profileAutoRemind
+      //     : toBoolean(profileAutoRemind),
     };
 
-    UserConfigurationService.updateUserConfiguration(data)
+    UserService.editProfile(data)
       .then((response) => {
         if (response.status === 200) {
           setLanguage(data.language);
           setAutoSuggest(data.auto_suggest);
-          setAutoRemind(data.auto_remind);
+          // setAutoRemind(data.auto_remind);
           goToCategories();
         }
       })
@@ -67,24 +67,24 @@ const Profile = () => {
         if (error.response.data.message === "no changes were made") {
           goToCategories();
         }
-        checkValidToken(error);
+        console.log("error", error); // checkValidToken(error);
       });
   };
 
   useEffect(() => {
-    UserConfigurationService.getUserConfiguration()
+    UserService.getProfile()
       .then((response) => {
         if (response.status === 200) {
           setProfileLanguage(response.data.language);
           setProfileAutoSuggest(response.data.auto_suggest);
-          setProfileAutoRemind(response.data.auto_remind);
+          // setProfileAutoRemind(response.data.auto_remind);
           setUserEmail(response.data.email);
         }
       })
       .catch((error) => {
-        checkValidToken(error);
+        console.log("error", error); // checkValidToken(error);
       });
-  }, [id]);
+  }, []);
 
   return (
     <Container>
@@ -135,20 +135,20 @@ const Profile = () => {
           </Form.Select>
         </FloatingLabel>
 
-        <FloatingLabel
-          controlId="floatingAutoRemind"
-          label={AutoRemindLabelText}
-        >
-          <Form.Select
-            name="auto-remind"
-            value={profileAutoRemind}
-            onChange={(e) => setProfileAutoRemind(e.target.value)}
-            style={{ margin: "0px 0px 32px" }}
-          >
-            <option value="false">{NoText}</option>
-            <option value="true">{YesText}</option>
-          </Form.Select>
-        </FloatingLabel>
+        {/*<FloatingLabel*/}
+        {/*  controlId="floatingAutoRemind"*/}
+        {/*  label={AutoRemindLabelText}*/}
+        {/*>*/}
+        {/*  <Form.Select*/}
+        {/*    name="auto-remind"*/}
+        {/*    value={profileAutoRemind}*/}
+        {/*    onChange={(e) => setProfileAutoRemind(e.target.value)}*/}
+        {/*    style={{ margin: "0px 0px 32px" }}*/}
+        {/*  >*/}
+        {/*    <option value="false">{NoText}</option>*/}
+        {/*    <option value="true">{YesText}</option>*/}
+        {/*  </Form.Select>*/}
+        {/*</FloatingLabel>*/}
 
         <ButtonGroup
           style={{ width: "100%", paddingLeft: "10%", paddingRight: "10%" }}
