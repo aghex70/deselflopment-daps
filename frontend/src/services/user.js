@@ -8,6 +8,7 @@ const LOGIN_URL = `${DAPS_BASE_URL}api/login`;
 const REFRESH_TOKEN_URL = `${DAPS_BASE_URL}api/refresh-token`;
 const RECOVER_PASSWORD_URL = `${DAPS_BASE_URL}api/recover-password`;
 const USERS_URL = `${DAPS_BASE_URL}api/users`;
+const PROFILE_URL = `${DAPS_BASE_URL}api/profile`;
 const ADMIN_URL = `${DAPS_BASE_URL}api/user/admin`;
 const PROVISION_DEMO_USERS_URL = `${DAPS_BASE_URL}api/user/provision`;
 const IMPORT_CSV_URL = `${DAPS_BASE_URL}api/import`;
@@ -51,6 +52,14 @@ const deleteUser = async (id) => {
 
 const getUser = async (id) => {
   return await axios.get(`${USERS_URL}/${id}`, options);
+};
+
+const getProfile = async () => {
+  return await axios.get(`${PROFILE_URL}/`, options);
+};
+
+const editProfile = async (payload) => {
+  return axios.put(`${PROFILE_URL}/`, payload, options);
 };
 
 const getUsers = async () => {
@@ -136,6 +145,8 @@ const UserService = {
   checkAdminAccess,
   getUsers,
   getUser,
+  getProfile,
+  editProfile,
   deleteUser,
   importCSV,
   activateUser,
