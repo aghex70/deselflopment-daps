@@ -104,28 +104,29 @@ const RecurringTodosList = () => {
     });
   };
 
-  const deleteTodo = (id, categoryId) => {
-    TodoService.deleteTodo(id, categoryId)
+  const deleteTodo = (id) => {
+    TodoService.deleteTodo(id)
       .then((response) => {
         if (response.status === 204) {
           window.location.reload();
         }
       })
       .catch((error) => {
-        checkValidToken(error);
+        console.log("error", error); // checkValidToken(error);
       });
   };
 
   useEffect(() => {
     if (!todos || todos.length === 0) {
-      TodoService.getRecurringTodos()
+        let fields = "recurring=1&completed=0"
+        TodoService.getTodos(fields)
         .then((response) => {
           if (response.status === 200 && response.data) {
             setTodos(response.data);
           }
         })
         .catch((error) => {
-          checkValidToken(error);
+          console.log("error", error); // checkValidToken(error);
         });
     }
   }, [todos]);

@@ -66,32 +66,32 @@ const SuggestedTodosList = () => {
     );
   };
 
-  const completeTodo = (id, categoryId) => {
-    TodoService.completeTodo(id, categoryId)
+  const completeTodo = (id) => {
+    TodoService.completeTodo(id)
       .then((response) => {
         if (response.status === 200) {
           goToSuggestedTodos();
         }
       })
       .catch((error) => {
-        checkValidToken(error);
+        console.log("error", error); // checkValidToken(error);
       });
   };
 
-  const startTodo = (id, categoryId) => {
-    TodoService.startTodo(id, categoryId)
+  const startTodo = (id) => {
+    TodoService.startTodo(id)
       .then((response) => {
         if (response.status === 200) {
           goToSuggestedTodos();
         }
       })
       .catch((error) => {
-        checkValidToken(error);
+        console.log("error", error); // checkValidToken(error);
       });
   };
 
-  const restartTodo = (id, categoryId) => {
-    TodoService.restartTodo(id, categoryId)
+  const restartTodo = (id) => {
+    TodoService.restartTodo(id)
       .then((response) => {
         if (response.status === 200) {
           clearLocalStorage([]);
@@ -99,7 +99,7 @@ const SuggestedTodosList = () => {
         }
       })
       .catch((error) => {
-        checkValidToken(error);
+        console.log("error", error); // checkValidToken(error);
       });
   };
 
@@ -141,7 +141,7 @@ const SuggestedTodosList = () => {
               }}
               title={CompleteIconText}
               variant="outline-success"
-              onClick={() => completeTodo(row.id, row.category_id)}
+              onClick={() => completeTodo(row.id)}
             >
               <FontAwesomeIcon icon={faCheck} />
             </Button>
@@ -218,8 +218,8 @@ const SuggestedTodosList = () => {
     });
   };
 
-  const deleteTodo = (id, categoryId) => {
-    TodoService.deleteTodo(id, categoryId)
+  const deleteTodo = (id) => {
+    TodoService.deleteTodo(id)
       .then((response) => {
         if (response.status === 204) {
           clearLocalStorage([]);
@@ -227,7 +227,7 @@ const SuggestedTodosList = () => {
         }
       })
       .catch((error) => {
-        checkValidToken(error);
+        console.log("error", error); // checkValidToken(error);
       });
   };
 
@@ -238,13 +238,14 @@ const SuggestedTodosList = () => {
           setSuggested(true);
         })
         .catch((error) => {
-          checkValidToken(error);
+          console.log("error", error); // checkValidToken(error);
         });
     }
 
     let todos = JSON.parse(localStorage.getItem("todos"));
     if (!todos) {
-      TodoService.getSuggestedTodos()
+        let fields = "suggested=1&completed=0"
+        TodoService.getTodos(fields)
         .then((response) => {
           if (response.status === 200 && response.data) {
             localStorage.setItem("todos", JSON.stringify(response.data));
@@ -252,7 +253,7 @@ const SuggestedTodosList = () => {
           }
         })
         .catch((error) => {
-          checkValidToken(error);
+          console.log("error", error); // checkValidToken(error);
         });
     } else {
       sortTodosByField("priority", true, setTodos, null);
