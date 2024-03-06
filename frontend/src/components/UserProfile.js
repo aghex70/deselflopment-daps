@@ -75,10 +75,12 @@ const Profile = () => {
     UserService.getProfile()
       .then((response) => {
         if (response.status === 200) {
+          setLanguage(response.data.language);
           setProfileLanguage(response.data.language);
           setProfileAutoSuggest(response.data.auto_suggest);
           // setProfileAutoRemind(response.data.auto_remind);
           setUserEmail(response.data.email);
+
         }
       })
       .catch((error) => {
