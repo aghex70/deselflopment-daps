@@ -11,6 +11,7 @@ import (
 
 type Topic struct {
 	gorm.Model
+	ID      uint
 	Name    string
 	OwnerID uint
 }
@@ -31,6 +32,7 @@ func (c Topic) ToDto() domain.Topic {
 
 func TopicFromDto(c domain.Topic) Topic {
 	return Topic{
+		ID:      c.ID,
 		Name:    c.Name,
 		OwnerID: c.OwnerID,
 	}

@@ -11,12 +11,12 @@ import (
 
 type Note struct {
 	gorm.Model
-	Content  string
-	Users    []User `gorm:"many2many:daps_note_users;save_association:true"`
-	OwnerID  uint
-	Topics   []Topic `gorm:"many2many:daps_note_topics;save_association:true"`
-	Subtopic Topic
-	Shared   bool
+	Content string
+	Users   []User `gorm:"many2many:daps_note_users;save_association:true"`
+	OwnerID uint
+	Topics  []Topic `gorm:"many2many:daps_note_topics;save_association:true"`
+	//Subtopic Topic
+	Shared bool
 }
 
 func (c Note) ToDto() domain.Note {
@@ -89,9 +89,11 @@ func (gr *NoteRepository) Create(ctx context.Context, c domain.Note) (domain.Not
 	// Hack to get around the fact that GORM doesn't support many-to-many relationships
 	if nc.Users == nil {
 		if err := gr.DB.Association("Users").Append(nc.Users); err != nil {
+
 			return domain.Note{}, err
 		}
 	}
+
 	return nc.ToDto(), nil
 }
 
