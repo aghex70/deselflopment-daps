@@ -97,7 +97,7 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) HandleTopic(w http.ResponseWriter, r *http.Request) {
 	// Get topic id & action (if present) from request URI
-	path := strings.Split(r.RequestURI, handlers.TODO_STRING)[1]
+	path := strings.Split(r.RequestURI, handlers.TOPIC_STRING)[1]
 	t := strings.Split(path, "/")[0]
 	topicID, err := strconv.Atoi(t)
 	if err != nil {
@@ -116,8 +116,6 @@ func (h Handler) HandleTopic(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
-
-//queryParams := strings.Split(path, "?")
 
 func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 	payload := requests.GetTopicRequest{TopicID: id}
