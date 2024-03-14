@@ -29,3 +29,7 @@ type ListTodosResponse struct {
 type GetUserResponse struct {
 	User domain.FilteredUser `json:"user"`
 }
+
+type ListNotesResponse struct {
+	Notes []domain.Note `json:"notes"`
+}
