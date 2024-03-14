@@ -37,6 +37,7 @@ func (uc *CreateNoteUseCase) Execute(ctx context.Context, userID uint, r request
 		Topics:  []domain.Topic{to},
 		Shared:  false,
 		OwnerID: u.ID,
+		Users:   []domain.User{u},
 	}
 	t, err = uc.NoteService.Create(ctx, t)
 	if err != nil {
