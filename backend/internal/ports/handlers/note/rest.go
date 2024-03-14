@@ -53,7 +53,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(c)
+	b, err := json.Marshal(handlers.CreateNoteResponse{ID: c.ID})
 	if err != nil {
 		return
 	}

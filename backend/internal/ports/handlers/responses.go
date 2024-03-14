@@ -33,3 +33,7 @@ type GetUserResponse struct {
 type ListNotesResponse struct {
 	Notes []domain.Note `json:"notes"`
 }
+
+type CreateNoteResponse struct {
+	ID uint `json:"id"`
+}
