@@ -2,18 +2,18 @@ package queues
 
 import (
 	"fmt"
+	"github.com/aghex70/daps/internal/ports/services/todo"
 	"log"
 	"strconv"
 
 	"github.com/aghex70/daps/config"
-	"github.com/aghex70/daps/internal/core/ports"
 	"github.com/hibiken/asynq"
 )
 
 type WorkerServer struct {
 	logger      *log.Logger
 	cfg         config.CacheConfig
-	todoService ports.TodoServicer
+	todoService todo.Servicer
 }
 
 func (s *WorkerServer) StartServer() error {
@@ -45,7 +45,7 @@ func (s *WorkerServer) StartServer() error {
 	return nil
 }
 
-func NewWorkerServer(cfg *config.CacheConfig, ts ports.TodoServicer, logger *log.Logger) *WorkerServer {
+func NewWorkerServer(cfg *config.CacheConfig, ts todo.Servicer, logger *log.Logger) *WorkerServer {
 	return &WorkerServer{
 		cfg:         *cfg,
 		logger:      logger,

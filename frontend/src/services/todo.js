@@ -1,100 +1,82 @@
 import axios from "axios";
+import {userAccessToken} from "../utils/helpers";
 
 const DAPS_BASE_URL = process.env.REACT_APP_API_URL;
 
-const TODO_URL = `${DAPS_BASE_URL}api/todo`;
 const TODOS_URL = `${DAPS_BASE_URL}api/todos`;
-const RECURRING_TODOS_URL = `${DAPS_BASE_URL}api/recurring-todos`;
-const COMPLETED_TODOS_URL = `${DAPS_BASE_URL}api/completed-todos`;
-const SUGGESTED_TODOS_URL = `${DAPS_BASE_URL}api/suggested-todos`;
 const SUGGEST_TODOS_URL = `${DAPS_BASE_URL}api/suggest`;
 
 const options = {
   headers: {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + localStorage.getItem("access_token"),
+    Authorization: "Bearer " + userAccessToken,
   },
 };
 
 const createTodo = (payload) => {
-  return axios.post(TODO_URL, payload, options);
+  return axios.post(TODOS_URL, payload, options);
 };
 
-const getTodo = (id, categoryId) => {
-  return axios.get(`${TODO_URL}/${id}?category_id=${categoryId}`, options);
+const getTodo = (id) => {
+  return axios.get(`${TODOS_URL}/${id}`, options);
 };
 
 const suggestTodos = () => {
   return axios.post(SUGGEST_TODOS_URL, {}, options);
 };
 
-const getTodos = (id) => {
+const getTodos = (fields) => {
   return axios.get(TODOS_URL, {
     ...options,
     params: {
-      category_id: id,
+      // category_id: id,
+      ...(fields && fields.split('&').reduce((acc, field) => {
+        const [key, value] = field.split('=');
+        if (key && value) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {})),
     },
   });
 };
 
-const getRecurringTodos = () => {
-  return axios.get(RECURRING_TODOS_URL, options);
-};
-
-const getCompletedTodos = () => {
-  return axios.get(COMPLETED_TODOS_URL, options);
-};
-
-const getSuggestedTodos = () => {
-  return axios.get(SUGGESTED_TODOS_URL, options);
-};
-
-const deleteTodo = (id, categoryId) => {
-  return axios.delete(`${TODO_URL}/${id}?category_id=${categoryId}`, options);
+const deleteTodo = (id) => {
+  return axios.delete(`${TODOS_URL}/${id}`, options);
 };
 
 const updateTodo = (id, payload) => {
-  return axios.put(`${TODO_URL}/${id}`, payload, options);
+  return axios.put(`${TODOS_URL}/${id}`, payload, options);
 };
 
-const completeTodo = (id, categoryId) => {
-  return axios.put(
-    `${TODO_URL}/${id}/complete`,
-    {
-      category_id: categoryId,
-    },
+const completeTodo = (id) => {
+  return axios.post(
+    `${TODOS_URL}/${id}/complete`,
+    {},
     options
   );
 };
 
-const activateTodo = (id, categoryId) => {
-  return axios.put(
-    `${TODO_URL}/${id}/activate`,
-    {
-      category_id: categoryId,
-    },
+const activateTodo = (id) => {
+  return axios.post(
+    `${TODOS_URL}/${id}/activate`,
+    {},
     options
   );
 };
 
-const startTodo = (id, categoryId, payload) => {
-  return axios.put(
-    `${TODO_URL}/${id}/start`,
-    {
-      ...payload,
-      category_id: categoryId,
-    },
+const startTodo = (id) => {
+  return axios.post(
+    `${TODOS_URL}/${id}/start`,
+    {},
     options
   );
 };
 
-const restartTodo = (id, categoryId, payload) => {
-  return axios.put(
-    `${TODO_URL}/${id}/restart`,
-    {
-      ...payload,
-      category_id: categoryId,
-    },
+const restartTodo = (id) => {
+  return axios.post(
+    `${TODOS_URL}/${id}/restart`,
+    {},
     options
   );
 };
@@ -103,9 +85,6 @@ const TodoService = {
   createTodo,
   getTodo,
   getTodos,
-  getRecurringTodos,
-  getCompletedTodos,
-  getSuggestedTodos,
   deleteTodo,
   updateTodo,
   completeTodo,

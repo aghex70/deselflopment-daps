@@ -26,31 +26,32 @@ import checkAccess, {
   clearLocalStorage,
   goToCreateCategory,
   sortCategoriesByField,
+  getUserId,
 } from "../utils/helpers";
 import {
-  CancelButtonText,
-  CategoriesHeaderText,
-  ConfirmUnshareCategoryText,
-  CreateCategoryIconText,
-  DeleteButtonText,
-  DeleteIconText,
-  DeletingCategoryText,
-  EditIconText,
-  HeaderActionsText,
-  HeaderNameText,
-  HeaderTasksText,
-  HighPriorityTasksText,
-  language,
-  OnlyOwnerCanEditCategoryText,
-  OnlyOwnersCanDeleteCategoryText,
-  ShareButtonText,
-  ShareCategoryHeaderText,
-  ShareIconText,
-  TotalNumberOfTasksText,
-  UnSubscribeIconText,
-  UnsuscribeButtonText,
-  UserAlreadySubscribedText,
-  ViewIconText,
+    CancelButtonText,
+    CategoriesHeaderText,
+    ConfirmUnsubscribeCategoryText,
+    CreateCategoryIconText,
+    DeleteButtonText,
+    DeleteIconText,
+    DeletingCategoryText,
+    EditIconText,
+    HeaderActionsText,
+    HeaderNameText,
+    HeaderTasksText,
+    HighPriorityTasksText,
+    language,
+    OnlyOwnerCanEditCategoryText,
+    OnlyOwnersCanDeleteCategoryText,
+    ShareButtonText,
+    ShareCategoryHeaderText,
+    ShareIconText,
+    TotalNumberOfTasksText,
+    UnsubscribeButtonText,
+    UnSubscribeIconText,
+    UserAlreadySubscribedText,
+    ViewIconText,
 } from "../utils/texts";
 
 const CategoriesList = () => {
@@ -64,11 +65,11 @@ const CategoriesList = () => {
     useState(false);
   const [showModalCannotEditCategory, setShowModalCannotEditCategory] =
     useState(false);
-  const [showUnshareModal, setUnshareShowModal] = useState(false);
+  const [showUnsubscribeModal, setUnsubscribeShowModal] = useState(false);
   const [showDeleteCategoryModal, setShowDeleteCategoryModal] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [shareId, setShareId] = useState("");
-  const [unshareId, setUnshareId] = useState("");
+  const [unsubscribeId, setUnsubscribeId] = useState("");
   const [shareEmail, setShareEmail] = useState("");
   const [categorySpan, setCategorySpan] = useState({
     textAlign: "center",
@@ -83,7 +84,7 @@ const CategoriesList = () => {
     return language === "en" ? "(s) " : "(c) ";
   };
 
-  const userId = parseInt(localStorage.getItem("user_id"));
+  const userId = parseInt(getUserId());
   // Color code the todo based on its priority
   const rowTextColor = (cell, row) => {
     return (
@@ -193,8 +194,8 @@ const CategoriesList = () => {
     setShowModalCannotEditCategory(!setShowModalCannotEditCategory);
   };
 
-  const toggleUnshareModal = () => {
-    setUnshareShowModal(!showUnshareModal);
+  const toggleUnsubscribeModal = () => {
+    setUnsubscribeShowModal(!showUnsubscribeModal);
   };
 
   const shareCategory = (id) => {
@@ -202,22 +203,22 @@ const CategoriesList = () => {
     setShowModal(true);
   };
 
-  const unshareCategory = (id) => {
-    setUnshareId(id);
-    setUnshareShowModal(true);
+  const unsubscribeCategory = (id) => {
+    setUnsubscribeId(id);
+    setUnsubscribeShowModal(true);
   };
 
-  const confirmUnshareCategory = () => {
-    CategoryService.unshareCategory(unshareId)
-      .then((response) => {
-        if (response.status === 200) {
-          window.location.reload();
-        }
-      })
-      .catch((error) => {
-        checkValidToken(error);
-      });
-  };
+  const confirmUnsubscribeCategory = () => {
+    CategoryService.unsubscribeCategory(unsubscribeId)
+        .then((response) => {
+            if (response.status === 200) {
+                window.location.reload();
+            }
+        })
+        .catch((error) => {
+            checkValidToken(error);
+        });
+};
 
   const confirmShareCategory = () => {
     CategoryService.shareCategory(shareId, shareEmail)
@@ -301,7 +302,7 @@ const CategoriesList = () => {
               }}
               title={UnSubscribeIconText}
               variant="outline-dark"
-              onClick={() => unshareCategory(row.id)}
+              onClick={() => unsubscribeCategory(row.id)}
             >
               <FontAwesomeIcon
                 style={{ rotate: "180deg" }}
@@ -521,17 +522,18 @@ const CategoriesList = () => {
 
       <Modal
         className="unshareModal text-center"
-        show={showUnshareModal}
-        open={showUnshareModal}
+        show={showUnsubscribeModal}
+        open={showUnsubscribeModal}
         centered={true}
         size="lg"
       >
         <ModalBody>
-          <h4 style={{ margin: "32px" }}>{ConfirmUnshareCategoryText}</h4>
+          <h4 style={{ margin: "32px" }}>{ConfirmUnsubscribeCategoryText}</h4>
+            <Form onSubmit={(e) => confirmUnsubscribeCategory(e)}></Form>
           <ButtonGroup style={{ width: "80%" }}>
             <Button
               variant="danger"
-              onClick={(e) => toggleUnshareModal(e)}
+              onClick={(e) => toggleUnsubscribeModal(e)}
               style={{
                 margin: "auto",
                 display: "block",
@@ -544,7 +546,7 @@ const CategoriesList = () => {
             <Button
               variant="success"
               type="submit"
-              onClick={(e) => confirmUnshareCategory(e)}
+              onClick={(e) => confirmUnsubscribeCategory(e)}
               style={{
                 margin: "auto",
                 display: "block",
@@ -552,7 +554,7 @@ const CategoriesList = () => {
                 textAlign: "center",
               }}
             >
-              {UnsuscribeButtonText}
+              {UnsubscribeButtonText}
             </Button>
           </ButtonGroup>
         </ModalBody>

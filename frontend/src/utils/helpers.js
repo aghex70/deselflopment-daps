@@ -4,6 +4,11 @@ const hashPassword = (string) => {
   return bcrypt.hashSync(string, 10);
 };
 
+const getUserData = () => {
+  return JSON.parse(localStorage.getItem("deselflopment"))
+}
+
+
 const checkAccess = () => {
   if (!getUserToken() || !getUserId()) {
     goToLogin();
@@ -17,8 +22,14 @@ const skipLogin = () => {
 };
 
 const getUserToken = () => {
-  return localStorage.getItem("access_token");
+  // return getUserData()?.accessToken;
+  let userData = getUserData();
+  if (userData) {
+      return userData.accessToken;
+  }
 };
+
+let userAccessToken = getUserToken();
 
 const checkValidToken = (error) => {
   if (error.response.data.message === "signature is invalid") {
@@ -29,7 +40,19 @@ const checkValidToken = (error) => {
 };
 
 const getUserId = () => {
-  return localStorage.getItem("user_id");
+  // return getUserData()?.userId;
+  let userData = getUserData();
+  if (userData) {
+    return userData.userId;
+  }
+};
+
+const getIsAdmin = () => {
+  // return getUserData()?.admin;
+  let userData = getUserData();
+  if (userData) {
+    return userData.admin;
+  }
 };
 
 const clearLocalStorage = (excludedKeys = []) => {
@@ -194,4 +217,7 @@ export {
   sortTodosByField,
   checkValidToken,
   sortCategoriesByField,
+    getIsAdmin,
+    getUserData,
+  userAccessToken,
 };

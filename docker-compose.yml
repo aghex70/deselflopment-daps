@@ -17,46 +17,45 @@ services:
         condition: service_started
     volumes:
       - ./backend:/daps/backend
-      - ./certbot/conf/:/etc/nginx/ssl/
     networks:
       deselflopment-database-network: {}
       deselflopment-webserver-network: {}
 
-  asynq-worker:
-    container_name: daps-worker
-    build:
-      context: backend
-      dockerfile: Dockerfile
-    command: ["air", "worker"]
-    env_file:
-      - backend/.env
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    volumes:
-      - ./backend:/daps/backend
-    networks:
-      deselflopment-database-network: {}
-
-  asynq-client:
-    container_name: daps-client
-    build:
-      context: backend
-      dockerfile: Dockerfile
-    command: ["air", "client"]
-    env_file:
-      - backend/.env
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    volumes:
-      - ./backend:/daps/backend
-    networks:
-      deselflopment-database-network: {}
+#  asynq-worker:
+#    container_name: daps-worker
+#    build:
+#      context: backend
+#      dockerfile: Dockerfile
+#    command: ["air", "worker"]
+#    env_file:
+#      - backend/.env
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#      redis:
+#        condition: service_started
+#    volumes:
+#      - ./backend:/daps/backend
+#    networks:
+#      deselflopment-database-network: {}
+#
+#  asynq-client:
+#    container_name: daps-client
+#    build:
+#      context: backend
+#      dockerfile: Dockerfile
+#    command: ["air", "client"]
+#    env_file:
+#      - backend/.env
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#      redis:
+#        condition: service_started
+#    volumes:
+#      - ./backend:/daps/backend
+#    networks:
+#      deselflopment-database-network: {}
 
   db:
     container_name: deselflopment-db
@@ -67,12 +66,12 @@ services:
       - "13306:13306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "db", "-u $$MYSQL_ROOT_USER", "-p$$MYSQL_ROOT_PASSWORD"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     volumes:
       - deselflopment:/var/lib/mysql
-      - ./scripts/database-initialization.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./scripts:/docker-entrypoint-initdb.d
     networks:
       deselflopment-database-network: {}
 
@@ -85,47 +84,31 @@ services:
     networks:
       deselflopment-database-network: {}
 
-  frontend:
-    container_name: daps-frontend
-    build:
-      context: frontend
-      dockerfile: Dockerfile-local
-    env_file:
-      - frontend/.env-prod
-    command: ["npm", "run", "start:prod"]
-    ports:
-      - "13001:3000"
-    networks:
-      deselflopment-webserver-network: {}
-    stdin_open: true
-    volumes:
-      - ./frontend:/daps/frontend
+#  frontend:
+#    container_name: daps-frontend
+#    build:
+#      context: frontend
+#      dockerfile: Dockerfile-local
+#    env_file:
+#      - frontend/.env-dev
+#    command: ["npm", "run", "start:dev"]
+#    ports:
+#      - "13001:3000"
+#    networks:
+#      deselflopment-webserver-network: {}
+#    stdin_open: true
 
   webserver:
-    container_name: deselflopment-nginx-production
+    container_name: deselflopment-nginx-local
     image: nginx
     volumes:
-      - ./nginx/conf/production.conf:/etc/nginx/conf.d/default.conf
-      - ./certbot/www:/var/www/certbot/
-      - ./certbot/conf/:/etc/nginx/ssl/
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+      - ./nginx/conf/local.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - backend
-      - frontend
-    networks:
-      deselflopment-webserver-network: {}
-
-  certbot:
-    image: certbot/certbot:latest
-    volumes:
-      - ./certbot/www/:/var/www/certbot/
-      - ./certbot/conf/:/etc/letsencrypt/
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    depends_on:
-      - webserver
+#      - frontend
     networks:
       deselflopment-webserver-network: {}
 

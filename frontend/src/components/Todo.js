@@ -94,7 +94,6 @@ const Todo = () => {
         typeof todoRecurring == "boolean"
           ? todoRecurring
           : toBoolean(todoRecurring),
-      category_id: todoCategoryId,
       recurrency: mapRecurrencyPeriod(),
       suggestable:
         typeof todoSuggestable == "boolean"
@@ -123,7 +122,7 @@ const Todo = () => {
   };
 
   useEffect(() => {
-    TodoService.getTodo(id, categoryId)
+    TodoService.getTodo(id)
       .then((response) => {
         if (response.status === 200) {
           setTodoName(response.data.name);

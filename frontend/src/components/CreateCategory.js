@@ -71,16 +71,15 @@ const CreateCategory = () => {
 
     CategoryService.createCategory(data)
       .then((response) => {
-        if (response.status === 201) {
+        if (response.status === 200) {
           window.location.href = "/categories";
         }
       })
       .catch((error) => {
-        checkValidToken(error);
-        if (
-          error.response.data.message ===
-          "already existent category with that user and name"
-        ) {
+        // checkValidToken(error);
+        let errorMessage = error.response.data.message
+        if (errorMessage.includes("already existent")
+            || errorMessage.includes("Duplicate entry")) {
           setShowModalCategoryAlreadyExists(true);
         }
       });

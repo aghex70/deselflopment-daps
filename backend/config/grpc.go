@@ -7,8 +7,7 @@ type GrpcConfig struct {
 
 func LoadGrpcConfig() *GrpcConfig {
 	cfg := &GrpcConfig{}
-	err := viper.Unmarshal(cfg)
-	if err != nil {
+	if err := viper.Unmarshal(cfg); err != nil {
 		return nil
 	}
 	return cfg

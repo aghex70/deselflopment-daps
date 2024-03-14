@@ -52,17 +52,6 @@ const UsersList = () => {
   ];
 
   useEffect(() => {
-    UserService.checkAdminAccess()
-      .then((response) => {
-        if (response.status !== 200) {
-          goToCategories();
-        }
-      })
-      .catch((error) => {
-        checkValidToken(error);
-        goToCategories();
-      });
-
     if (!users || users.length === 0) {
       UserService.getUsers()
         .then((response) => {

@@ -9,8 +9,7 @@ type RestConfig struct {
 
 func LoadRestConfig() *RestConfig {
 	cfg := &RestConfig{}
-	err := viper.Unmarshal(cfg)
-	if err != nil {
+	if err := viper.Unmarshal(cfg); err != nil {
 		return nil
 	}
 	return cfg

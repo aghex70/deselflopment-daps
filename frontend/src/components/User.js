@@ -9,7 +9,6 @@ import {
 import DapsHeader from "./Header";
 import checkAccess, {
   checkValidToken,
-  goToCategories,
   goToListOfUsers,
 } from "../utils/helpers";
 import {
@@ -31,24 +30,13 @@ const User = () => {
   const [userRegistrationDate, setUserRegistrationDate] = useState("");
 
   useEffect(() => {
-    UserService.checkAdminAccess()
-      .then((response) => {
-        if (response.status !== 200) {
-          goToCategories();
-        }
-      })
-      .catch((error) => {
-        checkValidToken(error);
-        goToCategories();
-      });
-
     if (!userEmail) {
       UserService.getUser(id)
         .then((response) => {
           if (response.status === 200) {
             setUserName(response.data.name);
             setUserEmail(response.data.email);
-            setUserRegistrationDate(response.data.registration_date);
+            setUserRegistrationDate(response.data.created_at);
           }
         })
         .catch((error) => {

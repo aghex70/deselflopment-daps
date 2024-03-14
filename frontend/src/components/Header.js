@@ -24,6 +24,8 @@ import checkAccess, {
   goToRecurringTodos,
   goToReportABug,
   goToSuggestedTodos,
+  getUserData,
+  getIsAdmin,
 } from "../utils/helpers";
 import {
   CategoriesIconText,
@@ -37,7 +39,6 @@ import {
   ReportABugIconText,
   SuggestedTodosIconText,
 } from "../utils/texts";
-import UserService from "../services/user";
 
 const DapsHeader = () => {
   document.title = "daps";
@@ -54,17 +55,7 @@ const DapsHeader = () => {
   };
 
   useEffect(() => {
-    if (isAdmin === "") {
-      UserService.checkAdminAccess()
-        .then((response) => {
-          if (response.status === 200) {
-            setIsAdmin(true);
-          }
-        })
-        .catch((error) => {
-          setIsAdmin(false);
-        });
-    }
+      setIsAdmin(getIsAdmin(getUserData()))
   }, [isAdmin]);
 
   return (
@@ -199,6 +190,7 @@ const DapsHeader = () => {
               margin: "auto",
               padding: "0",
               textAlign: "center",
+              borderColor: "white",
             }}
             variant="dark"
             title={ImportTodosHeaderText}
@@ -216,6 +208,7 @@ const DapsHeader = () => {
               margin: "auto",
               padding: "0",
               textAlign: "center",
+              borderColor: "white",
             }}
             variant="dark"
             title={ProvisionDemoUserIconText}
@@ -233,6 +226,7 @@ const DapsHeader = () => {
               margin: "auto",
               padding: "0",
               textAlign: "center",
+              borderColor: "white",
             }}
             variant="dark"
             title={ListOfUsersIconText}
