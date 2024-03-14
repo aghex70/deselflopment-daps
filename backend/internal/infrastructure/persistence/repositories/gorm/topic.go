@@ -59,12 +59,6 @@ func (gr *TopicRepository) Get(ctx context.Context, id uint) (domain.Topic, erro
 }
 
 func (gr *TopicRepository) Delete(ctx context.Context, id uint) error {
-	// Fetch the topic along with its associations
-	if err := gr.DB.Exec(
-		"DELETE FROM daps_topic_users WHERE topic_id = ?", id).Error; err != nil {
-		return err
-	}
-
 	var topic Topic
 	if result := gr.DB.Delete(&topic, id); result.Error != nil {
 		return result.Error
