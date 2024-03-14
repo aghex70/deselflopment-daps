@@ -47,10 +47,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var topicID uint
-	topicID = 3
-
-	c, err := h.CreateNoteUseCase.Execute(context.TODO(), userID, topicID, payload)
+	c, err := h.CreateNoteUseCase.Execute(context.TODO(), userID, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -93,7 +90,7 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 
 func (h Handler) HandleNote(w http.ResponseWriter, r *http.Request) {
 	// Get note id & action (if present) from request URI
-	path := strings.Split(r.RequestURI, handlers.CATEGORY_STRING)[1]
+	path := strings.Split(r.RequestURI, handlers.NOTE_STRING)[1]
 	c := strings.Split(path, "/")[0]
 	noteID, err := strconv.Atoi(c)
 	if err != nil {

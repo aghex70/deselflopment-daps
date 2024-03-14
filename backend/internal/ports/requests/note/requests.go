@@ -2,6 +2,7 @@ package requests
 
 type CreateNoteRequest struct {
 	Content string `json:"content" validate:"required"`
+	TopicID uint   `json:"topic_id" validate:"required"`
 }
 
 type DeleteNoteRequest struct {

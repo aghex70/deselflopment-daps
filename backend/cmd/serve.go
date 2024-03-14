@@ -100,7 +100,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			utouuc := topicUsecases.NewUpdateTopicUseCase(tos, us, &logger)
 
 			// Note usecases
-			cnuuc := noteUsecases.NewCreateNoteUseCase(ns, us, &logger)
+			cnuuc := noteUsecases.NewCreateNoteUseCase(ns, us, tos, &logger)
 			dnuuc := noteUsecases.NewDeleteNoteUseCase(ns, us, &logger)
 			gnuuc := noteUsecases.NewGetNoteUseCase(ns, us, &logger)
 			lnuuc := noteUsecases.NewListNotesUseCase(ns, us, &logger)

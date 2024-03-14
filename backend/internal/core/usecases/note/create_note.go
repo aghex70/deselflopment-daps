@@ -18,7 +18,7 @@ type CreateNoteUseCase struct {
 	logger       *log.Logger
 }
 
-func (uc *CreateNoteUseCase) Execute(ctx context.Context, userID uint, topicID uint, r requests.CreateNoteRequest) (domain.Note, error) {
+func (uc *CreateNoteUseCase) Execute(ctx context.Context, userID uint, r requests.CreateNoteRequest) (domain.Note, error) {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return domain.Note{}, err
@@ -27,8 +27,7 @@ func (uc *CreateNoteUseCase) Execute(ctx context.Context, userID uint, topicID u
 	if !u.Active {
 		return domain.Note{}, pkg.InactiveUserError
 	}
-
-	to, err := uc.TopicService.Get(ctx, topicID)
+	to, err := uc.TopicService.Get(ctx, r.TopicID)
 	if err != nil {
 		return domain.Note{}, err
 	}
@@ -47,10 +46,11 @@ func (uc *CreateNoteUseCase) Execute(ctx context.Context, userID uint, topicID u
 	return t, nil
 }
 
-func NewCreateNoteUseCase(s note.Servicer, u user.Servicer, logger *log.Logger) *CreateNoteUseCase {
+func NewCreateNoteUseCase(s note.Servicer, u user.Servicer, t topic.Servicer, logger *log.Logger) *CreateNoteUseCase {
 	return &CreateNoteUseCase{
-		NoteService: s,
-		UserService: u,
-		logger:      logger,
+		NoteService:  s,
+		UserService:  u,
+		TopicService: t,
+		logger:       logger,
 	}
 }

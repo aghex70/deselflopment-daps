@@ -51,10 +51,13 @@ func (gr *TopicRepository) Create(ctx context.Context, c domain.Topic) (domain.T
 
 func (gr *TopicRepository) Get(ctx context.Context, id uint) (domain.Topic, error) {
 	var c Topic
+	fmt.Println("111111111111111")
+	fmt.Println("111111111111111")
+	fmt.Println("111111111111111")
 	if result := gr.DB.First(&c, id); result.Error != nil {
 		return domain.Topic{}, result.Error
 	}
-
+	fmt.Sprintf("c: %v", c)
 	return c.ToDto(), nil
 }
 
