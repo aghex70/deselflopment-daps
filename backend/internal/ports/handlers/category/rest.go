@@ -7,6 +7,8 @@ import (
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/requests/category"
+	"github.com/aghex70/daps/internal/ports/responses"
+	categoryResponses "github.com/aghex70/daps/internal/ports/responses/category"
 	"log"
 	"net/http"
 	"strconv"
@@ -57,8 +59,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filteredCategory := pkg.FilterCategory(c)
-	b, err := json.Marshal(filteredCategory)
+	b, err := json.Marshal(responses.CreateEntityResponse{ID: c.ID})
 	if err != nil {
 		return
 	}
@@ -83,7 +84,7 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	filteredCategories := pkg.FilterCategories(categories)
-	b, err := json.Marshal(handlers.ListCategoriesResponse{Categories: filteredCategories})
+	b, err := json.Marshal(categoryResponses.ListCategoriesResponse{Categories: filteredCategories})
 	if err != nil {
 		return
 	}
@@ -304,7 +305,7 @@ func (h Handler) ListCategoryUsers(w http.ResponseWriter, r *http.Request, id ui
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	b, err := json.Marshal(handlers.ListCategoryUsersResponse{Users: users})
+	b, err := json.Marshal(categoryResponses.ListCategoryUsersResponse{Users: users})
 	if err != nil {
 		return
 	}

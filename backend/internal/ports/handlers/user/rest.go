@@ -8,6 +8,7 @@ import (
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	requests "github.com/aghex70/daps/internal/ports/requests/user"
+	responses "github.com/aghex70/daps/internal/ports/responses/user"
 	"log"
 	"net/http"
 	"strconv"
@@ -107,7 +108,7 @@ func (h Handler) Login(w http.ResponseWriter, r *http.Request) {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	b, err := json.Marshal(handlers.TokenResponse{AccessToken: token, UserID: userID, Admin: admin})
+	b, err := json.Marshal(responses.TokenResponse{AccessToken: token, UserID: userID, Admin: admin})
 	if err != nil {
 		return
 	}
@@ -149,7 +150,7 @@ func (h Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(handlers.TokenResponse{AccessToken: token, UserID: userID})
+	b, err := json.Marshal(responses.TokenResponse{AccessToken: token, UserID: userID})
 	if err != nil {
 		return
 	}
@@ -250,7 +251,7 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 
 	// Hide user data
 	filteredUsers := pkg.FilterUsers(users)
-	b, err := json.Marshal(handlers.ListUsersResponse{Users: filteredUsers})
+	b, err := json.Marshal(responses.ListUsersResponse{Users: filteredUsers})
 	if err != nil {
 		return
 	}
@@ -291,7 +292,7 @@ func (h Handler) ProvisionDemoUser(w http.ResponseWriter, r *http.Request) {
 
 	// Hide user data
 	filteredUser := pkg.FilterUser(du)
-	b, err := json.Marshal(handlers.GetUserResponse{User: filteredUser})
+	b, err := json.Marshal(responses.GetUserResponse{User: filteredUser})
 	if err != nil {
 		return
 	}

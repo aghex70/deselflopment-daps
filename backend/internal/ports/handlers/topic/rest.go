@@ -6,6 +6,7 @@ import (
 	"github.com/aghex70/daps/internal/core/usecases/topic"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/requests/topic"
+	"github.com/aghex70/daps/internal/ports/responses"
 	"log"
 	"net/http"
 	"strconv"
@@ -51,7 +52,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(c)
+	b, err := json.Marshal(responses.CreateEntityResponse{ID: c.ID})
 	if err != nil {
 		return
 	}

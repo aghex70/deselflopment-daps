@@ -6,6 +6,9 @@ import (
 	"github.com/aghex70/daps/internal/core/usecases/note"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/requests/note"
+	"github.com/aghex70/daps/internal/ports/responses"
+	noteResponses "github.com/aghex70/daps/internal/ports/responses/note"
+
 	"log"
 	"net/http"
 	"strconv"
@@ -53,7 +56,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(handlers.CreateNoteResponse{ID: c.ID})
+	b, err := json.Marshal(responses.CreateEntityResponse{ID: c.ID})
 	if err != nil {
 		return
 	}
@@ -77,7 +80,7 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(handlers.ListNotesResponse{Notes: notes})
+	b, err := json.Marshal(noteResponses.ListNotesResponse{Notes: notes})
 	if err != nil {
 		return
 	}
