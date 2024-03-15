@@ -3,14 +3,20 @@ package cmd
 import (
 	categoryService "github.com/aghex70/daps/internal/core/services/category"
 	emailService "github.com/aghex70/daps/internal/core/services/email"
+	noteService "github.com/aghex70/daps/internal/core/services/note"
 	todoService "github.com/aghex70/daps/internal/core/services/todo"
+	topicService "github.com/aghex70/daps/internal/core/services/topic"
 	userService "github.com/aghex70/daps/internal/core/services/user"
 	categoryUsecases "github.com/aghex70/daps/internal/core/usecases/category"
+	noteUsecases "github.com/aghex70/daps/internal/core/usecases/note"
 	todoUsecases "github.com/aghex70/daps/internal/core/usecases/todo"
+	topicUsecases "github.com/aghex70/daps/internal/core/usecases/topic"
 	userUsecases "github.com/aghex70/daps/internal/core/usecases/user"
 	repository "github.com/aghex70/daps/internal/infrastructure/persistence/repositories/gorm"
 	categoryHandler "github.com/aghex70/daps/internal/ports/handlers/category"
+	noteHandler "github.com/aghex70/daps/internal/ports/handlers/note"
 	todoHandler "github.com/aghex70/daps/internal/ports/handlers/todo"
+	topicHandler "github.com/aghex70/daps/internal/ports/handlers/topic"
 	userHandler "github.com/aghex70/daps/internal/ports/handlers/user"
 	"log"
 
@@ -36,12 +42,16 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			emailr := repository.NewGormEmailRepository(gdb)
 			catr := repository.NewGormCategoryRepository(gdb)
 			todor := repository.NewGormTodoRepository(gdb)
+			topicr := repository.NewGormTopicRepository(gdb)
+			noter := repository.NewGormNoteRepository(gdb)
 
 			//Services
 			us := userService.NewUserService(userr, &logger)
 			es := emailService.NewEmailService(emailr, &logger)
 			cs := categoryService.NewCategoryService(catr, &logger)
 			ts := todoService.NewTodoService(todor, &logger)
+			tos := topicService.NewTopicService(topicr, &logger)
+			ns := noteService.NewNoteService(noter, &logger)
 
 			// User usecases
 			auuc := userUsecases.NewActivateUserUseCase(us, &logger)
@@ -82,12 +92,30 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			stuuc := todoUsecases.NewStartTodoUseCase(ts, us, &logger)
 			utuuc := todoUsecases.NewUpdateTodoUseCase(ts, us, &logger)
 
+			// Topic usecases
+			ctouuc := topicUsecases.NewCreateTopicUseCase(tos, us, &logger)
+			dtouuc := topicUsecases.NewDeleteTopicUseCase(tos, us, &logger)
+			gtouuc := topicUsecases.NewGetTopicUseCase(tos, us, &logger)
+			ltouuc := topicUsecases.NewListTopicsUseCase(tos, us, &logger)
+			utouuc := topicUsecases.NewUpdateTopicUseCase(tos, us, &logger)
+
+			// Note usecases
+			cnuuc := noteUsecases.NewCreateNoteUseCase(ns, us, tos, &logger)
+			dnuuc := noteUsecases.NewDeleteNoteUseCase(ns, us, &logger)
+			gnuuc := noteUsecases.NewGetNoteUseCase(ns, us, &logger)
+			lnuuc := noteUsecases.NewListNotesUseCase(ns, us, &logger)
+			snuuc := noteUsecases.NewShareNoteUseCase(ns, us, &logger)
+			usnuuc := noteUsecases.NewUnshareNoteUseCase(ns, us, &logger)
+			unuuc := noteUsecases.NewUpdateNoteUseCase(ns, us, &logger)
+
 			//Handlers
 			uh := userHandler.NewUserHandler(auuc, duuc, epuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, &logger)
 			ch := categoryHandler.NewCategoryHandler(cauuc, cduuc, gcuuc, gsuuc, lcuuc, lcusuc, scauuc, usauuc, usuuc, ucauuc, &logger)
 			th := todoHandler.NewTodoHandler(atuuc, cotuuc, ctuuc, dtuuc, gtuuc, ituuc, ltuuc, rtuuc, stuuc, utuuc, &logger)
+			toh := topicHandler.NewTopicHandler(ctouuc, dtouuc, gtouuc, ltouuc, utouuc, &logger)
+			nh := noteHandler.NewNoteHandler(cnuuc, dnuuc, gnuuc, lnuuc, snuuc, usnuuc, unuuc, &logger)
 
-			s := server.NewRestServer(cfg.Server.Rest, *ch, *th, *uh, &logger)
+			s := server.NewRestServer(cfg.Server.Rest, *ch, *nh, *th, *toh, *uh, &logger)
 			if err = s.StartServer(); err != nil {
 				log.Fatal("error starting server", err.Error())
 			}

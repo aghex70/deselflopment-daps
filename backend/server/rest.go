@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/handlers/category"
+	"github.com/aghex70/daps/internal/ports/handlers/note"
 	"github.com/aghex70/daps/internal/ports/handlers/todo"
+	topicHandler "github.com/aghex70/daps/internal/ports/handlers/topic"
 	"github.com/aghex70/daps/internal/ports/handlers/user"
 	"log"
 	"net/http"
@@ -17,7 +19,9 @@ type RestServer struct {
 	logger          *log.Logger
 	cfg             config.RestConfig
 	categoryHandler category.Handler
+	noteHandler     note.Handler
 	toDoHandler     todo.Handler
+	topicHandler    topicHandler.Handler
 	userHandler     user.Handler
 }
 
@@ -47,6 +51,14 @@ func (s *RestServer) StartServer() error {
 	http.HandleFunc("/api/todos/import", handlers.JWTAuthMiddleware(s.toDoHandler.Import))
 	//http.HandleFunc("/api/suggest", JWTAuthMiddleware(s.toDoHandler.SuggestTodos))
 
+	// Notes
+	http.HandleFunc("/api/notes", handlers.JWTAuthMiddleware(s.noteHandler.HandleNotes))
+	http.HandleFunc("/api/notes/", handlers.JWTAuthMiddleware(s.noteHandler.HandleNote))
+
+	// Topics
+	http.HandleFunc("/api/topics", handlers.JWTAuthMiddleware(s.topicHandler.HandleTopics))
+	http.HandleFunc("/api/topics/", handlers.JWTAuthMiddleware(s.topicHandler.HandleTopic))
+
 	address := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
 	log.Printf("Starting server on address %s", address)
 	server := &http.Server{
@@ -62,12 +74,14 @@ func (s *RestServer) StartServer() error {
 	return nil
 }
 
-func NewRestServer(cfg *config.RestConfig, ch category.Handler, tdh todo.Handler, uh user.Handler, logger *log.Logger) *RestServer {
+func NewRestServer(cfg *config.RestConfig, ch category.Handler, nh note.Handler, tdh todo.Handler, toh topicHandler.Handler, uh user.Handler, logger *log.Logger) *RestServer {
 	return &RestServer{
 		cfg:             *cfg,
 		logger:          logger,
 		categoryHandler: ch,
+		noteHandler:     nh,
 		toDoHandler:     tdh,
+		topicHandler:    toh,
 		userHandler:     uh,
 	}
 }

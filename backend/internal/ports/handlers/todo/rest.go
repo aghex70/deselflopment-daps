@@ -7,6 +7,7 @@ import (
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/requests/todo"
+	"github.com/aghex70/daps/internal/ports/responses"
 	"log"
 	"net/http"
 	"strconv"
@@ -51,13 +52,13 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c, err := h.CreateTodoUseCase.Execute(context.TODO(), userID, payload)
+	t, err := h.CreateTodoUseCase.Execute(context.TODO(), userID, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	b, err := json.Marshal(c)
+	b, err := json.Marshal(responses.CreateEntityResponse{ID: t.ID})
 	if err != nil {
 		return
 	}
