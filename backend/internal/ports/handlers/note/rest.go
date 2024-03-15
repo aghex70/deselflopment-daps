@@ -50,13 +50,13 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c, err := h.CreateNoteUseCase.Execute(context.TODO(), userID, payload)
+	n, err := h.CreateNoteUseCase.Execute(context.TODO(), userID, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	b, err := json.Marshal(responses.CreateEntityResponse{ID: c.ID})
+	b, err := json.Marshal(responses.CreateEntityResponse{ID: n.ID})
 	if err != nil {
 		return
 	}
@@ -94,8 +94,8 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 func (h Handler) HandleNote(w http.ResponseWriter, r *http.Request) {
 	// Get note id & action (if present) from request URI
 	path := strings.Split(r.RequestURI, handlers.NOTE_STRING)[1]
-	c := strings.Split(path, "/")[0]
-	noteID, err := strconv.Atoi(c)
+	n := strings.Split(path, "/")[0]
+	noteID, err := strconv.Atoi(n)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -132,12 +132,12 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 		return
 	}
 
-	c, err := h.GetNoteUseCase.Execute(context.TODO(), payload, userID)
+	n, err := h.GetNoteUseCase.Execute(context.TODO(), payload, userID)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	b, err := json.Marshal(c)
+	b, err := json.Marshal(n)
 	if err != nil {
 		return
 	}
