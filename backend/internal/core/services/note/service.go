@@ -12,12 +12,12 @@ type Service struct {
 	noteRepository note.Repository
 }
 
-func (s Service) Create(ctx context.Context, t domain.Note) (domain.Note, error) {
-	t, err := s.noteRepository.Create(ctx, t)
+func (s Service) Create(ctx context.Context, n domain.Note) (domain.Note, error) {
+	nn, err := s.noteRepository.Create(ctx, n)
 	if err != nil {
-		return t, err
+		return nn, err
 	}
-	return t, nil
+	return nn, nil
 }
 
 func (s Service) Get(ctx context.Context, id uint) (domain.Note, error) {

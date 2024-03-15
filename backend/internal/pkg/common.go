@@ -6,18 +6,16 @@ import (
 )
 
 var (
-	JWTSigningKey        = os.Getenv("JWT_SIGNING_KEY")
-	HmacSampleSecret     = []byte(JWTSigningKey)
-	BaseCategoriesIds    = []uint{1, 2, 3, 4, 5}
-	BaseCategoryIdFilter = map[string]interface{}{"id": 1}
-	DemoUserName         = os.Getenv("DEMO_USER_NAME")
-	DemoUserEmail        = os.Getenv("DEMO_USER_EMAIL")
-	DemoUserPassword     = "demouser@gmail.com"
-	ProjectName          = os.Getenv("PROJECT_NAME")
+	JWTSigningKey     = os.Getenv("JWT_SIGNING_KEY")
+	HmacSampleSecret  = []byte(JWTSigningKey)
+	BaseCategoriesIds = []uint{1, 2, 3, 4, 5}
+	DemoUserName      = os.Getenv("DEMO_USER_NAME")
+	DemoUserEmail     = os.Getenv("DEMO_USER_EMAIL")
+	DemoUserPassword  = "demouser@gmail.com"
+	ProjectName       = os.Getenv("PROJECT_NAME")
 )
 
 var (
-	FromName          = os.Getenv("PROJECT_NAME")
 	FromEmail         = os.Getenv("FROM_EMAIL")
 	SendGridApiKey    = os.Getenv("SENDGRID_API_KEY")
 	DapsLocalUrl      = os.Getenv("DAPS_LOCAL_URL")
@@ -49,11 +47,6 @@ var (
 var (
 	SendEmailError = errors.New("error sending email")
 	SaveEmailError = errors.New("error saving email in the database")
-)
-
-// Auth
-var (
-	InvalidTokenError = errors.New("invalid token")
 )
 
 // Handlers

@@ -52,13 +52,13 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c, err := h.CreateTodoUseCase.Execute(context.TODO(), userID, payload)
+	t, err := h.CreateTodoUseCase.Execute(context.TODO(), userID, payload)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
 
-	b, err := json.Marshal(responses.CreateEntityResponse{ID: c.ID})
+	b, err := json.Marshal(responses.CreateEntityResponse{ID: t.ID})
 	if err != nil {
 		return
 	}

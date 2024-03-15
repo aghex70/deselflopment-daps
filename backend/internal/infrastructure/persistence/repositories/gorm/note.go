@@ -80,8 +80,8 @@ func (Note) TableName() string {
 	return "daps_notes"
 }
 
-func (gr *NoteRepository) Create(ctx context.Context, c domain.Note) (domain.Note, error) {
-	nc := NoteFromDto(c)
+func (gr *NoteRepository) Create(ctx context.Context, n domain.Note) (domain.Note, error) {
+	nc := NoteFromDto(n)
 	if result := gr.DB.Create(&nc); result.Error != nil {
 		return domain.Note{}, result.Error
 	}

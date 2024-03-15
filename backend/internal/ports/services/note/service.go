@@ -6,7 +6,7 @@ import (
 )
 
 type Servicer interface {
-	Create(ctx context.Context, c domain.Note) (domain.Note, error)
+	Create(ctx context.Context, n domain.Note) (domain.Note, error)
 	Get(ctx context.Context, id uint) (domain.Note, error)
 	Delete(ctx context.Context, id uint) error
 	List(ctx context.Context, fields *map[string]interface{}) ([]domain.Note, error)
