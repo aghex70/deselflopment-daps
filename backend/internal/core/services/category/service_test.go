@@ -102,7 +102,7 @@ func (suite *ServiceTestSuite) TestCreate() {
 	assert.Error(suite.T(), err, "Error should not be nil")
 	assert.Equal(suite.T(), domain.Category{}, c, "Category should be empty")
 
-	// Check if the expectations were met
+	// Check if all expectations were met
 	suite.mockRepository.AssertExpectations(suite.T())
 }
 
@@ -165,13 +165,8 @@ func (suite *ServiceTestSuite) TestList() {
 	// Test case 1: successful listing
 	// Arrange
 	ctx := context.Background()
-	categories := []domain.Category{
-		{
-			ID:   1,
-			Name: "test",
-		},
-	}
-	ids := []uint{1}
+	categories := []domain.Category{suite.category}
+	ids := []uint{suite.category.ID}
 	suite.mockRepository.On("List", ctx, &ids, (*map[string]interface{})(nil)).Return(categories, nil).Once()
 
 	// Act
