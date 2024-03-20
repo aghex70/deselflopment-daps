@@ -2,7 +2,6 @@ package note
 
 import (
 	"context"
-	"fmt"
 	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/domain"
 	requests "github.com/aghex70/daps/internal/ports/requests/note"
@@ -41,7 +40,6 @@ func (uc *CreateNoteUseCase) Execute(ctx context.Context, userID uint, r request
 
 	// Create a goroutine for each topic ID
 	for _, id := range r.TopicIDs {
-		fmt.Println("ID:", id)
 		// Increment the wait group counter
 		wg.Add(1)
 
@@ -95,7 +93,6 @@ func (uc *CreateNoteUseCase) Execute(ctx context.Context, userID uint, r request
 		OwnerID: u.ID,
 		Users:   []domain.User{u},
 	}
-	fmt.Printf("Note: %+v\n", n)
 	nn, err := uc.NoteService.Create(ctx, n)
 	if err != nil {
 		return domain.Note{}, err
