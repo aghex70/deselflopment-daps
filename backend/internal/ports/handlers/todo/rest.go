@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Handler struct {
@@ -57,6 +58,24 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	if payload.Recurring == true {
 		if payload.Recurrency == nil {
 			handlers.ThrowError(pkg.NilRecurrencyError, http.StatusBadRequest, w)
+			return
+		}
+	}
+
+	if payload.TargetDate != nil {
+		now := time.Now()
+		now = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+		layout := "2006-01-02" // The layout must match the format of the dateString
+
+		// Parse the dateString into a time.Time object
+		targetDate, err := time.Parse(layout, *payload.TargetDate)
+		if err != nil {
+			handlers.ThrowError(pkg.DateParseError, http.StatusBadRequest, w)
+			return
+		}
+
+		if targetDate.Before(now) {
+			handlers.ThrowError(pkg.PastDateError, http.StatusBadRequest, w)
 			return
 		}
 	}
