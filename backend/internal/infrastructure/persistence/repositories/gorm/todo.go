@@ -21,7 +21,7 @@ type Todo struct {
 	CategoryID  uint
 	Link        *string
 	Recurring   bool
-	Recurrency  *string
+	Recurrency  *int
 	StartedAt   *time.Time
 	Suggestable bool
 	Suggested   bool

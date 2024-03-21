@@ -52,4 +52,6 @@ var (
 // Handlers
 var (
 	MethodNotAllowedError = errors.New("method not allowed")
+	NilTargetDateError    = errors.New("target_date must be provided")
+	NilRecurrencyError    = errors.New("recurrency must be provided")
 )

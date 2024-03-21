@@ -46,6 +46,20 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if payload.Recurring == false {
+		if payload.TargetDate == nil {
+			handlers.ThrowError(pkg.NilTargetDateError, http.StatusBadRequest, w)
+			return
+		}
+	}
+
+	if payload.Recurring == true {
+		if payload.Recurrency == nil {
+			handlers.ThrowError(pkg.NilRecurrencyError, http.StatusBadRequest, w)
+			return
+		}
+	}
+
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusUnauthorized, w)
@@ -189,6 +203,20 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
+	}
+
+	if payload.Recurring == false {
+		if payload.TargetDate == nil {
+			handlers.ThrowError(pkg.NilTargetDateError, http.StatusBadRequest, w)
+			return
+		}
+	}
+
+	if payload.Recurring == true {
+		if payload.Recurrency == nil {
+			handlers.ThrowError(pkg.NilRecurrencyError, http.StatusBadRequest, w)
+			return
+		}
 	}
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
