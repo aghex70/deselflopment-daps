@@ -32,4 +32,5 @@ type Todo struct {
 	Suggested   bool       `json:"suggested"`
 	SuggestedAt *time.Time `json:"suggested_at"`
 	OwnerID     uint       `json:"owner_id"`
+	TargetDate  *time.Time `json:"target_date"`
 }

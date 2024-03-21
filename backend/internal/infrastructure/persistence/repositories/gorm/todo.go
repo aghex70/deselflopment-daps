@@ -27,6 +27,7 @@ type Todo struct {
 	Suggested   bool
 	SuggestedAt *time.Time
 	OwnerID     uint
+	TargetDate  *time.Time
 }
 
 func (t Todo) ToDto() domain.Todo {
@@ -48,6 +49,7 @@ func (t Todo) ToDto() domain.Todo {
 		Suggested:   t.Suggested,
 		SuggestedAt: t.SuggestedAt,
 		OwnerID:     t.OwnerID,
+		TargetDate:  t.TargetDate,
 	}
 }
 
@@ -67,6 +69,7 @@ func TodoFromDto(t domain.Todo) Todo {
 		Suggestable: t.Suggestable,
 		SuggestedAt: t.SuggestedAt,
 		OwnerID:     t.OwnerID,
+		TargetDate:  t.TargetDate,
 	}
 }
 
