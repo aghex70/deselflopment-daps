@@ -20,6 +20,7 @@ type Handler struct {
 	CreateTodoUseCase   todo.CreateTodoUseCase
 	DeleteTodoUseCase   todo.DeleteTodoUseCase
 	GetTodoUseCase      todo.GetTodoUseCase
+	GetChecklistUseCase todo.GetChecklistUseCase
 	ImportTodosUseCase  todo.ImportTodosUseCase
 	ListTodosUseCase    todo.ListTodosUseCase
 	RestartTodoUseCase  todo.RestartTodoUseCase
@@ -333,6 +334,32 @@ func (h Handler) Import(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (h Handler) GetChecklist(w http.ResponseWriter, r *http.Request) {
+	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	summary, err := h.GetChecklistUseCase.Execute(context.TODO(), userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	b, err := json.Marshal(summary)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
+}
+
 //func (h Handler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
 
 func NewTodoHandler(
@@ -340,6 +367,7 @@ func NewTodoHandler(
 	completeTodoUseCase *todo.CompleteTodoUseCase,
 	createTodoUseCase *todo.CreateTodoUseCase,
 	deleteTodoUseCase *todo.DeleteTodoUseCase,
+	getChecklistUseCase *todo.GetChecklistUseCase,
 	getTodoUseCase *todo.GetTodoUseCase,
 	importTodosUseCase *todo.ImportTodosUseCase,
 	listTodosUseCase *todo.ListTodosUseCase,
@@ -353,6 +381,7 @@ func NewTodoHandler(
 		CompleteTodoUseCase: *completeTodoUseCase,
 		CreateTodoUseCase:   *createTodoUseCase,
 		DeleteTodoUseCase:   *deleteTodoUseCase,
+		GetChecklistUseCase: *getChecklistUseCase,
 		GetTodoUseCase:      *getTodoUseCase,
 		ImportTodosUseCase:  *importTodosUseCase,
 		ListTodosUseCase:    *listTodosUseCase,

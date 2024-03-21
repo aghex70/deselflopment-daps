@@ -80,6 +80,9 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			// Summary usecases
 			gsuuc := categoryUsecases.NewGetSummaryUseCase(cs, us, &logger)
 
+			// Checklist usecases
+			gcluuc := todoUsecases.NewGetChecklistUseCase(ts, us, &logger)
+
 			// Todo usecases
 			atuuc := todoUsecases.NewActivateTodoUseCase(ts, us, &logger)
 			cotuuc := todoUsecases.NewCompleteTodoUseCase(ts, us, &logger)
@@ -111,7 +114,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			//Handlers
 			uh := userHandler.NewUserHandler(auuc, duuc, epuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, &logger)
 			ch := categoryHandler.NewCategoryHandler(cauuc, cduuc, gcuuc, gsuuc, lcuuc, lcusuc, scauuc, usauuc, usuuc, ucauuc, &logger)
-			th := todoHandler.NewTodoHandler(atuuc, cotuuc, ctuuc, dtuuc, gtuuc, ituuc, ltuuc, rtuuc, stuuc, utuuc, &logger)
+			th := todoHandler.NewTodoHandler(atuuc, cotuuc, ctuuc, dtuuc, gcluuc, gtuuc, ituuc, ltuuc, rtuuc, stuuc, utuuc, &logger)
 			toh := topicHandler.NewTopicHandler(ctouuc, dtouuc, gtouuc, ltouuc, utouuc, &logger)
 			nh := noteHandler.NewNoteHandler(cnuuc, dnuuc, gnuuc, lnuuc, snuuc, usnuuc, unuuc, &logger)
 
