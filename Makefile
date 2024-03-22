@@ -8,6 +8,5 @@ production: ## Run the application in production
 stop: ## Stop the application
 	docker-compose down
 
-
 start:
 	docker-compose up --build backend frontend
