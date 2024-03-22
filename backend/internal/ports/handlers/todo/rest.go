@@ -49,6 +49,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if payload.Recurring == false {
+		payload.Recurrency = nil
 		if payload.TargetDate == nil {
 			handlers.ThrowError(pkg.NilTargetDateError, http.StatusBadRequest, w)
 			return
@@ -226,6 +227,7 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 	}
 
 	if payload.Recurring == false {
+		payload.Recurrency = nil
 		if payload.TargetDate == nil {
 			handlers.ThrowError(pkg.NilTargetDateError, http.StatusBadRequest, w)
 			return
