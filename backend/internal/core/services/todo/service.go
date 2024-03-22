@@ -124,15 +124,6 @@ func (s Service) Import(ctx context.Context, f multipart.File) error {
 	return nil
 }
 
-//func (s Service) GetSummary(ctx context.Context, r *http.Request) ([]domain.CategorySummary, error) {
-//	//userId, _ := server.RetrieveJWTClaims(r, nil)
-//	summary, err := s.todoRepository.GetSummary(ctx, int(userId))
-//	if err != nil {
-//		return []domain.CategorySummary{}, err
-//	}
-//	return summary, nil
-//}
-
 //func (s Service) Suggest(ctx context.Context, r *http.Request) error {
 //	//userId, _ := server.RetrieveJWTClaims(r, nil)
 //	err := s.todoRepository.Suggest(ctx, int(userId))
