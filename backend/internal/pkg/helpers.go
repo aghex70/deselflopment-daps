@@ -263,7 +263,6 @@ func FilterCategories(categories []domain.Category) []domain.FilteredCategory {
 func FilterCategory(category domain.Category) domain.FilteredCategory {
 	return domain.FilteredCategory{
 		ID:          category.ID,
-		CreatedAt:   category.CreatedAt,
 		Name:        category.Name,
 		Description: category.Description,
 		Shared:      category.Shared,

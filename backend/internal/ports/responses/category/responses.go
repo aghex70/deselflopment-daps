@@ -9,3 +9,7 @@ type ListCategoriesResponse struct {
 type ListCategoryUsersResponse struct {
 	Users []domain.CategoryUser `json:"users"`
 }
+
+type GetCategoryResponse struct {
+	domain.FilteredCategory
+}

@@ -5,7 +5,6 @@ import (
 )
 
 type Category struct {
-	//FilteredCategory
 	ID          uint      `json:"id"`
 	CreatedAt   time.Time `json:"created_at"`
 	Name        string    `json:"name"`
@@ -19,11 +18,10 @@ type Category struct {
 }
 
 type FilteredCategory struct {
-	ID          uint      `json:"id"`
-	CreatedAt   time.Time `json:"created_at"`
-	Name        string    `json:"name"`
-	Description *string   `json:"description"`
-	Shared      bool      `json:"shared"`
-	Notifiable  bool      `json:"notifiable"`
-	Custom      bool      `json:"custom"`
+	ID          uint    `json:"id"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+	Shared      bool    `json:"shared"`
+	Notifiable  bool    `json:"notifiable"`
+	Custom      bool    `json:"custom"`
 }
