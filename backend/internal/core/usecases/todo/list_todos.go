@@ -30,6 +30,11 @@ func (uc *ListTodosUseCase) Execute(ctx context.Context, filters *map[string]int
 	// Set the user ID into the fields map (retrieve only own todos)
 	(*filters)["owner_id"] = userID
 
+	// Temporary filter
+	if _, ok := (*filters)["recurring"]; !ok {
+		(*filters)["recurring"] = false
+	}
+
 	todos, err := uc.TodoService.List(ctx, filters)
 	if err != nil {
 		return []domain.Todo{}, err
