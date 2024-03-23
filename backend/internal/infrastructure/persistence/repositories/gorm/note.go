@@ -150,6 +150,9 @@ func (gr *NoteRepository) List(ctx context.Context, filters *map[string]interfac
 		query = query.Where(strings.Join(conditions, " AND "), args...)
 	}
 
+	// Preload topics
+	query = query.Preload("Topics")
+
 	if result := query.Find(&cs); result.Error != nil {
 		return []domain.Note{}, result.Error
 	}

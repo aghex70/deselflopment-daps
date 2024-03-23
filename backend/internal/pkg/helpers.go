@@ -260,6 +260,14 @@ func FilterTopic(topic domain.Topic) domain.FilteredTopic {
 	}
 }
 
+func FilterNotes(notes []domain.Note) []domain.FilteredNote {
+	filteredNotes := make([]domain.FilteredNote, 0, len(notes))
+	for _, note := range notes {
+		filteredNotes = append(filteredNotes, FilterNote(note))
+	}
+	return filteredNotes
+}
+
 func FilterNote(note domain.Note) domain.FilteredNote {
 	var users []domain.FilteredUser // Change to a slice, not a pointer
 	if note.Users != nil {

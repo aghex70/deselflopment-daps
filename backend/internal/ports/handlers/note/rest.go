@@ -82,7 +82,8 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(noteResponses.ListNotesResponse{Notes: notes})
+	filteredNotes := pkg.FilterNotes(notes)
+	b, err := json.Marshal(noteResponses.ListNotesResponse{Notes: filteredNotes})
 	if err != nil {
 		return
 	}
