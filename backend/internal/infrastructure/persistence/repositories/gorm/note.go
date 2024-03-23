@@ -18,34 +18,34 @@ type Note struct {
 	Shared  bool
 }
 
-func (c Note) ToDto() domain.Note {
+func (n Note) ToDto() domain.Note {
 	var createdAt time.Time
-	if !c.CreatedAt.IsZero() {
-		createdAt = c.CreatedAt
+	if !n.CreatedAt.IsZero() {
+		createdAt = n.CreatedAt
 	}
 
 	var topics []domain.Topic
-	if c.Topics != nil {
-		for _, topic := range c.Topics {
+	if n.Topics != nil {
+		for _, topic := range n.Topics {
 			topics = append(topics, topic.ToDto())
 		}
 	}
 
 	var users []domain.User
-	if c.Users != nil {
-		for _, user := range c.Users {
+	if n.Users != nil {
+		for _, user := range n.Users {
 			users = append(users, user.ToDto())
 		}
 	}
 
 	return domain.Note{
-		ID:        c.ID,
+		ID:        n.ID,
 		CreatedAt: createdAt,
-		Content:   c.Content,
-		OwnerID:   c.OwnerID,
+		Content:   n.Content,
+		OwnerID:   n.OwnerID,
 		Users:     &users,
 		Topics:    topics,
-		Shared:    c.Shared,
+		Shared:    n.Shared,
 	}
 }
 
@@ -97,26 +97,26 @@ func (gr *NoteRepository) Create(ctx context.Context, n domain.Note) (domain.Not
 }
 
 func (gr *NoteRepository) Get(ctx context.Context, id uint) (domain.Note, error) {
-	var c Note
-	if result := gr.DB.First(&c, id); result.Error != nil {
+	var n Note
+	if result := gr.DB.First(&n, id); result.Error != nil {
 		return domain.Note{}, result.Error
 	}
 
 	// Retrieve users associated with the note if they exist
-	if c.Users == nil {
-		if err := gr.DB.Model(&c).Association("Users").Find(&c.Users); err != nil {
+	if n.Users == nil {
+		if err := gr.DB.Model(&n).Association("Users").Find(&n.Users); err != nil {
 			return domain.Note{}, err
 		}
 	}
 
 	// Retrieve topics associated with the note if they exist
-	if c.Topics == nil {
-		if err := gr.DB.Model(&c).Association("Topics").Find(&c.Topics); err != nil {
+	if n.Topics == nil {
+		if err := gr.DB.Model(&n).Association("Topics").Find(&n.Topics); err != nil {
 			return domain.Note{}, err
 		}
 	}
 
-	return c.ToDto(), nil
+	return n.ToDto(), nil
 }
 
 func (gr *NoteRepository) Delete(ctx context.Context, id uint) error {
@@ -204,17 +204,17 @@ func (gr *NoteRepository) Update(ctx context.Context, id uint, ud domain.Note) e
 }
 
 func (gr *NoteRepository) Share(ctx context.Context, id uint, u domain.User) error {
-	var c Note
-	if result := gr.DB.Preload("Users").First(&c, id); result.Error != nil {
+	var n Note
+	if result := gr.DB.Preload("Users").First(&n, id); result.Error != nil {
 		return result.Error
 	}
 
-	if c.Users == nil {
-		c.Users = make([]User, 0)
+	if n.Users == nil {
+		n.Users = make([]User, 0)
 	}
 
 	// Check if the user is already in the note
-	if !isUserInNote(c.Users, u) {
+	if !isUserInNote(n.Users, u) {
 		query := fmt.Sprintf("INSERT INTO daps_note_users (note_id, user_id) VALUES (%d, %d)", id, u.ID)
 		if err := gr.DB.Exec(query).Error; err != nil {
 			return err
@@ -243,12 +243,12 @@ func (gr *NoteRepository) Unshare(ctx context.Context, id uint, u domain.User) e
 		return err
 	}
 
-	var c Note
-	if result := gr.DB.Preload("Users").First(&c, id); result.Error != nil {
+	var n Note
+	if result := gr.DB.Preload("Users").First(&n, id); result.Error != nil {
 		return result.Error
 	}
 
-	if c.Users == nil || len(c.Users) == 1 {
+	if n.Users == nil || len(n.Users) == 1 {
 		query := fmt.Sprintf("UPDATE daps_notes SET shared = FALSE WHERE id = %d", id)
 		if err := gr.DB.Exec(query).Error; err != nil {
 			return err

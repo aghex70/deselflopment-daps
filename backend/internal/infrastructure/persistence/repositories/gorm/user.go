@@ -20,8 +20,7 @@ type User struct {
 	AutoSuggest       bool
 	Categories        []Category `gorm:"many2many:daps_category_users;save_association:true"`
 	Emails            []Email
-	//Todos             []Todo
-	OwnedCategories []Category `gorm:"foreignKey:OwnerID"`
+	OwnedCategories   []Category `gorm:"foreignKey:OwnerID"`
 }
 
 func (u User) ToDto() domain.User {
@@ -37,10 +36,6 @@ func (u User) ToDto() domain.User {
 		ResetPasswordCode: u.ResetPasswordCode,
 		Language:          u.Language,
 		AutoSuggest:       u.AutoSuggest,
-		//Categories:        u.Categories,
-		//Emails:            u.Emails,
-		//Todos:             u.Todos,
-		//OwnedCategories:   u.OwnedCategories,
 	}
 }
 
@@ -55,10 +50,6 @@ func UserFromDto(u domain.User) User {
 		ResetPasswordCode: u.ResetPasswordCode,
 		Language:          u.Language,
 		AutoSuggest:       u.AutoSuggest,
-		//Categories:        &categories,
-		//Emails:            &emails,
-		//Todos:             &todos,
-		//OwnedCategories:   &ownedCategories,
 	}
 	user.ID = u.ID
 	return user
