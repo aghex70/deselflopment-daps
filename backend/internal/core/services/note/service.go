@@ -2,7 +2,6 @@ package note
 
 import (
 	"context"
-	"fmt"
 	"github.com/aghex70/daps/internal/ports/domain"
 	"github.com/aghex70/daps/internal/ports/repositories/note"
 	"log"
@@ -23,7 +22,6 @@ func (s Service) Create(ctx context.Context, n domain.Note) (domain.Note, error)
 
 func (s Service) Get(ctx context.Context, id uint) (domain.Note, error) {
 	n, err := s.noteRepository.Get(ctx, id)
-	fmt.Printf("Service.Get: %+v\n", n)
 	if err != nil {
 		return domain.Note{}, err
 	}
@@ -45,8 +43,8 @@ func (s Service) List(ctx context.Context, filters *map[string]interface{}) ([]d
 	return notes, nil
 }
 
-func (s Service) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
-	if err := s.noteRepository.Update(ctx, id, filters); err != nil {
+func (s Service) Update(ctx context.Context, id uint, n domain.Note) error {
+	if err := s.noteRepository.Update(ctx, id, n); err != nil {
 		return err
 	}
 	return nil

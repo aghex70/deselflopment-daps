@@ -109,7 +109,7 @@ func ServeCommand(cfg *config.Config) *cobra.Command {
 			lnuuc := noteUsecases.NewListNotesUseCase(ns, us, &logger)
 			snuuc := noteUsecases.NewShareNoteUseCase(ns, us, &logger)
 			usnuuc := noteUsecases.NewUnshareNoteUseCase(ns, us, &logger)
-			unuuc := noteUsecases.NewUpdateNoteUseCase(ns, us, &logger)
+			unuuc := noteUsecases.NewUpdateNoteUseCase(ns, tos, us, &logger)
 
 			//Handlers
 			uh := userHandler.NewUserHandler(auuc, duuc, epuc, guuc, liuuc, louuc, puuc, refuuc, reguuc, resuuc, sruuc, &logger)

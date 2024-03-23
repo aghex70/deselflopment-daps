@@ -164,12 +164,42 @@ func (gr *NoteRepository) List(ctx context.Context, filters *map[string]interfac
 	return cats, nil
 }
 
-func (gr *NoteRepository) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
-	var c Note
-	c.ID = id
-	if result := gr.DB.Model(&c).Updates(*filters); result.Error != nil {
+func (gr *NoteRepository) Update(ctx context.Context, id uint, ud domain.Note) error {
+	var n Note
+	if err := gr.DB.First(&n, id).Error; err != nil {
+		return err
+	}
+
+	n.Content = ud.Content
+	n.Topics = make([]Topic, 0)
+
+	// Clean manually the many-to-many relationship
+	if err := gr.DB.Exec("DELETE FROM daps_note_topics WHERE note_id = ?", id).Error; err != nil {
+		return err
+	}
+
+	for _, topic := range ud.Topics {
+		t := TopicFromDto(topic)
+		n.Topics = append(n.Topics, t)
+	}
+	n.OwnerID = ud.OwnerID
+	n.Shared = ud.Shared
+	n.Users = make([]User, 0)
+
+	// Clean manually the many-to-many relationship
+	if err := gr.DB.Exec("DELETE FROM daps_note_users WHERE note_id = ?", id).Error; err != nil {
+		return err
+	}
+
+	for _, user := range *ud.Users {
+		u := UserFromDto(user)
+		n.Users = append(n.Users, u)
+	}
+
+	if result := gr.DB.Save(&n); result.Error != nil {
 		return result.Error
 	}
+
 	return nil
 }
 
