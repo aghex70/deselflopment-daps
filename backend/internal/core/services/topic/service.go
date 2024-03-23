@@ -43,8 +43,8 @@ func (s Service) List(ctx context.Context, filters *map[string]interface{}) ([]d
 	return topics, nil
 }
 
-func (s Service) Update(ctx context.Context, id uint, fields *map[string]interface{}) error {
-	if err := s.topicRepository.Update(ctx, id, fields); err != nil {
+func (s Service) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
+	if err := s.topicRepository.Update(ctx, id, filters); err != nil {
 		return err
 	}
 	return nil

@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Handler struct {
@@ -20,6 +21,7 @@ type Handler struct {
 	CreateTodoUseCase   todo.CreateTodoUseCase
 	DeleteTodoUseCase   todo.DeleteTodoUseCase
 	GetTodoUseCase      todo.GetTodoUseCase
+	GetChecklistUseCase todo.GetChecklistUseCase
 	ImportTodosUseCase  todo.ImportTodosUseCase
 	ListTodosUseCase    todo.ListTodosUseCase
 	RestartTodoUseCase  todo.RestartTodoUseCase
@@ -44,6 +46,39 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	if err := handlers.ValidateRequest(r, &payload); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
+	}
+
+	if payload.Recurring == false {
+		payload.Recurrency = nil
+		if payload.TargetDate == nil {
+			handlers.ThrowError(pkg.NilTargetDateError, http.StatusBadRequest, w)
+			return
+		}
+	}
+
+	if payload.Recurring == true {
+		if payload.Recurrency == nil {
+			handlers.ThrowError(pkg.NilRecurrencyError, http.StatusBadRequest, w)
+			return
+		}
+	}
+
+	if payload.TargetDate != nil {
+		now := time.Now()
+		now = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+		layout := "2006-01-02" // The layout must match the format of the dateString
+
+		// Parse the dateString into a time.Time object
+		targetDate, err := time.Parse(layout, *payload.TargetDate)
+		if err != nil {
+			handlers.ThrowError(pkg.DateParseError, http.StatusBadRequest, w)
+			return
+		}
+
+		if targetDate.Before(now) {
+			handlers.ThrowError(pkg.PastDateError, http.StatusBadRequest, w)
+			return
+		}
 	}
 
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
@@ -191,6 +226,21 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request, id uint) {
 		return
 	}
 
+	if payload.Recurring == false {
+		payload.Recurrency = nil
+		if payload.TargetDate == nil {
+			handlers.ThrowError(pkg.NilTargetDateError, http.StatusBadRequest, w)
+			return
+		}
+	}
+
+	if payload.Recurring == true {
+		if payload.Recurrency == nil {
+			handlers.ThrowError(pkg.NilRecurrencyError, http.StatusBadRequest, w)
+			return
+		}
+	}
+
 	userID, err := handlers.RetrieveJWTClaims(r, nil)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusUnauthorized, w)
@@ -305,6 +355,32 @@ func (h Handler) Import(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (h Handler) GetChecklist(w http.ResponseWriter, r *http.Request) {
+	if err := handlers.CheckHttpMethod(http.MethodGet, w, r); err != nil {
+		return
+	}
+
+	userID, err := handlers.RetrieveJWTClaims(r, nil)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusUnauthorized, w)
+		return
+	}
+
+	summary, err := h.GetChecklistUseCase.Execute(context.TODO(), userID)
+	if err != nil {
+		handlers.ThrowError(err, http.StatusBadRequest, w)
+		return
+	}
+	b, err := json.Marshal(summary)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return
+	}
+}
+
 //func (h Handler) SuggestTodos(w http.ResponseWriter, r *http.Request) {
 
 func NewTodoHandler(
@@ -312,6 +388,7 @@ func NewTodoHandler(
 	completeTodoUseCase *todo.CompleteTodoUseCase,
 	createTodoUseCase *todo.CreateTodoUseCase,
 	deleteTodoUseCase *todo.DeleteTodoUseCase,
+	getChecklistUseCase *todo.GetChecklistUseCase,
 	getTodoUseCase *todo.GetTodoUseCase,
 	importTodosUseCase *todo.ImportTodosUseCase,
 	listTodosUseCase *todo.ListTodosUseCase,
@@ -325,6 +402,7 @@ func NewTodoHandler(
 		CompleteTodoUseCase: *completeTodoUseCase,
 		CreateTodoUseCase:   *createTodoUseCase,
 		DeleteTodoUseCase:   *deleteTodoUseCase,
+		GetChecklistUseCase: *getChecklistUseCase,
 		GetTodoUseCase:      *getTodoUseCase,
 		ImportTodosUseCase:  *importTodosUseCase,
 		ListTodosUseCase:    *listTodosUseCase,

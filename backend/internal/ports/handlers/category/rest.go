@@ -145,8 +145,9 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
+
 	filteredCategory := pkg.FilterCategory(c)
-	b, err := json.Marshal(filteredCategory)
+	b, err := json.Marshal(categoryResponses.GetCategoryResponse{FilteredCategory: filteredCategory})
 	if err != nil {
 		return
 	}
@@ -273,6 +274,7 @@ func (h Handler) GetSummary(w http.ResponseWriter, r *http.Request) {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
+
 	b, err := json.Marshal(summary)
 	if err != nil {
 		return

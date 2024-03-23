@@ -14,16 +14,17 @@ type GetNoteRequest struct {
 }
 
 type UpdateNoteRequest struct {
-	NoteID  uint   `json:"note_id"`
-	Content string `json:"content"`
+	NoteID   uint   `json:"note_id"`
+	Content  string `json:"content" validate:"required"`
+	TopicIDs []uint `json:"topic_ids" validate:"required"`
 }
 
 type ShareNoteRequest struct {
 	NoteID uint   `json:"note_id"`
-	Email  string `json:"email"`
+	Email  string `json:"email" validate:"required"`
 }
 
 type UnshareNoteRequest struct {
 	NoteID uint   `json:"note_id"`
-	Email  string `json:"email"`
+	Email  string `json:"email" validate:"required"`
 }

@@ -45,6 +45,9 @@ func (s *RestServer) StartServer() error {
 	// Summary
 	http.HandleFunc("/api/summary", handlers.JWTAuthMiddleware(s.categoryHandler.GetSummary))
 
+	// Checklist
+	http.HandleFunc("/api/checklist", handlers.JWTAuthMiddleware(s.toDoHandler.GetChecklist))
+
 	// Todos
 	http.HandleFunc("/api/todos", handlers.JWTAuthMiddleware(s.toDoHandler.HandleTodos))
 	http.HandleFunc("/api/todos/", handlers.JWTAuthMiddleware(s.toDoHandler.HandleTodo))

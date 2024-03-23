@@ -10,8 +10,8 @@ type Servicer interface {
 	Create(ctx context.Context, u domain.User) (domain.User, error)
 	Delete(ctx context.Context, id uint) error
 	Activate(ctx context.Context, id uint, activationCode string) error
-	List(ctx context.Context, fields *map[string]interface{}) ([]domain.User, error)
+	List(ctx context.Context, filters *map[string]interface{}) ([]domain.User, error)
 	Get(ctx context.Context, id uint) (domain.User, error)
 	ResetPassword(ctx context.Context, userID uint, password, resetPasswordCode string) error
-	Update(ctx context.Context, id uint, fields *map[string]interface{}) error
+	Update(ctx context.Context, id uint, filters *map[string]interface{}) error
 }

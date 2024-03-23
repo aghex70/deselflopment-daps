@@ -27,8 +27,13 @@ func (uc *ListNotesUseCase) Execute(ctx context.Context, filters *map[string]int
 		return []domain.Note{}, pkg.InactiveUserError
 	}
 
-	// Set the user ID into the fields map (retrieve only own notes)
-	(*filters)["owner_id"] = userID
+	// Set the user ID into the filters map (retrieve only own notes)
+	if filters == nil {
+		filters = &map[string]interface{}{}
+		(*filters)["owner_id"] = userID
+	} else {
+		(*filters)["owner_id"] = userID
+	}
 
 	notes, err := uc.NoteService.List(ctx, filters)
 	if err != nil {

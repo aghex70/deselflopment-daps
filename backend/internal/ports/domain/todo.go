@@ -26,10 +26,11 @@ type Todo struct {
 	CategoryID  uint       `json:"category_id"`
 	Link        *string    `json:"link"`
 	Recurring   bool       `json:"recurring"`
-	Recurrency  *string    `json:"recurrency"`
+	Recurrency  *int       `json:"recurrency"`
 	StartedAt   *time.Time `json:"started_at"`
 	Suggestable bool       `json:"suggestable"`
 	Suggested   bool       `json:"suggested"`
 	SuggestedAt *time.Time `json:"suggested_at"`
 	OwnerID     uint       `json:"owner_id"`
+	TargetDate  *time.Time `json:"target_date"`
 }

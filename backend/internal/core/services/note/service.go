@@ -21,11 +21,11 @@ func (s Service) Create(ctx context.Context, n domain.Note) (domain.Note, error)
 }
 
 func (s Service) Get(ctx context.Context, id uint) (domain.Note, error) {
-	t, err := s.noteRepository.Get(ctx, id)
+	n, err := s.noteRepository.Get(ctx, id)
 	if err != nil {
 		return domain.Note{}, err
 	}
-	return t, nil
+	return n, nil
 }
 
 func (s Service) Delete(ctx context.Context, id uint) error {
@@ -36,15 +36,15 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 }
 
 func (s Service) List(ctx context.Context, filters *map[string]interface{}) ([]domain.Note, error) {
-	todos, err := s.noteRepository.List(ctx, filters)
+	notes, err := s.noteRepository.List(ctx, filters)
 	if err != nil {
 		return []domain.Note{}, err
 	}
-	return todos, nil
+	return notes, nil
 }
 
-func (s Service) Update(ctx context.Context, id uint, fields *map[string]interface{}) error {
-	if err := s.noteRepository.Update(ctx, id, fields); err != nil {
+func (s Service) Update(ctx context.Context, id uint, n domain.Note) error {
+	if err := s.noteRepository.Update(ctx, id, n); err != nil {
 		return err
 	}
 	return nil

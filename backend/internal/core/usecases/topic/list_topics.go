@@ -27,7 +27,7 @@ func (uc *ListTopicsUseCase) Execute(ctx context.Context, filters *map[string]in
 		return []domain.Topic{}, pkg.InactiveUserError
 	}
 
-	// Set the user ID into the fields map (retrieve only own topics)
+	// Set the user ID into the filters map (retrieve only own topics)
 	(*filters)["owner_id"] = userID
 
 	topics, err := uc.TopicService.List(ctx, filters)

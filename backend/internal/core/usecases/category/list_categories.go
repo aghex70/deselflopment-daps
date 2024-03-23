@@ -17,7 +17,7 @@ type ListCategoriesUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *ListCategoriesUseCase) Execute(ctx context.Context, fields *map[string]interface{}, userID uint) ([]domain.Category, error) {
+func (uc *ListCategoriesUseCase) Execute(ctx context.Context, filters *map[string]interface{}, userID uint) ([]domain.Category, error) {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return []domain.Category{}, err
@@ -27,14 +27,14 @@ func (uc *ListCategoriesUseCase) Execute(ctx context.Context, fields *map[string
 		return []domain.Category{}, pkg.InactiveUserError
 	}
 
-	// Set the user ID into the fields map
-	if fields == nil {
-		fields = &map[string]interface{}{}
-		(*fields)["owner_id"] = userID
+	// Set the user ID into the filters map
+	if filters == nil {
+		filters = &map[string]interface{}{}
+		(*filters)["owner_id"] = userID
 	} else {
-		(*fields)["owner_id"] = userID
+		(*filters)["owner_id"] = userID
 	}
-	categories, err := uc.CategoryService.List(ctx, nil, fields)
+	categories, err := uc.CategoryService.List(ctx, nil, filters)
 	if err != nil {
 		return []domain.Category{}, err
 	}

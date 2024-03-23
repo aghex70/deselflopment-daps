@@ -252,6 +252,45 @@ func FilterProfile(user domain.User) domain.Profile {
 	}
 }
 
+func FilterTopic(topic domain.Topic) domain.FilteredTopic {
+	return domain.FilteredTopic{
+		ID:      topic.ID,
+		Name:    topic.Name,
+		OwnerID: topic.OwnerID,
+	}
+}
+
+func FilterNotes(notes []domain.Note) []domain.FilteredNote {
+	filteredNotes := make([]domain.FilteredNote, 0, len(notes))
+	for _, note := range notes {
+		filteredNotes = append(filteredNotes, FilterNote(note))
+	}
+	return filteredNotes
+}
+
+func FilterNote(note domain.Note) domain.FilteredNote {
+	var users []domain.FilteredUser // Change to a slice, not a pointer
+	if note.Users != nil {
+		for _, user := range *note.Users {
+			users = append(users, FilterUser(user))
+		}
+	}
+
+	var topics []domain.FilteredTopic
+	for _, topic := range note.Topics {
+		topics = append(topics, FilterTopic(topic))
+	}
+
+	return domain.FilteredNote{
+		ID:      note.ID,
+		Content: note.Content,
+		Shared:  note.Shared,
+		OwnerID: note.OwnerID,
+		Users:   &users,
+		Topics:  topics,
+	}
+}
+
 func FilterCategories(categories []domain.Category) []domain.FilteredCategory {
 	filteredCategories := make([]domain.FilteredCategory, 0, len(categories))
 	for _, category := range categories {
@@ -263,7 +302,6 @@ func FilterCategories(categories []domain.Category) []domain.FilteredCategory {
 func FilterCategory(category domain.Category) domain.FilteredCategory {
 	return domain.FilteredCategory{
 		ID:          category.ID,
-		CreatedAt:   category.CreatedAt,
 		Name:        category.Name,
 		Description: category.Description,
 		Shared:      category.Shared,

@@ -6,18 +6,19 @@ import (
 	"github.com/aghex70/daps/internal/ports/domain"
 	"github.com/aghex70/daps/internal/ports/services/todo"
 	"github.com/aghex70/daps/internal/ports/services/user"
+	"time"
 
 	//"github.com/aghex70/daps/server"
 	"log"
 )
 
-type ListTodosUseCase struct {
+type GetChecklistUseCase struct {
 	TodoService todo.Servicer
 	UserService user.Servicer
 	logger      *log.Logger
 }
 
-func (uc *ListTodosUseCase) Execute(ctx context.Context, filters *map[string]interface{}, userID uint) ([]domain.Todo, error) {
+func (uc *GetChecklistUseCase) Execute(ctx context.Context, userID uint) ([]domain.Todo, error) {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return []domain.Todo{}, err
@@ -28,12 +29,13 @@ func (uc *ListTodosUseCase) Execute(ctx context.Context, filters *map[string]int
 	}
 
 	// Set the user ID into the filters map (retrieve only own todos)
+	filters := &map[string]interface{}{}
 	(*filters)["owner_id"] = userID
 
-	// Temporary filter
-	if _, ok := (*filters)["recurring"]; !ok {
-		(*filters)["recurring"] = false
-	}
+	// Set the target date to the end of the day
+	now := time.Now()
+	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+	(*filters)["target_date"] = today
 
 	todos, err := uc.TodoService.List(ctx, filters)
 	if err != nil {
@@ -42,8 +44,8 @@ func (uc *ListTodosUseCase) Execute(ctx context.Context, filters *map[string]int
 	return todos, nil
 }
 
-func NewListTodosUseCase(s todo.Servicer, u user.Servicer, logger *log.Logger) *ListTodosUseCase {
-	return &ListTodosUseCase{
+func NewGetChecklistUseCase(s todo.Servicer, u user.Servicer, logger *log.Logger) *GetChecklistUseCase {
+	return &GetChecklistUseCase{
 		TodoService: s,
 		UserService: u,
 		logger:      logger,

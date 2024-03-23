@@ -39,8 +39,8 @@ func (s Service) Activate(ctx context.Context, id uint, activationCode string) e
 	return s.userRepository.Activate(ctx, id, activationCode)
 }
 
-func (s Service) List(ctx context.Context, fields *map[string]interface{}) ([]domain.User, error) {
-	users, err := s.userRepository.List(ctx, fields)
+func (s Service) List(ctx context.Context, filters *map[string]interface{}) ([]domain.User, error) {
+	users, err := s.userRepository.List(ctx, filters)
 	if err != nil {
 		return []domain.User{}, err
 	}
@@ -64,8 +64,8 @@ func (s Service) ResetPassword(ctx context.Context, userID uint, password, reset
 	return nil
 }
 
-func (s Service) Update(ctx context.Context, id uint, fields *map[string]interface{}) error {
-	if err := s.userRepository.Update(ctx, id, fields); err != nil {
+func (s Service) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
+	if err := s.userRepository.Update(ctx, id, filters); err != nil {
 		return err
 	}
 	return nil

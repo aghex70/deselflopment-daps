@@ -16,17 +16,17 @@ type Topic struct {
 	OwnerID uint
 }
 
-func (c Topic) ToDto() domain.Topic {
+func (t Topic) ToDto() domain.Topic {
 	var createdAt time.Time
-	if !c.CreatedAt.IsZero() {
-		createdAt = c.CreatedAt
+	if !t.CreatedAt.IsZero() {
+		createdAt = t.CreatedAt
 	}
 
 	return domain.Topic{
-		ID:        c.ID,
+		ID:        t.ID,
 		CreatedAt: createdAt,
-		Name:      c.Name,
-		OwnerID:   c.OwnerID,
+		Name:      t.Name,
+		OwnerID:   t.OwnerID,
 	}
 }
 
@@ -42,21 +42,21 @@ func (Topic) TableName() string {
 	return "daps_topics"
 }
 
-func (gr *TopicRepository) Create(ctx context.Context, c domain.Topic) (domain.Topic, error) {
-	nc := TopicFromDto(c)
-	if result := gr.DB.Create(&nc); result.Error != nil {
+func (gr *TopicRepository) Create(ctx context.Context, t domain.Topic) (domain.Topic, error) {
+	nt := TopicFromDto(t)
+	if result := gr.DB.Create(&nt); result.Error != nil {
 		return domain.Topic{}, result.Error
 	}
 
-	return nc.ToDto(), nil
+	return nt.ToDto(), nil
 }
 
 func (gr *TopicRepository) Get(ctx context.Context, id uint) (domain.Topic, error) {
-	var c Topic
-	if result := gr.DB.First(&c, id); result.Error != nil {
+	var t Topic
+	if result := gr.DB.First(&t, id); result.Error != nil {
 		return domain.Topic{}, result.Error
 	}
-	return c.ToDto(), nil
+	return t.ToDto(), nil
 }
 
 func (gr *TopicRepository) Delete(ctx context.Context, id uint) error {
@@ -69,8 +69,8 @@ func (gr *TopicRepository) Delete(ctx context.Context, id uint) error {
 }
 
 func (gr *TopicRepository) List(ctx context.Context, filters *map[string]interface{}) ([]domain.Topic, error) {
-	var cs []Topic
-	var cats []domain.Topic
+	var ts []Topic
+	var topics []domain.Topic
 
 	query := gr.DB
 	if filters != nil {
@@ -84,21 +84,21 @@ func (gr *TopicRepository) List(ctx context.Context, filters *map[string]interfa
 		query = query.Where(strings.Join(conditions, " AND "), args...)
 	}
 
-	if result := query.Find(&cs); result.Error != nil {
+	if result := query.Find(&ts); result.Error != nil {
 		return []domain.Topic{}, result.Error
 	}
 
-	for _, c := range cs {
-		cs := c.ToDto()
-		cats = append(cats, cs)
+	for _, t := range ts {
+		ts := t.ToDto()
+		topics = append(topics, ts)
 	}
-	return cats, nil
+	return topics, nil
 }
 
 func (gr *TopicRepository) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
-	var c Topic
-	c.ID = id
-	if result := gr.DB.Model(&c).Updates(*filters); result.Error != nil {
+	var t Topic
+	t.ID = id
+	if result := gr.DB.Model(&t).Updates(*filters); result.Error != nil {
 		return result.Error
 	}
 	return nil

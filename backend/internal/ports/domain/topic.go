@@ -10,3 +10,9 @@ type Topic struct {
 	Name      string    `json:"name"`
 	OwnerID   uint      `json:"owner_id"`
 }
+
+type FilteredTopic struct {
+	ID      uint   `json:"id"`
+	Name    string `json:"name"`
+	OwnerID uint   `json:"owner_id"`
+}

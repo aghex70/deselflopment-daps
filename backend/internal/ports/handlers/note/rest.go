@@ -3,7 +3,9 @@ package note
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/aghex70/daps/internal/core/usecases/note"
+	"github.com/aghex70/daps/internal/pkg"
 	"github.com/aghex70/daps/internal/ports/handlers"
 	"github.com/aghex70/daps/internal/ports/requests/note"
 	"github.com/aghex70/daps/internal/ports/responses"
@@ -80,7 +82,8 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := json.Marshal(noteResponses.ListNotesResponse{Notes: notes})
+	filteredNotes := pkg.FilterNotes(notes)
+	b, err := json.Marshal(noteResponses.ListNotesResponse{Notes: filteredNotes})
 	if err != nil {
 		return
 	}
@@ -137,7 +140,10 @@ func (h Handler) Get(w http.ResponseWriter, r *http.Request, id uint) {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}
-	b, err := json.Marshal(n)
+
+	nn := pkg.FilterNote(n)
+	fmt.Printf("Filtered note: %+v\n", nn)
+	b, err := json.Marshal(noteResponses.GetNoteResponse{FilteredNote: nn})
 	if err != nil {
 		return
 	}

@@ -37,8 +37,8 @@ func (uc *UpdateTopicUseCase) Execute(ctx context.Context, r requests.UpdateTopi
 		return pkg.UnauthorizedError
 	}
 
-	fields := common.StructToMap(r, "topic_id")
-	if err = uc.TopicService.Update(ctx, t.ID, &fields); err != nil {
+	filters := common.StructToMap(r, "topic_id")
+	if err = uc.TopicService.Update(ctx, t.ID, &filters); err != nil {
 		return err
 	}
 	return nil
