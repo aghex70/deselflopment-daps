@@ -84,7 +84,7 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	filteredCategories := pkg.FilterCategories(categories)
-	b, err := json.Marshal(categoryResponses.ListCategoriesResponse{Categories: filteredCategories})
+	b, err := json.Marshal(filteredCategories)
 	if err != nil {
 		return
 	}
