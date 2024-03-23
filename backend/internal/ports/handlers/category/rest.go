@@ -53,7 +53,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c, err := h.CreateCategoryUseCase.Execute(context.TODO(), userID, payload)
+	c, err := h.CreateCategoryUseCase.Execute(context.TODO(), payload, userID)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return

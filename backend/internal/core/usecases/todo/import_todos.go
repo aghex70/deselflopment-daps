@@ -15,7 +15,7 @@ type ImportTodosUseCase struct {
 	logger      *log.Logger
 }
 
-func (uc *ImportTodosUseCase) Execute(ctx context.Context, userID uint, f multipart.File) error {
+func (uc *ImportTodosUseCase) Execute(ctx context.Context, f multipart.File, userID uint) error {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return err

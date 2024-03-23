@@ -46,7 +46,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t, err := h.CreateTopicUseCase.Execute(context.TODO(), userID, payload)
+	t, err := h.CreateTopicUseCase.Execute(context.TODO(), payload, userID)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return

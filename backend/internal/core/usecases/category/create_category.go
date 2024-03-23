@@ -16,7 +16,7 @@ type CreateCategoryUseCase struct {
 	logger          *log.Logger
 }
 
-func (uc *CreateCategoryUseCase) Execute(ctx context.Context, userID uint, r requests.CreateCategoryRequest) (domain.Category, error) {
+func (uc *CreateCategoryUseCase) Execute(ctx context.Context, r requests.CreateCategoryRequest, userID uint) (domain.Category, error) {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return domain.Category{}, err

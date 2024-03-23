@@ -17,7 +17,7 @@ type CreateTodoUseCase struct {
 	logger      *log.Logger
 }
 
-func (uc *CreateTodoUseCase) Execute(ctx context.Context, userID uint, r requests.CreateTodoRequest) (domain.Todo, error) {
+func (uc *CreateTodoUseCase) Execute(ctx context.Context, r requests.CreateTodoRequest, userID uint) (domain.Todo, error) {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return domain.Todo{}, err

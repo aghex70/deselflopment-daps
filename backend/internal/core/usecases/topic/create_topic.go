@@ -16,7 +16,7 @@ type CreateTopicUseCase struct {
 	logger       *log.Logger
 }
 
-func (uc *CreateTopicUseCase) Execute(ctx context.Context, userID uint, r requests.CreateTopicRequest) (domain.Topic, error) {
+func (uc *CreateTopicUseCase) Execute(ctx context.Context, r requests.CreateTopicRequest, userID uint) (domain.Topic, error) {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return domain.Topic{}, err

@@ -87,7 +87,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t, err := h.CreateTodoUseCase.Execute(context.TODO(), userID, payload)
+	t, err := h.CreateTodoUseCase.Execute(context.TODO(), payload, userID)
 	if err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
@@ -348,7 +348,7 @@ func (h Handler) Import(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = h.ImportTodosUseCase.Execute(context.Background(), userID, file); err != nil {
+	if err = h.ImportTodosUseCase.Execute(context.Background(), file, userID); err != nil {
 		handlers.ThrowError(err, http.StatusBadRequest, w)
 		return
 	}

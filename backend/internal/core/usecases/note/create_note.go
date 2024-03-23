@@ -19,7 +19,7 @@ type CreateNoteUseCase struct {
 	logger       *log.Logger
 }
 
-func (uc *CreateNoteUseCase) Execute(ctx context.Context, userID uint, r requests.CreateNoteRequest) (domain.Note, error) {
+func (uc *CreateNoteUseCase) Execute(ctx context.Context, r requests.CreateNoteRequest, userID uint) (domain.Note, error) {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return domain.Note{}, err
