@@ -15,8 +15,7 @@ type Note struct {
 	Users   []User `gorm:"many2many:daps_note_users;save_association:true"`
 	OwnerID uint
 	Topics  []Topic `gorm:"many2many:daps_note_topics;save_association:true"`
-	//Subtopic Topic
-	Shared bool
+	Shared  bool
 }
 
 func (c Note) ToDto() domain.Note {
@@ -44,7 +43,7 @@ func (c Note) ToDto() domain.Note {
 		CreatedAt: createdAt,
 		Content:   c.Content,
 		OwnerID:   c.OwnerID,
-		Users:     users,
+		Users:     &users,
 		Topics:    topics,
 		Shared:    c.Shared,
 	}
@@ -53,7 +52,7 @@ func (c Note) ToDto() domain.Note {
 func NoteFromDto(c domain.Note) Note {
 	var users []User
 	if c.Users != nil {
-		for _, userDTO := range c.Users {
+		for _, userDTO := range *c.Users {
 			user := UserFromDto(userDTO)
 			users = append(users, user)
 		}
@@ -109,6 +108,14 @@ func (gr *NoteRepository) Get(ctx context.Context, id uint) (domain.Note, error)
 			return domain.Note{}, err
 		}
 	}
+
+	// Retrieve topics associated with the note if they exist
+	if c.Topics == nil {
+		if err := gr.DB.Model(&c).Association("Topics").Find(&c.Topics); err != nil {
+			return domain.Note{}, err
+		}
+	}
+
 	return c.ToDto(), nil
 }
 
