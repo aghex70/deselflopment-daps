@@ -13,7 +13,7 @@ type ListUsersUseCase struct {
 	logger      *log.Logger
 }
 
-func (uc *ListUsersUseCase) Execute(ctx context.Context, fields *map[string]interface{}, userID uint) ([]domain.User, error) {
+func (uc *ListUsersUseCase) Execute(ctx context.Context, filters *map[string]interface{}, userID uint) ([]domain.User, error) {
 	u, err := uc.UserService.Get(ctx, userID)
 	if err != nil {
 		return []domain.User{}, err
@@ -26,7 +26,7 @@ func (uc *ListUsersUseCase) Execute(ctx context.Context, fields *map[string]inte
 		return []domain.User{}, pkg.UnauthorizedError
 	}
 
-	us, err := uc.UserService.List(ctx, fields)
+	us, err := uc.UserService.List(ctx, filters)
 	if err != nil {
 		return []domain.User{}, err
 	}

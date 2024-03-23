@@ -27,7 +27,7 @@ func (uc *ListTodosUseCase) Execute(ctx context.Context, filters *map[string]int
 		return []domain.Todo{}, pkg.InactiveUserError
 	}
 
-	// Set the user ID into the fields map (retrieve only own todos)
+	// Set the user ID into the filters map (retrieve only own todos)
 	(*filters)["owner_id"] = userID
 
 	// Temporary filter

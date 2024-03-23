@@ -36,8 +36,8 @@ func (uc *UpdateCategoryUseCase) Execute(ctx context.Context, r requests.UpdateC
 		return pkg.UnauthorizedError
 	}
 
-	fields := common.StructToMap(r, "category_id")
-	if err = uc.CategoryService.Update(ctx, c.ID, &fields); err != nil {
+	filters := common.StructToMap(r, "category_id")
+	if err = uc.CategoryService.Update(ctx, c.ID, &filters); err != nil {
 		return err
 	}
 	return nil

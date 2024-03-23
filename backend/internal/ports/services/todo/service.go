@@ -11,7 +11,7 @@ type Servicer interface {
 	Get(ctx context.Context, id uint) (domain.Todo, error)
 	Delete(ctx context.Context, id uint) error
 	List(ctx context.Context, filters *map[string]interface{}) ([]domain.Todo, error)
-	Update(ctx context.Context, id uint, fields *map[string]interface{}) error
+	Update(ctx context.Context, id uint, filters *map[string]interface{}) error
 	Start(ctx context.Context, id uint) error
 	Complete(ctx context.Context, id uint) error
 	Restart(ctx context.Context, id uint) error

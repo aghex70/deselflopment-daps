@@ -37,8 +37,8 @@ func (uc *UpdateNoteUseCase) Execute(ctx context.Context, r requests.UpdateNoteR
 		return pkg.UnauthorizedError
 	}
 
-	fields := common.StructToMap(r, "note_id")
-	if err = uc.NoteService.Update(ctx, t.ID, &fields); err != nil {
+	filters := common.StructToMap(r, "note_id")
+	if err = uc.NoteService.Update(ctx, t.ID, &filters); err != nil {
 		return err
 	}
 	return nil

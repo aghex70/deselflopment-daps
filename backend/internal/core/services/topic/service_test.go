@@ -171,23 +171,23 @@ func (suite *ServiceTestSuite) TestUpdate() {
 	// Test case 1: successful update
 	// Arrange
 	ctx := context.Background()
-	fields := &map[string]interface{}{
+	filters := &map[string]interface{}{
 		"name": "new name",
 	}
-	suite.mockRepository.On("Update", ctx, suite.topic.ID, fields).Return(nil).Once()
+	suite.mockRepository.On("Update", ctx, suite.topic.ID, filters).Return(nil).Once()
 
 	// Act
-	err := suite.service.Update(ctx, suite.topic.ID, fields)
+	err := suite.service.Update(ctx, suite.topic.ID, filters)
 
 	// Assert
 	assert.NoError(suite.T(), err, "Error should be nil")
 
 	// Test case 2: failed update
 	// Arrange
-	suite.mockRepository.On("Update", ctx, suite.topic.ID, fields).Return(assert.AnError).Once()
+	suite.mockRepository.On("Update", ctx, suite.topic.ID, filters).Return(assert.AnError).Once()
 
 	// Act
-	err = suite.service.Update(ctx, suite.topic.ID, fields)
+	err = suite.service.Update(ctx, suite.topic.ID, filters)
 
 	// Assert
 	assert.Error(suite.T(), err, "Error should not be nil")

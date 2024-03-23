@@ -37,10 +37,10 @@ func (uc *UpdateTodoUseCase) Execute(ctx context.Context, r requests.UpdateTodoR
 		return pkg.UnauthorizedError
 	}
 
-	fields := common.StructToMap(r, "todo_id")
+	filters := common.StructToMap(r, "todo_id")
 	var targetDate = setTargetDate(r.Recurrency, r.TargetDate)
-	fields["target_date"] = &targetDate
-	if err = uc.TodoService.Update(ctx, t.ID, &fields); err != nil {
+	filters["target_date"] = &targetDate
+	if err = uc.TodoService.Update(ctx, t.ID, &filters); err != nil {
 		return err
 	}
 	return nil

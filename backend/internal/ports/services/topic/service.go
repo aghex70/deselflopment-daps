@@ -10,5 +10,5 @@ type Servicer interface {
 	Get(ctx context.Context, id uint) (domain.Topic, error)
 	Delete(ctx context.Context, id uint) error
 	List(ctx context.Context, filters *map[string]interface{}) ([]domain.Topic, error)
-	Update(ctx context.Context, id uint, fields *map[string]interface{}) error
+	Update(ctx context.Context, id uint, filters *map[string]interface{}) error
 }

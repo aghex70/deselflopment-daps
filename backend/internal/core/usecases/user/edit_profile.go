@@ -30,8 +30,8 @@ func (uc *EditProfileUseCase) Execute(ctx context.Context, r requests.EditProfil
 		return pkg.UnauthorizedError
 	}
 
-	fields := common.StructToMap(r, "user_id")
-	err = uc.UserService.Update(ctx, u.ID, &fields)
+	filters := common.StructToMap(r, "user_id")
+	err = uc.UserService.Update(ctx, u.ID, &filters)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return err
 	}

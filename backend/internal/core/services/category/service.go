@@ -35,16 +35,16 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 	return nil
 }
 
-func (s Service) List(ctx context.Context, ids *[]uint, fields *map[string]interface{}) ([]domain.Category, error) {
-	categories, err := s.categoryRepository.List(ctx, ids, fields)
+func (s Service) List(ctx context.Context, ids *[]uint, filters *map[string]interface{}) ([]domain.Category, error) {
+	categories, err := s.categoryRepository.List(ctx, ids, filters)
 	if err != nil {
 		return []domain.Category{}, err
 	}
 	return categories, nil
 }
 
-func (s Service) Update(ctx context.Context, id uint, fields *map[string]interface{}) error {
-	if err := s.categoryRepository.Update(ctx, id, fields); err != nil {
+func (s Service) Update(ctx context.Context, id uint, filters *map[string]interface{}) error {
+	if err := s.categoryRepository.Update(ctx, id, filters); err != nil {
 		return err
 	}
 	return nil

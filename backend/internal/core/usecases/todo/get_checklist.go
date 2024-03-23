@@ -28,7 +28,7 @@ func (uc *GetChecklistUseCase) Execute(ctx context.Context, userID uint) ([]doma
 		return []domain.Todo{}, pkg.InactiveUserError
 	}
 
-	// Set the user ID into the fields map (retrieve only own todos)
+	// Set the user ID into the filters map (retrieve only own todos)
 	filters := &map[string]interface{}{}
 	(*filters)["owner_id"] = userID
 
