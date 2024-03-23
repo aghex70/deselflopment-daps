@@ -21,10 +21,10 @@ type UpdateNoteRequest struct {
 
 type ShareNoteRequest struct {
 	NoteID uint   `json:"note_id"`
-	Email  string `json:"email"`
+	Email  string `json:"email" validate:"required"`
 }
 
 type UnshareNoteRequest struct {
 	NoteID uint   `json:"note_id"`
-	Email  string `json:"email"`
+	Email  string `json:"email" validate:"required"`
 }
