@@ -125,6 +125,12 @@ func (gr *CategoryRepository) Delete(ctx context.Context, id uint) error {
 		return err
 	}
 
+	// Set all the related todos to be deleted
+	if err := gr.DB.Exec(
+		"UPDATE daps_todos SET deleted_at = NOW() WHERE category_id = ?", id).Error; err != nil {
+		return err
+	}
+
 	var category Category
 	if result := gr.DB.Delete(&category, id); result.Error != nil {
 		return result.Error
