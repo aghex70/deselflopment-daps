@@ -13,8 +13,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_started
+#      redis:
+#        condition: service_started
     volumes:
       - ./backend:/daps/backend
     networks:
@@ -75,42 +75,42 @@ services:
     networks:
       deselflopment-database-network: {}
 
-  redis:
-    container_name: deselflopment-redis
-    image: redis:alpine
-    command: [redis-server, --port, "16379"]
-    ports:
-      - "16379:16379"
-    networks:
-      deselflopment-database-network: {}
-
-#  frontend:
-#    container_name: daps-frontend
-#    build:
-#      context: frontend
-#      dockerfile: Dockerfile-local
-#    env_file:
-#      - frontend/.env-dev
-#    command: ["npm", "run", "start:dev"]
+#  redis:
+#    container_name: deselflopment-redis
+#    image: redis:alpine
+#    command: [redis-server, --port, "16379"]
 #    ports:
-#      - "13001:3000"
+#      - "16379:16379"
 #    networks:
-#      deselflopment-webserver-network: {}
-#    stdin_open: true
+#      deselflopment-database-network: {}
 
-  webserver:
-    container_name: deselflopment-nginx-local
-    image: nginx
-    volumes:
-      - ./nginx/conf/local.conf:/etc/nginx/conf.d/default.conf
+  frontend:
+    container_name: daps-frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile-local
+    env_file:
+      - frontend/.env-dev
+    command: ["npm", "run", "start:dev"]
     ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - backend
-#      - frontend
+      - "13001:3000"
     networks:
       deselflopment-webserver-network: {}
+    stdin_open: true
+
+#  webserver:
+#    container_name: deselflopment-nginx-local
+#    image: nginx
+#    volumes:
+#      - ./nginx/conf/local.conf:/etc/nginx/conf.d/default.conf
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    depends_on:
+#      - backend
+#      - frontend
+#    networks:
+#      deselflopment-webserver-network: {}
 
 volumes:
   deselflopment:

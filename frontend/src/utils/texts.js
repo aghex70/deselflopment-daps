@@ -1,4 +1,12 @@
-const language = localStorage.getItem("language") || "en";
+const retrieveFromLocalStorage = (key) => {
+  let deselflopmentData = localStorage.getItem('deselflopment');
+  if (!deselflopmentData) {
+    return null;
+  }
+  let deselflopmentObject = JSON.parse(deselflopmentData);
+  return deselflopmentObject[key];
+}
+const language = retrieveFromLocalStorage("language") || "en";
 
 // Tables
 const HighPriorityTasksText =

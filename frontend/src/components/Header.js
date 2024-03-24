@@ -42,7 +42,7 @@ import {
 
 const DapsHeader = () => {
   document.title = "daps";
-  checkAccess();
+  // checkAccess();
 
   const [isHoverProfile, setIsHoverProfile] = useState(false);
   const [isAdmin, setIsAdmin] = useState("");

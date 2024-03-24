@@ -29,7 +29,6 @@ func (uc *GetSummaryUseCase) Execute(ctx context.Context, userID uint) ([]domain
 	if err != nil {
 		return []domain.CategorySummary{}, err
 	}
-
 	return cs, nil
 }
 

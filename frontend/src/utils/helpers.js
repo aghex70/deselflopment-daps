@@ -12,13 +12,14 @@ const getUserData = () => {
 const checkAccess = () => {
   if (!getUserToken() || !getUserId()) {
     goToLogin();
+    // console.log("No user token or user id found.")
   }
 };
 
 const skipLogin = () => {
-  if (getUserToken() && getUserId()) {
-    goToCategories();
-  }
+  // if (getUserToken() && getUserId()) {
+  //   goToCategories();
+  // }
 };
 
 const getUserToken = () => {
@@ -33,8 +34,7 @@ let userAccessToken = getUserToken();
 
 const checkValidToken = (error) => {
   if (error.response.data.message === "signature is invalid") {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user_id");
+    localStorage.removeItem("deselflopment");
     goToLogin();
   }
 };
@@ -57,10 +57,7 @@ const getIsAdmin = () => {
 
 const clearLocalStorage = (excludedKeys = []) => {
   let baseExcludedKeys = [
-    "access_token",
-    "language",
-    "auto-suggest",
-    "user_id",
+    "deselflopment",
   ];
   let untouchedKeys = baseExcludedKeys.concat(excludedKeys);
   for (let key in localStorage) {
@@ -70,9 +67,27 @@ const clearLocalStorage = (excludedKeys = []) => {
   }
 };
 
+// const retrieveFromLocalStorage = (key) => {
+//   let deselflopmentData = localStorage.getItem('deselflopment');
+//   let deselflopmentObject = JSON.parse(deselflopmentData);
+//   return deselflopmentObject[key];
+// }
+
+
 const setLanguage = (language) => {
-  localStorage.setItem("language", language);
-};
+  console.log("Setting language to: ", language);
+  let deselflopmentData = localStorage.getItem('deselflopment');
+
+  // Parse the JSON data into a JavaScript object
+  let deselflopmentObject = JSON.parse(deselflopmentData);
+
+  deselflopmentObject.language = language;
+  // Convert the updated object back to a JSON string
+  let updatedDeselflopmentData = JSON.stringify(deselflopmentObject);
+
+  // Store the updated data back into localStorage
+  localStorage.setItem('deselflopment', updatedDeselflopmentData);
+  };
 
 const setAutoSuggest = (autoSuggest) => {
   localStorage.setItem("auto-suggest", autoSuggest);
@@ -134,18 +149,22 @@ const goToImportTodos = () => {
 const goToLogin = () => {
   clearLocalStorage([]);
   // Rather than redirecting to the login page, we redirect to the desync page in order to clear localStorage on domain change.
-  window.location.href =
-    getHost() === "daps.localhost"
-      ? "http://localhost/desync"
-      : "https://deselflopment.com/desync";
+  window.location.href = "http://localhost:13001/login";
+    // getHost() === "daps.localhost"
+    //   ? "http://localhost/desync"
+    //   : "https://deselflopment.com/desync";
+
 };
 
 const goToRegister = () => {
   clearLocalStorage([]);
-  window.location.href =
-    getHost() === "daps.localhost"
-      ? "http://localhost/register"
-      : "https://deselflopment.com/register";
+  if (window.location.host.includes("localhost")) {
+    window.location.href = "http://localhost:13001/register";
+  }
+  // window.location.href =
+  //   getHost() === "daps.localhost"
+  //     ? "http://localhost/register"
+  //     : "https://deselflopment.com/register";
 };
 
 const sortArrayByField = (array, field, ascending) => {
@@ -191,6 +210,16 @@ function getHost() {
   return window.location.host;
 }
 
+const retrieveFromLocalStorage = (key) => {
+  let deselflopmentData = localStorage.getItem('deselflopment');
+  if (!deselflopmentData) {
+    return null;
+  }
+  let deselflopmentObject = JSON.parse(deselflopmentData);
+  return deselflopmentObject[key];
+}
+
+
 export default checkAccess;
 
 export {
@@ -217,7 +246,8 @@ export {
   sortTodosByField,
   checkValidToken,
   sortCategoriesByField,
-    getIsAdmin,
-    getUserData,
+  getIsAdmin,
+  getUserData,
   userAccessToken,
+  retrieveFromLocalStorage,
 };

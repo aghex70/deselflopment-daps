@@ -93,13 +93,22 @@ const CreateTodo = () => {
   };
 
   const mapRecurrencyPeriod = () => {
-    if (todoRecurring === "true" || todoRecurring === true) {
-      if (todoRecurrencyPeriod.length === 0) {
-        return "daily";
-      }
-      return todoRecurrencyPeriod;
+    if (todoRecurring === "false" || todoRecurring === false) {
+      return 0;
     }
-    return "";
+
+    switch (todoRecurrencyPeriod) {
+        case "Daily" || "Diario":
+            return 1;
+        case "Weekly" || "Semanal":
+            return 7;
+        case "Fortnight" || "Quincenal":
+            return 15;
+        case "Monthly" || "Mensual":
+            return 30;
+        default:
+            return 0;
+    }
   };
 
   const handleSubmit = (e) => {
@@ -114,7 +123,7 @@ const CreateTodo = () => {
       name: todoName,
       description: todoDescription,
       link: todoLink,
-      // priority will be casted to int
+      // priority will be cast to int
       priority:
         typeof todoPriority === "number"
           ? todoPriority
@@ -226,12 +235,12 @@ const CreateTodo = () => {
             style={{ margin: "0px 0px 32px" }}
           >
             ><option disabled={true}>{SelectRecurringText}</option>
-            <option value="daily">{DailyText}</option>
-            <option value="weekly">{WeeklyText}</option>
-            <option value="biweekly">{BiweeklyText}</option>
-            <option value="monthly">{MonthlyText}</option>
-            <option value="weekdays">{WeekdaysText}</option>
-            <option value="weekends">{WeekendsText}</option>
+            <option value="Daily">{DailyText}</option>
+            <option value="Weekly">{WeeklyText}</option>
+            <option value="Biweekly">{BiweeklyText}</option>
+            <option value="Monthly">{MonthlyText}</option>
+            <option value="Weekdays">{WeekdaysText}</option>
+            <option value="Weekends">{WeekendsText}</option>
           </Form.Select>
         </FloatingLabel>
         <FloatingLabel
