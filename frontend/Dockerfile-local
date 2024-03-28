@@ -1,7 +1,8 @@
-# Build React static files
-FROM node:16-alpine
-RUN export NODE_OPTIONS=--openssl-legacy-provider
+
+FROM oven/bun:1.0.5-alpine
+
 WORKDIR /daps/frontend/
 COPY . .
-RUN npm install --force
-CMD ["npm", "run", "start:dev"]
+
+RUN bun install
+CMD ["bun", "start"]

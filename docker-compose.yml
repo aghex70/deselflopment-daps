@@ -91,12 +91,14 @@ services:
       dockerfile: Dockerfile-local
     env_file:
       - frontend/.env-dev
-    command: ["npm", "run", "start:dev"]
     ports:
       - "13001:3000"
     networks:
       deselflopment-webserver-network: {}
     stdin_open: true
+    volumes:
+      - ./frontend:/daps/frontend
+      - /daps/frontend/node_modules
 
 #  webserver:
 #    container_name: deselflopment-nginx-local
