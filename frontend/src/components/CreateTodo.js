@@ -37,7 +37,7 @@ import {
   RecurrencyLabelText,
   RecurringLabelText,
   SelectPriorityText,
-  SelectRecurringText,
+  SelectRecurringText, TargetDateLabelText,
   WeekdaysText,
   WeekendsText,
   WeeklyText,
@@ -52,6 +52,7 @@ const CreateTodo = () => {
   const [todoPriority, setTodoPriority] = useState("3");
   const [todoRecurring, setTodoRecurring] = useState("false");
   const [todoRecurrencyPeriod, setTodoRecurrencyPeriod] = useState("daily");
+  const [todoTargetDate, setTodoTargetDate] = useState("");
   const [disablePriority, setDisablePriority] = useState(false);
   const [disableRecurring, setDisableRecurring] = useState(false);
   const [showEnterTodoNameModal, setShowEnterTodoNameModal] = useState(false);
@@ -134,6 +135,7 @@ const CreateTodo = () => {
           : toBoolean(todoRecurring),
       category_id: categoryId,
       recurrency: mapRecurrencyPeriod(),
+      target_date: todoTargetDate,
     };
 
     TodoService.createTodo(data)
@@ -217,6 +219,21 @@ const CreateTodo = () => {
             <option value="true">{YesText}</option>
           </Form.Select>
         </FloatingLabel>
+
+
+      <FloatingLabel
+          controlId="floatingTargetDate"
+          label={TargetDateLabelText}
+          value={todoTargetDate}
+          onChange={(e) => setTodoTargetDate(e.target.value)}
+      >
+        <Form.Control
+            type="date"
+            placeholder="Target date"
+            value={todoTargetDate}
+            onChange={(e) => setTodoTargetDate(e.target.value)}
+        />
+      </FloatingLabel>
 
         <FloatingLabel
           controlId="floatingRecurringPeriod"

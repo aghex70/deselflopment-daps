@@ -38,8 +38,12 @@ func (uc *UpdateTodoUseCase) Execute(ctx context.Context, r requests.UpdateTodoR
 	}
 
 	filters := common.StructToMap(r, "todo_id")
-	var targetDate = setTargetDate(r.Recurrency, r.TargetDate)
-	filters["target_date"] = &targetDate
+	if *r.TargetDate != "" {
+		var targetDate = setTargetDate(r.Recurrency, r.TargetDate)
+		filters["target_date"] = &targetDate
+	} else {
+		filters["target_date"] = nil
+	}
 	if err = uc.TodoService.Update(ctx, t.ID, &filters); err != nil {
 		return err
 	}

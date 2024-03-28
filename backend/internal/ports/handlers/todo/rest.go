@@ -63,7 +63,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if payload.TargetDate != nil {
+	if *payload.TargetDate != "" {
 		now := time.Now()
 		now = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 		layout := "2006-01-02" // The layout must match the format of the dateString

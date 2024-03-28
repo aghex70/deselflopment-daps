@@ -27,7 +27,6 @@ func (uc *CreateTodoUseCase) Execute(ctx context.Context, r requests.CreateTodoR
 		return domain.Todo{}, pkg.InactiveUserError
 	}
 
-	var targetDate = setTargetDate(r.Recurrency, r.TargetDate)
 	t := domain.Todo{
 		Name:        r.Name,
 		Description: nil,
@@ -37,8 +36,14 @@ func (uc *CreateTodoUseCase) Execute(ctx context.Context, r requests.CreateTodoR
 		Priority:    domain.Priority(r.Priority),
 		CategoryID:  r.CategoryID,
 		OwnerID:     u.ID,
-		TargetDate:  &targetDate,
 	}
+	if *r.TargetDate != "" {
+		var targetDate = setTargetDate(r.Recurrency, r.TargetDate)
+		t.TargetDate = &targetDate
+	} else {
+		t.TargetDate = nil
+	}
+
 	t, err = uc.TodoService.Create(ctx, t)
 	if err != nil {
 		return domain.Todo{}, err

@@ -36,13 +36,14 @@ import {
   PriorityLabelText,
   RecurrencyLabelText,
   RecurringLabelText,
-  SuggestableLabelText,
+  SuggestableLabelText, TargetDateLabelText,
   ViewTodoHeaderText,
   WeekdaysText,
   WeekendsText,
   WeeklyText,
   YesText,
 } from "../utils/texts";
+
 
 const Todo = () => {
   checkAccess();
@@ -53,6 +54,7 @@ const Todo = () => {
   const [todoRecurring, setTodoRecurring] = useState("");
   const [todoSuggestable, setTodoSuggestable] = useState("");
   const [todoRecurrencyPeriod, setTodoRecurrencyPeriod] = useState("");
+  const [todoTargetDate, setTodoTargetDate] = useState("");
   const [todoCategoryId, setTodoCategoryId] = useState();
   const [, setTodoCategoryName] = useState();
   const location = useLocation();
@@ -73,13 +75,22 @@ const Todo = () => {
   };
 
   const mapRecurrencyPeriod = () => {
-    if (todoRecurring === "true" || todoRecurring === true) {
-      if (todoRecurrencyPeriod.length === 0) {
-        return "daily";
-      }
-      return todoRecurrencyPeriod;
+    if (todoRecurring === "false" || todoRecurring === false) {
+      return 0;
     }
-    return "";
+
+    switch (todoRecurrencyPeriod) {
+      case "Daily" || "Diario":
+        return 1;
+      case "Weekly" || "Semanal":
+        return 7;
+      case "Fortnight" || "Quincenal":
+        return 15;
+      case "Monthly" || "Mensual":
+        return 30;
+      default:
+        return 0;
+    }
   };
 
   const handleSubmit = (e) => {
@@ -99,6 +110,7 @@ const Todo = () => {
         typeof todoSuggestable == "boolean"
           ? todoSuggestable
           : toBoolean(todoSuggestable),
+      target_date: todoTargetDate,
     };
 
     TodoService.updateTodo(id, data)
@@ -121,6 +133,19 @@ const Todo = () => {
       });
   };
 
+  function formatDate(inputDate) {
+    if (inputDate === undefined || inputDate === null) {
+      return "";
+    }
+    const date = new Date(inputDate);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
   useEffect(() => {
     TodoService.getTodo(id)
       .then((response) => {
@@ -129,6 +154,8 @@ const Todo = () => {
           setTodoDescription(response.data.description);
           setTodoLink(response.data.link);
           setTodoPriority(response.data.priority);
+          let formattedDate = formatDate(response.data.target_date);
+          setTodoTargetDate(formattedDate);
           setTodoRecurring(response.data.recurring);
           setTodoCategoryId(response.data.category_id);
           setTodoCategoryName(response.data.category_name);
@@ -215,6 +242,21 @@ const Todo = () => {
             <option value="false">{NoText}</option>
             <option value="true">{YesText}</option>
           </Form.Select>
+        </FloatingLabel>
+
+        <FloatingLabel
+            controlId="floatingTargetDate"
+            label={TargetDateLabelText}
+            value={todoTargetDate}
+            onChange={(e) => setTodoTargetDate(e.target.value)}
+        >
+          <Form.Control
+              type="date"
+              placeholder="Target date"
+              value={todoTargetDate}
+              onChange={(e) => setTodoTargetDate(e.target.value)}
+              disabled={!enableEdit}
+          />
         </FloatingLabel>
 
         <FloatingLabel

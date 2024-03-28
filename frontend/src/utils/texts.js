@@ -226,6 +226,7 @@ const ResetPasswordHeaderText =
   language === "en" ? "Reset password" : "Restablecer contraseña";
 
 // Forms
+const TargetDateLabelText = language === "en" ? "Target date" : "Fecha objetivo";
 const NameLabelText = language === "en" ? "Name" : "Nombre";
 const DescriptionLabelText = language === "en" ? "Description" : "Descripción";
 const PriorityLabelText = language === "en" ? "Priority" : "Prioridad";
@@ -398,4 +399,5 @@ export {
   NotifiableLabelText,
   ConfirmUnsubscribeCategoryText,
   UnsubscribeButtonText,
+  TargetDateLabelText,
 };
